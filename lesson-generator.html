@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu - Lesson Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    .gradient-coral { background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%); }
+    .gradient-emerald { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
+    .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
+    .gradient-amber { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
+    .card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2); }
+    .card:hover { border-color: rgba(148, 163, 184, 0.4); transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .stage-card { border-left: 4px solid; transition: all 0.3s; }
+    .stage-card:hover { transform: translateX(4px); }
+    .timer-display { font-size: 2rem; font-weight: bold; font-family: 'Poppins'; }
+    .editing input, .editing textarea { background: rgba(51, 65, 85, 0.8) !important; border: 1px solid rgba(99, 102, 241, 0.5) !important; color: #f1f5f9 !important; }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen">
+    <!-- HEADER -->
+    <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h1 class="text-3xl font-bold">⭐ Teacher Lu - Lesson Generator</h1>
+            <p class="text-indigo-100">8 Etapas Pedagógicas Estruturadas</p>
+          </div>
+          <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50">
+            ← Menu
+          </button>
+        </div>
+        
+        <!-- THEME INPUT -->
+        <div class="flex gap-4 items-end">
+          <div class="flex-1">
+            <label class="block text-indigo-100 text-sm font-bold mb-2">Tema da Aula:</label>
+            <input 
+              type="text" 
+              id="themeInput" 
+              placeholder="Ex: Sports, Food, Travel, Animals, Technology..."
+              class="w-full p-3 bg-indigo-900 bg-opacity-50 border border-indigo-400 rounded-lg text-white placeholder-indigo-200 focus:outline-none focus:border-white"
+              onchange="generateLesson(this.value)"
+            />
+          </div>
+          <button onclick="generateLesson(document.getElementById('themeInput').value)" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg">
+            ⚡ Gerar Aula
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w-7xl mx-auto p-6">
+      <div id="lessonContainer" class="space-y-4"></div>
+
+      <!-- ACTIONS -->
+      <div class="card rounded-xl p-6 mt-8 flex gap-4 flex-wrap">
+        <button onclick="startTimer()" class="gradient-amber text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2">
+          ⏱️ Iniciar Timer
+        </button>
+        <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2">
+          📥 Exportar PDF
+        </button>
+        <button onclick="resetLesson()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">
+          🔄 Resetar
+        </button>
+      </div>
+
+      <!-- TIMER DISPLAY -->
+      <div id="timerDisplay" class="hidden fixed bottom-6 right-6 card rounded-2xl p-8 text-center border-2 border-amber-400">
+        <p class="text-amber-300 text-sm font-bold mb-2">TEMPO RESTANTE</p>
+        <div class="timer-display text-white" id="timerValue">--:--</div>
+        <div class="flex gap-2 mt-4">
+          <button onclick="pauseTimer()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded font-bold">⏸</button>
+          <button onclick="closeTimer()" class="flex-1 bg-slate-600 hover:bg-slate-700 text-white py-2 rounded font-bold">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ESTRUTURA DAS 8 ETAPAS
+    const stages = [
+      { id: 1, name: "Welcome + Small Talk", time: 5, objective: "Aquecer o cérebro em inglês", icon: "👋" },
+      { id: 2, name: "Review", time: 8, objective: "Revisar conteúdo anterior", icon: "📚" },
+      { id: 3, name: "Lead-in", time: 5, objective: "Introduzir o tema", icon: "🎯" },
+      { id: 4, name: "Vocabulary", time: 8, objective: "Ensinar o vocabulário", icon: "📝" },
+      { id: 5, name: "Grammar / Language Focus", time: 10, objective: "Ensinar a estrutura", icon: "📖" },
+      { id: 6, name: "Controlled Practice", time: 8, objective: "Fixar sem pressão", icon: "✏️" },
+      { id: 7, name: "Speaking / Activate", time: 12, objective: "Comunicação real", icon: "💬" },
+      { id: 8, name: "Wrap-up + Homework", time: 4, objective: "Consolidar aprendizagem", icon: "🎓" }
+    ];
+
+    let currentTheme = "";
+    let stageContents = {};
+    let timerInterval = null;
+    let timerRemaining = 0;
+    let currentStageTimer = 0;
+
+    // GENERATE LESSON
+    function generateLesson(theme) {
+      if (!theme.trim()) {
+        alert("Por favor, digite um tema!");
+        return;
+      }
+
+      currentTheme = theme;
+      stageContents = {};
+      renderLesson();
+    }
+
+    // RENDER LESSON
+    function renderLesson() {
+      const container = document.getElementById('lessonContainer');
+      
+      if (!currentTheme) {
+        container.innerHTML = `
+          <div class="card rounded-xl p-8 text-center text-slate-400">
+            <p class="text-lg">Digite um tema e clique em "Gerar Aula" para começar!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="card rounded-xl p-6 mb-6 bg-gradient-to-r from-indigo-900 to-indigo-800">
+          <h2 class="text-2xl font-bold text-white mb-2">📖 ${currentTheme}</h2>
+          <p class="text-indigo-100">Tempo total: 60 minutos | 8 etapas estruturadas</p>
+        </div>
+      `;
+
+      stages.forEach(stage => {
+        const content = stageContents[stage.id] || generateDefaultContent(stage, currentTheme);
+        stageContents[stage.id] = content;
+
+        const borderColors = ['border-blue-500', 'border-green-500', 'border-purple-500', 'border-yellow-500', 'border-red-500', 'border-pink-500', 'border-cyan-500', 'border-emerald-500'];
+        
+        container.innerHTML += `
+          <div class="stage-card card rounded-xl p-6 ${borderColors[stage.id - 1]} hover:shadow-xl">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h3 class="text-2xl font-bold text-white">
+                  ${stage.icon} ${stage.name}
+                </h3>
+                <p class="text-slate-400 text-sm">${stage.objective}</p>
+              </div>
+              <div class="text-right">
+                <div class="text-3xl font-bold text-white">${stage.time}min</div>
+                <button onclick="toggleEdit(${stage.id})" class="text-blue-400 hover:text-blue-300 text-sm font-bold mt-2">✏️ Editar</button>
+              </div>
+            </div>
+
+            <div id="stage-${stage.id}-display" class="text-slate-300 whitespace-pre-line mb-4 min-h-20">
+${content}
+            </div>
+
+            <div id="stage-${stage.id}-edit" class="hidden space-y-3 editing">
+              <textarea 
+                id="stage-${stage.id}-textarea"
+                class="w-full p-3 rounded-lg h-32"
+                placeholder="Edite o conteúdo desta etapa..."
+              >${content}</textarea>
+              <div class="flex gap-2">
+                <button onclick="saveStage(${stage.id})" class="gradient-emerald text-white py-2 px-4 rounded font-bold flex-1">
+                  ✓ Salvar
+                </button>
+                <button onclick="toggleEdit(${stage.id})" class="bg-slate-600 text-white py-2 px-4 rounded font-bold flex-1">
+                  ✕ Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // GENERATE DEFAULT CONTENT
+    function generateDefaultContent(stage, theme) {
+      const contents = {
+        1: `Boas-vindas! Como você está?\n\nSmall talk questions:\n- How are you today?\n- What did you do yesterday?\n- Are you ready to learn about ${theme}?\n\nObjetivo: Relaxar o aluno e preparar a mente para English.`,
+        
+        2: `Revisão do conteúdo anterior:\n\nPerguntas sobre a última aula:\n- O que aprendemos na última aula?\n- Você praticou?\n- Tem dúvidas?\n\nRápido review dos conceitos principais.`,
+        
+        3: `Introdução ao tema: ${theme}\n\n- Mostre imagens ou vídeos sobre ${theme}\n- Faça perguntas: "O que você conhece sobre ${theme}?"\n- Desperte interesse e curiosidade\n- Conecte com experiência do aluno`,
+        
+        4: `Vocabulário sobre ${theme}:\n\nPalavras-chave que você vai aprender:\n1. [palavra 1]\n2. [palavra 2]\n3. [palavra 3]\n4. [palavra 4]\n5. [palavra 5]\n\nExemplos de uso em contexto.\nAssociar com imagens/gestos quando possível.`,
+        
+        5: `Estrutura gramatical / Language Focus\n\nExemplo com ${theme}:\n\nSentence pattern:\n- [estrutura]\n- [exemplo 1]\n- [exemplo 2]\n- [exemplo 3]\n\nRegras importantes:\n- [regra 1]\n- [regra 2]\n\nExercicios de transformação.`,
+        
+        6: `Prática controlada com ${theme}:\n\nExercícios sem pressão:\n1. Multiple choice\n2. Fill in the blanks\n3. Matching\n4. True or False\n\nDica: Não há certo ou errado aqui!\nObjetivo: consolidar antes de falar.`,
+        
+        7: `Conversação sobre ${theme}:\n\nPrompts para speaking:\n1. "Tell me about [tema]..."\n2. "What is your experience with [tema]?"\n3. "How often do you...?"\n4. "Describe a time when you..."\n5. Role-play scenarios\n\nAluno fala livremente agora!`,
+        
+        8: `Encerramento + Homework\n\nResumo do que foi aprendido:\n✓ Vocabulário: [3 palavras-chave]\n✓ Estrutura: [estrutura principal]\n✓ Conversação: [tópico]\n\nHomework:\n- Praticar 10 minutos\n- Escrever 5 frases sobre ${theme}\n- Preparar para próxima aula\n\nMotivação final! 🎉`
+      };
+
+      return contents[stage.id] || "";
+    }
+
+    // TOGGLE EDIT
+    function toggleEdit(stageId) {
+      const display = document.getElementById(`stage-${stageId}-display`);
+      const edit = document.getElementById(`stage-${stageId}-edit`);
+      display.classList.toggle('hidden');
+      edit.classList.toggle('hidden');
+    }
+
+    // SAVE STAGE
+    function saveStage(stageId) {
+      const textarea = document.getElementById(`stage-${stageId}-textarea`);
+      stageContents[stageId] = textarea.value;
+      toggleEdit(stageId);
+      renderLesson();
+    }
+
+    // TIMER
+    function startTimer() {
+      const totalTime = stages.reduce((a, b) => a + b.time, 0) * 60;
+      timerRemaining = totalTime;
+      showTimer();
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timerRemaining--;
+        updateTimerDisplay();
+        
+        if (timerRemaining <= 0) {
+          clearInterval(timerInterval);
+          alert('⏰ Aula terminada!');
+          closeTimer();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerRemaining / 60);
+      const secs = timerRemaining % 60;
+      document.getElementById('timerValue').textContent = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function showTimer() {
+      document.getElementById('timerDisplay').classList.remove('hidden');
+    }
+
+    function closeTimer() {
+      document.getElementById('timerDisplay').classList.add('hidden');
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+    }
+
+    // EXPORT
+    function exportLesson() {
+      let content = `TEACHER LU - LESSON PLAN\n\nTEMA: ${currentTheme}\n\n`;
+      content += `TEMPO TOTAL: 60 minutos\n\n`;
+      content += `${'='.repeat(60)}\n\n`;
+
+      stages.forEach(stage => {
+        const stageContent = stageContents[stage.id] || "";
+        content += `${stage.icon} STAGE ${stage.id}: ${stage.name}\n`;
+        content += `⏱️  TEMPO: ${stage.time} minutos\n`;
+        content += `🎯 OBJETIVO: ${stage.objective}\n\n`;
+        content += `${stageContent}\n\n`;
+        content += `${'='.repeat(60)}\n\n`;
+      });
+
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Lesson-${currentTheme.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // RESET
+    function resetLesson() {
+      if (confirm('Resetar a aula?')) {
+        currentTheme = "";
+        stageContents = {};
+        document.getElementById('themeInput').value = "";
+        renderLesson();
+      }
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+
+    // INIT
+    renderLesson();
+  </script>
+</body>
+</html>
