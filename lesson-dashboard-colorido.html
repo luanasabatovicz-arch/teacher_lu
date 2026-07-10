@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu - Lesson Dashboard</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3, h4 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    .display-font {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+    }
+    
+    /* Gradient backgrounds */
+    .gradient-coral { background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%); }
+    .gradient-emerald { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
+    .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
+    .gradient-amber { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
+    .gradient-pink { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
+    .gradient-cyan { background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); }
+    
+    /* Card styles */
+    .card {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      border-color: rgba(148, 163, 184, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .section-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: white;
+    }
+    
+    .badge-context { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .badge-listening { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+    .badge-practice { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .badge-speaking { background: linear-gradient(135deg, #ff6b4a 0%, #dc2626 100%); }
+    .badge-closing { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .section-card {
+      animation: slideIn 0.4s ease-out;
+    }
+    
+    .pulse-icon {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Glow effects */
+    .glow-coral { box-shadow: 0 0 20px rgba(255, 107, 74, 0.3); }
+    .glow-emerald { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+    .glow-indigo { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+    
+    /* Button styles */
+    .btn-primary {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 12px;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Input styles */
+    input, textarea {
+      background: rgba(51, 65, 85, 0.5) !important;
+      border: 1px solid rgba(148, 163, 184, 0.3) !important;
+      color: #f1f5f9 !important;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus, textarea:focus {
+      background: rgba(51, 65, 85, 0.8) !important;
+      border-color: #60a5fa !important;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
+    }
+    
+    input::placeholder, textarea::placeholder {
+      color: rgba(241, 245, 249, 0.5) !important;
+    }
+    
+    /* Sidebar active state */
+    .sidebar-btn-active {
+      background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%);
+      box-shadow: 0 0 20px rgba(255, 107, 74, 0.3);
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(51, 65, 85, 0.3);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.5);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { ChevronDown, Edit2, Save, X, Download, RotateCcw, Menu, ChevronRight, Zap, BookOpen, Ear, Brain, MessageCircle } = lucide;
+
+    const LessonDashboard = () => {
+      const [currentModule, setCurrentModule] = useState('simple-present');
+      const [editingSection, setEditingSection] = useState(null);
+      const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
+      const [studentResponses, setStudentResponses] = useState({});
+      const [modules, setModules] = useState(initialModulesData);
+      const [sectionsToExport, setSectionsToExport] = useState({});
+      const [showExportModal, setShowExportModal] = useState(false);
+
+      useEffect(() => {
+        const handleResize = () => setSidebarOpen(window.innerWidth > 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, []);
+
+      const currentModuleData = modules.find(m => m.id === currentModule);
+
+      const handleEditChange = (sectionId, field, value) => {
+        setModules(modules.map(m => {
+          if (m.id === currentModule) {
+            return {
+              ...m,
+              sections: m.sections.map(s => 
+                s.id === sectionId ? { ...s, [field]: value } : s
+              )
+            };
+          }
+          return m;
+        }));
+      };
+
+      const handleResponseChange = (sectionId, responseField, value) => {
+        setStudentResponses(prev => ({
+          ...prev,
+          [sectionId]: { ...prev[sectionId], [responseField]: value }
+        }));
+      };
+
+      const toggleSectionForExport = (sectionId) => {
+        setSectionsToExport(prev => ({
+          ...prev,
+          [sectionId]: !prev[sectionId]
+        }));
+      };
+
+      const initializeSectionsForExport = () => {
+        const allSections = {};
+        currentModuleData.sections.forEach(section => {
+          allSections[section.id] = true;
+        });
+        setSectionsToExport(allSections);
+        setShowExportModal(true);
+      };
+
+      const handleReset = () => {
+        if (window.confirm('🗑️ Zerar todas as respostas do aluno? Isso não pode ser desfeito.')) {
+          setStudentResponses({});
+        }
+      };
+
+      const exportPDF = () => {
+        // Cria um elemento temporário com apenas as seções selecionadas
+        const tempDiv = document.createElement('div');
+        tempDiv.style.padding = '20px';
+        tempDiv.style.background = 'white';
+        tempDiv.style.color = '#333';
+        
+        // Header
+        const header = document.createElement('h1');
+        header.textContent = `${currentModuleData.name} - Respostas do Aluno`;
+        header.style.marginBottom = '20px';
+        header.style.borderBottom = '3px solid #3b82f6';
+        header.style.paddingBottom = '10px';
+        tempDiv.appendChild(header);
+        
+        const dateInfo = document.createElement('p');
+        dateInfo.textContent = `Data: ${new Date().toLocaleDateString('pt-BR')}`;
+        dateInfo.style.color = '#666';
+        dateInfo.style.marginBottom = '20px';
+        tempDiv.appendChild(dateInfo);
+
+        // Seções selecionadas
+        currentModuleData.sections.forEach(section => {
+          if (sectionsToExport[section.id]) {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.style.marginBottom = '30px';
+            sectionDiv.style.paddingBottom = '20px';
+            sectionDiv.style.borderBottom = '1px solid #ddd';
+
+            const title = document.createElement('h2');
+            title.textContent = section.title;
+            title.style.color = '#1e293b';
+            title.style.fontSize = '18px';
+            title.style.marginBottom = '10px';
+            sectionDiv.appendChild(title);
+
+            // Conteúdo
+            if (section.type === 'content') {
+              const content = document.createElement('p');
+              content.textContent = section.content;
+              content.style.whiteSpace = 'pre-wrap';
+              content.style.lineHeight = '1.6';
+              sectionDiv.appendChild(content);
+            }
+
+            if (section.type === 'listening') {
+              const audio = document.createElement('p');
+              audio.innerHTML = `<strong>Áudio:</strong> ${section.audioText}`;
+              audio.style.marginBottom = '10px';
+              sectionDiv.appendChild(audio);
+
+              const q = document.createElement('p');
+              q.innerHTML = `<strong>Pergunta:</strong> ${section.question}`;
+              q.style.marginBottom = '5px';
+              sectionDiv.appendChild(q);
+
+              const response = studentResponses[section.id];
+              const ans = document.createElement('p');
+              ans.innerHTML = `<strong>Resposta do aluno:</strong> ${response?.selected || '(não respondido)'}`;
+              ans.style.color = response?.selected ? '#10b981' : '#ef4444';
+              sectionDiv.appendChild(ans);
+            }
+
+            if (section.type === 'practice') {
+              const exercise = document.createElement('p');
+              exercise.innerHTML = `<strong>Exercício:</strong><br/>${section.exercise}`;
+              exercise.style.whiteSpace = 'pre-wrap';
+              exercise.style.marginBottom = '10px';
+              sectionDiv.appendChild(exercise);
+
+              const response = studentResponses[section.id];
+              const ans = document.createElement('p');
+              ans.innerHTML = `<strong>Resposta do aluno:</strong><br/>${response?.answer || '(não respondido)'}`;
+              ans.style.whiteSpace = 'pre-wrap';
+              ans.style.backgroundColor = '#f0fdf4';
+              ans.style.padding = '10px';
+              ans.style.borderRadius = '5px';
+              sectionDiv.appendChild(ans);
+            }
+
+            if (section.type === 'speaking') {
+              const prompts = document.createElement('p');
+              prompts.innerHTML = `<strong>Prompts de conversação:</strong><br/>${section.prompts.join('<br/>')}`;
+              prompts.style.marginBottom = '10px';
+              sectionDiv.appendChild(prompts);
+
+              const response = studentResponses[section.id];
+              const notes = document.createElement('p');
+              notes.innerHTML = `<strong>Notas do professor:</strong><br/>${response?.notes || '(sem anotações)'}`;
+              notes.style.whiteSpace = 'pre-wrap';
+              notes.style.backgroundColor = '#fffbf0';
+              notes.style.padding = '10px';
+              notes.style.borderRadius = '5px';
+              sectionDiv.appendChild(notes);
+            }
+
+            tempDiv.appendChild(sectionDiv);
+          }
+        });
+
+        const opt = {
+          margin: 10,
+          filename: `${currentModuleData.name}-respostas-${new Date().toLocaleDateString('pt-BR')}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+        };
+        
+        html2pdf().set(opt).from(tempDiv).save();
+        setShowExportModal(false);
+      };
+
+      const getTypeBadge = (type) => {
+        const badges = {
+          'content': 'badge-context',
+          'listening': 'badge-listening',
+          'practice': 'badge-practice',
+          'speaking': 'badge-speaking',
+          'closing': 'badge-closing'
+        };
+        const labels = {
+          'content': '📚 Contexto',
+          'listening': '👂 Ouvir',
+          'practice': '✏️ Prática',
+          'speaking': '💬 Conversa',
+          'closing': '🎓 Conclusão'
+        };
+        return { class: badges[type], label: labels[type] };
+      };
+
+      const renderSection = (section) => {
+        const response = studentResponses[section.id] || {};
+        const isEditing = editingSection === section.id;
+        const badge = getTypeBadge(section.type);
+
+        return (
+          <div key={section.id} className="section-card mb-6 card rounded-2xl p-6 border-l-4" style={{borderLeftColor: getBorderColor(section.type)}}>
+            <div className="flex justify-between items-start mb-4 flex-wrap gap-3">
+              <div className="flex-1">
+                <div className={`section-badge ${badge.class} mb-2`}>
+                  {badge.label}
+                </div>
+                <h3 className="text-2xl font-bold text-white" style={{fontFamily: 'Poppins'}}>
+                  {section.title}
+                </h3>
+              </div>
+              <button
+                onClick={() => setEditingSection(isEditing ? null : section.id)}
+                className="btn-primary p-2 rounded-xl transition"
+                style={{background: isEditing ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)' : 'rgba(99, 102, 241, 0.2)', color: 'white'}}
+              >
+                {isEditing ? <Save size={18} /> : <Edit2 size={18} />}
+              </button>
+            </div>
+
+            {isEditing ? (
+              <div className="space-y-4 bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-slate-700">
+                {section.type === 'content' && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-semibold text-amber-300 mb-2" style={{fontFamily: 'Poppins'}}>Título</label>
+                      <input
+                        type="text"
+                        value={section.title}
+                        onChange={(e) => handleEditChange(section.id, 'title', e.target.value)}
+                        className="w-full p-3 border rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-amber-300 mb-2" style={{fontFamily: 'Poppins'}}>Conteúdo</label>
+                      <textarea
+                        value={section.content}
+                        onChange={(e) => handleEditChange(section.id, 'content', e.target.value)}
+                        rows="5"
+                        className="w-full p-3 border rounded-lg text-sm"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {section.type === 'listening' && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-semibold text-indigo-300 mb-2" style={{fontFamily: 'Poppins'}}>Descrição do áudio</label>
+                      <textarea
+                        value={section.audioText}
+                        onChange={(e) => handleEditChange(section.id, 'audioText', e.target.value)}
+                        rows="3"
+                        className="w-full p-3 border rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-indigo-300 mb-2" style={{fontFamily: 'Poppins'}}>Pergunta</label>
+                      <input
+                        type="text"
+                        value={section.question}
+                        onChange={(e) => handleEditChange(section.id, 'question', e.target.value)}
+                        className="w-full p-3 border rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-indigo-300 mb-2" style={{fontFamily: 'Poppins'}}>Opções (separadas por |)</label>
+                      <input
+                        type="text"
+                        value={section.options.join(' | ')}
+                        onChange={(e) => handleEditChange(section.id, 'options', e.target.value.split('|').map(o => o.trim()))}
+                        className="w-full p-3 border rounded-lg text-sm"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {section.type === 'practice' && (
+                  <div>
+                    <label className="block text-sm font-semibold text-emerald-300 mb-2" style={{fontFamily: 'Poppins'}}>Exercício</label>
+                    <textarea
+                      value={section.exercise}
+                      onChange={(e) => handleEditChange(section.id, 'exercise', e.target.value)}
+                      rows="5"
+                      className="w-full p-3 border rounded-lg text-sm"
+                      placeholder="Use ___ para blanks, ou descreva o exercício"
+                    />
+                  </div>
+                )}
+
+                {section.type === 'speaking' && (
+                  <div>
+                    <label className="block text-sm font-semibold text-red-300 mb-2" style={{fontFamily: 'Poppins'}}>Prompts de conversação</label>
+                    <textarea
+                      value={section.prompts.join('\n')}
+                      onChange={(e) => handleEditChange(section.id, 'prompts', e.target.value.split('\n').filter(p => p.trim()))}
+                      rows="5"
+                      className="w-full p-3 border rounded-lg text-sm"
+                      placeholder="Um prompt por linha"
+                    />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {section.type === 'content' && (
+                  <p className="text-slate-300 whitespace-pre-line leading-relaxed">{section.content}</p>
+                )}
+
+                {section.type === 'listening' && (
+                  <>
+                    <div className="gradient-indigo p-4 rounded-xl text-white mb-4 glow-indigo">
+                      <p className="text-sm font-semibold mb-2">🔊 Áudio:</p>
+                      <p className="text-sm">{section.audioText}</p>
+                    </div>
+                    <div>
+                      <p className="font-bold text-white mb-4 text-lg">{section.question}</p>
+                      <div className="space-y-2">
+                        {section.options.map((opt, idx) => (
+                          <label key={idx} className="flex items-center cursor-pointer p-3 rounded-lg hover:bg-slate-700 transition">
+                            <input
+                              type="radio"
+                              name={`${section.id}-listening`}
+                              value={opt}
+                              checked={response.selected === opt}
+                              onChange={(e) => handleResponseChange(section.id, 'selected', e.target.value)}
+                              className="mr-3 w-5 h-5 cursor-pointer"
+                            />
+                            <span className="text-slate-200 font-medium">{opt}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {section.type === 'practice' && (
+                  <div>
+                    <p className="text-slate-300 whitespace-pre-line mb-4 font-medium">{section.exercise}</p>
+                    <textarea
+                      placeholder="Digita a resposta aqui..."
+                      value={response.answer || ''}
+                      onChange={(e) => handleResponseChange(section.id, 'answer', e.target.value)}
+                      rows="4"
+                      className="w-full p-3 border rounded-xl"
+                    />
+                  </div>
+                )}
+
+                {section.type === 'speaking' && (
+                  <div>
+                    <div className="space-y-2 mb-6">
+                      {section.prompts.map((prompt, idx) => (
+                        <div key={idx} className="gradient-coral p-4 rounded-xl text-white glow-coral">
+                          <p className="font-semibold">💬 Prompt {idx + 1}</p>
+                          <p className="mt-2 text-sm">{prompt}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="gradient-amber p-4 rounded-xl text-white glow-coral">
+                      <p className="font-bold mb-3" style={{fontFamily: 'Poppins'}}>📝 Notas da conversa</p>
+                      <textarea
+                        placeholder="Fluência? Pronúncia? Dificuldades? Pontos fortes? 🎯"
+                        value={response.notes || ''}
+                        onChange={(e) => handleResponseChange(section.id, 'notes', e.target.value)}
+                        rows="3"
+                        className="w-full p-3 border rounded-lg text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      const getBorderColor = (type) => {
+        const colors = {
+          'content': '#3b82f6',
+          'listening': '#6366f1',
+          'practice': '#10b981',
+          'speaking': '#ff6b4a',
+          'closing': '#8b5cf6'
+        };
+        return colors[type] || '#94a3b8';
+      };
+
+      return (
+        <div className="flex h-screen overflow-hidden">
+          {/* SIDEBAR */}
+          <div style={{width: sidebarOpen ? '300px' : '0'}} className="bg-gradient-to-b from-slate-900 to-slate-950 text-white transition-all duration-300 overflow-hidden flex flex-col shadow-2xl border-r border-slate-800">
+            <div className="p-6 border-b border-slate-800">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="gradient-coral p-2 rounded-lg">
+                  <Zap size={20} />
+                </div>
+                <h1 className="text-xl font-bold" style={{fontFamily: 'Poppins'}}>
+                  Teacher Lu<br/>Hub
+                </h1>
+              </div>
+              <p className="text-xs text-slate-400 mt-2">💎 Aulas modernas & engajantes</p>
+            </div>
+
+            <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+              {modules.map(module => (
+                <button
+                  key={module.id}
+                  onClick={() => {
+                    setCurrentModule(module.id);
+                    if (window.innerWidth < 768) setSidebarOpen(false);
+                  }}
+                  className={`w-full text-left p-4 rounded-xl transition ${
+                    currentModule === module.id 
+                      ? 'sidebar-btn-active text-white' 
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <span className="text-sm font-bold" style={{fontFamily: 'Poppins'}}>{module.name}</span>
+                      <p className="text-xs text-slate-400 mt-1">{module.description}</p>
+                    </div>
+                    {currentModule === module.id && <ChevronRight size={18} className="ml-2" />}
+                  </div>
+                </button>
+              ))}
+            </nav>
+
+            <div className="p-4 border-t border-slate-800 space-y-2">
+              <button
+                onClick={handleReset}
+                className="w-full flex items-center justify-center gap-2 p-3 gradient-coral rounded-xl transition btn-primary text-white font-bold"
+              >
+                <RotateCcw size={16} /> Zerar respostas
+              </button>
+              <button
+                onClick={initializeSectionsForExport}
+                className="w-full flex items-center justify-center gap-2 p-3 gradient-emerald rounded-xl transition btn-primary text-white font-bold"
+              >
+                <Download size={16} /> Exportar PDF
+              </button>
+            </div>
+
+            {showExportModal && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-slate-800 rounded-2xl max-w-md w-full max-h-96 overflow-y-auto border border-slate-700">
+                  <div className="sticky top-0 bg-slate-800 p-6 border-b border-slate-700">
+                    <h3 className="text-lg font-bold text-white" style={{fontFamily: 'Poppins'}}>
+                      Escolha as seções para exportar
+                    </h3>
+                    <p className="text-sm text-slate-400 mt-2">
+                      Selecione quais exercícios incluir no PDF do aluno
+                    </p>
+                  </div>
+
+                  <div className="p-6 space-y-3">
+                    {currentModuleData.sections.map(section => (
+                      <label key={section.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-700 transition cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={sectionsToExport[section.id] || false}
+                          onChange={() => toggleSectionForExport(section.id)}
+                          className="w-5 h-5 rounded cursor-pointer"
+                        />
+                        <div className="flex-1">
+                          <p className="text-white font-medium text-sm">{section.title}</p>
+                          <p className="text-slate-400 text-xs mt-1">{section.type}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="sticky bottom-0 bg-slate-800 p-6 border-t border-slate-700 flex gap-3">
+                    <button
+                      onClick={() => setShowExportModal(false)}
+                      className="flex-1 px-4 py-2 bg-slate-700 text-white rounded-xl font-semibold hover:bg-slate-600 transition"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={exportPDF}
+                      className="flex-1 px-4 py-2 gradient-emerald text-white rounded-xl font-semibold hover:shadow-lg transition"
+                    >
+                      ✓ Exportar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* MAIN CONTENT */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* HEADER */}
+            <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-800 p-6 flex items-center justify-between shadow-xl">
+              <div className="flex items-center gap-4 flex-1">
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="md:hidden p-2 rounded-xl transition hover:bg-slate-700"
+                >
+                  <Menu size={24} className="text-white" />
+                </button>
+                <div>
+                  <h2 className="text-3xl font-bold text-white" style={{fontFamily: 'Poppins'}}>
+                    {currentModuleData?.name}
+                  </h2>
+                  <p className="text-sm text-slate-400 mt-1">✨ {currentModuleData?.description}</p>
+                </div>
+              </div>
+              <div className="hidden md:flex items-center gap-2">
+                <div className="w-12 h-12 gradient-pink rounded-full flex items-center justify-center text-white font-bold text-lg pulse-icon">
+                  {currentModuleData?.sections.length}
+                </div>
+              </div>
+            </div>
+
+            {/* CONTENT */}
+            <div id="lesson-content" className="flex-1 overflow-y-auto p-6 md:p-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="mb-8 text-center">
+                  <div className="display-font text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                    Bem-vindo! 🚀
+                  </div>
+                </div>
+                
+                {currentModuleData?.sections.map(renderSection)}
+                
+                <div className="mt-8 text-center card rounded-2xl p-8 border-0">
+                  <p className="text-slate-400 text-sm">
+                    ✨ Aula completa • <span className="gradient-coral text-transparent bg-clip-text font-bold">{currentModuleData?.sections.length} seções</span> • Pronto pra exportar
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // DADOS INICIAIS - TRÊS MÓDULOS CONECTADOS
+    const initialModulesData = [
+      {
+        id: 'simple-present',
+        name: 'Simple Present',
+        description: 'Ações habituais e rotinas',
+        sections: [
+          {
+            id: 'sp-context',
+            type: 'content',
+            title: '🎯 Context & Hook',
+            content: 'Tell me: What do you do every day?\n\nThink about your daily routine: wake up, work, study, exercise, hobbies...\n\nWe use Simple Present to talk about things we do regularly, habits, and facts.'
+          },
+          {
+            id: 'sp-listening',
+            type: 'listening',
+            title: '👂 Listening Input',
+            audioText: '"Hi! My name is John. I wake up at 7 AM. I brush my teeth. I eat breakfast. Then I go to work. I work in an office. I like my job. I go to the gym after work. I cook dinner. I watch TV. I go to bed at 11 PM."',
+            question: '⏰ What time does John wake up?',
+            options: ['6 AM', '7 AM', '8 AM']
+          },
+          {
+            id: 'sp-explanation',
+            type: 'content',
+            title: '📖 Form & Examples',
+            content: 'SIMPLE PRESENT - Use for habits, routines, facts\n\nAffirmative:\nI / You / We / They + VERB\nHe / She / It + VERB + S\n\nExamples:\n✓ I work in São Paulo\n✓ She works in Curitiba  \n✓ They study English\n\nNegative:\nI don\'t work...\nHe doesn\'t work...\n\nQuestion:\nDo you work...?\nDoes she work...?'
+          },
+          {
+            id: 'sp-receptive',
+            type: 'practice',
+            title: '✅ Receptive Practice',
+            exercise: 'Choose the correct sentence:\n\n1. He _____ to the gym every day\n   a) go  b) goes  c) going\n\n2. They _____ breakfast at 8 AM\n   a) eat  b) eats  c) eating\n\n3. She _____ in an office\n   a) work  b) works  c) working'
+          },
+          {
+            id: 'sp-productive',
+            type: 'practice',
+            title: '✏️ Productive Practice',
+            exercise: 'Complete the sentences with the correct form:\n\n1. I _____ (work) as a teacher\n2. She _____ (teach) English\n3. They _____ (study) together\n4. He _____ (love) coffee\n5. We _____ (go) to the beach on weekends'
+          },
+          {
+            id: 'sp-speaking',
+            type: 'speaking',
+            title: '💬 Speaking Stage',
+            prompts: [
+              'What do you do every day? Tell me at least 3 activities',
+              'What time do you wake up and go to bed?',
+              'Do you like your job/studies? Why or why not?',
+              'What do you do on weekends? Is it different from weekdays?',
+              'What is your favorite activity? How often do you do it?'
+            ]
+          },
+          {
+            id: 'sp-closing',
+            type: 'content',
+            title: '🎓 Summary',
+            content: '✅ You can now:\n✓ Form Simple Present correctly (all persons)\n✓ Use in routines and facts\n✓ Ask and answer questions\n✓ Talk about your daily life in English\n\n🚀 NEXT: Frequency Adverbs (always, usually, sometimes, never...)'
+          }
+        ]
+      },
+      {
+        id: 'frequency-adverbs',
+        name: 'Frequency Adverbs',
+        description: 'Como, quando e com que frequência',
+        sections: [
+          {
+            id: 'fa-context',
+            type: 'content',
+            title: '🎯 Context & Hook',
+            content: 'I go to the gym. But HOW OFTEN?\n\n- Always? Every day?\n- Sometimes? Once a week?\n- Never? Rarely?\n\nThese words make your English MORE SPECIFIC and NATURAL!\n\nFrequency adverbs answer: HOW OFTEN do you do something?'
+          },
+          {
+            id: 'fa-listening',
+            type: 'listening',
+            title: '👂 Listening Input',
+            audioText: '"I always drink coffee in the morning. I sometimes eat breakfast. I never skip lunch. I usually work 8 hours. I rarely go to bed early. I often go to the gym on Mondays."',
+            question: '☕ What does the person ALWAYS do?',
+            options: ['Skip lunch', 'Drink coffee', 'Go to bed early']
+          },
+          {
+            id: 'fa-explanation',
+            type: 'content',
+            title: '📊 Frequency Scale & Time Expressions',
+            content: 'FREQUENCY ADVERBS (from most to least):\nalways (100%) → I always drink coffee\nusually (75%) → I usually go to gym\noften (60%) → I often read books\nsometimes (30%) → I sometimes sleep late\nrarely (10%) → I rarely eat meat\nnever (0%) → I never drink wine\n\nTIME EXPRESSIONS:\nevery day / every week / every Monday\nonce a week / twice a month / three times a year\nin the morning / in the afternoon / at night\non weekdays / on weekends'
+          },
+          {
+            id: 'fa-receptive',
+            type: 'practice',
+            title: '✅ Receptive Practice',
+            exercise: 'Match the frequency with its meaning:\n\n1. always\n2. sometimes\n3. rarely  \n4. never\n\na) 0% (0 times - NEVER happens)\nb) 100% (all times - EVERY time)\nc) 30-40% (some times - occasionally)\nd) 5-10% (almost never - seldom)'
+          },
+          {
+            id: 'fa-productive',
+            type: 'practice',
+            title: '✏️ Productive Practice',
+            exercise: 'Complete with frequency adverbs (always, usually, often, sometimes, rarely, never):\n\n1. I _____ drink coffee in the morning\n2. She _____ goes to the beach\n3. They _____ eat vegetables - they prefer pizza!\n4. We _____ watch movies on Friday nights\n5. He _____ travels for work\n6. I _____ eat fish - I don\'t like it'
+          },
+          {
+            id: 'fa-speaking',
+            type: 'speaking',
+            title: '💬 Speaking Stage',
+            prompts: [
+              'What do you ALWAYS do in the morning? Give 2-3 examples',
+              'What do you NEVER do? Why?',
+              'How often do you exercise? (always, usually, sometimes, rarely, never)',
+              'How often do you drink coffee/tea? When?',
+              'What do you SOMETIMES do on weekends?',
+              'Create a sentence: I _____ (frequency) _____ (activity) because _____'
+            ]
+          },
+          {
+            id: 'fa-closing',
+            type: 'content',
+            title: '🎓 Summary',
+            content: '✅ You can now:\n✓ Use frequency adverbs correctly\n✓ Understand the frequency scale\n✓ Talk about how often you do things\n✓ Combine Simple Present + Frequency = NATURAL ENGLISH\n\n🚀 NEXT: Talk about HOBBIES & INTERESTS (What do you LOVE to do?)'
+          }
+        ]
+      },
+      {
+        id: 'hobbies-interests',
+        name: 'Hobbies & Interests',
+        description: 'O que você gosta de fazer',
+        sections: [
+          {
+            id: 'hi-context',
+            type: 'content',
+            title: '🎯 Context & Hook',
+            content: 'What do you LOVE to do in your free time?\n\nHobbies are activities you do for pleasure, relaxation, and joy. They show WHO YOU ARE.\n\nLet\'s learn to talk about YOUR interests and passions in English!'
+          },
+          {
+            id: 'hi-listening',
+            type: 'listening',
+            title: '👂 Listening Input',
+            audioText: '"Person A: What\'s your hobby? Person B: I LOVE playing guitar. I usually practice for 2 hours every day. I also ENJOY reading fantasy books - I read every night. On weekends, I go hiking with my friends. What about you?"',
+            question: '🎸 How often does the person play guitar?',
+            options: ['Never', '2 hours every day', 'Once a week']
+          },
+          {
+            id: 'hi-explanation',
+            type: 'content',
+            title: '❤️ How to Talk About Hobbies',
+            content: 'EXPRESSING HOBBIES - Level of Enthusiasm:\n\nI LOVE + verb-ing (strong emotion! ❤️)\nI really LIKE + verb-ing (enjoy a lot! 😊)\nI ENJOY + verb-ing (formal, natural 😌)\nI\'m interested in + noun (curiosity 💡)\n\nCOMMON HOBBIES:\n- Playing sports (football, tennis, volleyball, skateboarding)\n- Reading (books, comics, manga, news)\n- Cooking & baking\n- Drawing / Painting / Art\n- Playing music (guitar, piano, drums)\n- Watching movies / TV series\n- Gaming (video games)\n- Hiking / Nature\n- Photography\n- Writing / Blogging'
+          },
+          {
+            id: 'hi-receptive',
+            type: 'practice',
+            title: '✅ Receptive Practice',
+            exercise: 'Choose the correct form:\n\n1. I _____ playing video games\n   a) love  b) love to play  c) both correct ✓\n\n2. She _____ reading books\n   a) enjoys  b) enjoys to read  c) only a ✓\n\n3. They _____ interested in music\n   a) are  b) love  c) enjoy\n\n4. He _____ cooking more than eating!\n   a) enjoys  b) loves  c) both ✓'
+          },
+          {
+            id: 'hi-productive',
+            type: 'practice',
+            title: '✏️ Productive Practice',
+            exercise: 'Write about YOUR hobbies (use love/like/enjoy):\n\n1. My favorite hobby is _________ and I _____ (love/enjoy/like) it\n2. I _____ (verb) because _______\n3. I usually _____ (verb) on _______ (time) for _____ (duration)\n4. My friends _____ (also enjoy/prefer/love) ________\n5. In the future, I want to learn _______'
+          },
+          {
+            id: 'hi-speaking',
+            type: 'speaking',
+            title: '💬 Speaking Stage',
+            prompts: [
+              'What\'s your favorite hobby? How often do you do it? (Tell me a story)',
+              'WHY do you LOVE this hobby? What makes it special?',
+              'When did you START this hobby? How did you discover it?',
+              'Do your friends share the same hobbies? What do they like?',
+              'What hobby would you like to LEARN in the future? Why?',
+              'Tell me about your hobby: when, where, how often, why you love it'
+            ]
+          },
+          {
+            id: 'hi-closing',
+            type: 'content',
+            title: '🎓 Summary & Consolidation',
+            content: '✅ You can now:\n✓ Talk about hobbies using love/like/enjoy/interested in\n✓ Explain WHY you enjoy an activity\n✓ Discuss frequency of your hobbies\n✓ Share interests and passions naturally\n\n🚀 COMPLETE THEME:\nSimple Present (WHAT you do)\n→ Frequency (HOW OFTEN you do it)  \n→ Hobbies (WHAT you LOVE to do)\n= REAL CONVERSATION ABOUT YOUR LIFE!\n\n🎓 NEXT LEVEL: Present Continuous (What are you doing RIGHT NOW?)'
+          }
+        ]
+      }
+    ];
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<LessonDashboard />);
+  </script>
+</body>
+</html>
