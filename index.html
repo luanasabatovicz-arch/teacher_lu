@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu - Dashboard de Aulas</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3 {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+    }
+    
+    .gradient-coral { background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%); }
+    .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
+    
+    .card {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      border-color: rgba(148, 163, 184, 0.4);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .btn {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen py-12 px-4 flex items-center justify-center">
+    <div class="max-w-4xl w-full">
+      <!-- HEADER -->
+      <div class="text-center mb-12">
+        <div className="mb-6">
+          <h1 class="text-5xl font-bold text-white mb-4" style="font-family: 'Poppins';">
+            🍯 Teacher Lu
+          </h1>
+          <p class="text-2xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-bold">
+            Sistema de Aulas Online
+          </p>
+        </div>
+        <p class="text-slate-400 text-lg mb-2">
+          Dashboard Pedagógico + Planejamento Estratégico
+        </p>
+        <p class="text-slate-500 text-sm">
+          ✨ Estrutura completa de 8 semanas • Cores vibrantes • Responsivo • PDF automático
+        </p>
+      </div>
+
+      <!-- CARDS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        
+        <!-- CARD 1: Dashboard -->
+        <a href="lesson-dashboard-colorido.html" style="text-decoration: none;">
+          <div class="card rounded-2xl p-8 h-full">
+            <div class="gradient-coral p-4 rounded-xl mb-6 w-fit">
+              <span class="text-3xl">🎓</span>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3">Dashboard de Aulas</h2>
+            <p class="text-slate-300 mb-6">
+              Sistema completo com 7 seções por módulo, rastreamento de respostas, exportação de PDF seletiva e reset automático para próximo aluno.
+            </p>
+            <div class="space-y-2 mb-6">
+              <p class="text-sm text-slate-400">✓ 3 módulos de exemplo</p>
+              <p class="text-sm text-slate-400">✓ Editável em tempo real</p>
+              <p class="text-sm text-slate-400">✓ Responsivo (mobile/desktop)</p>
+              <p class="text-sm text-slate-400">✓ PDF exportação seletiva</p>
+            </div>
+            <div class="gradient-coral text-white font-bold py-3 px-6 rounded-xl inline-block btn">
+              Abrir Dashboard →
+            </div>
+          </div>
+        </a>
+
+        <!-- CARD 2: Curriculum Map -->
+        <a href="curriculum-map-8-semanas.html" style="text-decoration: none;">
+          <div class="card rounded-2xl p-8 h-full">
+            <div class="gradient-indigo p-4 rounded-xl mb-6 w-fit">
+              <span class="text-3xl">⚡</span>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-3">Mapa Curricular (8 Semanas)</h2>
+            <p class="text-slate-300 mb-6">
+              Visão estratégica completa: 8 semanas de progressão pedagógica, 24 módulos para criar, conexões entre tópicos e checklist de progresso.
+            </p>
+            <div class="space-y-2 mb-6">
+              <p class="text-sm text-slate-400">✓ Progressão espiral inteligente</p>
+              <p class="text-sm text-slate-400">✓ 24 módulos planejados</p>
+              <p class="text-sm text-slate-400">✓ Checklist interativo</p>
+              <p class="text-sm text-slate-400">✓ Notas por semana</p>
+            </div>
+            <div class="gradient-indigo text-white font-bold py-3 px-6 rounded-xl inline-block btn">
+              Ver Plano →
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- INFO -->
+      <div class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-8 text-center">
+        <h3 class="text-xl font-bold text-white mb-4">Como funciona?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <p class="text-3xl mb-2">📋</p>
+            <p class="text-slate-300 text-sm">
+              <strong>Planeje:</strong> Use o Mapa Curricular para organizar suas 8 semanas
+            </p>
+          </div>
+          <div>
+            <p class="text-3xl mb-2">🎯</p>
+            <p class="text-slate-300 text-sm">
+              <strong>Crie:</strong> Adicione módulos ao Dashboard seguindo a estratégia pedagógica
+            </p>
+          </div>
+          <div>
+            <p class="text-3xl mb-2">📊</p>
+            <p class="text-slate-300 text-sm">
+              <strong>Use:</strong> Com alunos, rastreie respostas, exporte PDFs, resete para próximos
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="text-center mt-12">
+        <p class="text-slate-500 text-sm mb-4">
+          Sistema pedagógico profissional para aulas online de English
+        </p>
+        <p class="text-slate-600 text-xs">
+          Teacher Lu's Strategic Curriculum System © 2026 • Parchment Editorial
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
