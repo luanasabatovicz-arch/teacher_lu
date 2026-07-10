@@ -18,8 +18,12 @@
     .progress-bar { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981 0%, #34d399 100%); transition: width 0.3s; }
     .week-card { border-left: 4px solid #667eea; cursor: pointer; transition: all 0.2s; }
-    .week-card:hover { border-left-color: #10b981; }
-    .week-card.completed { background: rgba(16, 185, 129, 0.1); }
+    .week-card:hover { border-left-color: #10b981; background: rgba(16, 185, 129, 0.05); }
+    .week-card.completed { background: rgba(16, 185, 129, 0.15); }
+    .checkbox-wrapper { display: flex; align-items: center; cursor: pointer; }
+    .custom-checkbox { width: 24px; height: 24px; border: 2px solid #667eea; border-radius: 4px; margin-right: 12px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .custom-checkbox.checked { background: #10b981; border-color: #10b981; }
+    .custom-checkbox.checked::after { content: "✓"; color: white; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -45,7 +49,7 @@
       <div class="mb-6">
         <label class="text-white text-sm font-bold mb-2 block">Selecione o aluno:</label>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button onclick="selectStudent('natali')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="natali">
+          <button onclick="selectStudent('natali')" class="student-btn gradient-indigo text-white py-2 px-4 rounded-lg font-bold transition" data-student="natali">
             👩 Natali
           </button>
           <button onclick="selectStudent('heitor')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="heitor">
@@ -157,7 +161,7 @@
       { week: 52, theme: "Year Celebration!", level: "A2", grammar: "Fluency showcase", skills: "Speaking fluency" }
     ];
 
-    let currentStudent = null;
+    let currentStudent = 'natali';
     let progress = {};
 
     function initProgress() {
@@ -174,9 +178,9 @@
       currentStudent = student;
       document.querySelectorAll('.student-btn').forEach(btn => {
         btn.classList.remove('gradient-indigo');
-        btn.classList.add('bg-slate-700');
+        btn.classList.add('bg-slate-700', 'hover:bg-slate-600');
       });
-      document.querySelector(`[data-student="${student}"]`).classList.remove('bg-slate-700');
+      document.querySelector(`[data-student="${student}"]`).classList.remove('bg-slate-700', 'hover:bg-slate-600');
       document.querySelector(`[data-student="${student}"]`).classList.add('gradient-indigo');
       renderWeeks();
     }
@@ -189,15 +193,15 @@
         const key = `week${item.week}`;
         const isChecked = progress[currentStudent][key];
         
-        const weekCard = document.createElement('div');
-        weekCard.className = `card week-card rounded-xl p-6 ${isChecked ? 'completed' : ''}`;
-        weekCard.innerHTML = `
+        const weekDiv = document.createElement('div');
+        weekDiv.className = `card week-card rounded-xl p-6 ${isChecked ? 'completed' : ''}`;
+        weekDiv.onclick = () => toggleWeek(currentStudent, key);
+        
+        weekDiv.innerHTML = `
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <input type="checkbox" class="w-5 h-5 accent-emerald-500 cursor-pointer" 
-                  ${isChecked ? 'checked' : ''} 
-                  onchange="toggleWeek('${currentStudent}', '${key}', this.checked)">
+                <div class="custom-checkbox ${isChecked ? 'checked' : ''}"></div>
                 <h3 class="text-xl font-bold text-white">Semana ${item.week}</h3>
                 <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${item.level}</span>
               </div>
@@ -212,16 +216,16 @@
             </div>
           </div>
         `;
-        container.appendChild(weekCard);
+        container.appendChild(weekDiv);
       });
 
       updateProgress();
     }
 
-    function toggleWeek(student, week, checked) {
-      progress[student][week] = checked;
+    function toggleWeek(student, week) {
+      progress[student][week] = !progress[student][week];
       const key = `${student}-${week}`;
-      localStorage.setItem(key, checked);
+      localStorage.setItem(key, progress[student][week]);
       renderWeeks();
     }
 
