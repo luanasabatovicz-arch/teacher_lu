@@ -17,8 +17,9 @@
     .card:hover { border-color: rgba(148, 163, 184, 0.4); transform: translateY(-2px); }
     .progress-bar { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981 0%, #34d399 100%); transition: width 0.3s; }
-    .week-card { border-left: 4px solid #667eea; }
-    .checkbox-custom { width: 20px; height: 20px; cursor: pointer; accent-color: #10b981; }
+    .week-card { border-left: 4px solid #667eea; cursor: pointer; transition: all 0.2s; }
+    .week-card:hover { border-left-color: #10b981; }
+    .week-card.completed { background: rgba(16, 185, 129, 0.1); }
   </style>
 </head>
 <body>
@@ -102,7 +103,6 @@
     const students = ['natali', 'heitor', 'joao', 'ieda', 'maria', 'lais', 'regis'];
     
     const curriculum = [
-      // TRIMESTRE 1: Foundation (Weeks 1-13)
       { week: 1, theme: "I Am: Personal Identity", level: "A1", grammar: "Verb to be (affirmative)", skills: "Introduce yourself" },
       { week: 2, theme: "Nationality & Professions", level: "A1", grammar: "Verb to be (negative/questions)", skills: "Describe people" },
       { week: 3, theme: "Family Members", level: "A1", grammar: "Possessive adjectives", skills: "Talk about family" },
@@ -116,8 +116,6 @@
       { week: 11, theme: "Shopping & Prices", level: "A1", grammar: "How much/How many", skills: "Ask prices" },
       { week: 12, theme: "Clothes & Fashion", level: "A1", grammar: "Articles (a/an/the)", skills: "Describe clothes" },
       { week: 13, theme: "Trimester Review", level: "A1", grammar: "All", skills: "Consolidation" },
-      
-      // TRIMESTRE 2: Progress (Weeks 14-26)
       { week: 14, theme: "Past Simple: Regular verbs", level: "A1+", grammar: "Past Simple regular", skills: "Tell stories" },
       { week: 15, theme: "Past Simple: Irregular verbs", level: "A1+", grammar: "Past Simple irregular", skills: "Talk about past" },
       { week: 16, theme: "Yesterday Activities", level: "A1+", grammar: "What did you do?", skills: "Ask about past" },
@@ -131,8 +129,6 @@
       { week: 24, theme: "Weather & Seasons", level: "A1+", grammar: "Present Perfect intro", skills: "Weather talk" },
       { week: 25, theme: "Holidays & Celebrations", level: "A1+", grammar: "Past tense review", skills: "Celebrate" },
       { week: 26, theme: "Trimester Review 2", level: "A1+", grammar: "All", skills: "Consolidation" },
-      
-      // TRIMESTRE 3: Advancement (Weeks 27-39)
       { week: 27, theme: "Future Plans: Going to", level: "A2", grammar: "Going to", skills: "Talk about plans" },
       { week: 28, theme: "Predictions", level: "A2", grammar: "Will for predictions", skills: "Make predictions" },
       { week: 29, theme: "Dreams & Ambitions", level: "A2", grammar: "Would like", skills: "Express desires" },
@@ -146,8 +142,6 @@
       { week: 37, theme: "Environment & Nature", level: "A2", grammar: "Environmental vocab", skills: "Ecology awareness" },
       { week: 38, theme: "Sustainability", level: "A2", grammar: "Should/shouldn't", skills: "Give advice" },
       { week: 39, theme: "Trimester Review 3", level: "A2", grammar: "All", skills: "Consolidation" },
-      
-      // TRIMESTRE 4: Mastery (Weeks 40-52)
       { week: 40, theme: "Movies & Entertainment", level: "A2", grammar: "Entertainment vocab", skills: "Discuss media" },
       { week: 41, theme: "Music & Art", level: "A2", grammar: "Arts vocabulary", skills: "Cultural discussion" },
       { week: 42, theme: "Literature & Stories", level: "A2", grammar: "Storytelling", skills: "Narrative skills" },
@@ -168,22 +162,22 @@
 
     function initProgress() {
       students.forEach(student => {
-        if (!progress[student]) {
-          progress[student] = {};
-          curriculum.forEach(item => {
-            progress[student][`week${item.week}`] = localStorage.getItem(`${student}-week${item.week}`) === 'true';
-          });
-        }
+        progress[student] = {};
+        curriculum.forEach(item => {
+          const key = `${student}-week${item.week}`;
+          progress[student][`week${item.week}`] = localStorage.getItem(key) === 'true';
+        });
       });
     }
 
     function selectStudent(student) {
       currentStudent = student;
       document.querySelectorAll('.student-btn').forEach(btn => {
-        btn.classList.remove('gradient-indigo', 'text-white');
-        btn.classList.add('bg-slate-700', 'hover:bg-slate-600');
+        btn.classList.remove('gradient-indigo');
+        btn.classList.add('bg-slate-700');
       });
-      document.querySelector(`[data-student="${student}"]`).classList.add('gradient-indigo', 'text-white');
+      document.querySelector(`[data-student="${student}"]`).classList.remove('bg-slate-700');
+      document.querySelector(`[data-student="${student}"]`).classList.add('gradient-indigo');
       renderWeeks();
     }
 
@@ -195,36 +189,39 @@
         const key = `week${item.week}`;
         const isChecked = progress[currentStudent][key];
         
-        container.innerHTML += `
-          <div class="card week-card rounded-xl p-6">
-            <div class="flex items-start justify-between">
-              <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                  <input type="checkbox" class="checkbox-custom" ${isChecked ? 'checked' : ''} 
-                    onchange="toggleWeek('${currentStudent}', '${key}')">
-                  <h3 class="text-xl font-bold text-white">Semana ${item.week}</h3>
-                  <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${item.level}</span>
-                </div>
-                <p class="text-lg text-emerald-400 font-bold">${item.theme}</p>
-                <div class="mt-3 text-slate-300 text-sm space-y-1">
-                  <p><strong>📚 Grammar:</strong> ${item.grammar}</p>
-                  <p><strong>🎯 Skills:</strong> ${item.skills}</p>
-                </div>
+        const weekCard = document.createElement('div');
+        weekCard.className = `card week-card rounded-xl p-6 ${isChecked ? 'completed' : ''}`;
+        weekCard.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <input type="checkbox" class="w-5 h-5 accent-emerald-500 cursor-pointer" 
+                  ${isChecked ? 'checked' : ''} 
+                  onchange="toggleWeek('${currentStudent}', '${key}', this.checked)">
+                <h3 class="text-xl font-bold text-white">Semana ${item.week}</h3>
+                <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${item.level}</span>
               </div>
-              <div class="text-right">
-                ${isChecked ? '<span class="text-3xl">✅</span>' : '<span class="text-3xl text-slate-600">⭕</span>'}
+              <p class="text-lg text-emerald-400 font-bold">${item.theme}</p>
+              <div class="mt-3 text-slate-300 text-sm space-y-1">
+                <p><strong>📚 Grammar:</strong> ${item.grammar}</p>
+                <p><strong>🎯 Skills:</strong> ${item.skills}</p>
               </div>
+            </div>
+            <div class="text-right">
+              ${isChecked ? '<span class="text-3xl">✅</span>' : '<span class="text-3xl text-slate-600">⭕</span>'}
             </div>
           </div>
         `;
+        container.appendChild(weekCard);
       });
 
       updateProgress();
     }
 
-    function toggleWeek(student, week) {
-      progress[student][week] = !progress[student][week];
-      localStorage.setItem(`${student}-${week}`, progress[student][week]);
+    function toggleWeek(student, week, checked) {
+      progress[student][week] = checked;
+      const key = `${student}-${week}`;
+      localStorage.setItem(key, checked);
       renderWeeks();
     }
 
@@ -294,9 +291,9 @@
     function resetStudent() {
       if (confirm(`Resetar progresso de ${currentStudent}?`)) {
         curriculum.forEach(item => {
-          const key = `week${item.week}`;
-          progress[currentStudent][key] = false;
-          localStorage.removeItem(`${currentStudent}-${key}`);
+          const key = `${currentStudent}-week${item.week}`;
+          progress[currentStudent][`week${item.week}`] = false;
+          localStorage.removeItem(key);
         });
         renderWeeks();
       }
