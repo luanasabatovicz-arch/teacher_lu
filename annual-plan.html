@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⭐ Teacher Lu - Plano Anual</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
+    .gradient-emerald { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
+    .card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2); }
+    .card:hover { border-color: rgba(148, 163, 184, 0.4); transform: translateY(-2px); }
+    .progress-bar { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981 0%, #34d399 100%); transition: width 0.3s; }
+    .week-card { border-left: 4px solid #667eea; }
+    .checkbox-custom { width: 20px; height: 20px; cursor: pointer; accent-color: #10b981; }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen">
+    <!-- HEADER -->
+    <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h1 class="text-3xl font-bold">⭐ Teacher Lu - Plano Anual</h1>
+            <p class="text-indigo-100">52 Semanas | 7 Alunos | Progressão Estratégica</p>
+          </div>
+          <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50">
+            ← Menu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w-7xl mx-auto p-6">
+      <!-- STUDENT SELECTOR -->
+      <div class="mb-6">
+        <label class="text-white text-sm font-bold mb-2 block">Selecione o aluno:</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <button onclick="selectStudent('natali')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="natali">
+            👩 Natali
+          </button>
+          <button onclick="selectStudent('heitor')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="heitor">
+            👨 Heitor
+          </button>
+          <button onclick="selectStudent('joao')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="joao">
+            👨 João
+          </button>
+          <button onclick="selectStudent('ieda')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="ieda">
+            👩 Ieda
+          </button>
+          <button onclick="selectStudent('maria')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="maria">
+            👩 Maria
+          </button>
+          <button onclick="selectStudent('lais')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="lais">
+            👩 Lais
+          </button>
+          <button onclick="selectStudent('regis')" class="student-btn bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg font-bold transition" data-student="regis">
+            👨 Régis
+          </button>
+        </div>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="card rounded-xl p-6 mb-6">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-white font-bold">Progresso do Ano</h3>
+          <span class="text-emerald-400 font-bold"><span id="progressPercent">0</span>%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <p class="text-slate-400 text-sm mt-2"><span id="weeksCompleted">0</span> de 52 semanas concluídas</p>
+      </div>
+
+      <!-- WEEKS GRID -->
+      <div id="weeksContainer" class="space-y-4"></div>
+
+      <!-- ACTIONS -->
+      <div class="card rounded-xl p-6 mt-8 flex gap-4 flex-wrap">
+        <button onclick="exportPlan()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">
+          📄 Exportar Plano
+        </button>
+        <button onclick="resetStudent()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">
+          🔄 Reset Aluno
+        </button>
+      </div>
+
+      <!-- HIDDEN PRINT AREA -->
+      <div id="printArea" class="hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    const students = ['natali', 'heitor', 'joao', 'ieda', 'maria', 'lais', 'regis'];
+    
+    const curriculum = [
+      // TRIMESTRE 1: Foundation (Weeks 1-13)
+      { week: 1, theme: "I Am: Personal Identity", level: "A1", grammar: "Verb to be (affirmative)", skills: "Introduce yourself" },
+      { week: 2, theme: "Nationality & Professions", level: "A1", grammar: "Verb to be (negative/questions)", skills: "Describe people" },
+      { week: 3, theme: "Family Members", level: "A1", grammar: "Possessive adjectives", skills: "Talk about family" },
+      { week: 4, theme: "Daily Routine", level: "A1", grammar: "Simple Present", skills: "Describe daily activities" },
+      { week: 5, theme: "Frequency Adverbs", level: "A1", grammar: "Frequency (always, usually, etc)", skills: "Talk about habits" },
+      { week: 6, theme: "Free Time Activities", level: "A1", grammar: "Like + -ing", skills: "Express preferences" },
+      { week: 7, theme: "Sports & Hobbies", level: "A1", grammar: "Present Continuous", skills: "Describe current actions" },
+      { week: 8, theme: "Review & Tests", level: "A1", grammar: "All structures", skills: "Assessment" },
+      { week: 9, theme: "Food & Drinks", level: "A1", grammar: "Countable/Uncountable", skills: "Describe food" },
+      { week: 10, theme: "Restaurants & Ordering", level: "A1", grammar: "Polite requests", skills: "Order food" },
+      { week: 11, theme: "Shopping & Prices", level: "A1", grammar: "How much/How many", skills: "Ask prices" },
+      { week: 12, theme: "Clothes & Fashion", level: "A1", grammar: "Articles (a/an/the)", skills: "Describe clothes" },
+      { week: 13, theme: "Trimester Review", level: "A1", grammar: "All", skills: "Consolidation" },
+      
+      // TRIMESTRE 2: Progress (Weeks 14-26)
+      { week: 14, theme: "Past Simple: Regular verbs", level: "A1+", grammar: "Past Simple regular", skills: "Tell stories" },
+      { week: 15, theme: "Past Simple: Irregular verbs", level: "A1+", grammar: "Past Simple irregular", skills: "Talk about past" },
+      { week: 16, theme: "Yesterday Activities", level: "A1+", grammar: "What did you do?", skills: "Ask about past" },
+      { week: 17, theme: "Travel Stories", level: "A1+", grammar: "Past tense", skills: "Describe trips" },
+      { week: 18, theme: "Describing People", level: "A1+", grammar: "Adjectives", skills: "Physical descriptions" },
+      { week: 19, theme: "Personality Traits", level: "A1+", grammar: "Personality adjectives", skills: "Character description" },
+      { week: 20, theme: "Homes & Rooms", level: "A1+", grammar: "There is/There are", skills: "Describe homes" },
+      { week: 21, theme: "Furniture & Objects", level: "A1+", grammar: "Prepositions of place", skills: "Spatial descriptions" },
+      { week: 22, theme: "City & Places", level: "A1+", grammar: "Prepositions", skills: "Describe locations" },
+      { week: 23, theme: "Directions & Maps", level: "A1+", grammar: "Imperative", skills: "Give directions" },
+      { week: 24, theme: "Weather & Seasons", level: "A1+", grammar: "Present Perfect intro", skills: "Weather talk" },
+      { week: 25, theme: "Holidays & Celebrations", level: "A1+", grammar: "Past tense review", skills: "Celebrate" },
+      { week: 26, theme: "Trimester Review 2", level: "A1+", grammar: "All", skills: "Consolidation" },
+      
+      // TRIMESTRE 3: Advancement (Weeks 27-39)
+      { week: 27, theme: "Future Plans: Going to", level: "A2", grammar: "Going to", skills: "Talk about plans" },
+      { week: 28, theme: "Predictions", level: "A2", grammar: "Will for predictions", skills: "Make predictions" },
+      { week: 29, theme: "Dreams & Ambitions", level: "A2", grammar: "Would like", skills: "Express desires" },
+      { week: 30, theme: "Jobs & Careers", level: "A2", grammar: "Career vocabulary", skills: "Discuss careers" },
+      { week: 31, theme: "Work Environment", level: "A2", grammar: "Present Perfect", skills: "Talk about experience" },
+      { week: 32, theme: "School & Education", level: "A2", grammar: "Education vocab", skills: "Discuss school" },
+      { week: 33, theme: "Technology & Internet", level: "A2", grammar: "Tech vocabulary", skills: "Modern life" },
+      { week: 34, theme: "Social Media", level: "A2", grammar: "Online communication", skills: "Digital life" },
+      { week: 35, theme: "Health & Fitness", level: "A2", grammar: "Health vocabulary", skills: "Discuss wellbeing" },
+      { week: 36, theme: "Doctor's Visit", level: "A2", grammar: "Medical expressions", skills: "Health conversations" },
+      { week: 37, theme: "Environment & Nature", level: "A2", grammar: "Environmental vocab", skills: "Ecology awareness" },
+      { week: 38, theme: "Sustainability", level: "A2", grammar: "Should/shouldn't", skills: "Give advice" },
+      { week: 39, theme: "Trimester Review 3", level: "A2", grammar: "All", skills: "Consolidation" },
+      
+      // TRIMESTRE 4: Mastery (Weeks 40-52)
+      { week: 40, theme: "Movies & Entertainment", level: "A2", grammar: "Entertainment vocab", skills: "Discuss media" },
+      { week: 41, theme: "Music & Art", level: "A2", grammar: "Arts vocabulary", skills: "Cultural discussion" },
+      { week: 42, theme: "Literature & Stories", level: "A2", grammar: "Storytelling", skills: "Narrative skills" },
+      { week: 43, theme: "Relationships & Emotions", level: "A2", grammar: "Emotion vocabulary", skills: "Express feelings" },
+      { week: 44, theme: "Opinions & Arguments", level: "A2", grammar: "Agreeing/Disagreeing", skills: "Debate basics" },
+      { week: 45, theme: "Problem Solving", level: "A2", grammar: "Conditional (if)", skills: "Logical thinking" },
+      { week: 46, theme: "Cultural Differences", level: "A2", grammar: "Cultural vocab", skills: "Cross-cultural awareness" },
+      { week: 47, theme: "Adventure & Risk", level: "A2", grammar: "Adventure vocab", skills: "Exciting stories" },
+      { week: 48, theme: "Dreams & Reflections", level: "A2", grammar: "Reflection phrases", skills: "Deep thinking" },
+      { week: 49, theme: "Future Vision", level: "A2", grammar: "Future planning", skills: "Long-term goals" },
+      { week: 50, theme: "Celebration & Review", level: "A2", grammar: "Celebration vocab", skills: "Achievement" },
+      { week: 51, theme: "Year Round-up", level: "A2", grammar: "All year review", skills: "Reflection" },
+      { week: 52, theme: "Year Celebration!", level: "A2", grammar: "Fluency showcase", skills: "Speaking fluency" }
+    ];
+
+    let currentStudent = null;
+    let progress = {};
+
+    function initProgress() {
+      students.forEach(student => {
+        if (!progress[student]) {
+          progress[student] = {};
+          curriculum.forEach(item => {
+            progress[student][`week${item.week}`] = localStorage.getItem(`${student}-week${item.week}`) === 'true';
+          });
+        }
+      });
+    }
+
+    function selectStudent(student) {
+      currentStudent = student;
+      document.querySelectorAll('.student-btn').forEach(btn => {
+        btn.classList.remove('gradient-indigo', 'text-white');
+        btn.classList.add('bg-slate-700', 'hover:bg-slate-600');
+      });
+      document.querySelector(`[data-student="${student}"]`).classList.add('gradient-indigo', 'text-white');
+      renderWeeks();
+    }
+
+    function renderWeeks() {
+      const container = document.getElementById('weeksContainer');
+      container.innerHTML = '';
+
+      curriculum.forEach(item => {
+        const key = `week${item.week}`;
+        const isChecked = progress[currentStudent][key];
+        
+        container.innerHTML += `
+          <div class="card week-card rounded-xl p-6">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <input type="checkbox" class="checkbox-custom" ${isChecked ? 'checked' : ''} 
+                    onchange="toggleWeek('${currentStudent}', '${key}')">
+                  <h3 class="text-xl font-bold text-white">Semana ${item.week}</h3>
+                  <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${item.level}</span>
+                </div>
+                <p class="text-lg text-emerald-400 font-bold">${item.theme}</p>
+                <div class="mt-3 text-slate-300 text-sm space-y-1">
+                  <p><strong>📚 Grammar:</strong> ${item.grammar}</p>
+                  <p><strong>🎯 Skills:</strong> ${item.skills}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                ${isChecked ? '<span class="text-3xl">✅</span>' : '<span class="text-3xl text-slate-600">⭕</span>'}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      updateProgress();
+    }
+
+    function toggleWeek(student, week) {
+      progress[student][week] = !progress[student][week];
+      localStorage.setItem(`${student}-${week}`, progress[student][week]);
+      renderWeeks();
+    }
+
+    function updateProgress() {
+      const total = curriculum.length;
+      const completed = Object.values(progress[currentStudent]).filter(v => v).length;
+      const percent = Math.round((completed / total) * 100);
+
+      document.getElementById('progressPercent').textContent = percent;
+      document.getElementById('progressFill').style.width = percent + '%';
+      document.getElementById('weeksCompleted').textContent = completed;
+    }
+
+    function exportPlan() {
+      const printArea = document.getElementById('printArea');
+      
+      let html = `
+        <div style="font-family: Arial; color: #333;">
+          <h1 style="text-align: center; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 30px;">
+            ⭐ TEACHER LU - PLANO ANUAL
+          </h1>
+          <p style="text-align: center; font-size: 18px; margin-bottom: 10px;"><strong>Aluno:</strong> ${currentStudent.toUpperCase()}</p>
+          <p style="text-align: center; color: #666; margin-bottom: 30px;">52 Semanas | Progressão: A1 → A2</p>
+          
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f0f0f0;">
+                <th style="border: 1px solid #ddd; padding: 12px;">Semana</th>
+                <th style="border: 1px solid #ddd; padding: 12px;">Tema</th>
+                <th style="border: 1px solid #ddd; padding: 12px;">Nível</th>
+                <th style="border: 1px solid #ddd; padding: 12px;">Grammar</th>
+                <th style="border: 1px solid #ddd; padding: 12px;">Feito</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      curriculum.forEach(item => {
+        const key = `week${item.week}`;
+        const isChecked = progress[currentStudent][key];
+        html += `
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 12px; text-align: center;"><strong>${item.week}</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px;">${item.theme}</td>
+            <td style="border: 1px solid #ddd; padding: 12px; text-align: center;"><strong>${item.level}</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px; font-size: 12px;">${item.grammar}</td>
+            <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${isChecked ? '✅' : '⭕'}</td>
+          </tr>
+        `;
+      });
+      
+      html += `</tbody></table>`;
+
+      printArea.innerHTML = html;
+
+      const opt = {
+        margin: 10,
+        filename: `Plano-Anual-${currentStudent}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+      };
+      
+      html2pdf().set(opt).from(printArea).save();
+    }
+
+    function resetStudent() {
+      if (confirm(`Resetar progresso de ${currentStudent}?`)) {
+        curriculum.forEach(item => {
+          const key = `week${item.week}`;
+          progress[currentStudent][key] = false;
+          localStorage.removeItem(`${currentStudent}-${key}`);
+        });
+        renderWeeks();
+      }
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+
+    // INIT
+    initProgress();
+    selectStudent('natali');
+  </script>
+</body>
+</html>

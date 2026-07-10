@@ -26,7 +26,11 @@
     .kahoot { background: linear-gradient(135deg, #ffd800 0%, #ff8c00 100%); color: black; }
     .baamboozle { background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%); }
     .testeng { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
-    #printArea { background: white; color: #333; padding: 40px; font-family: Arial, sans-serif; }
+    #printArea { background: white; color: #333; padding: 40px; font-family: Arial, sans-serif; line-height: 1.6; }
+    .modal { background: white; color: #333; }
+    .modal table { width: 100%; border-collapse: collapse; }
+    .modal th, .modal td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    .modal th { background: #f0f0f0; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -37,7 +41,7 @@
         <div class="flex justify-between items-center mb-4">
           <div>
             <h1 class="text-3xl font-bold">⭐ Teacher Lu - Lesson Generator Pro</h1>
-            <p class="text-indigo-100">8 Etapas com Ferramentas Interativas</p>
+            <p class="text-indigo-100">8 Etapas com Exercícios Prontos</p>
           </div>
           <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50">
             ← Menu
@@ -69,36 +73,36 @@
 
       <!-- ACTIONS -->
       <div class="card rounded-xl p-6 mt-8 flex gap-4 flex-wrap">
-        <button onclick="showPlanModal()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2">
-          📋 Ver Plano de Aulas
+        <button onclick="showPlanModal()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">
+          📋 Ver Plano
         </button>
-        <button onclick="startTimer()" class="gradient-amber text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2">
-          ⏱️ Iniciar Timer
+        <button onclick="startTimer()" class="gradient-amber text-white font-bold py-3 px-6 rounded-lg">
+          ⏱️ Timer
         </button>
-        <button onclick="exportPDF()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2">
-          📄 Exportar PDF
+        <button onclick="downloadPDF()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">
+          📄 Download PDF
         </button>
         <button onclick="resetLesson()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">
-          🔄 Resetar
+          🔄 Reset
         </button>
       </div>
 
-      <!-- TIMER DISPLAY -->
-      <div id="timerDisplay" class="hidden fixed bottom-6 right-6 card rounded-2xl p-8 text-center border-2 border-amber-400">
-        <p class="text-amber-300 text-sm font-bold mb-2">TEMPO RESTANTE</p>
-        <div class="timer-display text-white" id="timerValue">--:--</div>
+      <!-- TIMER -->
+      <div id="timerDisplay" class="hidden fixed bottom-6 right-6 card rounded-2xl p-8 text-center border-2 border-amber-400 z-40">
+        <p class="text-amber-300 text-sm font-bold mb-2">TEMPO</p>
+        <div class="timer-display text-white" id="timerValue">00:00</div>
         <div class="flex gap-2 mt-4">
-          <button onclick="pauseTimer()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded font-bold">⏸</button>
-          <button onclick="closeTimer()" class="flex-1 bg-slate-600 hover:bg-slate-700 text-white py-2 rounded font-bold">✕</button>
+          <button onclick="pauseTimer()" class="flex-1 bg-amber-600 text-white py-2 rounded font-bold">⏸</button>
+          <button onclick="closeTimer()" class="flex-1 bg-slate-600 text-white py-2 rounded font-bold">✕</button>
         </div>
       </div>
 
       <!-- PLAN MODAL -->
       <div id="planModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-800 rounded-2xl max-w-4xl w-full max-h-96 overflow-y-auto border border-slate-700">
-          <div class="sticky top-0 bg-slate-800 p-6 border-b border-slate-700 flex justify-between items-center">
-            <h3 class="text-lg font-bold text-white">📋 Plano de Aulas</h3>
-            <button onclick="closePlanModal()" class="text-slate-400 hover:text-white text-2xl">✕</button>
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-96 overflow-y-auto border border-gray-300 modal">
+          <div class="sticky top-0 bg-gray-100 p-6 border-b flex justify-between items-center">
+            <h3 class="text-lg font-bold">📋 Plano de Aulas - 60 minutos</h3>
+            <button onclick="closePlanModal()" class="text-gray-600 hover:text-black text-2xl font-bold">✕</button>
           </div>
           <div id="planContent" class="p-6"></div>
         </div>
@@ -110,27 +114,44 @@
   </div>
 
   <script>
-    // ESTRUTURA DAS 8 ETAPAS
     const stages = [
-      { id: 1, name: "Welcome + Small Talk", time: 5, objective: "Aquecer o cérebro em inglês", icon: "👋" },
-      { id: 2, name: "Review", time: 8, objective: "Revisar conteúdo anterior", icon: "📚" },
-      { id: 3, name: "Lead-in", time: 5, objective: "Introduzir o tema", icon: "🎯" },
-      { id: 4, name: "Vocabulary", time: 8, objective: "Ensinar o vocabulário", icon: "📝" },
-      { id: 5, name: "Grammar / Language Focus", time: 10, objective: "Ensinar a estrutura", icon: "📖" },
-      { id: 6, name: "Controlled Practice", time: 8, objective: "Fixar sem pressão", icon: "✏️" },
-      { id: 7, name: "Speaking / Activate", time: 12, objective: "Comunicação real", icon: "💬" },
-      { id: 8, name: "Wrap-up + Homework", time: 4, objective: "Consolidar aprendizagem", icon: "🎓" }
+      { id: 1, name: "Welcome + Small Talk", time: 5, objective: "Aquecer o cérebro" },
+      { id: 2, name: "Review", time: 8, objective: "Revisar anterior" },
+      { id: 3, name: "Lead-in", time: 5, objective: "Introduzir tema" },
+      { id: 4, name: "Vocabulary", time: 8, objective: "Ensinar vocabulário" },
+      { id: 5, name: "Grammar Focus", time: 10, objective: "Ensinar estrutura" },
+      { id: 6, name: "Controlled Practice", time: 8, objective: "Fixar aprendizado" },
+      { id: 7, name: "Speaking", time: 12, objective: "Comunicação real" },
+      { id: 8, name: "Wrap-up", time: 4, objective: "Consolidar" }
     ];
+
+    const exercises = {
+      vocabulary: [
+        "1. Matching: Connect words with images\n2. Fill in the blanks: Complete sentences with vocabulary\n3. Word search: Find 10 words in the puzzle\n4. Multiple choice: Select the correct word\n5. Pronunciation: Repeat after audio",
+        "1. Create sentences with 5 new words\n2. Synonym matching game\n3. Category sorting activity\n4. Vocabulary quiz (10 questions)\n5. Translation exercise"
+      ],
+      grammar: [
+        "1. Transform sentences (affirmative → negative → question)\n2. Fill in with correct form\n3. Multiple choice grammar exercises\n4. Drag and drop: Order words correctly\n5. Conjugation practice",
+        "1. Complete the dialogue\n2. Error correction: Find 5 mistakes\n3. Verb tense exercises\n4. Sentence structure puzzle\n5. Grammar in context"
+      ],
+      practice: [
+        "1. Wordwall interactive game\n2. Kahoot quiz (10 questions)\n3. Fill in the blanks (10 sentences)\n4. True or False (8 statements)\n5. Matching exercise",
+        "1. Baamboozle game (5 rounds)\n2. Multiple choice (12 questions)\n3. Complete the conversation\n4. Picture description\n5. Listen and choose activity"
+      ],
+      speaking: [
+        "1. Describe the image in 5 sentences\n2. Answer personal questions about the topic\n3. Role-play: Create a dialogue\n4. Tell a story using new vocabulary\n5. Debate: Express opinions",
+        "1. Interview your partner\n2. Present on the topic (3 minutes)\n3. Answer rapid-fire questions\n4. Create and perform a skit\n5. Discuss and compare views"
+      ]
+    };
 
     let currentTheme = "";
     let stageContents = {};
     let timerInterval = null;
     let timerRemaining = 0;
 
-    // GENERATE LESSON
     function generateLesson(theme) {
       if (!theme.trim()) {
-        alert("Por favor, digite um tema!");
+        alert("Digite um tema!");
         return;
       }
       currentTheme = theme;
@@ -138,154 +159,84 @@
       renderLesson();
     }
 
-    // RENDER LESSON
     function renderLesson() {
       const container = document.getElementById('lessonContainer');
       
       if (!currentTheme) {
-        container.innerHTML = `
-          <div class="card rounded-xl p-8 text-center text-slate-400">
-            <p class="text-lg">Digite um tema e clique em "Gerar Aula" para começar!</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="card rounded-xl p-8 text-center text-slate-400"><p>Digite um tema!</p></div>`;
         return;
       }
 
-      container.innerHTML = `
-        <div class="card rounded-xl p-6 mb-6 bg-gradient-to-r from-indigo-900 to-indigo-800">
-          <h2 class="text-2xl font-bold text-white mb-2">📖 ${currentTheme}</h2>
-          <p class="text-indigo-100">Tempo total: 60 minutos | 8 etapas estruturadas</p>
-        </div>
-      `;
+      container.innerHTML = `<div class="card rounded-xl p-6 mb-6 bg-gradient-to-r from-indigo-900 to-indigo-800"><h2 class="text-2xl font-bold text-white">📖 ${currentTheme}</h2><p class="text-indigo-100">60 minutos | 8 etapas estruturadas</p></div>`;
 
-      stages.forEach(stage => {
-        const content = stageContents[stage.id] || generateDefaultContent(stage, currentTheme);
-        stageContents[stage.id] = content;
-
+      stages.forEach((stage, idx) => {
+        const content = getStageContent(stage, currentTheme);
         const borderColors = ['border-blue-500', 'border-green-500', 'border-purple-500', 'border-yellow-500', 'border-red-500', 'border-pink-500', 'border-cyan-500', 'border-emerald-500'];
         
         container.innerHTML += `
-          <div class="stage-card card rounded-xl p-6 ${borderColors[stage.id - 1]} hover:shadow-xl">
-            <div class="flex justify-between items-start mb-4">
-              <div>
-                <h3 class="text-2xl font-bold text-white">
-                  ${stage.icon} ${stage.name}
-                </h3>
-                <p class="text-slate-400 text-sm">${stage.objective}</p>
-              </div>
-              <div class="text-right">
-                <div class="text-3xl font-bold text-white">${stage.time}min</div>
-                <button onclick="toggleEdit(${stage.id})" class="text-blue-400 hover:text-blue-300 text-sm font-bold mt-2">✏️ Editar</button>
-              </div>
+          <div class="stage-card card rounded-xl p-6 ${borderColors[idx]} overflow-hidden">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold text-white">${stage.name}</h3>
+              <span class="text-3xl font-bold text-white">${stage.time}m</span>
             </div>
-
-            <div id="stage-${stage.id}-display" class="text-slate-300 whitespace-pre-line mb-4 min-h-20">
+            <p class="text-slate-400 text-sm mb-4">🎯 ${stage.objective}</p>
+            <div class="bg-slate-900 p-4 rounded-lg text-slate-300 whitespace-pre-wrap mb-4 max-h-40 overflow-y-auto text-sm">
 ${content}
             </div>
-
-            <!-- FERRAMENTAS -->
-            <div class="mb-4 p-3 bg-slate-900 rounded-lg">
-              <p class="text-slate-300 text-xs font-bold mb-2">🛠️ Ferramentas de Prática:</p>
-              <div>
-                <a href="https://wordwall.net/pt" target="_blank" class="tool-button wordwall">🎮 Wordwall</a>
-                <a href="https://kahoot.com" target="_blank" class="tool-button kahoot">🎯 Kahoot!</a>
-                <a href="https://baamboozle.com" target="_blank" class="tool-button baamboozle">🎲 Baamboozle</a>
-                <a href="https://test-english.com" target="_blank" class="tool-button testeng">📊 Test-English</a>
-              </div>
-            </div>
-
-            <div id="stage-${stage.id}-edit" class="hidden space-y-3">
-              <textarea 
-                id="stage-${stage.id}-textarea"
-                class="w-full p-3 bg-slate-700 text-white rounded-lg h-32 border border-slate-600 focus:border-indigo-500 focus:outline-none"
-                placeholder="Edite o conteúdo desta etapa..."
-              >${content}</textarea>
-              <div class="flex gap-2">
-                <button onclick="saveStage(${stage.id})" class="gradient-emerald text-white py-2 px-4 rounded font-bold flex-1">
-                  ✓ Salvar
-                </button>
-                <button onclick="toggleEdit(${stage.id})" class="bg-slate-600 text-white py-2 px-4 rounded font-bold flex-1">
-                  ✕ Cancelar
-                </button>
-              </div>
+            <div class="flex gap-2">
+              <a href="https://wordwall.net/pt" target="_blank" class="tool-button wordwall">Wordwall</a>
+              <a href="https://kahoot.com" target="_blank" class="tool-button kahoot">Kahoot</a>
+              <a href="https://baamboozle.com" target="_blank" class="tool-button baamboozle">Baamboozle</a>
+              <a href="https://test-english.com" target="_blank" class="tool-button testeng">Test-English</a>
             </div>
           </div>
         `;
       });
     }
 
-    // GENERATE DEFAULT CONTENT
-    function generateDefaultContent(stage, theme) {
-      const contents = {
-        1: `Boas-vindas! Como você está?\n\nSmall talk questions:\n- How are you today?\n- What did you do yesterday?\n- Are you ready to learn about ${theme}?\n\nObjetivo: Relaxar o aluno e preparar a mente para English.`,
+    function getStageContent(stage, theme) {
+      const stageContents = {
+        1: `Welcome! Today we're learning about: ${theme}\n\n- How are you?\n- What did you do yesterday?\n- Are you excited about today's lesson?\n\nGoal: Make student comfortable`,
         
-        2: `Revisão do conteúdo anterior:\n\nPerguntas sobre a última aula:\n- O que aprendemos na última aula?\n- Você praticou?\n- Tem dúvidas?\n\nRápido review dos conceitos principais.`,
+        2: `Review previous lesson:\n- What did we learn last time?\n- Can you remember 3 words?\n- Do you have any questions?\n\nQuick quiz on last topic`,
         
-        3: `Introdução ao tema: ${theme}\n\n- Mostre imagens ou vídeos sobre ${theme}\n- Faça perguntas: "O que você conhece sobre ${theme}?"\n- Desperte interesse e curiosidade\n- Conecte com experiência do aluno`,
+        3: `Introduction to ${theme}:\n\nShow images/videos about ${theme}\nAsk: What do you know about ${theme}?\nConnect with student's experience\nBuild interest and curiosity`,
         
-        4: `Vocabulário sobre ${theme}:\n\nPalavras-chave que você vai aprender:\n1. [palavra 1]\n2. [palavra 2]\n3. [palavra 3]\n4. [palavra 4]\n5. [palavra 5]\n\nExemplos de uso em contexto.\nAssociar com imagens/gestos quando possível.`,
+        4: `VOCABULARY - ${theme}\n\nKey words to learn:\n1. [word 1] - meaning\n2. [word 2] - meaning  \n3. [word 3] - meaning\n4. [word 4] - meaning\n5. [word 5] - meaning\n\nExercises:\n${exercises.vocabulary[Math.floor(Math.random() * exercises.vocabulary.length)]}`,
         
-        5: `Estrutura gramatical / Language Focus\n\nExemplo com ${theme}:\n\nSentence pattern:\n- [estrutura]\n- [exemplo 1]\n- [exemplo 2]\n- [exemplo 3]\n\nRegras importantes:\n- [regra 1]\n- [regra 2]\n\nExercicios de transformação.`,
+        5: `GRAMMAR & LANGUAGE FOCUS\n\nStructure: [Grammar point]\nExamples with ${theme}:\n- Example 1\n- Example 2\n- Example 3\n\nExercises:\n${exercises.grammar[Math.floor(Math.random() * exercises.grammar.length)]}`,
         
-        6: `Prática controlada com ${theme}:\n\nExercícios sem pressão:\n1. Wordwall games (interativo)\n2. Baamboozle (gamificado)\n3. Fill in the blanks\n4. True or False\n\nDica: Não há certo ou errado aqui!\nObjetivo: consolidar antes de falar.`,
+        6: `CONTROLLED PRACTICE\n\nNo pressure exercises:\n${exercises.practice[Math.floor(Math.random() * exercises.practice.length)]}\n\nObjective: Consolidate before speaking`,
         
-        7: `Conversação sobre ${theme}:\n\nPrompts para speaking:\n1. "Tell me about [tema]..."\n2. "What is your experience with [tema]?"\n3. "How often do you...?"\n4. "Describe a time when you..."\n5. Role-play scenarios\n\nAluno fala livremente agora!`,
+        7: `SPEAKING - Free conversation\n\nPrompts:\n1. Tell me about ${theme}...\n2. What's your experience?\n3. How often do you...?\n4. Describe a time when...\n5. Create a dialogue\n\nExercises:\n${exercises.speaking[Math.floor(Math.random() * exercises.speaking.length)]}`,
         
-        8: `Encerramento + Homework\n\nResumo do que foi aprendido:\n✓ Vocabulário: [3 palavras-chave]\n✓ Estrutura: [estrutura principal]\n✓ Conversação: [tópico]\n\nHomework:\n- Practice on Test-English\n- Write 5 sentences about ${theme}\n- Prepare for next lesson\n\nMotivação final! 🎉`
+        8: `WRAP-UP & HOMEWORK\n\nWhat we learned today:\n✓ Vocabulary: [3 key words]\n✓ Grammar: [main structure]\n✓ Speaking: [topic]\n\nHomework:\n- Practice on Test-English\n- Write 5 sentences about ${theme}\n- Prepare for next lesson\n\n🎉 Great job today!`
       };
-
-      return contents[stage.id] || "";
+      
+      return stageContents[stage.id] || "";
     }
 
-    // TOGGLE EDIT
-    function toggleEdit(stageId) {
-      const display = document.getElementById(`stage-${stageId}-display`);
-      const edit = document.getElementById(`stage-${stageId}-edit`);
-      display.classList.toggle('hidden');
-      edit.classList.toggle('hidden');
-    }
-
-    // SAVE STAGE
-    function saveStage(stageId) {
-      const textarea = document.getElementById(`stage-${stageId}-textarea`);
-      stageContents[stageId] = textarea.value;
-      toggleEdit(stageId);
-      renderLesson();
-    }
-
-    // PLAN MODAL
     function showPlanModal() {
       const planContent = document.getElementById('planContent');
       let html = `
-        <table class="w-full border-collapse">
+        <table>
           <thead>
-            <tr class="bg-slate-700">
-              <th class="border border-slate-600 p-3 text-left text-white">Etapa</th>
-              <th class="border border-slate-600 p-3 text-left text-white">Tempo</th>
-              <th class="border border-slate-600 p-3 text-left text-white">Objetivo</th>
-            </tr>
+            <tr><th>Etapa</th><th>Tempo</th><th>Objetivo</th></tr>
           </thead>
           <tbody>
       `;
       
       stages.forEach(stage => {
         html += `
-          <tr class="hover:bg-slate-700">
-            <td class="border border-slate-600 p-3 text-white font-bold">${stage.icon} ${stage.name}</td>
-            <td class="border border-slate-600 p-3 text-white">${stage.time} min</td>
-            <td class="border border-slate-600 p-3 text-slate-300">${stage.objective}</td>
+          <tr>
+            <td><strong>${stage.name}</strong></td>
+            <td><strong>${stage.time} min</strong></td>
+            <td>${stage.objective}</td>
           </tr>
         `;
       });
       
-      html += `
-          </tbody>
-        </table>
-        <div class="mt-4 p-4 bg-slate-700 rounded-lg">
-          <p class="text-white text-sm"><strong>Total:</strong> 60 minutos</p>
-          <p class="text-slate-300 text-sm mt-2">Tema: <strong>${currentTheme}</strong></p>
-        </div>
-      `;
+      html += `</tbody></table><div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px;"><p><strong>Total:</strong> 60 minutos</p><p style="margin-top: 10px;"><strong>Tema:</strong> ${currentTheme}</p></div>`;
       
       planContent.innerHTML = html;
       document.getElementById('planModal').classList.remove('hidden');
@@ -295,17 +246,15 @@ ${content}
       document.getElementById('planModal').classList.add('hidden');
     }
 
-    // TIMER
     function startTimer() {
-      const totalTime = stages.reduce((a, b) => a + b.time, 0) * 60;
+      const totalTime = 60 * 60;
       timerRemaining = totalTime;
       document.getElementById('timerDisplay').classList.remove('hidden');
-      updateTimerDisplay();
+      updateTimer();
 
       timerInterval = setInterval(() => {
         timerRemaining--;
-        updateTimerDisplay();
-        
+        updateTimer();
         if (timerRemaining <= 0) {
           clearInterval(timerInterval);
           alert('⏰ Aula terminada!');
@@ -314,7 +263,7 @@ ${content}
       }, 1000);
     }
 
-    function updateTimerDisplay() {
+    function updateTimer() {
       const mins = Math.floor(timerRemaining / 60);
       const secs = timerRemaining % 60;
       document.getElementById('timerValue').textContent = 
@@ -330,16 +279,15 @@ ${content}
       clearInterval(timerInterval);
     }
 
-    // PDF EXPORT
-    function exportPDF() {
+    function downloadPDF() {
       const printArea = document.getElementById('printArea');
       
       let html = `
-        <h1 style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #333; padding-bottom: 20px;">
-          ⭐ TEACHER LU - LESSON PLAN
-        </h1>
-        <p style="text-align: center; font-size: 20px; margin: 20px 0;"><strong>Tema:</strong> ${currentTheme}</p>
-        <p style="text-align: center; color: #666;">Tempo Total: 60 minutos | 8 Etapas Estruturadas</p>
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="border-bottom: 3px solid #333; padding-bottom: 15px; margin-bottom: 20px;">⭐ TEACHER LU - LESSON PLAN</h1>
+          <h2 style="color: #666; margin: 20px 0;">${currentTheme}</h2>
+          <p style="color: #999;">60 minutos | 8 Etapas Estruturadas</p>
+        </div>
         
         <table style="width: 100%; border-collapse: collapse; margin: 30px 0;">
           <thead>
@@ -355,7 +303,7 @@ ${content}
       stages.forEach(stage => {
         html += `
           <tr>
-            <td style="border: 1px solid #ddd; padding: 12px;"><strong>${stage.icon} ${stage.name}</strong></td>
+            <td style="border: 1px solid #ddd; padding: 12px;"><strong>${stage.name}</strong></td>
             <td style="border: 1px solid #ddd; padding: 12px; text-align: center;"><strong>${stage.time} min</strong></td>
             <td style="border: 1px solid #ddd; padding: 12px;">${stage.objective}</td>
           </tr>
@@ -364,21 +312,16 @@ ${content}
       
       html += `</tbody></table><hr style="margin: 30px 0;">`;
 
-      stages.forEach(stage => {
-        const content = stageContents[stage.id] || "";
+      stages.forEach((stage, idx) => {
+        const content = getStageContent(stage, currentTheme);
         html += `
           <div style="page-break-inside: avoid; margin-bottom: 30px;">
-            <h2 style="color: #333; border-left: 4px solid #667eea; padding-left: 15px; margin: 20px 0 10px 0;">
-              ${stage.icon} STAGE ${stage.id}: ${stage.name}
-            </h2>
+            <h2 style="border-left: 4px solid #667eea; padding-left: 15px; margin: 20px 0 10px 0;">STAGE ${stage.id}: ${stage.name}</h2>
             <p style="color: #666; margin: 5px 0;"><strong>⏱️ Tempo:</strong> ${stage.time} minutos</p>
             <p style="color: #666; margin: 5px 0 20px 0;"><strong>🎯 Objetivo:</strong> ${stage.objective}</p>
-            <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; white-space: pre-wrap; line-height: 1.6;">
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; white-space: pre-wrap; line-height: 1.6; font-size: 13px;">
 ${content}
             </div>
-            <p style="margin-top: 10px; color: #999; font-size: 12px;">
-              🛠️ Ferramentas: Wordwall | Kahoot | Baamboozle | Test-English
-            </p>
           </div>
         `;
       });
@@ -387,7 +330,7 @@ ${content}
 
       const opt = {
         margin: 10,
-        filename: `Lesson-${currentTheme.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`,
+        filename: `Lesson-${currentTheme.replace(/\s+/g, '-')}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
@@ -396,9 +339,8 @@ ${content}
       html2pdf().set(opt).from(printArea).save();
     }
 
-    // RESET
     function resetLesson() {
-      if (confirm('Resetar a aula?')) {
+      if (confirm('Resetar?')) {
         currentTheme = "";
         stageContents = {};
         document.getElementById('themeInput').value = "";
@@ -410,7 +352,6 @@ ${content}
       window.location.href = 'index.html';
     }
 
-    // INIT
     renderLesson();
   </script>
 </body>
