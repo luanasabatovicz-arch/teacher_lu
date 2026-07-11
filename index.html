@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⭐ Teacher Lu - Dashboard</title>
+  <title>⭐ Sabatovicz - Sistema Completo de Aulas Online</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -11,6 +11,7 @@
     h1, h2, h3 { font-family: 'Poppins', sans-serif; }
     body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
     .gradient-coral { background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%); }
+    .gradient-amber { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
     .gradient-emerald { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
     .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
     .gradient-pink { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
@@ -23,9 +24,9 @@
   <div class="min-h-screen">
     <div class="gradient-indigo text-white p-8">
       <div class="max-w-7xl mx-auto text-center">
-        <h1 class="text-5xl font-bold mb-4">⭐ Teacher Lu</h1>
+        <h1 class="text-5xl font-bold mb-4">⭐ Sabatovicz</h1>
         <p class="text-2xl text-indigo-100 mb-2">Sistema Completo de Aulas Online</p>
-        <p class="text-indigo-100">Aulas prontas · Gerador de aulas · Exercícios · Plano anual</p>
+        <p class="text-indigo-100">Conversação · Gramática · Exercícios · Plano anual</p>
       </div>
     </div>
 
@@ -38,14 +39,11 @@
             <div class="flex items-start gap-6 flex-wrap">
               <div class="gradient-pink p-4 rounded-xl w-fit"><span class="text-3xl">💬</span></div>
               <div class="flex-1">
-                <div class="inline-block bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">⭐ NOVO — CONTEÚDO PRONTO</div>
+                <div class="inline-block bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">CONTEÚDO PRONTO</div>
                 <h2 class="text-3xl font-bold text-white mb-3">Aulas de Conversação</h2>
-                <p class="text-indigo-100 mb-4 max-w-2xl">Aulas prontas de verdade para adultos iniciantes (A1). 8 semanas com perguntas de conversação, vocabulário com IPA e áudio, role-plays e dado de perguntas. Chega de preparar do zero.</p>
+                <p class="text-indigo-100 mb-4 max-w-2xl">Aulas prontas por tema para adultos iniciantes (A1). 8 semanas com perguntas de conversação, vocabulário com IPA e áudio, role-plays e dado de perguntas.</p>
                 <div class="flex gap-4 flex-wrap text-sm text-indigo-200 mb-5">
-                  <span>✓ 8 semanas prontas</span>
-                  <span>✓ IPA + áudio de pronúncia</span>
-                  <span>✓ Role-plays e conversação</span>
-                  <span>✓ PDF por aula</span>
+                  <span>✓ 8 semanas prontas</span><span>✓ IPA + áudio</span><span>✓ Role-plays</span><span>✓ PDF por aula</span>
                 </div>
                 <div class="gradient-pink text-white font-bold py-3 px-6 rounded-xl inline-block btn">Abrir Aulas →</div>
               </div>
@@ -53,57 +51,58 @@
           </div>
         </a>
 
-        <!-- Lesson Generator -->
-        <a href="lesson-generator.html" style="text-decoration:none;">
-          <div class="card rounded-2xl p-8 h-full">
-            <div class="gradient-coral p-4 rounded-xl mb-6 w-fit"><span class="text-3xl">🎓</span></div>
-            <h2 class="text-2xl font-bold text-white mb-3">Gerador de Aulas</h2>
-            <p class="text-slate-300 mb-6">Digite qualquer tema e gere a estrutura de uma aula em 8 etapas (60 min) para você preencher e adaptar.</p>
-            <div class="space-y-2 mb-6">
-              <p class="text-sm text-slate-400">✓ Qualquer tema</p>
-              <p class="text-sm text-slate-400">✓ 8 etapas + timer</p>
-              <p class="text-sm text-slate-400">✓ Ferramentas (Wordwall, Kahoot)</p>
+        <!-- FEATURED: Aulas de Gramática -->
+        <a href="grammar.html" style="text-decoration:none;" class="md:col-span-2">
+          <div class="card rounded-2xl p-8 h-full" style="background:linear-gradient(135deg,#78350f 0%,#b45309 100%)">
+            <div class="flex items-start gap-6 flex-wrap">
+              <div class="gradient-amber p-4 rounded-xl w-fit"><span class="text-3xl">📖</span></div>
+              <div class="flex-1">
+                <div class="inline-block bg-amber-500 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-2">NOVO — TEMPOS VERBAIS</div>
+                <h2 class="text-3xl font-bold text-white mb-3">Aulas de Gramática</h2>
+                <p class="text-amber-100 mb-4 max-w-2xl">Banco de aulas de tempos verbais — abra, explique e pratique. 10 tempos do A1 ao A2 com estrutura, exemplos com áudio, erros comuns do brasileiro e prática com gabarito.</p>
+                <div class="flex gap-4 flex-wrap text-sm text-amber-200 mb-5">
+                  <span>✓ 10 tempos verbais</span><span>✓ Estrutura clara</span><span>✓ Erros comuns</span><span>✓ Prática + PDF</span>
+                </div>
+                <div class="gradient-amber text-gray-900 font-bold py-3 px-6 rounded-xl inline-block btn">Abrir Gramática →</div>
+              </div>
             </div>
-            <div class="gradient-coral text-white font-bold py-3 px-6 rounded-xl inline-block btn">Criar Aula →</div>
           </div>
         </a>
 
-        <!-- Exercise Generator -->
+        <!-- Exercícios -->
         <a href="exercise-generator.html" style="text-decoration:none;">
           <div class="card rounded-2xl p-8 h-full">
             <div class="gradient-emerald p-4 rounded-xl mb-6 w-fit"><span class="text-3xl">✏️</span></div>
-            <h2 class="text-2xl font-bold text-white mb-3">Gerador de Exercícios</h2>
-            <p class="text-slate-300 mb-6">Exercícios prontos com múltipla escolha, preenchimento, verdadeiro/falso e matching, com feedback imediato.</p>
+            <h2 class="text-2xl font-bold text-white mb-3">Exercícios</h2>
+            <p class="text-slate-300 mb-6">9 temas com muitas questões: múltipla escolha, preenchimento, verdadeiro/falso e matching, com feedback visual na hora.</p>
             <div class="space-y-2 mb-6">
-              <p class="text-sm text-slate-400">✓ 5 tipos de exercício</p>
-              <p class="text-sm text-slate-400">✓ Feedback imediato</p>
+              <p class="text-sm text-slate-400">✓ ~23 questões por tema</p>
+              <p class="text-sm text-slate-400">✓ Feedback verde/vermelho</p>
               <p class="text-sm text-slate-400">✓ Exportar gabarito</p>
             </div>
-            <div class="gradient-emerald text-white font-bold py-3 px-6 rounded-xl inline-block btn">Gerar Exercícios →</div>
+            <div class="gradient-emerald text-white font-bold py-3 px-6 rounded-xl inline-block btn">Praticar →</div>
           </div>
         </a>
 
-        <!-- Annual Plan -->
-        <a href="annual-plan.html" style="text-decoration:none;" class="md:col-span-2">
+        <!-- Plano Anual -->
+        <a href="annual-plan.html" style="text-decoration:none;">
           <div class="card rounded-2xl p-8 h-full">
-            <div class="flex items-start gap-6 flex-wrap">
-              <div class="gradient-indigo p-4 rounded-xl w-fit"><span class="text-3xl">⚡</span></div>
-              <div class="flex-1">
-                <h2 class="text-2xl font-bold text-white mb-3">Mapa Curricular (52 Semanas)</h2>
-                <p class="text-slate-300 mb-4 max-w-2xl">Plano anual dos 7 alunos, 52 semanas estratégicas (A1 → A2), com checkboxes de progresso e exportação em PDF.</p>
-                <div class="flex gap-4 flex-wrap text-sm text-slate-400 mb-5">
-                  <span>✓ 7 alunos</span><span>✓ 52 semanas</span><span>✓ Progresso visual</span><span>✓ PDF por aluno</span>
-                </div>
-                <div class="gradient-indigo text-white font-bold py-3 px-6 rounded-xl inline-block btn">Ver Plano →</div>
-              </div>
+            <div class="gradient-indigo p-4 rounded-xl mb-6 w-fit"><span class="text-3xl">⚡</span></div>
+            <h2 class="text-2xl font-bold text-white mb-3">Mapa Curricular</h2>
+            <p class="text-slate-300 mb-6">Plano anual dos 7 alunos, 52 semanas (A1 → A2), com checkboxes de progresso e PDF por aluno.</p>
+            <div class="space-y-2 mb-6">
+              <p class="text-sm text-slate-400">✓ 7 alunos</p>
+              <p class="text-sm text-slate-400">✓ 52 semanas</p>
+              <p class="text-sm text-slate-400">✓ Progresso visual</p>
             </div>
+            <div class="gradient-indigo text-white font-bold py-3 px-6 rounded-xl inline-block btn">Ver Plano →</div>
           </div>
         </a>
 
       </div>
 
       <div class="text-center mt-12">
-        <p class="text-slate-400 text-sm">⭐ Teacher Lu — Sistema Completo de Aulas Online</p>
+        <p class="text-slate-400 text-sm">⭐ Sabatovicz — Sistema Completo de Aulas Online</p>
         <p class="text-slate-600 text-xs mt-2">Parchment Editorial | 2026</p>
       </div>
     </div>
