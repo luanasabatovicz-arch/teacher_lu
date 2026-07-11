@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⭐ Teacher Lu - Exercise Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
+    .gradient-emerald { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
+    .gradient-coral { background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%); }
+    .card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2); }
+    .exercise-card { border-left: 4px solid #667eea; padding: 24px; margin-bottom: 20px; border-radius: 8px; }
+    .option-btn { background: #1e293b; border: 2px solid #475569; color: white; padding: 12px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: left; }
+    .option-btn:hover { border-color: #667eea; }
+    .option-btn.selected { background: #667eea; border-color: #667eea; }
+    .option-btn.correct { background: #10b981; border-color: #10b981; }
+    .option-btn.incorrect { background: #ef4444; border-color: #ef4444; }
+    .input-field { background: #1e293b; border: 2px solid #475569; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; width: 100%; }
+    .input-field:focus { outline: none; border-color: #667eea; }
+    .feedback { padding: 12px; border-radius: 8px; margin-top: 12px; font-weight: bold; }
+    .feedback.correct { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .feedback.incorrect { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .score-display { font-size: 28px; font-weight: bold; color: #10b981; }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen">
+    <!-- HEADER -->
+    <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h1 class="text-3xl font-bold">⭐ Teacher Lu - Exercise Generator</h1>
+            <p class="text-indigo-100">Exercícios prontos por tema</p>
+          </div>
+          <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50">
+            ← Menu
+          </button>
+        </div>
+
+        <!-- TOPIC INPUT -->
+        <div class="flex gap-4 items-end">
+          <div class="flex-1">
+            <label class="block text-indigo-100 text-sm font-bold mb-2">Tema:</label>
+            <input 
+              type="text" 
+              id="topicInput" 
+              placeholder="Ex: Sports, Food, Family, Daily Routine..."
+              class="w-full p-3 bg-indigo-900 bg-opacity-50 border border-indigo-400 rounded-lg text-white placeholder-indigo-200 focus:outline-none focus:border-white"
+            />
+          </div>
+          <button onclick="generateExercises()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg">
+            ⚡ Gerar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w-4xl mx-auto p-6">
+      <!-- SCORE -->
+      <div class="card rounded-xl p-6 mb-6 text-center">
+        <p class="text-slate-300 text-sm mb-2">Pontuação</p>
+        <div class="score-display" id="scoreDisplay">0/0</div>
+      </div>
+
+      <!-- EXERCISES -->
+      <div id="exercisesContainer"></div>
+
+      <!-- ACTIONS -->
+      <div class="card rounded-xl p-6 mt-8 flex gap-4 flex-wrap">
+        <button onclick="checkAnswers()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">
+          ✓ Verificar Respostas
+        </button>
+        <button onclick="exportResults()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">
+          📄 Exportar PDF
+        </button>
+        <button onclick="resetExercises()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">
+          🔄 Reset
+        </button>
+      </div>
+
+      <!-- HIDDEN PRINT AREA -->
+      <div id="printArea" class="hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentTopic = '';
+    let exercises = [];
+    let userAnswers = {};
+    let feedbackShown = false;
+
+    const exerciseTemplates = {
+      sports: {
+        topic: 'Sports',
+        exercises: [
+          {
+            type: 'multiple_choice',
+            question: 'What sport do you play with a ball and a racket?',
+            options: ['Tennis', 'Swimming', 'Running', 'Cycling'],
+            correct: 0
+          },
+          {
+            type: 'multiple_choice',
+            question: 'Which sport is played on ice?',
+            options: ['Baseball', 'Ice Hockey', 'Basketball', 'Soccer'],
+            correct: 1
+          },
+          {
+            type: 'fill_blank',
+            question: 'I play _______ every weekend.',
+            hint: 'a popular team sport',
+            correct: 'football'
+          },
+          {
+            type: 'true_false',
+            statements: [
+              { text: 'Swimming is a water sport', answer: true },
+              { text: 'Golf is played indoors', answer: false },
+              { text: 'Basketball uses a ball', answer: true }
+            ]
+          },
+          {
+            type: 'matching',
+            question: 'Match sports with equipment:',
+            pairs: [
+              { left: 'Tennis', right: 'racket' },
+              { left: 'Soccer', right: 'ball' },
+              { left: 'Baseball', right: 'bat' }
+            ]
+          }
+        ]
+      },
+      food: {
+        topic: 'Food',
+        exercises: [
+          {
+            type: 'multiple_choice',
+            question: 'Which of these is a fruit?',
+            options: ['Carrot', 'Apple', 'Lettuce', 'Potato'],
+            correct: 1
+          },
+          {
+            type: 'multiple_choice',
+            question: 'What do you drink in the morning?',
+            options: ['Water', 'Coffee', 'Juice', 'All of the above'],
+            correct: 3
+          },
+          {
+            type: 'fill_blank',
+            question: 'I have _______ for breakfast.',
+            hint: 'a morning meal',
+            correct: 'eggs'
+          },
+          {
+            type: 'true_false',
+            statements: [
+              { text: 'Bread is made from wheat', answer: true },
+              { text: 'Chicken is a vegetable', answer: false },
+              { text: 'We eat rice as a main dish', answer: true }
+            ]
+          },
+          {
+            type: 'matching',
+            question: 'Match food with categories:',
+            pairs: [
+              { left: 'Milk', right: 'Dairy' },
+              { left: 'Chicken', right: 'Meat' },
+              { left: 'Carrot', right: 'Vegetable' }
+            ]
+          }
+        ]
+      },
+      family: {
+        topic: 'Family',
+        exercises: [
+          {
+            type: 'multiple_choice',
+            question: 'What is your father\'s sister called?',
+            options: ['Aunt', 'Cousin', 'Niece', 'Uncle'],
+            correct: 0
+          },
+          {
+            type: 'multiple_choice',
+            question: 'Who is your mother\'s mother?',
+            options: ['Aunt', 'Grandmother', 'Sister', 'Cousin'],
+            correct: 1
+          },
+          {
+            type: 'fill_blank',
+            question: 'My brother\'s daughter is my _______.',
+            hint: 'family relation',
+            correct: 'niece'
+          },
+          {
+            type: 'true_false',
+            statements: [
+              { text: 'Your sibling is your brother or sister', answer: true },
+              { text: 'Your uncle is your mother\'s father', answer: false },
+              { text: 'Cousins are children of your parents\' siblings', answer: true }
+            ]
+          },
+          {
+            type: 'matching',
+            question: 'Match family relations:',
+            pairs: [
+              { left: 'Father', right: 'Male parent' },
+              { left: 'Sister', right: 'Female sibling' },
+              { left: 'Aunt', right: 'Parent\'s sister' }
+            ]
+          }
+        ]
+      },
+      daily_routine: {
+        topic: 'Daily Routine',
+        exercises: [
+          {
+            type: 'multiple_choice',
+            question: 'What time do you usually wake up?',
+            options: ['7 AM', '2 PM', '11 PM', 'Midnight'],
+            correct: 0
+          },
+          {
+            type: 'multiple_choice',
+            question: 'What do you do after breakfast?',
+            options: ['Sleep', 'Go to work/school', 'Dinner', 'Lunch'],
+            correct: 1
+          },
+          {
+            type: 'fill_blank',
+            question: 'I _______ my teeth every morning.',
+            hint: 'cleaning action',
+            correct: 'brush'
+          },
+          {
+            type: 'true_false',
+            statements: [
+              { text: 'Breakfast is eaten in the morning', answer: true },
+              { text: 'Most people go to bed at noon', answer: false },
+              { text: 'Taking a shower is part of the daily routine', answer: true }
+            ]
+          },
+          {
+            type: 'matching',
+            question: 'Match activities with time of day:',
+            pairs: [
+              { left: 'Breakfast', right: 'Morning' },
+              { left: 'Lunch', right: 'Afternoon' },
+              { left: 'Dinner', right: 'Evening' }
+            ]
+          }
+        ]
+      },
+      travel: {
+        topic: 'Travel',
+        exercises: [
+          {
+            type: 'multiple_choice',
+            question: 'What do you need to travel to another country?',
+            options: ['Passport', 'Driver\'s license', 'School ID', 'Credit card'],
+            correct: 0
+          },
+          {
+            type: 'multiple_choice',
+            question: 'How do you travel long distances?',
+            options: ['Walk', 'Bicycle', 'Airplane', 'Skateboard'],
+            correct: 2
+          },
+          {
+            type: 'fill_blank',
+            question: 'I pack my clothes in a _______ before traveling.',
+            hint: 'luggage item',
+            correct: 'suitcase'
+          },
+          {
+            type: 'true_false',
+            statements: [
+              { text: 'A plane is used for air travel', answer: true },
+              { text: 'A train travels on water', answer: false },
+              { text: 'A hotel is a place to stay', answer: true }
+            ]
+          },
+          {
+            type: 'matching',
+            question: 'Match transport with travel method:',
+            pairs: [
+              { left: 'Plane', right: 'Air' },
+              { left: 'Ship', right: 'Sea' },
+              { left: 'Train', right: 'Land' }
+            ]
+          }
+        ]
+      }
+    };
+
+    function generateExercises() {
+      const input = document.getElementById('topicInput').value.toLowerCase().trim();
+      
+      if (!input) {
+        alert('Digite um tema!');
+        return;
+      }
+
+      currentTopic = input;
+      feedbackShown = false;
+      userAnswers = {};
+
+      // Procura por tema exato ou próximo
+      let template = null;
+      for (let key in exerciseTemplates) {
+        if (key.includes(input) || input.includes(key)) {
+          template = exerciseTemplates[key];
+          break;
+        }
+      }
+
+      // Se não encontrar, usa um template aleatório
+      if (!template) {
+        const keys = Object.keys(exerciseTemplates);
+        template = exerciseTemplates[keys[Math.floor(Math.random() * keys.length)]];
+      }
+
+      exercises = JSON.parse(JSON.stringify(template.exercises));
+      renderExercises();
+    }
+
+    function renderExercises() {
+      const container = document.getElementById('exercisesContainer');
+      container.innerHTML = '';
+
+      exercises.forEach((ex, idx) => {
+        const exCard = document.createElement('div');
+        exCard.className = 'card exercise-card';
+        exCard.innerHTML = `<h3 class="text-xl font-bold text-white mb-4">Exercício ${idx + 1}</h3>`;
+
+        if (ex.type === 'multiple_choice') {
+          exCard.innerHTML += `
+            <p class="text-slate-300 mb-4">${ex.question}</p>
+            <div>
+              ${ex.options.map((opt, optIdx) => `
+                <button class="option-btn" onclick="selectOption(${idx}, ${optIdx})">
+                  ${String.fromCharCode(65 + optIdx)}) ${opt}
+                </button>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        if (ex.type === 'fill_blank') {
+          exCard.innerHTML += `
+            <p class="text-slate-300 mb-4">${ex.question}</p>
+            <input type="text" class="input-field" placeholder="Digite sua resposta..." 
+              onchange="saveFillBlank(${idx}, this.value)" id="fill-${idx}">
+            <p class="text-slate-400 text-sm italic">Dica: ${ex.hint}</p>
+          `;
+        }
+
+        if (ex.type === 'true_false') {
+          exCard.innerHTML += `
+            <p class="text-slate-300 mb-4">Marque Verdadeiro (V) ou Falso (F):</p>
+            <div>
+              ${ex.statements.map((stmt, stmtIdx) => `
+                <div class="mb-3">
+                  <p class="text-slate-300 mb-2">${stmt.text}</p>
+                  <div style="display: flex; gap: 10px;">
+                    <button class="option-btn" style="flex: 1;" onclick="selectTrueFalse(${idx}, ${stmtIdx}, true)">
+                      ✓ Verdadeiro
+                    </button>
+                    <button class="option-btn" style="flex: 1;" onclick="selectTrueFalse(${idx}, ${stmtIdx}, false)">
+                      ✗ Falso
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        if (ex.type === 'matching') {
+          exCard.innerHTML += `
+            <p class="text-slate-300 mb-4">${ex.question}</p>
+            <div class="space-y-3">
+              ${ex.pairs.map((pair, pairIdx) => `
+                <div class="flex gap-4 items-center">
+                  <div class="flex-1">
+                    <p class="text-slate-300 font-bold">${pair.left}</p>
+                  </div>
+                  <select class="option-btn" onchange="saveMatching(${idx}, ${pairIdx}, this.value)">
+                    <option value="">Escolha...</option>
+                    ${ex.pairs.map(p => `<option value="${p.right}">${p.right}</option>`).join('')}
+                  </select>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        container.appendChild(exCard);
+      });
+
+      updateScore();
+    }
+
+    function selectOption(exIdx, optIdx) {
+      userAnswers[exIdx] = optIdx;
+      const btns = document.querySelectorAll(`.exercise-card:nth-child(${exIdx + 1}) .option-btn`);
+      btns.forEach((btn, i) => {
+        btn.classList.remove('selected');
+        if (i === optIdx) btn.classList.add('selected');
+      });
+    }
+
+    function saveFillBlank(exIdx, value) {
+      userAnswers[exIdx] = value.toLowerCase().trim();
+    }
+
+    function selectTrueFalse(exIdx, stmtIdx, value) {
+      if (!userAnswers[exIdx]) userAnswers[exIdx] = [];
+      userAnswers[exIdx][stmtIdx] = value;
+    }
+
+    function saveMatching(exIdx, pairIdx, value) {
+      if (!userAnswers[exIdx]) userAnswers[exIdx] = [];
+      userAnswers[exIdx][pairIdx] = value;
+    }
+
+    function checkAnswers() {
+      feedbackShown = true;
+      let correct = 0;
+      let total = 0;
+
+      exercises.forEach((ex, exIdx) => {
+        if (ex.type === 'multiple_choice') {
+          total++;
+          if (userAnswers[exIdx] === ex.correct) correct++;
+        }
+        if (ex.type === 'fill_blank') {
+          total++;
+          if (userAnswers[exIdx] === ex.correct) correct++;
+        }
+        if (ex.type === 'true_false') {
+          ex.statements.forEach((stmt, stmtIdx) => {
+            total++;
+            if (userAnswers[exIdx] && userAnswers[exIdx][stmtIdx] === stmt.answer) correct++;
+          });
+        }
+        if (ex.type === 'matching') {
+          ex.pairs.forEach((pair, pairIdx) => {
+            total++;
+            if (userAnswers[exIdx] && userAnswers[exIdx][pairIdx] === pair.right) correct++;
+          });
+        }
+      });
+
+      document.getElementById('scoreDisplay').textContent = `${correct}/${total}`;
+      alert(`Você acertou ${correct} de ${total} questões!`);
+    }
+
+    function updateScore() {
+      let answered = Object.keys(userAnswers).length;
+      document.getElementById('scoreDisplay').textContent = `${answered}/${exercises.length}`;
+    }
+
+    function exportResults() {
+      const printArea = document.getElementById('printArea');
+      let html = `<h1 style="text-align: center; border-bottom: 3px solid #667eea; padding-bottom: 15px;">⭐ EXERCÍCIOS - ${currentTopic.toUpperCase()}</h1>`;
+      
+      exercises.forEach((ex, idx) => {
+        html += `<div style="margin-bottom: 30px;"><h2>Exercício ${idx + 1}</h2>`;
+        
+        if (ex.type === 'multiple_choice') {
+          html += `<p><strong>${ex.question}</strong></p><ul>`;
+          ex.options.forEach((opt, optIdx) => {
+            html += `<li>${String.fromCharCode(65 + optIdx)}) ${opt} ${optIdx === ex.correct ? '✓ CORRETA' : ''}</li>`;
+          });
+          html += `</ul>`;
+        }
+        
+        html += `</div>`;
+      });
+
+      printArea.innerHTML = html;
+      const opt = {
+        margin: 10,
+        filename: `Exercicios-${currentTopic}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+      };
+      html2pdf().set(opt).from(printArea).save();
+    }
+
+    function resetExercises() {
+      userAnswers = {};
+      feedbackShown = false;
+      document.getElementById('exercisesContainer').innerHTML = '';
+      document.getElementById('scoreDisplay').textContent = '0/0';
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

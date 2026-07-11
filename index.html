@@ -3,175 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher Lu - Dashboard de Aulas</title>
-  
+  <title>⭐ Teacher Lu - Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      font-family: 'Inter', sans-serif;
-    }
-    
-    h1, h2, h3 {
-      font-family: 'Poppins', sans-serif;
-    }
-    
-    body {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      min-height: 100vh;
-    }
-    
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
     .gradient-coral { background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%); }
+    .gradient-emerald { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
     .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
-    
-    .card {
-      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      transition: all 0.3s ease;
-    }
-    
-    .card:hover {
-      border-color: rgba(148, 163, 184, 0.4);
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    }
-    
-    .btn {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.3s ease;
-    }
-    
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    }
+    .gradient-pink { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
+    .card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2); }
+    .card:hover { border-color: rgba(148, 163, 184, 0.4); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,.4); }
+    .btn { font-family: 'Poppins', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; transition: all .3s; }
   </style>
 </head>
 <body>
-  <div class="min-h-screen py-12 px-4 flex items-center justify-center">
-    <div class="max-w-4xl w-full">
-      <!-- HEADER -->
-      <div class="text-center mb-12">
-        <div className="mb-6">
-          <h1 class="text-5xl font-bold text-white mb-4" style="font-family: 'Poppins';">
-            ⭐ Teacher Lu
-          </h1>
-          <p class="text-2xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-bold">
-            Sistema de Aulas Online
-          </p>
-        </div>
-        <p class="text-slate-400 text-lg mb-2">
-          Dashboard Pedagógico + Planejamento Estratégico
-        </p>
-        <p class="text-slate-500 text-sm">
-          ✨ Estrutura completa de 8 semanas • Cores vibrantes • Responsivo • PDF automático
-        </p>
+  <div class="min-h-screen">
+    <div class="gradient-indigo text-white p-8">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl font-bold mb-4">⭐ Teacher Lu</h1>
+        <p class="text-2xl text-indigo-100 mb-2">Sistema Completo de Aulas Online</p>
+        <p class="text-indigo-100">Aulas prontas · Gerador de aulas · Exercícios · Plano anual</p>
       </div>
+    </div>
 
-      <!-- CARDS -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        
-        <!-- CARD 1: Dashboard -->
-        <a href="lesson-generator.html" style="text-decoration: none;">
-          <div class="card rounded-2xl p-8 h-full">
-            <div class="gradient-coral p-4 rounded-xl mb-6 w-fit">
-              <span class="text-3xl">🎓</span>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Lesson Generator</h2>
-            <p class="text-slate-300 mb-6">
-              Digite um tema e gere automaticamente uma aula com 8 etapas estruturadas (60 minutos). Edite, customize, e exporte em PDF.
-            </p>
-            <div class="space-y-2 mb-6">
-              <p class="text-sm text-slate-400">✓ 8 etapas pedagógicas</p>
-              <p class="text-sm text-slate-400">✓ Totalmente personalizável</p>
-              <p class="text-sm text-slate-400">✓ Timer integrado</p>
-              <p class="text-sm text-slate-400">✓ Exportar plano de aula</p>
-            </div>
-            <div class="gradient-coral text-white font-bold py-3 px-6 rounded-xl inline-block btn">
-              Criar Aula →
+    <div class="max-w-7xl mx-auto p-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- FEATURED: Aulas de Conversação -->
+        <a href="lessons.html" style="text-decoration:none;" class="md:col-span-2">
+          <div class="card rounded-2xl p-8 h-full" style="background:linear-gradient(135deg,#312e81 0%,#4338ca 100%)">
+            <div class="flex items-start gap-6 flex-wrap">
+              <div class="gradient-pink p-4 rounded-xl w-fit"><span class="text-3xl">💬</span></div>
+              <div class="flex-1">
+                <div class="inline-block bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">⭐ NOVO — CONTEÚDO PRONTO</div>
+                <h2 class="text-3xl font-bold text-white mb-3">Aulas de Conversação</h2>
+                <p class="text-indigo-100 mb-4 max-w-2xl">Aulas prontas de verdade para adultos iniciantes (A1). 8 semanas com perguntas de conversação, vocabulário com IPA e áudio, role-plays e dado de perguntas. Chega de preparar do zero.</p>
+                <div class="flex gap-4 flex-wrap text-sm text-indigo-200 mb-5">
+                  <span>✓ 8 semanas prontas</span>
+                  <span>✓ IPA + áudio de pronúncia</span>
+                  <span>✓ Role-plays e conversação</span>
+                  <span>✓ PDF por aula</span>
+                </div>
+                <div class="gradient-pink text-white font-bold py-3 px-6 rounded-xl inline-block btn">Abrir Aulas →</div>
+              </div>
             </div>
           </div>
         </a>
 
-        <!-- CARD 2: Curriculum Map -->
-        <a href="annual-plan.html" style="text-decoration: none;">
+        <!-- Lesson Generator -->
+        <a href="lesson-generator.html" style="text-decoration:none;">
           <div class="card rounded-2xl p-8 h-full">
-            <div class="gradient-indigo p-4 rounded-xl mb-6 w-fit">
-              <span class="text-3xl">⚡</span>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Mapa Curricular (52 Semanas)</h2>
-            <p class="text-slate-300 mb-6">
-              Plano anual com 7 alunos, 52 semanas estratégicas, checkboxes de progresso e exportação de PDF.
-            </p>
+            <div class="gradient-coral p-4 rounded-xl mb-6 w-fit"><span class="text-3xl">🎓</span></div>
+            <h2 class="text-2xl font-bold text-white mb-3">Gerador de Aulas</h2>
+            <p class="text-slate-300 mb-6">Digite qualquer tema e gere a estrutura de uma aula em 8 etapas (60 min) para você preencher e adaptar.</p>
             <div class="space-y-2 mb-6">
-              <p class="text-sm text-slate-400">✓ 7 alunos monitorados</p>
-              <p class="text-sm text-slate-400">✓ 52 semanas planejadas</p>
-              <p class="text-sm text-slate-400">✓ Progresso visual</p>
-              <p class="text-sm text-slate-400">✓ Exportar plano em PDF</p>
+              <p class="text-sm text-slate-400">✓ Qualquer tema</p>
+              <p class="text-sm text-slate-400">✓ 8 etapas + timer</p>
+              <p class="text-sm text-slate-400">✓ Ferramentas (Wordwall, Kahoot)</p>
             </div>
-            <div class="gradient-indigo text-white font-bold py-3 px-6 rounded-xl inline-block btn">
-              Ver Plano →
+            <div class="gradient-coral text-white font-bold py-3 px-6 rounded-xl inline-block btn">Criar Aula →</div>
+          </div>
+        </a>
+
+        <!-- Exercise Generator -->
+        <a href="exercise-generator.html" style="text-decoration:none;">
+          <div class="card rounded-2xl p-8 h-full">
+            <div class="gradient-emerald p-4 rounded-xl mb-6 w-fit"><span class="text-3xl">✏️</span></div>
+            <h2 class="text-2xl font-bold text-white mb-3">Gerador de Exercícios</h2>
+            <p class="text-slate-300 mb-6">Exercícios prontos com múltipla escolha, preenchimento, verdadeiro/falso e matching, com feedback imediato.</p>
+            <div class="space-y-2 mb-6">
+              <p class="text-sm text-slate-400">✓ 5 tipos de exercício</p>
+              <p class="text-sm text-slate-400">✓ Feedback imediato</p>
+              <p class="text-sm text-slate-400">✓ Exportar gabarito</p>
+            </div>
+            <div class="gradient-emerald text-white font-bold py-3 px-6 rounded-xl inline-block btn">Gerar Exercícios →</div>
+          </div>
+        </a>
+
+        <!-- Annual Plan -->
+        <a href="annual-plan.html" style="text-decoration:none;" class="md:col-span-2">
+          <div class="card rounded-2xl p-8 h-full">
+            <div class="flex items-start gap-6 flex-wrap">
+              <div class="gradient-indigo p-4 rounded-xl w-fit"><span class="text-3xl">⚡</span></div>
+              <div class="flex-1">
+                <h2 class="text-2xl font-bold text-white mb-3">Mapa Curricular (52 Semanas)</h2>
+                <p class="text-slate-300 mb-4 max-w-2xl">Plano anual dos 7 alunos, 52 semanas estratégicas (A1 → A2), com checkboxes de progresso e exportação em PDF.</p>
+                <div class="flex gap-4 flex-wrap text-sm text-slate-400 mb-5">
+                  <span>✓ 7 alunos</span><span>✓ 52 semanas</span><span>✓ Progresso visual</span><span>✓ PDF por aluno</span>
+                </div>
+                <div class="gradient-indigo text-white font-bold py-3 px-6 rounded-xl inline-block btn">Ver Plano →</div>
+              </div>
             </div>
           </div>
         </a>
-          <div class="card rounded-2xl p-8 h-full">
-            <div class="gradient-indigo p-4 rounded-xl mb-6 w-fit">
-              <span class="text-3xl">⚡</span>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Mapa Curricular (8 Semanas)</h2>
-            <p class="text-slate-300 mb-6">
-              Visão estratégica completa: 8 semanas de progressão pedagógica, 24 módulos para criar, conexões entre tópicos e checklist de progresso.
-            </p>
-            <div class="space-y-2 mb-6">
-              <p class="text-sm text-slate-400">✓ Progressão espiral inteligente</p>
-              <p class="text-sm text-slate-400">✓ 24 módulos planejados</p>
-              <p class="text-sm text-slate-400">✓ Checklist interativo</p>
-              <p class="text-sm text-slate-400">✓ Notas por semana</p>
-            </div>
-            <div class="gradient-indigo text-white font-bold py-3 px-6 rounded-xl inline-block btn">
-              Ver Plano →
-            </div>
-          </div>
-        </a>
+
       </div>
 
-      <!-- INFO -->
-      <div class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-8 text-center">
-        <h3 class="text-xl font-bold text-white mb-4">Como funciona?</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <p class="text-3xl mb-2">📋</p>
-            <p class="text-slate-300 text-sm">
-              <strong>Planeje:</strong> Use o Mapa Curricular para organizar suas 8 semanas
-            </p>
-          </div>
-          <div>
-            <p class="text-3xl mb-2">🎯</p>
-            <p class="text-slate-300 text-sm">
-              <strong>Crie:</strong> Adicione módulos ao Dashboard seguindo a estratégia pedagógica
-            </p>
-          </div>
-          <div>
-            <p class="text-3xl mb-2">📊</p>
-            <p class="text-slate-300 text-sm">
-              <strong>Use:</strong> Com alunos, rastreie respostas, exporte PDFs, resete para próximos
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- FOOTER -->
       <div class="text-center mt-12">
-        <p class="text-slate-500 text-sm mb-4">
-          Sistema pedagógico profissional para aulas online de English
-        </p>
-        <p class="text-slate-600 text-xs">
-          Teacher Lu's Strategic Curriculum System © 2026 • Parchment Editorial
-        </p>
+        <p class="text-slate-400 text-sm">⭐ Teacher Lu — Sistema Completo de Aulas Online</p>
+        <p class="text-slate-600 text-xs mt-2">Parchment Editorial | 2026</p>
       </div>
     </div>
   </div>

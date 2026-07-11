@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⭐ Teacher Lu - Aulas de Conversação</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  h1,h2,h3,h4 { font-family: 'Poppins', sans-serif; }
+  body { background: linear-gradient(135deg,#0f172a 0%,#1e293b 100%); }
+  .gradient-indigo{background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);}
+  .gradient-emerald{background:linear-gradient(135deg,#10b981 0%,#34d399 100%);}
+  .gradient-coral{background:linear-gradient(135deg,#ff6b4a 0%,#ff8566 100%);}
+  .gradient-amber{background:linear-gradient(135deg,#f59e0b 0%,#fbbf24 100%);}
+  .gradient-pink{background:linear-gradient(135deg,#ec4899 0%,#f472b6 100%);}
+  .card{background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border:1px solid rgba(148,163,184,.2);}
+  .stage{border-left:5px solid;border-radius:12px;padding:24px;margin-bottom:18px;background:linear-gradient(135deg,#1e293b 0%,#293548 100%);}
+  .q-item{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px 16px;margin:8px 0;color:#e2e8f0;transition:all .2s;font-size:15px;}
+  .q-item:hover{border-color:#6366f1;}
+  .q-item.flash{background:#6366f1;border-color:#818cf8;transform:scale(1.02);box-shadow:0 8px 25px rgba(99,102,241,.5);}
+  .vocab-card{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .ipa{color:#fbbf24;font-family:'Times New Roman',serif;font-size:15px;}
+  .speak-btn{background:#334155;border:none;color:#818cf8;width:38px;height:38px;border-radius:8px;cursor:pointer;font-size:18px;flex-shrink:0;transition:all .2s;}
+  .speak-btn:hover{background:#6366f1;color:white;}
+  .week-btn{white-space:nowrap;padding:10px 16px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;background:#334155;color:#cbd5e1;border:2px solid transparent;}
+  .week-btn:hover{border-color:#6366f1;}
+  .week-btn.active{background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);color:white;}
+  .answer{display:none;margin-top:8px;color:#34d399;font-weight:600;}
+  .answer.show{display:block;}
+</style>
+</head>
+<body>
+<div class="min-h-screen">
+  <!-- HEADER -->
+  <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold">⭐ Aulas de Conversação</h1>
+          <p class="text-indigo-100 text-sm">Conteúdo pronto • Adulto A1 • Foco em falar</p>
+        </div>
+        <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 text-sm">← Menu</button>
+      </div>
+      <!-- WEEK SELECTOR -->
+      <div class="flex gap-2 overflow-x-auto pb-1" id="weekSelector"></div>
+    </div>
+  </div>
+
+  <!-- LESSON -->
+  <div class="max-w-5xl mx-auto p-4 md:p-6">
+    <div id="lessonTitle" class="card rounded-xl p-6 mb-6"></div>
+    <div id="lessonBody"></div>
+
+    <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
+      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">📄 Baixar aula em PDF</button>
+    </div>
+    <div id="printArea" class="hidden"></div>
+  </div>
+</div>
+
+<script>
+// ============ CONTEÚDO DAS AULAS (semanas 1-8) ============
+const lessons = [
+{
+  week:1, theme:"I Am — Quem sou eu", level:"A1", grammar:"Verb to be (am/is/are)",
+  warmup:["Hello! How are you today?","Are you ready to speak English?","Say your name in English: \"My name is...\""],
+  review:["(Primeira aula — sem revisão. Comece direto no Lead-in.)"],
+  leadin:{text:"Quando você conhece uma pessoa nova, o que você fala primeiro? Em inglês, a gente se apresenta.",q:"When you meet a new person, what do you say?"},
+  vocab:[
+    {en:"name",ipa:"/neɪm/",pt:"nome"},
+    {en:"age",ipa:"/eɪdʒ/",pt:"idade"},
+    {en:"from",ipa:"/frɒm/",pt:"de (origem)"},
+    {en:"country",ipa:"/ˈkʌntri/",pt:"país"},
+    {en:"city",ipa:"/ˈsɪti/",pt:"cidade"},
+    {en:"married",ipa:"/ˈmærɪd/",pt:"casado(a)"},
+    {en:"single",ipa:"/ˈsɪŋɡl/",pt:"solteiro(a)"},
+    {en:"happy",ipa:"/ˈhæpi/",pt:"feliz"},
+    {en:"tired",ipa:"/ˈtaɪəd/",pt:"cansado(a)"},
+    {en:"Nice to meet you",ipa:"/naɪs tə miːt juː/",pt:"prazer em conhecer"}
+  ],
+  grammar:{exp:"O verbo TO BE é \"ser/estar\". Muda conforme quem fala: I <b>am</b> / you-we-they <b>are</b> / he-she-it <b>is</b>. Na fala usamos a forma curta: I'm, you're, she's.",
+    ex:["I am Luana. (I'm Luana)","You are a student. (You're a student)","She is happy. (She's happy)","We are from Brazil. (We're from Brazil)"]},
+  practice:[
+    {q:"My name ___ Ana.",a:"is"},
+    {q:"I ___ from Brazil.",a:"am"},
+    {q:"They ___ students.",a:"are"},
+    {q:"He ___ 40 years old.",a:"is"},
+    {q:"We ___ happy today.",a:"are"}
+  ],
+  speaking:[
+    "What's your name?",
+    "How old are you?",
+    "Where are you from?",
+    "Are you married or single?",
+    "How are you today? Why?",
+    "Are you a happy person?",
+    "What city are you from? Is it big or small?",
+    "Are you tired now?",
+    "Tell me three things about you."
+  ],
+  roleplay:{title:"Role-play: Numa festa",scenario:"Vocês se conhecem numa festa. Um começa, o outro responde e pergunta de volta.",lines:["A: Hi! I'm ___. What's your name?","B: Nice to meet you! I'm ___.","A: Where are you from?","B: I'm from ___. And you?"]},
+  homework:{tasks:["Escreva 5 frases sobre você usando \"I am...\"","Grave um áudio de 30 segundos se apresentando"],link:"https://test-english.com/grammar-points/a1/to-be/"}
+},
+{
+  week:2, theme:"Nationality & Jobs — De onde e o que faço", level:"A1", grammar:"To be (negativo e perguntas)",
+  warmup:["Hi! How are you?","Are you busy today?","What's your name again? Where are you from?"],
+  review:["Reative a semana 1: What's your name? / How old are you? / Where are you from?"],
+  leadin:{text:"Toda pessoa tem uma origem e (quase sempre) um trabalho. Hoje aprendemos a falar profissão e nacionalidade.",q:"What's your job? What do you do?"},
+  vocab:[
+    {en:"job",ipa:"/dʒɒb/",pt:"trabalho / emprego"},
+    {en:"teacher",ipa:"/ˈtiːtʃə/",pt:"professor(a)"},
+    {en:"doctor",ipa:"/ˈdɒktə/",pt:"médico(a)"},
+    {en:"engineer",ipa:"/ˌendʒɪˈnɪə/",pt:"engenheiro(a)"},
+    {en:"nurse",ipa:"/nɜːs/",pt:"enfermeiro(a)"},
+    {en:"student",ipa:"/ˈstjuːdnt/",pt:"estudante"},
+    {en:"retired",ipa:"/rɪˈtaɪəd/",pt:"aposentado(a)"},
+    {en:"Brazilian",ipa:"/brəˈzɪliən/",pt:"brasileiro(a)"},
+    {en:"work",ipa:"/wɜːk/",pt:"trabalhar"},
+    {en:"busy",ipa:"/ˈbɪzi/",pt:"ocupado(a)"}
+  ],
+  grammar:{exp:"Negativo: coloque NOT depois do to be → I'm not, he isn't, they aren't. Pergunta: inverta → Are you...? Is he...? Resposta curta: Yes, I am / No, I'm not.",
+    ex:["I'm not a doctor.","She isn't Brazilian.","Are you a teacher? — Yes, I am.","Is he a student? — No, he isn't."]},
+  practice:[
+    {q:"___ you a teacher? (pergunta)",a:"Are"},
+    {q:"He ___ (not) from the USA.",a:"isn't / is not"},
+    {q:"___ she a nurse? (pergunta)",a:"Is"},
+    {q:"I ___ (not) tired today.",a:"am not / 'm not"}
+  ],
+  speaking:[
+    "What's your job?",
+    "Are you happy with your job?",
+    "Are you a student now?",
+    "What's your nationality?",
+    "Is your job difficult?",
+    "Are you busy at work these days?",
+    "What's your dream job?",
+    "Are your colleagues nice?"
+  ],
+  roleplay:{title:"Role-play: Entrevista rápida",scenario:"Um é o entrevistador, o outro responde. Depois troquem.",lines:["A: What's your name?","B: ___","A: What do you do?","B: I'm a ___.","A: Are you Brazilian?","B: Yes, I am. / No, I'm not — I'm ___."]},
+  homework:{tasks:["Escreva 5 frases sobre seu trabalho (ou de um amigo)","Descreva a nacionalidade de 3 pessoas famosas"],link:"https://test-english.com/grammar-points/a1/to-be-2/"}
+},
+{
+  week:3, theme:"Family — Minha família", level:"A1", grammar:"Adjetivos possessivos (my, your, his...)",
+  warmup:["Hi! How's your day?","How are you feeling today?","Are you tired or full of energy?"],
+  review:["Reative: What's your job? Are you married or single?"],
+  leadin:{text:"Família é um tema que todo adulto adora falar. Mostre uma foto ou fale das pessoas mais próximas.",q:"How many people are in your family?"},
+  vocab:[
+    {en:"mother",ipa:"/ˈmʌðə/",pt:"mãe"},
+    {en:"father",ipa:"/ˈfɑːðə/",pt:"pai"},
+    {en:"brother",ipa:"/ˈbrʌðə/",pt:"irmão"},
+    {en:"sister",ipa:"/ˈsɪstə/",pt:"irmã"},
+    {en:"son",ipa:"/sʌn/",pt:"filho"},
+    {en:"daughter",ipa:"/ˈdɔːtə/",pt:"filha"},
+    {en:"husband",ipa:"/ˈhʌzbənd/",pt:"marido"},
+    {en:"wife",ipa:"/waɪf/",pt:"esposa"},
+    {en:"children",ipa:"/ˈtʃɪldrən/",pt:"filhos (crianças)"},
+    {en:"parents",ipa:"/ˈpeərənts/",pt:"pais"}
+  ],
+  grammar:{exp:"Possessivos mostram de quem é: my (meu), your (seu), his (dele), her (dela), our (nosso), their (deles). Vêm antes do substantivo: This is <b>my</b> sister. <b>Her</b> name is Ana.",
+    ex:["This is my mother.","His father is a doctor.","Her name is Maria.","Our children are students."]},
+  practice:[
+    {q:"This is ___ (eu) brother.",a:"my"},
+    {q:"Ana is a nurse. ___ (dela) job is hard.",a:"Her"},
+    {q:"Tom and I have a house. ___ (nosso) house is small.",a:"Our"},
+    {q:"They love ___ (deles) parents.",a:"their"}
+  ],
+  speaking:[
+    "How many people are in your family?",
+    "Do you have brothers or sisters? How many?",
+    "What's your mother's name?",
+    "Are you close to your family?",
+    "Do you have children? Tell me about them.",
+    "Who is your favorite person in the family? Why?",
+    "Tell me about your family in 4 sentences."
+  ],
+  roleplay:{title:"Role-play: Mostrando fotos",scenario:"Um mostra fotos (reais ou imaginárias) e descreve; o outro faz perguntas.",lines:["A: This is my ___. Her/His name is ___.","B: Nice! How old is she/he?","A: She/He is ___.","B: What does she/he do?"]},
+  homework:{tasks:["Descreva sua família em 5 frases com possessivos","Desenhe uma árvore genealógica simples com os nomes em inglês"],link:"https://test-english.com/grammar-points/a1/possessive-adjectives-pronouns/"}
+},
+{
+  week:4, theme:"Daily Routine — Minha rotina", level:"A1", grammar:"Simple Present",
+  warmup:["Good morning! How are you?","What time did you wake up today?","Did you have coffee already?"],
+  review:["Reative: Tell me about your family. How many brothers/sisters?"],
+  leadin:{text:"O que você faz todos os dias? Rotina é ótimo porque é concreto e o aluno tem muito o que dizer.",q:"What do you do every morning?"},
+  vocab:[
+    {en:"wake up",ipa:"/weɪk ʌp/",pt:"acordar"},
+    {en:"get up",ipa:"/ɡet ʌp/",pt:"levantar da cama"},
+    {en:"take a shower",ipa:"/teɪk ə ˈʃaʊə/",pt:"tomar banho"},
+    {en:"have breakfast",ipa:"/hæv ˈbrekfəst/",pt:"tomar café da manhã"},
+    {en:"go to work",ipa:"/ɡəʊ tə wɜːk/",pt:"ir trabalhar"},
+    {en:"have lunch",ipa:"/hæv lʌntʃ/",pt:"almoçar"},
+    {en:"cook",ipa:"/kʊk/",pt:"cozinhar"},
+    {en:"have dinner",ipa:"/hæv ˈdɪnə/",pt:"jantar"},
+    {en:"go to bed",ipa:"/ɡəʊ tə bed/",pt:"ir dormir"},
+    {en:"sleep",ipa:"/sliːp/",pt:"dormir"}
+  ],
+  grammar:{exp:"Simple Present = rotina e hábito. I/you/we/they + verbo. He/she/it + verbo com <b>-s</b>. Horas: at 7 o'clock, at 8 AM.",
+    ex:["I wake up at 7 o'clock.","She goes to work at 8 AM.","He has lunch at noon.","We go to bed late."]},
+  practice:[
+    {q:"I ___ (wake up) at 6.",a:"wake up"},
+    {q:"She ___ (go) to work by car.",a:"goes"},
+    {q:"He ___ (have) breakfast at 8.",a:"has"},
+    {q:"They ___ (sleep) 8 hours.",a:"sleep"}
+  ],
+  speaking:[
+    "What time do you wake up?",
+    "What do you have for breakfast?",
+    "What time do you start work?",
+    "When do you have lunch?",
+    "What do you do after work?",
+    "What time do you go to bed?",
+    "Describe your typical day, morning to night."
+  ],
+  roleplay:{title:"Role-play: Rotinas iguais?",scenario:"Cada um descreve sua manhã. Achem UMA coisa que fazem igual.",lines:["A: I wake up at ___ and I ___.","B: I wake up at ___ too! Then I ___.","A: We both ___!"]},
+  homework:{tasks:["Escreva sua rotina completa (manhã, tarde, noite)","Grave um áudio descrevendo seu dia"],link:"https://test-english.com/grammar-points/a1/present-simple/"}
+},
+{
+  week:5, theme:"Frequency — Com que frequência", level:"A1", grammar:"Advérbios de frequência",
+  warmup:["Hi! How often do we meet? :)","How are you today?","What did you do this morning?"],
+  review:["Reative a rotina: What time do you wake up? What do you do after work?"],
+  leadin:{text:"Nem tudo acontece todo dia. Hoje aprendemos a dizer COM QUE FREQUÊNCIA fazemos as coisas.",q:"How often do you exercise?"},
+  vocab:[
+    {en:"always",ipa:"/ˈɔːlweɪz/",pt:"sempre"},
+    {en:"usually",ipa:"/ˈjuːʒuəli/",pt:"geralmente"},
+    {en:"often",ipa:"/ˈɒfn/",pt:"frequentemente"},
+    {en:"sometimes",ipa:"/ˈsʌmtaɪmz/",pt:"às vezes"},
+    {en:"rarely",ipa:"/ˈreəli/",pt:"raramente"},
+    {en:"never",ipa:"/ˈnevə/",pt:"nunca"},
+    {en:"every day",ipa:"/ˈevri deɪ/",pt:"todo dia"},
+    {en:"once a week",ipa:"/wʌns ə wiːk/",pt:"uma vez por semana"}
+  ],
+  grammar:{exp:"O advérbio vem <b>antes</b> do verbo principal, mas <b>depois</b> do verbo to be. \"every day / once a week\" ficam no fim da frase.",
+    ex:["I always drink coffee.","She usually works from home.","He is never late.","We travel twice a year."]},
+  practice:[
+    {q:"I ___ eat breakfast (100%).",a:"always"},
+    {q:"She is ___ tired (raramente).",a:"rarely"},
+    {q:"They ___ go out (às vezes).",a:"sometimes"},
+    {q:"He ___ smokes (0%).",a:"never"}
+  ],
+  speaking:[
+    "How often do you exercise?",
+    "Do you always eat breakfast?",
+    "What do you usually do on weekends?",
+    "How often do you see your friends?",
+    "How often do you cook at home?",
+    "What do you never do?",
+    "How often do you travel?"
+  ],
+  roleplay:{title:"Role-play: Pesquisa \"How often\"",scenario:"Faça 3 perguntas \"How often...?\" para o parceiro. Depois ele pergunta para você.",lines:["A: How often do you ___?","B: I ___ ___. And you?","A: I ___ ___."]},
+  homework:{tasks:["Escreva 5 frases sobre você com advérbios de frequência","Faça uma lista: coisas que você always/never faz"],link:"https://test-english.com/grammar-points/a1/adverbs-of-frequency/"}
+},
+{
+  week:6, theme:"Free Time — Tempo livre", level:"A1", grammar:"like / love / hate + -ing",
+  warmup:["Hi! How was your weekend?","Are you relaxed or stressed today?","What did you do for fun recently?"],
+  review:["Reative frequência: How often do you exercise? What do you usually do on weekends?"],
+  leadin:{text:"Todo mundo tem algo que ama fazer no tempo livre. Esse tema gera muita conversa com adultos.",q:"What do you like doing in your free time?"},
+  vocab:[
+    {en:"read",ipa:"/riːd/",pt:"ler"},
+    {en:"watch TV",ipa:"/wɒtʃ ˌtiːˈviː/",pt:"assistir TV"},
+    {en:"listen to music",ipa:"/ˈlɪsn tə ˈmjuːzɪk/",pt:"ouvir música"},
+    {en:"travel",ipa:"/ˈtrævl/",pt:"viajar"},
+    {en:"dance",ipa:"/dɑːns/",pt:"dançar"},
+    {en:"go out",ipa:"/ɡəʊ aʊt/",pt:"sair"},
+    {en:"relax",ipa:"/rɪˈlæks/",pt:"relaxar"},
+    {en:"paint",ipa:"/peɪnt/",pt:"pintar"},
+    {en:"garden",ipa:"/ˈɡɑːdn/",pt:"cuidar do jardim"},
+    {en:"hobby",ipa:"/ˈhɒbi/",pt:"hobby"}
+  ],
+  grammar:{exp:"Depois de like / love / enjoy / hate, o verbo ganha <b>-ing</b>: I like read<b>ing</b>. Negativo: I don't like cooking. He doesn't like running.",
+    ex:["I love reading.","She enjoys dancing.","I don't like cooking.","He hates waking up early."]},
+  practice:[
+    {q:"I like ___ (read) books.",a:"reading"},
+    {q:"She loves ___ (dance).",a:"dancing"},
+    {q:"They don't like ___ (cook).",a:"cooking"},
+    {q:"He enjoys ___ (travel).",a:"traveling"}
+  ],
+  speaking:[
+    "What do you like doing in your free time?",
+    "Do you like reading? What kind of books?",
+    "What music do you love?",
+    "Do you enjoy cooking?",
+    "What don't you like doing at all?",
+    "How do you relax after a hard day?",
+    "What's your favorite hobby? Why?"
+  ],
+  roleplay:{title:"Role-play: Achem um hobby em comum",scenario:"Conversem sobre gostos até descobrirem algo que os dois gostam de fazer.",lines:["A: I really like ___. Do you like it too?","B: Not really. But I love ___.","A: Me too! We both like ___."]},
+  homework:{tasks:["Escreva 5 frases sobre o que você gosta e não gosta de fazer","Faça uma lista dos seus 3 hobbies favoritos"],link:"https://test-english.com/grammar-points/a1/verbs-ing-infinitive/"}
+},
+{
+  week:7, theme:"Sports & Now — Esportes e o agora", level:"A1", grammar:"Present Continuous (agora) vs Simple Present (hábito)",
+  warmup:["Hi! What are you doing right now? (You're speaking English!)","How are you today?","Are you doing any sport these days?"],
+  review:["Reative tempo livre: What's your favorite hobby? What do you like doing?"],
+  leadin:{text:"Diferença importante e divertida: o que você faz sempre (hábito) x o que você está fazendo AGORA.",q:"What are you doing right now?"},
+  vocab:[
+    {en:"football",ipa:"/ˈfʊtbɔːl/",pt:"futebol"},
+    {en:"running",ipa:"/ˈrʌnɪŋ/",pt:"corrida"},
+    {en:"swimming",ipa:"/ˈswɪmɪŋ/",pt:"natação"},
+    {en:"gym",ipa:"/dʒɪm/",pt:"academia"},
+    {en:"walking",ipa:"/ˈwɔːkɪŋ/",pt:"caminhada"},
+    {en:"cycling",ipa:"/ˈsaɪklɪŋ/",pt:"ciclismo"},
+    {en:"yoga",ipa:"/ˈjəʊɡə/",pt:"ioga"},
+    {en:"team",ipa:"/tiːm/",pt:"time"},
+    {en:"win",ipa:"/wɪn/",pt:"ganhar"},
+    {en:"right now",ipa:"/raɪt naʊ/",pt:"agora mesmo"}
+  ],
+  grammar:{exp:"Present Continuous = agora: am/is/are + verbo-<b>ing</b>. Compare: I usually play football (hábito), but right now I <b>am studying</b> English (agora).",
+    ex:["I'm studying English right now.","She is running in the park.","We are talking on the phone.","They are watching a game now."]},
+  practice:[
+    {q:"Right now I ___ (speak) English.",a:"am speaking / 'm speaking"},
+    {q:"She ___ (run) at the moment.",a:"is running"},
+    {q:"Usually he ___ (play) football on Sundays.",a:"plays"},
+    {q:"Look! They ___ (swim).",a:"are swimming"}
+  ],
+  speaking:[
+    "Do you play any sport?",
+    "What sport do you like watching?",
+    "Do you go to the gym? How often?",
+    "What are you doing right now?",
+    "Are you doing any exercise these days?",
+    "What do you usually do on Sundays? And what are you doing this Sunday?",
+    "What's your favorite team?"
+  ],
+  roleplay:{title:"Role-play: O que eles estão fazendo?",scenario:"Imagine 3 pessoas em lugares diferentes. Descreva o que cada uma está fazendo agora.",lines:["A: The man in the park is ___ing.","B: The woman at home is ___ing.","A: The children are ___ing."]},
+  homework:{tasks:["Escreva 3 frases de hábito + 2 frases de \"agora\"","Grave um áudio: \"Right now I am...\""],link:"https://test-english.com/grammar-points/a1/present-continuous/"}
+},
+{
+  week:8, theme:"Review — Grande conversa (recap 1-7)", level:"A1", grammar:"Tudo: to be, present simple, frequência, -ing, continuous",
+  warmup:["Hi! Ready for a big conversation today?","How are you feeling about your English?","Can you say 3 sentences about yourself? Go!"],
+  review:["Hoje NÃO tem conteúdo novo — é dia de FALAR e revisar tudo com confiança."],
+  leadin:{text:"Semana de consolidação. O objetivo é o aluno falar bastante, juntando identidade + rotina + gostos + esportes. Puro speaking.",q:"Tell me everything about you — who you are, your routine, and what you love."},
+  vocab:[
+    {en:"(revisão)",ipa:"—",pt:"Reveja o vocabulário das semanas 1 a 7 rapidamente antes de falar."}
+  ],
+  grammar:{exp:"Sem gramática nova. Observe se o aluno usa bem: to be, verbo com -s (he/she), advérbios de frequência e a diferença hábito × agora.",
+    ex:["I'm ___ and I'm from ___.","I usually ___, but right now I'm ___.","I love ___ing.","I never ___."]},
+  practice:[
+    {q:"Autoavaliação: Can you introduce yourself? (name, age, from)",a:"✓ se conseguir sem ajuda"},
+    {q:"Can you describe your daily routine?",a:"✓ se conseguir sem ajuda"},
+    {q:"Can you say what you like and don't like doing?",a:"✓ se conseguir sem ajuda"},
+    {q:"Can you say what you're doing right now?",a:"✓ se conseguir sem ajuda"}
+  ],
+  speaking:[
+    "Introduce yourself completely (name, age, city, job).",
+    "Tell me about your family.",
+    "Describe your daily routine.",
+    "What do you usually do on weekends?",
+    "What do you love doing? What do you hate doing?",
+    "Do you play any sport?",
+    "What are you doing today after this class?",
+    "How often do you speak English?",
+    "What's your dream for this year?",
+    "What was the most useful thing you learned in these weeks?"
+  ],
+  roleplay:{title:"Role-play: Novo amigo (junta tudo)",scenario:"Um faz o papel de alguém que acabou de te conhecer e quer saber TUDO. O outro responde com frases completas. Depois troquem.",lines:["A: Hi! Nice to meet you. Tell me about yourself.","B: (nome, idade, cidade, trabalho)","A: What do you do every day?","B: (rotina + frequência)","A: And what do you love doing?","B: (gostos + esporte)"]},
+  homework:{tasks:["Grave um áudio de 1 minuto falando sobre você (junte tudo)","Faça o teste de revisão A1 no Test-English"],link:"https://test-english.com/grammar-points/a1/"}
+}
+];
+
+// ============ RENDER ============
+let current = 0;
+
+function renderSelector(){
+  const s = document.getElementById('weekSelector');
+  s.innerHTML = lessons.map((l,i)=>`<button class="week-btn ${i===current?'active':''}" onclick="selectWeek(${i})">S${l.week} · ${l.theme.split('—')[0].trim()}</button>`).join('');
+}
+
+function selectWeek(i){ current=i; renderSelector(); renderLesson(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function speak(word){
+  if(!('speechSynthesis' in window)){alert('Áudio não suportado neste navegador');return;}
+  const clean = word.replace(/\(.*?\)/g,'').trim();
+  const u = new SpeechSynthesisUtterance(clean);
+  u.lang='en-US'; u.rate=0.9;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+
+function randomQuestion(){
+  const items = document.querySelectorAll('#speakingList .q-item');
+  if(!items.length) return;
+  items.forEach(it=>it.classList.remove('flash'));
+  const pick = items[Math.floor(Math.random()*items.length)];
+  pick.classList.add('flash');
+  pick.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function toggleAnswer(id){ document.getElementById(id).classList.toggle('show'); }
+
+function renderLesson(){
+  const l = lessons[current];
+  document.getElementById('lessonTitle').innerHTML = `
+    <div class="flex items-center gap-3 mb-1">
+      <span class="text-xs bg-indigo-600 text-white px-2 py-1 rounded font-bold">SEMANA ${l.week}</span>
+      <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${l.level}</span>
+    </div>
+    <h2 class="text-2xl md:text-3xl font-bold text-white">${l.theme}</h2>
+    <p class="text-slate-400 mt-1">📚 Gramática: ${l.grammar} · ⏱️ 60 min</p>`;
+
+  const body = document.getElementById('lessonBody');
+  let h = '';
+
+  // 1 WARM-UP
+  h += stageBlock('#3b82f6','👋 1 · Welcome + Small Talk','5 min · aquecer em inglês',
+    l.warmup.map(q=>`<div class="q-item">${q}</div>`).join(''));
+
+  // 2 REVIEW
+  h += stageBlock('#22c55e','📚 2 · Review','8 min · revisar a aula anterior',
+    l.review.map(q=>`<div class="q-item">${q}</div>`).join(''));
+
+  // 3 LEAD-IN
+  h += stageBlock('#a855f7','🎯 3 · Lead-in','5 min · apresentar o tema',
+    `<p class="text-slate-300 mb-3">${l.leadin.text}</p><div class="q-item">${l.leadin.q}</div>`);
+
+  // 4 VOCABULARY
+  h += stageBlock('#eab308','📝 4 · Vocabulary','8 min · clique 🔊 para ouvir',
+    `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`+
+    l.vocab.map(v=>`<div class="vocab-card">
+        <div><div class="text-white font-bold">${v.en}</div>
+        <div class="ipa">${v.ipa}</div>
+        <div class="text-slate-400 text-sm">${v.pt}</div></div>
+        <button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">🔊</button>
+      </div>`).join('')+`</div>`);
+
+  // 5 GRAMMAR
+  h += stageBlock('#ef4444','📖 5 · Grammar Focus','10 min · a estrutura',
+    `<p class="text-slate-300 mb-3">${l.grammar.exp}</p>
+     <div class="space-y-2">${l.grammar.ex.map(e=>`<div class="q-item" style="color:#fca5a5">${e}</div>`).join('')}</div>`);
+
+  // 6 CONTROLLED PRACTICE
+  h += stageBlock('#ec4899','✏️ 6 · Controlled Practice','8 min · fixar sem pressão',
+    l.practice.map((p,idx)=>{
+      const id=`ans-${l.week}-${idx}`;
+      return `<div class="q-item">
+        <div class="flex items-center justify-between gap-3">
+          <span>${idx+1}. ${p.q}</span>
+          <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded flex-shrink-0">ver resposta</button>
+        </div>
+        <div id="${id}" class="answer">✓ ${p.a}</div>
+      </div>`;
+    }).join(''));
+
+  // 7 SPEAKING (star)
+  h += stageBlock('#06b6d4','💬 7 · Speaking / Activate','12 min · a hora de FALAR',
+    `<div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+       <p class="text-slate-400 text-sm">Faça as perguntas ao aluno. Deixe ele falar à vontade.</p>
+       <button onclick="randomQuestion()" class="gradient-amber text-white font-bold py-2 px-4 rounded-lg text-sm">🎲 Pergunta aleatória</button>
+     </div>
+     <div id="speakingList">${l.speaking.map(q=>`<div class="q-item">${q}</div>`).join('')}</div>
+     <div class="mt-5 p-4 rounded-xl" style="background:linear-gradient(135deg,#312e81 0%,#1e3a8a 100%);border:1px solid #6366f1">
+       <p class="text-indigo-200 font-bold mb-2">🎭 ${l.roleplay.title}</p>
+       <p class="text-slate-300 text-sm mb-3">${l.roleplay.scenario}</p>
+       ${l.roleplay.lines.map(line=>`<p class="text-white text-sm mb-1">${line}</p>`).join('')}
+     </div>`);
+
+  // 8 WRAP-UP
+  h += stageBlock('#10b981','🎓 8 · Wrap-up + Homework','4 min · consolidar',
+    `<p class="text-slate-300 font-bold mb-2">Homework:</p>
+     ${l.homework.tasks.map(t=>`<div class="q-item">📌 ${t}</div>`).join('')}
+     <a href="${l.homework.link}" target="_blank" class="inline-block mt-3 gradient-coral text-white font-bold py-2 px-4 rounded-lg text-sm">📊 Praticar no Test-English →</a>`);
+
+  body.innerHTML = h;
+}
+
+function stageBlock(color,title,sub,inner){
+  return `<div class="stage" style="border-left-color:${color}">
+    <div class="mb-4"><h3 class="text-xl font-bold text-white">${title}</h3>
+    <p class="text-slate-400 text-sm">${sub}</p></div>${inner}</div>`;
+}
+
+// ============ PDF ============
+function exportLesson(){
+  const l = lessons[current];
+  const pa = document.getElementById('printArea');
+  let h = `<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
+    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">⭐ Teacher Lu — Semana ${l.week}: ${l.theme}</h1>
+    <p style="text-align:center;color:#666">Nível ${l.level} · Gramática: ${l.grammar} · 60 min</p>`;
+  const sec=(t,c)=>`<h2 style="border-left:4px solid #6366f1;padding-left:10px;margin-top:22px">${t}</h2>${c}`;
+  h+=sec('👋 1 · Welcome + Small Talk',l.warmup.map(q=>`<p>• ${q}</p>`).join(''));
+  h+=sec('📚 2 · Review',l.review.map(q=>`<p>• ${q}</p>`).join(''));
+  h+=sec('🎯 3 · Lead-in',`<p>${l.leadin.text}</p><p><b>${l.leadin.q}</b></p>`);
+  h+=sec('📝 4 · Vocabulary',`<table style="width:100%;border-collapse:collapse">${l.vocab.map(v=>`<tr><td style="border:1px solid #ddd;padding:6px"><b>${v.en}</b></td><td style="border:1px solid #ddd;padding:6px">${v.ipa}</td><td style="border:1px solid #ddd;padding:6px">${v.pt}</td></tr>`).join('')}</table>`);
+  h+=sec('📖 5 · Grammar Focus',`<p>${l.grammar.exp.replace(/<b>/g,'').replace(/<\/b>/g,'')}</p>${l.grammar.ex.map(e=>`<p>• ${e}</p>`).join('')}`);
+  h+=sec('✏️ 6 · Controlled Practice',l.practice.map((p,i)=>`<p>${i+1}. ${p.q} <b>(${p.a})</b></p>`).join(''));
+  h+=sec('💬 7 · Speaking',l.speaking.map(q=>`<p>• ${q}</p>`).join('')+`<p style="margin-top:10px"><b>🎭 ${l.roleplay.title}:</b> ${l.roleplay.scenario}</p>${l.roleplay.lines.map(x=>`<p style="margin-left:15px">${x}</p>`).join('')}`);
+  h+=sec('🎓 8 · Wrap-up + Homework',l.homework.tasks.map(t=>`<p>📌 ${t}</p>`).join('')+`<p>Link: ${l.homework.link}</p>`);
+  h+=`</div>`;
+  pa.innerHTML=h;
+  html2pdf().set({margin:8,filename:`Aula-S${l.week}-${l.theme.split('—')[0].trim()}.pdf`,image:{type:'jpeg',quality:.98},html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}).from(pa).save();
+}
+
+function goHome(){ window.location.href='index.html'; }
+
+renderSelector();
+renderLesson();
+</script>
+</body>
+</html>
