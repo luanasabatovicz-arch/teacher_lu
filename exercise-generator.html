@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⭐ Sabatovicz - Exercise Generator</title>
+<title>Sabatovicz - Exercise Generator</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { font-family:'Inter',sans-serif; }
   h1,h2,h3 { font-family:'Poppins',sans-serif; }
@@ -30,17 +30,49 @@
   .theme-btn.active{background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);color:#fff;}
   .correct-note{color:#34d399;font-weight:600;font-size:13px;margin-top:6px;}
   select.inp option{background:#0f172a;}
+
+/* ===== PREMIUM OVERRIDE (Sabatovicz) ===== */
+:root{--bg:#141310;--surface:#1c1a15;--surface2:#232019;--line:rgba(201,169,97,.16);--text:#ECE6DA;--muted:#A79F8E;--gold:#C9A961;--gold2:#B4924F;}
+body{background:linear-gradient(180deg,#151310 0%,#100E0B 100%) !important;color:var(--text) !important;}
+*{font-family:'Outfit',sans-serif;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif !important;font-weight:600 !important;letter-spacing:.01em;}
+.topbar{background:linear-gradient(180deg,#1E1B15 0%,#161310 100%) !important;border-bottom:1px solid var(--line);}
+[onclick="goHome()"]{background:transparent !important;border:1px solid rgba(201,169,97,.42) !important;color:var(--gold) !important;font-family:'Outfit',sans-serif !important;font-weight:500 !important;}
+[onclick="goHome()"]:hover{background:rgba(201,169,97,.10) !important;}
+.card{background:var(--surface) !important;border:1px solid var(--line) !important;box-shadow:none !important;border-radius:10px !important;}
+.card:hover{border-color:rgba(201,169,97,.34) !important;transform:none !important;box-shadow:0 12px 34px rgba(0,0,0,.4) !important;}
+.gradient-coral,.gradient-emerald,.gradient-amber,.gradient-pink,.gradient-indigo{background:linear-gradient(135deg,#CBAB63 0%,#B08F4C 100%) !important;color:#181510 !important;}
+.btn{font-family:'Outfit',sans-serif !important;font-weight:600 !important;text-transform:none !important;letter-spacing:.04em !important;}
+.stage,.ex-card,.week-card{border-left-color:var(--gold) !important;border-radius:8px !important;}
+.custom-checkbox{border-color:var(--gold) !important;}
+.custom-checkbox.checked{background:var(--gold) !important;border-color:var(--gold) !important;}
+.custom-checkbox.checked::after{color:#181510 !important;}
+.ipa{color:var(--gold) !important;}
+.chip{background:#26221A !important;color:var(--gold) !important;border:1px solid var(--line) !important;}
+.speak-btn{background:#26221A !important;color:var(--gold) !important;}
+.speak-btn:hover{background:var(--gold) !important;color:#181510 !important;}
+.theme-btn.active,.week-btn.active,.tense-btn.active{background:linear-gradient(135deg,#CBAB63,#B08F4C) !important;color:#181510 !important;}
+.theme-btn:hover,.week-btn:hover,.tense-btn:hover{border-color:var(--gold) !important;}
+.q-item.flash{background:#2A2519 !important;border-color:var(--gold) !important;box-shadow:0 8px 25px rgba(201,169,97,.22) !important;color:#F3EAD7 !important;}
+.opt.sel{background:#2A2519 !important;border-color:var(--gold) !important;color:#F3EAD7 !important;}
+.opt.right,.inp.right{background:#20301d !important;border-color:#7E8B6A !important;color:#e7edd9 !important;}
+.opt.wrong,.inp.wrong{background:#301f1c !important;border-color:#A8756B !important;color:#f0ddd6 !important;}
+.mistake{background:#1f1c16 !important;border-color:rgba(168,116,98,.5) !important;}
+.progress-fill{background:linear-gradient(90deg,#B08F4C,#CBAB63) !important;}
+.week-card.completed{background:rgba(201,169,97,.08) !important;}
+.answer,.correct-note{color:#B9A15F !important;}
+
 </style>
 </head>
 <body>
 <div class="min-h-screen">
   <!-- HEADER -->
-  <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
+  <div class="topbar text-white p-6 sticky top-0 z-40">
     <div class="max-w-4xl mx-auto">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold">⭐ Exercise Generator</h1>
-          <p class="text-indigo-100 text-sm">Exercícios com bastante prática · A1</p>
+          <h1 class="text-2xl md:text-3xl font-bold">Exercise Generator</h1>
+          <p class="text-[#B7AE9C] text-sm">Exercícios com bastante prática · A1</p>
         </div>
         <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 text-sm">← Menu</button>
       </div>
@@ -65,8 +97,8 @@
 
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
       <button onclick="checkAnswers()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">✓ Verificar respostas</button>
-      <button onclick="exportPDF()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">📄 Baixar PDF (com gabarito)</button>
-      <button onclick="loadTopic(currentKey)" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">🔄 Limpar respostas</button>
+      <button onclick="exportPDF()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">Baixar PDF (com gabarito)</button>
+      <button onclick="loadTopic(currentKey)" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Limpar respostas</button>
     </div>
     <div id="printArea" class="hidden"></div>
   </div>
@@ -353,7 +385,7 @@ function renderExercises(){
       card.innerHTML=`<p class="tag">Complete</p>
         <p class="text-white text-lg font-semibold mb-3">${num}. ${ex.question}</p>
         <input class="inp" id="fill-${ei}" placeholder="Sua resposta..." oninput="answers[${ei}]=this.value">
-        <p class="text-slate-400 text-sm mt-2 italic">💡 ${ex.hint}</p>
+        <p class="text-slate-400 text-sm mt-2 italic">${ex.hint}</p>
         <p class="correct-note" id="note-${ei}" style="display:none"></p>`;
     }
     if(ex.type==='true_false'){
@@ -457,7 +489,7 @@ function exportPDF(){
   const pa=document.getElementById('printArea');
   let num=0;
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">⭐ Exercícios — ${bank[currentKey].label}</h1>`;
+    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">Exercícios — ${bank[currentKey].label}</h1>`;
   exercises.forEach(ex=>{
     if(ex.type==='multiple_choice'){num++;
       h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b></p>`;

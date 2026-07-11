@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⭐ Teacher Lu - Aulas de Conversação</title>
+<title>Sabatovicz - Aulas de Conversação</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { font-family: 'Inter', sans-serif; }
   h1,h2,h3,h4 { font-family: 'Poppins', sans-serif; }
@@ -30,17 +30,49 @@
   .week-btn.active{background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);color:white;}
   .answer{display:none;margin-top:8px;color:#34d399;font-weight:600;}
   .answer.show{display:block;}
+
+/* ===== PREMIUM OVERRIDE (Sabatovicz) ===== */
+:root{--bg:#141310;--surface:#1c1a15;--surface2:#232019;--line:rgba(201,169,97,.16);--text:#ECE6DA;--muted:#A79F8E;--gold:#C9A961;--gold2:#B4924F;}
+body{background:linear-gradient(180deg,#151310 0%,#100E0B 100%) !important;color:var(--text) !important;}
+*{font-family:'Outfit',sans-serif;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif !important;font-weight:600 !important;letter-spacing:.01em;}
+.topbar{background:linear-gradient(180deg,#1E1B15 0%,#161310 100%) !important;border-bottom:1px solid var(--line);}
+[onclick="goHome()"]{background:transparent !important;border:1px solid rgba(201,169,97,.42) !important;color:var(--gold) !important;font-family:'Outfit',sans-serif !important;font-weight:500 !important;}
+[onclick="goHome()"]:hover{background:rgba(201,169,97,.10) !important;}
+.card{background:var(--surface) !important;border:1px solid var(--line) !important;box-shadow:none !important;border-radius:10px !important;}
+.card:hover{border-color:rgba(201,169,97,.34) !important;transform:none !important;box-shadow:0 12px 34px rgba(0,0,0,.4) !important;}
+.gradient-coral,.gradient-emerald,.gradient-amber,.gradient-pink,.gradient-indigo{background:linear-gradient(135deg,#CBAB63 0%,#B08F4C 100%) !important;color:#181510 !important;}
+.btn{font-family:'Outfit',sans-serif !important;font-weight:600 !important;text-transform:none !important;letter-spacing:.04em !important;}
+.stage,.ex-card,.week-card{border-left-color:var(--gold) !important;border-radius:8px !important;}
+.custom-checkbox{border-color:var(--gold) !important;}
+.custom-checkbox.checked{background:var(--gold) !important;border-color:var(--gold) !important;}
+.custom-checkbox.checked::after{color:#181510 !important;}
+.ipa{color:var(--gold) !important;}
+.chip{background:#26221A !important;color:var(--gold) !important;border:1px solid var(--line) !important;}
+.speak-btn{background:#26221A !important;color:var(--gold) !important;}
+.speak-btn:hover{background:var(--gold) !important;color:#181510 !important;}
+.theme-btn.active,.week-btn.active,.tense-btn.active{background:linear-gradient(135deg,#CBAB63,#B08F4C) !important;color:#181510 !important;}
+.theme-btn:hover,.week-btn:hover,.tense-btn:hover{border-color:var(--gold) !important;}
+.q-item.flash{background:#2A2519 !important;border-color:var(--gold) !important;box-shadow:0 8px 25px rgba(201,169,97,.22) !important;color:#F3EAD7 !important;}
+.opt.sel{background:#2A2519 !important;border-color:var(--gold) !important;color:#F3EAD7 !important;}
+.opt.right,.inp.right{background:#20301d !important;border-color:#7E8B6A !important;color:#e7edd9 !important;}
+.opt.wrong,.inp.wrong{background:#301f1c !important;border-color:#A8756B !important;color:#f0ddd6 !important;}
+.mistake{background:#1f1c16 !important;border-color:rgba(168,116,98,.5) !important;}
+.progress-fill{background:linear-gradient(90deg,#B08F4C,#CBAB63) !important;}
+.week-card.completed{background:rgba(201,169,97,.08) !important;}
+.answer,.correct-note{color:#B9A15F !important;}
+
 </style>
 </head>
 <body>
 <div class="min-h-screen">
   <!-- HEADER -->
-  <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
+  <div class="topbar text-white p-6 sticky top-0 z-40">
     <div class="max-w-5xl mx-auto">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold">⭐ Aulas de Conversação</h1>
-          <p class="text-indigo-100 text-sm">Conteúdo pronto • Adulto A1 • Foco em falar</p>
+          <h1 class="text-2xl md:text-3xl font-bold">Aulas de Conversação</h1>
+          <p class="text-[#B7AE9C] text-sm">Conteúdo pronto • Adulto A1 • Foco em falar</p>
         </div>
         <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 text-sm">← Menu</button>
       </div>
@@ -55,7 +87,7 @@
     <div id="lessonBody"></div>
 
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
-      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">📄 Baixar aula em PDF</button>
+      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">Baixar aula em PDF</button>
     </div>
     <div id="printArea" class="hidden"></div>
   </div>
@@ -391,44 +423,44 @@ function renderLesson(){
   const l = lessons[current];
   document.getElementById('lessonTitle').innerHTML = `
     <div class="flex items-center gap-3 mb-1">
-      <span class="text-xs bg-indigo-600 text-white px-2 py-1 rounded font-bold">SEMANA ${l.week}</span>
+      <span class="text-xs bg-[#B08F4C] text-white px-2 py-1 rounded font-bold">SEMANA ${l.week}</span>
       <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${l.level}</span>
     </div>
     <h2 class="text-2xl md:text-3xl font-bold text-white">${l.theme}</h2>
-    <p class="text-slate-400 mt-1">📚 Gramática: ${l.grammar} · ⏱️ 60 min</p>`;
+    <p class="text-slate-400 mt-1">Gramática: ${l.grammar} · 60 min</p>`;
 
   const body = document.getElementById('lessonBody');
   let h = '';
 
   // 1 WARM-UP
-  h += stageBlock('#3b82f6','👋 1 · Welcome + Small Talk','5 min · aquecer em inglês',
+  h += stageBlock('#3b82f6','1 · Welcome + Small Talk','5 min · aquecer em inglês',
     l.warmup.map(q=>`<div class="q-item">${q}</div>`).join(''));
 
   // 2 REVIEW
-  h += stageBlock('#22c55e','📚 2 · Review','8 min · revisar a aula anterior',
+  h += stageBlock('#22c55e','2 · Review','8 min · revisar a aula anterior',
     l.review.map(q=>`<div class="q-item">${q}</div>`).join(''));
 
   // 3 LEAD-IN
-  h += stageBlock('#a855f7','🎯 3 · Lead-in','5 min · apresentar o tema',
+  h += stageBlock('#a855f7','3 · Lead-in','5 min · apresentar o tema',
     `<p class="text-slate-300 mb-3">${l.leadin.text}</p><div class="q-item">${l.leadin.q}</div>`);
 
   // 4 VOCABULARY
-  h += stageBlock('#eab308','📝 4 · Vocabulary','8 min · clique 🔊 para ouvir',
+  h += stageBlock('#eab308','4 · Vocabulary','8 min · clique ► para ouvir',
     `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`+
     l.vocab.map(v=>`<div class="vocab-card">
         <div><div class="text-white font-bold">${v.en}</div>
         <div class="ipa">${v.ipa}</div>
         <div class="text-slate-400 text-sm">${v.pt}</div></div>
-        <button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">🔊</button>
+        <button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">►</button>
       </div>`).join('')+`</div>`);
 
   // 5 GRAMMAR
-  h += stageBlock('#ef4444','📖 5 · Grammar Focus','10 min · a estrutura',
+  h += stageBlock('#ef4444','5 · Grammar Focus','10 min · a estrutura',
     `<p class="text-slate-300 mb-3">${l.grammar.exp}</p>
      <div class="space-y-2">${l.grammar.ex.map(e=>`<div class="q-item" style="color:#fca5a5">${e}</div>`).join('')}</div>`);
 
   // 6 CONTROLLED PRACTICE
-  h += stageBlock('#ec4899','✏️ 6 · Controlled Practice','8 min · fixar sem pressão',
+  h += stageBlock('#ec4899','6 · Controlled Practice','8 min · fixar sem pressão',
     l.practice.map((p,idx)=>{
       const id=`ans-${l.week}-${idx}`;
       return `<div class="q-item">
@@ -441,23 +473,23 @@ function renderLesson(){
     }).join(''));
 
   // 7 SPEAKING (star)
-  h += stageBlock('#06b6d4','💬 7 · Speaking / Activate','12 min · a hora de FALAR',
+  h += stageBlock('#06b6d4','7 · Speaking / Activate','12 min · a hora de FALAR',
     `<div class="flex justify-between items-center mb-3 flex-wrap gap-2">
        <p class="text-slate-400 text-sm">Faça as perguntas ao aluno. Deixe ele falar à vontade.</p>
-       <button onclick="randomQuestion()" class="gradient-amber text-white font-bold py-2 px-4 rounded-lg text-sm">🎲 Pergunta aleatória</button>
+       <button onclick="randomQuestion()" class="gradient-amber text-white font-bold py-2 px-4 rounded-lg text-sm">Pergunta aleatória</button>
      </div>
      <div id="speakingList">${l.speaking.map(q=>`<div class="q-item">${q}</div>`).join('')}</div>
      <div class="mt-5 p-4 rounded-xl" style="background:linear-gradient(135deg,#312e81 0%,#1e3a8a 100%);border:1px solid #6366f1">
-       <p class="text-indigo-200 font-bold mb-2">🎭 ${l.roleplay.title}</p>
+       <p class="text-indigo-200 font-bold mb-2">${l.roleplay.title}</p>
        <p class="text-slate-300 text-sm mb-3">${l.roleplay.scenario}</p>
        ${l.roleplay.lines.map(line=>`<p class="text-white text-sm mb-1">${line}</p>`).join('')}
      </div>`);
 
   // 8 WRAP-UP
-  h += stageBlock('#10b981','🎓 8 · Wrap-up + Homework','4 min · consolidar',
+  h += stageBlock('#10b981','8 · Wrap-up + Homework','4 min · consolidar',
     `<p class="text-slate-300 font-bold mb-2">Homework:</p>
-     ${l.homework.tasks.map(t=>`<div class="q-item">📌 ${t}</div>`).join('')}
-     <a href="${l.homework.link}" target="_blank" class="inline-block mt-3 gradient-coral text-white font-bold py-2 px-4 rounded-lg text-sm">📊 Praticar no Test-English →</a>`);
+     ${l.homework.tasks.map(t=>`<div class="q-item">${t}</div>`).join('')}
+     <a href="${l.homework.link}" target="_blank" class="inline-block mt-3 gradient-coral text-white font-bold py-2 px-4 rounded-lg text-sm">Praticar no Test-English →</a>`);
 
   body.innerHTML = h;
 }
@@ -473,17 +505,17 @@ function exportLesson(){
   const l = lessons[current];
   const pa = document.getElementById('printArea');
   let h = `<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">⭐ Teacher Lu — Semana ${l.week}: ${l.theme}</h1>
+    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">Sabatovicz — Semana ${l.week}: ${l.theme}</h1>
     <p style="text-align:center;color:#666">Nível ${l.level} · Gramática: ${l.grammar} · 60 min</p>`;
   const sec=(t,c)=>`<h2 style="border-left:4px solid #6366f1;padding-left:10px;margin-top:22px">${t}</h2>${c}`;
-  h+=sec('👋 1 · Welcome + Small Talk',l.warmup.map(q=>`<p>• ${q}</p>`).join(''));
-  h+=sec('📚 2 · Review',l.review.map(q=>`<p>• ${q}</p>`).join(''));
-  h+=sec('🎯 3 · Lead-in',`<p>${l.leadin.text}</p><p><b>${l.leadin.q}</b></p>`);
-  h+=sec('📝 4 · Vocabulary',`<table style="width:100%;border-collapse:collapse">${l.vocab.map(v=>`<tr><td style="border:1px solid #ddd;padding:6px"><b>${v.en}</b></td><td style="border:1px solid #ddd;padding:6px">${v.ipa}</td><td style="border:1px solid #ddd;padding:6px">${v.pt}</td></tr>`).join('')}</table>`);
-  h+=sec('📖 5 · Grammar Focus',`<p>${l.grammar.exp.replace(/<b>/g,'').replace(/<\/b>/g,'')}</p>${l.grammar.ex.map(e=>`<p>• ${e}</p>`).join('')}`);
-  h+=sec('✏️ 6 · Controlled Practice',l.practice.map((p,i)=>`<p>${i+1}. ${p.q} <b>(${p.a})</b></p>`).join(''));
-  h+=sec('💬 7 · Speaking',l.speaking.map(q=>`<p>• ${q}</p>`).join('')+`<p style="margin-top:10px"><b>🎭 ${l.roleplay.title}:</b> ${l.roleplay.scenario}</p>${l.roleplay.lines.map(x=>`<p style="margin-left:15px">${x}</p>`).join('')}`);
-  h+=sec('🎓 8 · Wrap-up + Homework',l.homework.tasks.map(t=>`<p>📌 ${t}</p>`).join('')+`<p>Link: ${l.homework.link}</p>`);
+  h+=sec('1 · Welcome + Small Talk',l.warmup.map(q=>`<p>• ${q}</p>`).join(''));
+  h+=sec('2 · Review',l.review.map(q=>`<p>• ${q}</p>`).join(''));
+  h+=sec('3 · Lead-in',`<p>${l.leadin.text}</p><p><b>${l.leadin.q}</b></p>`);
+  h+=sec('4 · Vocabulary',`<table style="width:100%;border-collapse:collapse">${l.vocab.map(v=>`<tr><td style="border:1px solid #ddd;padding:6px"><b>${v.en}</b></td><td style="border:1px solid #ddd;padding:6px">${v.ipa}</td><td style="border:1px solid #ddd;padding:6px">${v.pt}</td></tr>`).join('')}</table>`);
+  h+=sec('5 · Grammar Focus',`<p>${l.grammar.exp.replace(/<b>/g,'').replace(/<\/b>/g,'')}</p>${l.grammar.ex.map(e=>`<p>• ${e}</p>`).join('')}`);
+  h+=sec('6 · Controlled Practice',l.practice.map((p,i)=>`<p>${i+1}. ${p.q} <b>(${p.a})</b></p>`).join(''));
+  h+=sec('7 · Speaking',l.speaking.map(q=>`<p>• ${q}</p>`).join('')+`<p style="margin-top:10px"><b>${l.roleplay.title}:</b> ${l.roleplay.scenario}</p>${l.roleplay.lines.map(x=>`<p style="margin-left:15px">${x}</p>`).join('')}`);
+  h+=sec('8 · Wrap-up + Homework',l.homework.tasks.map(t=>`<p>${t}</p>`).join('')+`<p>Link: ${l.homework.link}</p>`);
   h+=`</div>`;
   pa.innerHTML=h;
   html2pdf().set({margin:8,filename:`Aula-S${l.week}-${l.theme.split('—')[0].trim()}.pdf`,image:{type:'jpeg',quality:.98},html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}).from(pa).save();

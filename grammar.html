@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⭐ Sabatovicz - Aulas de Gramática</title>
+<title>Sabatovicz - Aulas de Gramática</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { font-family:'Inter',sans-serif; }
   h1,h2,h3,h4 { font-family:'Poppins',sans-serif; }
@@ -28,19 +28,51 @@
   .tense-btn.active{background:linear-gradient(135deg,#f59e0b 0%,#fbbf24 100%);color:#111;}
   .answer{display:none;margin-top:8px;color:#34d399;font-weight:600;}
   .answer.show{display:block;}
+
+/* ===== PREMIUM OVERRIDE (Sabatovicz) ===== */
+:root{--bg:#141310;--surface:#1c1a15;--surface2:#232019;--line:rgba(201,169,97,.16);--text:#ECE6DA;--muted:#A79F8E;--gold:#C9A961;--gold2:#B4924F;}
+body{background:linear-gradient(180deg,#151310 0%,#100E0B 100%) !important;color:var(--text) !important;}
+*{font-family:'Outfit',sans-serif;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif !important;font-weight:600 !important;letter-spacing:.01em;}
+.topbar{background:linear-gradient(180deg,#1E1B15 0%,#161310 100%) !important;border-bottom:1px solid var(--line);}
+[onclick="goHome()"]{background:transparent !important;border:1px solid rgba(201,169,97,.42) !important;color:var(--gold) !important;font-family:'Outfit',sans-serif !important;font-weight:500 !important;}
+[onclick="goHome()"]:hover{background:rgba(201,169,97,.10) !important;}
+.card{background:var(--surface) !important;border:1px solid var(--line) !important;box-shadow:none !important;border-radius:10px !important;}
+.card:hover{border-color:rgba(201,169,97,.34) !important;transform:none !important;box-shadow:0 12px 34px rgba(0,0,0,.4) !important;}
+.gradient-coral,.gradient-emerald,.gradient-amber,.gradient-pink,.gradient-indigo{background:linear-gradient(135deg,#CBAB63 0%,#B08F4C 100%) !important;color:#181510 !important;}
+.btn{font-family:'Outfit',sans-serif !important;font-weight:600 !important;text-transform:none !important;letter-spacing:.04em !important;}
+.stage,.ex-card,.week-card{border-left-color:var(--gold) !important;border-radius:8px !important;}
+.custom-checkbox{border-color:var(--gold) !important;}
+.custom-checkbox.checked{background:var(--gold) !important;border-color:var(--gold) !important;}
+.custom-checkbox.checked::after{color:#181510 !important;}
+.ipa{color:var(--gold) !important;}
+.chip{background:#26221A !important;color:var(--gold) !important;border:1px solid var(--line) !important;}
+.speak-btn{background:#26221A !important;color:var(--gold) !important;}
+.speak-btn:hover{background:var(--gold) !important;color:#181510 !important;}
+.theme-btn.active,.week-btn.active,.tense-btn.active{background:linear-gradient(135deg,#CBAB63,#B08F4C) !important;color:#181510 !important;}
+.theme-btn:hover,.week-btn:hover,.tense-btn:hover{border-color:var(--gold) !important;}
+.q-item.flash{background:#2A2519 !important;border-color:var(--gold) !important;box-shadow:0 8px 25px rgba(201,169,97,.22) !important;color:#F3EAD7 !important;}
+.opt.sel{background:#2A2519 !important;border-color:var(--gold) !important;color:#F3EAD7 !important;}
+.opt.right,.inp.right{background:#20301d !important;border-color:#7E8B6A !important;color:#e7edd9 !important;}
+.opt.wrong,.inp.wrong{background:#301f1c !important;border-color:#A8756B !important;color:#f0ddd6 !important;}
+.mistake{background:#1f1c16 !important;border-color:rgba(168,116,98,.5) !important;}
+.progress-fill{background:linear-gradient(90deg,#B08F4C,#CBAB63) !important;}
+.week-card.completed{background:rgba(201,169,97,.08) !important;}
+.answer,.correct-note{color:#B9A15F !important;}
+
 </style>
 </head>
 <body>
 <div class="min-h-screen">
   <!-- HEADER -->
-  <div class="gradient-amber text-gray-900 p-6 sticky top-0 z-40 shadow-lg">
+  <div class="topbar text-white p-6 sticky top-0 z-40">
     <div class="max-w-5xl mx-auto">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold">⭐ Aulas de Gramática</h1>
-          <p class="text-amber-900 text-sm font-semibold">Tempos verbais · Abrir, explicar e praticar</p>
+          <h1 class="text-2xl md:text-3xl font-bold">Aulas de Gramática</h1>
+          <p class="text-[#B7AE9C] text-sm font-semibold">Tempos verbais · Abrir, explicar e praticar</p>
         </div>
-        <button onclick="goHome()" class="bg-gray-900 text-amber-400 font-bold py-2 px-4 rounded-lg hover:bg-gray-800 text-sm">← Menu</button>
+        <button onclick="goHome()" class=" font-bold py-2 px-4 rounded-lg hover:bg-gray-800 text-sm">← Menu</button>
       </div>
       <div class="flex gap-2 overflow-x-auto pb-1" id="tenseSelector"></div>
     </div>
@@ -51,7 +83,7 @@
     <div id="lessonTitle" class="card rounded-xl p-6 mb-6"></div>
     <div id="lessonBody"></div>
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
-      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">📄 Baixar aula em PDF</button>
+      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">Baixar aula em PDF</button>
     </div>
     <div id="printArea" class="hidden"></div>
   </div>
@@ -70,7 +102,7 @@ const tenses = [
   },
   examples:["I'm a teacher.","She is very happy today.","They are from Curitiba.","Are you tired?","He isn't at home right now."],
   signals:["nome","idade","origem","sentimentos","profissão","características"],
-  mistakes:["❌ I have 30 years → ✅ I <b>am</b> 30 years old","❌ She have happy → ✅ She <b>is</b> happy","❌ I am agree → ✅ I agree (agree não usa 'be')"],
+  mistakes:["✗ I have 30 years → ✓ I <b>am</b> 30 years old","✗ She have happy → ✓ She <b>is</b> happy","✗ I am agree → ✓ I agree (agree não usa 'be')"],
   practice:[
     {q:"I ___ a student.",a:"am"},
     {q:"She ___ from Italy.",a:"is"},
@@ -91,7 +123,7 @@ const tenses = [
   },
   examples:["I work in Curitiba.","She likes coffee.","We don't watch TV in the morning.","Does he speak English?","The sun rises in the east."],
   signals:["every day","always","usually","often","sometimes","never","on Mondays","in the morning"],
-  mistakes:["❌ He work → ✅ He work<b>s</b>","❌ She don't like → ✅ She <b>doesn't</b> like","❌ Do she work? → ✅ <b>Does</b> she work?","❌ I no like → ✅ I <b>don't</b> like"],
+  mistakes:["✗ He work → ✓ He work<b>s</b>","✗ She don't like → ✓ She <b>doesn't</b> like","✗ Do she work? → ✓ <b>Does</b> she work?","✗ I no like → ✓ I <b>don't</b> like"],
   practice:[
     {q:"She ___ (work) at a bank.",a:"works"},
     {q:"I ___ (not/like) coffee.",a:"don't like"},
@@ -112,7 +144,7 @@ const tenses = [
   },
   examples:["I'm studying English now.","She is cooking dinner.","They aren't sleeping.","Are you listening to me?","Look! It's raining."],
   signals:["now","right now","at the moment","today","Look!","Listen!"],
-  mistakes:["❌ I am study → ✅ I am study<b>ing</b>","❌ She studying → ✅ She <b>is</b> studying","❌ I working now → ✅ I <b>am</b> working now","✏️ run → run<b>ning</b> · make → mak<b>ing</b> (cuidado com a grafia)"],
+  mistakes:["✗ I am study → ✓ I am study<b>ing</b>","✗ She studying → ✓ She <b>is</b> studying","✗ I working now → ✓ I <b>am</b> working now","run → run<b>ning</b> · make → mak<b>ing</b> (cuidado com a grafia)"],
   practice:[
     {q:"I ___ (study) right now.",a:"am studying"},
     {q:"She ___ (cook) dinner.",a:"is cooking"},
@@ -132,7 +164,7 @@ const tenses = [
   },
   examples:["I usually drink coffee, but right now I'm drinking tea.","She works in a shop, but today she is working from home.","We often play tennis, but we aren't playing today.","He speaks English, and right now he is speaking English!"],
   signals:["Simple: usually, every day, always, often","Continuous: now, right now, at the moment, today"],
-  mistakes:["❌ I am going to the gym every day → ✅ I <b>go</b> to the gym every day","❌ Look! He plays → ✅ Look! He <b>is playing</b>"],
+  mistakes:["✗ I am going to the gym every day → ✓ I <b>go</b> to the gym every day","✗ Look! He plays → ✓ Look! He <b>is playing</b>"],
   practice:[
     {q:"I ___ (usually/drink) coffee.",a:"usually drink"},
     {q:"Right now she ___ (watch) TV.",a:"is watching"},
@@ -152,7 +184,7 @@ const tenses = [
   },
   examples:["I was tired yesterday.","They were at home.","She wasn't happy.","Were you at the party?","It was cold last night."],
   signals:["yesterday","last night","last week","in 2010","two days ago","when I was young"],
-  mistakes:["❌ I were → ✅ I <b>was</b>","❌ They was → ✅ They <b>were</b>","❌ Was you? → ✅ <b>Were</b> you?"],
+  mistakes:["✗ I were → ✓ I <b>was</b>","✗ They was → ✓ They <b>were</b>","✗ Was you? → ✓ <b>Were</b> you?"],
   practice:[
     {q:"I ___ at work yesterday.",a:"was"},
     {q:"They ___ tired.",a:"were"},
@@ -172,7 +204,7 @@ const tenses = [
   },
   examples:["I worked yesterday.","She played tennis.","We didn't watch the film.","Did you like it?","They lived in Rio."],
   signals:["yesterday","last week","...ago","in 2015","then"],
-  mistakes:["❌ I didn't worked → ✅ I didn't <b>work</b> (base depois de didn't)","❌ Did you worked? → ✅ Did you <b>work</b>?","✏️ study → stud<b>ied</b> · stop → stop<b>ped</b>"],
+  mistakes:["✗ I didn't worked → ✓ I didn't <b>work</b> (base depois de didn't)","✗ Did you worked? → ✓ Did you <b>work</b>?","study → stud<b>ied</b> · stop → stop<b>ped</b>"],
   practice:[
     {q:"I ___ (work) yesterday.",a:"worked"},
     {q:"She ___ (not/like) the film.",a:"didn't like"},
@@ -193,7 +225,7 @@ const tenses = [
   list:["go → went","have → had","do → did","make → made","see → saw","eat → ate","drink → drank","come → came","get → got","take → took","buy → bought","think → thought"],
   examples:["I went to the beach.","She had lunch at noon.","We saw a good movie.","Did you go out yesterday?","They didn't come to the party."],
   signals:["yesterday","last...","...ago"],
-  mistakes:["❌ I goed → ✅ I <b>went</b>","❌ She eated → ✅ She <b>ate</b>","❌ Did you went? → ✅ Did you <b>go</b>?"],
+  mistakes:["✗ I goed → ✓ I <b>went</b>","✗ She eated → ✓ She <b>ate</b>","✗ Did you went? → ✓ Did you <b>go</b>?"],
   practice:[
     {q:"I ___ (go) to work.",a:"went"},
     {q:"She ___ (have) a coffee.",a:"had"},
@@ -213,7 +245,7 @@ const tenses = [
   },
   examples:["I'm going to travel next month.","She is going to study medicine.","We aren't going to work tomorrow.","Are you going to come?","Look at the clouds — it's going to rain."],
   signals:["tomorrow","next week / month / year","tonight","soon"],
-  mistakes:["❌ I going to travel → ✅ I'm going to travel (use o 'to be')","❌ I'm going to travelling → ✅ I'm going to <b>travel</b> (base)","❌ She go to study → ✅ She <b>is going to</b> study"],
+  mistakes:["✗ I going to travel → ✓ I'm going to travel (use o 'to be')","✗ I'm going to travelling → ✓ I'm going to <b>travel</b> (base)","✗ She go to study → ✓ She <b>is going to</b> study"],
   practice:[
     {q:"I ___ (going to/travel) next week.",a:"am going to travel"},
     {q:"She ___ (going to/study).",a:"is going to study"},
@@ -233,7 +265,7 @@ const tenses = [
   },
   examples:["I'll help you.","She will call you later.","They won't come.","Will you marry me?","I think it will rain tomorrow."],
   signals:["tomorrow","later","tonight","next...","I think","maybe","probably"],
-  mistakes:["❌ I will to help → ✅ I will <b>help</b> (sem 'to')","❌ She wills → ✅ She <b>will</b> (nunca muda)","❌ I will helping → ✅ I will <b>help</b> (base)"],
+  mistakes:["✗ I will to help → ✓ I will <b>help</b> (sem 'to')","✗ She wills → ✓ She <b>will</b> (nunca muda)","✗ I will helping → ✓ I will <b>help</b> (base)"],
   practice:[
     {q:"I ___ (help) you.",a:"will help"},
     {q:"She ___ (call) you later.",a:"will call"},
@@ -253,7 +285,7 @@ const tenses = [
   },
   examples:["I have visited Paris.","She has just arrived.","We haven't finished yet.","Have you ever eaten sushi?","He has lived here for five years."],
   signals:["ever","never","already","just","yet","since","for"],
-  mistakes:["❌ I have visited Paris last year → ✅ I <b>visited</b> Paris last year (tempo específico = Past Simple)","❌ She has went → ✅ She has <b>gone</b> (particípio)","❌ I have ate → ✅ I have <b>eaten</b>"],
+  mistakes:["✗ I have visited Paris last year → ✓ I <b>visited</b> Paris last year (tempo específico = Past Simple)","✗ She has went → ✓ She has <b>gone</b> (particípio)","✗ I have ate → ✓ I have <b>eaten</b>"],
   practice:[
     {q:"I ___ (see) that film.",a:"have seen"},
     {q:"She ___ (just/arrive).",a:"has just arrived"},
@@ -289,41 +321,41 @@ function renderLesson(){
   const t=tenses[current];
   document.getElementById('lessonTitle').innerHTML=`
     <div class="flex items-center gap-3 mb-1">
-      <span class="text-xs bg-amber-500 text-gray-900 px-2 py-1 rounded font-bold">GRAMÁTICA</span>
+      <span class="text-xs bg-[#B08F4C] text-[#181510] px-2 py-1 rounded font-bold">GRAMÁTICA</span>
       <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${t.level}</span>
     </div>
     <h2 class="text-2xl md:text-3xl font-bold text-white">${t.name}</h2>`;
 
   let h='';
   // 1 QUANDO USAR
-  h+=stageBlock('#f59e0b','🎯 Quando usar',`<p class="text-slate-300">${t.use}</p>`);
+  h+=stageBlock('#f59e0b','Quando usar',`<p class="text-slate-300">${t.use}</p>`);
 
   // 2 FORMA
-  h+=stageBlock('#3b82f6','🏗️ Estrutura',
-    `<div class="form-box"><div class="label" style="color:#34d399">✅ Afirmativa</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#f87171">⛔ Negativa</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#60a5fa">❓ Pergunta</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
+  h+=stageBlock('#3b82f6','Estrutura',
+    `<div class="form-box"><div class="label" style="color:#34d399">Afirmativa</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
+     <div class="form-box"><div class="label" style="color:#f87171">Negativa</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
+     <div class="form-box"><div class="label" style="color:#60a5fa">Pergunta</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
 
   // (lista de irregulares, se houver)
   if(t.list){
-    h+=stageBlock('#a855f7','📋 Verbos irregulares comuns',
+    h+=stageBlock('#a855f7','Verbos irregulares comuns',
       `<div class="grid grid-cols-2 md:grid-cols-3 gap-2">${t.list.map(v=>`<div class="form-box" style="margin:0;padding:10px"><span class="text-white font-semibold text-sm">${v}</span></div>`).join('')}</div>`);
   }
 
   // 3 EXEMPLOS (com áudio)
-  h+=stageBlock('#10b981','💬 Exemplos (clique 🔊 para ouvir)',
-    t.examples.map(e=>`<div class="ex-line"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/'/g,"\\'")}')">🔊</button></div>`).join(''));
+  h+=stageBlock('#10b981','Exemplos (clique ► para ouvir)',
+    t.examples.map(e=>`<div class="ex-line"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/'/g,"\\'")}')">►</button></div>`).join(''));
 
   // 4 PALAVRAS-SINAL
-  h+=stageBlock('#eab308','🔑 Palavras-sinal',
+  h+=stageBlock('#eab308','Palavras-sinal',
     `<div>${t.signals.map(s=>`<span class="chip">${s}</span>`).join('')}</div>`);
 
   // 5 ERROS COMUNS
-  h+=stageBlock('#ef4444','⚠️ Erros comuns do brasileiro',
+  h+=stageBlock('#ef4444','Erros comuns do brasileiro',
     t.mistakes.map(m=>`<div class="mistake text-slate-200 text-sm">${m}</div>`).join(''));
 
   // 6 PRÁTICA
-  h+=stageBlock('#ec4899','✏️ Prática',
+  h+=stageBlock('#ec4899','Prática',
     t.practice.map((p,idx)=>{
       const id=`ans-${current}-${idx}`;
       return `<div class="ex-line" style="display:block">
@@ -336,7 +368,7 @@ function renderLesson(){
     }).join(''));
 
   // 7 FALE AGORA
-  h+=stageBlock('#06b6d4','🗣️ Fale agora (use o tempo verbal)',
+  h+=stageBlock('#06b6d4','Fale agora (use o tempo verbal)',
     t.speaking.map(q=>`<div class="ex-line"><span>${q}</span></div>`).join(''));
 
   document.getElementById('lessonBody').innerHTML=h;
@@ -348,19 +380,19 @@ function exportLesson(){
   const pa=document.getElementById('printArea');
   const strip=s=>s.replace(/<b>/g,'').replace(/<\/b>/g,'');
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #f59e0b;padding-bottom:12px">⭐ Gramática — ${t.name}</h1>
+    <h1 style="text-align:center;border-bottom:3px solid #f59e0b;padding-bottom:12px">Gramática — ${t.name}</h1>
     <p style="text-align:center;color:#666">Nível ${t.level}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">🎯 Quando usar</h2><p>${t.use}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">🏗️ Estrutura</h2>
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Quando usar</h2><p>${t.use}</p>
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Estrutura</h2>
     <p><b>Afirmativa:</b></p>${t.form.aff.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
     <p><b>Negativa:</b></p>${t.form.neg.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
     <p><b>Pergunta:</b></p>${t.form.q.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}`;
-  if(t.list){h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">📋 Verbos irregulares</h2><p>${t.list.join(' · ')}</p>`;}
-  h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">💬 Exemplos</h2>${t.examples.map(e=>`<p style="margin-left:15px">• ${e}</p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">🔑 Palavras-sinal</h2><p>${t.signals.join(' · ')}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">⚠️ Erros comuns</h2>${t.mistakes.map(m=>`<p style="margin-left:15px">${strip(m)}</p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">✏️ Prática (com gabarito)</h2>${t.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${p.q} &nbsp; <b style="color:#059669">(${p.a})</b></p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">🗣️ Fale agora</h2>${t.speaking.map(q=>`<p style="margin-left:15px">• ${q}</p>`).join('')}
+  if(t.list){h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Verbos irregulares</h2><p>${t.list.join(' · ')}</p>`;}
+  h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Exemplos</h2>${t.examples.map(e=>`<p style="margin-left:15px">• ${e}</p>`).join('')}
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Palavras-sinal</h2><p>${t.signals.join(' · ')}</p>
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Erros comuns</h2>${t.mistakes.map(m=>`<p style="margin-left:15px">${strip(m)}</p>`).join('')}
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Prática (com gabarito)</h2>${t.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${p.q} &nbsp; <b style="color:#059669">(${p.a})</b></p>`).join('')}
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Fale agora</h2>${t.speaking.map(q=>`<p style="margin-left:15px">• ${q}</p>`).join('')}
     </div>`;
   pa.innerHTML=h;
   html2pdf().set({margin:8,filename:`Gramatica-${t.short.replace(/[^a-zA-Z]/g,'')}.pdf`,image:{type:'jpeg',quality:.98},html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}).from(pa).save();
