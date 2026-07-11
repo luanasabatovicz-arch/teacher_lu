@@ -1,512 +1,490 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⭐ Teacher Lu - Exercise Generator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Inter', sans-serif; }
-    h1, h2, h3 { font-family: 'Poppins', sans-serif; }
-    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
-    .gradient-indigo { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
-    .gradient-emerald { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); }
-    .gradient-coral { background: linear-gradient(135deg, #ff6b4a 0%, #ff8566 100%); }
-    .card { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border: 1px solid rgba(148, 163, 184, 0.2); }
-    .exercise-card { border-left: 4px solid #667eea; padding: 24px; margin-bottom: 20px; border-radius: 8px; }
-    .option-btn { background: #1e293b; border: 2px solid #475569; color: white; padding: 12px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: left; }
-    .option-btn:hover { border-color: #667eea; }
-    .option-btn.selected { background: #667eea; border-color: #667eea; }
-    .option-btn.correct { background: #10b981; border-color: #10b981; }
-    .option-btn.incorrect { background: #ef4444; border-color: #ef4444; }
-    .input-field { background: #1e293b; border: 2px solid #475569; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; width: 100%; }
-    .input-field:focus { outline: none; border-color: #667eea; }
-    .feedback { padding: 12px; border-radius: 8px; margin-top: 12px; font-weight: bold; }
-    .feedback.correct { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-    .feedback.incorrect { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-    .score-display { font-size: 28px; font-weight: bold; color: #10b981; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⭐ Sabatovicz - Exercise Generator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { font-family:'Inter',sans-serif; }
+  h1,h2,h3 { font-family:'Poppins',sans-serif; }
+  body { background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%); }
+  .gradient-indigo{background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);}
+  .gradient-emerald{background:linear-gradient(135deg,#10b981 0%,#34d399 100%);}
+  .card{background:linear-gradient(135deg,#1e293b 0%,#334155 100%);border:1px solid rgba(148,163,184,.2);}
+  .ex-card{border-left:4px solid #667eea;padding:22px;margin-bottom:18px;border-radius:10px;background:linear-gradient(135deg,#1e293b 0%,#293548 100%);}
+  .opt{background:#0f172a;border:2px solid #334155;color:#e2e8f0;padding:12px 14px;margin:6px 0;border-radius:8px;cursor:pointer;transition:all .15s;display:block;width:100%;text-align:left;}
+  .opt:hover{border-color:#6366f1;}
+  .opt.sel{background:#6366f1;border-color:#818cf8;color:#fff;}
+  .opt.right{background:#065f46;border-color:#10b981;color:#fff;}
+  .opt.wrong{background:#7f1d1d;border-color:#ef4444;color:#fff;}
+  .inp{background:#0f172a;border:2px solid #334155;color:#fff;padding:12px;border-radius:8px;width:100%;}
+  .inp:focus{outline:none;border-color:#6366f1;}
+  .inp.right{border-color:#10b981;}
+  .inp.wrong{border-color:#ef4444;}
+  .tag{color:#94a3b8;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+  .theme-btn{white-space:nowrap;padding:8px 14px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;background:#334155;color:#cbd5e1;border:2px solid transparent;transition:all .2s;}
+  .theme-btn:hover{border-color:#6366f1;}
+  .theme-btn.active{background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);color:#fff;}
+  .correct-note{color:#34d399;font-weight:600;font-size:13px;margin-top:6px;}
+  select.inp option{background:#0f172a;}
+</style>
 </head>
 <body>
-  <div class="min-h-screen">
-    <!-- HEADER -->
-    <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
-      <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between items-center mb-4">
-          <div>
-            <h1 class="text-3xl font-bold">⭐ Teacher Lu - Exercise Generator</h1>
-            <p class="text-indigo-100">Exercícios prontos por tema</p>
-          </div>
-          <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50">
-            ← Menu
-          </button>
+<div class="min-h-screen">
+  <!-- HEADER -->
+  <div class="gradient-indigo text-white p-6 sticky top-0 z-40 shadow-lg">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold">⭐ Exercise Generator</h1>
+          <p class="text-indigo-100 text-sm">Exercícios com bastante prática · A1</p>
         </div>
-
-        <!-- TOPIC INPUT -->
-        <div class="flex gap-4 items-end">
-          <div class="flex-1">
-            <label class="block text-indigo-100 text-sm font-bold mb-2">Tema:</label>
-            <input 
-              type="text" 
-              id="topicInput" 
-              placeholder="Ex: Sports, Food, Family, Daily Routine..."
-              class="w-full p-3 bg-indigo-900 bg-opacity-50 border border-indigo-400 rounded-lg text-white placeholder-indigo-200 focus:outline-none focus:border-white"
-            />
-          </div>
-          <button onclick="generateExercises()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg">
-            ⚡ Gerar
-          </button>
-        </div>
+        <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 text-sm">← Menu</button>
       </div>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="max-w-4xl mx-auto p-6">
-      <!-- SCORE -->
-      <div class="card rounded-xl p-6 mb-6 text-center">
-        <p class="text-slate-300 text-sm mb-2">Pontuação</p>
-        <div class="score-display" id="scoreDisplay">0/0</div>
-      </div>
-
-      <!-- EXERCISES -->
-      <div id="exercisesContainer"></div>
-
-      <!-- ACTIONS -->
-      <div class="card rounded-xl p-6 mt-8 flex gap-4 flex-wrap">
-        <button onclick="checkAnswers()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">
-          ✓ Verificar Respostas
-        </button>
-        <button onclick="exportResults()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">
-          📄 Exportar PDF
-        </button>
-        <button onclick="resetExercises()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg">
-          🔄 Reset
-        </button>
-      </div>
-
-      <!-- HIDDEN PRINT AREA -->
-      <div id="printArea" class="hidden"></div>
+      <div class="flex gap-2 overflow-x-auto pb-1" id="themeButtons"></div>
     </div>
   </div>
 
-  <script>
-    let currentTopic = '';
-    let exercises = [];
-    let userAnswers = {};
-    let feedbackShown = false;
+  <!-- MAIN -->
+  <div class="max-w-4xl mx-auto p-4 md:p-6">
+    <div class="card rounded-xl p-5 mb-6 flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <p class="text-slate-400 text-sm">Tema atual</p>
+        <p class="text-white text-xl font-bold" id="currentTopic">—</p>
+      </div>
+      <div class="text-right">
+        <p class="text-slate-400 text-sm">Pontuação</p>
+        <p class="text-emerald-400 text-2xl font-bold" id="scoreDisplay">—</p>
+      </div>
+    </div>
 
-    const exerciseTemplates = {
-      sports: {
-        topic: 'Sports',
-        exercises: [
-          {
-            type: 'multiple_choice',
-            question: 'What sport do you play with a ball and a racket?',
-            options: ['Tennis', 'Swimming', 'Running', 'Cycling'],
-            correct: 0
-          },
-          {
-            type: 'multiple_choice',
-            question: 'Which sport is played on ice?',
-            options: ['Baseball', 'Ice Hockey', 'Basketball', 'Soccer'],
-            correct: 1
-          },
-          {
-            type: 'fill_blank',
-            question: 'I play _______ every weekend.',
-            hint: 'a popular team sport',
-            correct: 'football'
-          },
-          {
-            type: 'true_false',
-            statements: [
-              { text: 'Swimming is a water sport', answer: true },
-              { text: 'Golf is played indoors', answer: false },
-              { text: 'Basketball uses a ball', answer: true }
-            ]
-          },
-          {
-            type: 'matching',
-            question: 'Match sports with equipment:',
-            pairs: [
-              { left: 'Tennis', right: 'racket' },
-              { left: 'Soccer', right: 'ball' },
-              { left: 'Baseball', right: 'bat' }
-            ]
-          }
-        ]
-      },
-      food: {
-        topic: 'Food',
-        exercises: [
-          {
-            type: 'multiple_choice',
-            question: 'Which of these is a fruit?',
-            options: ['Carrot', 'Apple', 'Lettuce', 'Potato'],
-            correct: 1
-          },
-          {
-            type: 'multiple_choice',
-            question: 'What do you drink in the morning?',
-            options: ['Water', 'Coffee', 'Juice', 'All of the above'],
-            correct: 3
-          },
-          {
-            type: 'fill_blank',
-            question: 'I have _______ for breakfast.',
-            hint: 'a morning meal',
-            correct: 'eggs'
-          },
-          {
-            type: 'true_false',
-            statements: [
-              { text: 'Bread is made from wheat', answer: true },
-              { text: 'Chicken is a vegetable', answer: false },
-              { text: 'We eat rice as a main dish', answer: true }
-            ]
-          },
-          {
-            type: 'matching',
-            question: 'Match food with categories:',
-            pairs: [
-              { left: 'Milk', right: 'Dairy' },
-              { left: 'Chicken', right: 'Meat' },
-              { left: 'Carrot', right: 'Vegetable' }
-            ]
-          }
-        ]
-      },
-      family: {
-        topic: 'Family',
-        exercises: [
-          {
-            type: 'multiple_choice',
-            question: 'What is your father\'s sister called?',
-            options: ['Aunt', 'Cousin', 'Niece', 'Uncle'],
-            correct: 0
-          },
-          {
-            type: 'multiple_choice',
-            question: 'Who is your mother\'s mother?',
-            options: ['Aunt', 'Grandmother', 'Sister', 'Cousin'],
-            correct: 1
-          },
-          {
-            type: 'fill_blank',
-            question: 'My brother\'s daughter is my _______.',
-            hint: 'family relation',
-            correct: 'niece'
-          },
-          {
-            type: 'true_false',
-            statements: [
-              { text: 'Your sibling is your brother or sister', answer: true },
-              { text: 'Your uncle is your mother\'s father', answer: false },
-              { text: 'Cousins are children of your parents\' siblings', answer: true }
-            ]
-          },
-          {
-            type: 'matching',
-            question: 'Match family relations:',
-            pairs: [
-              { left: 'Father', right: 'Male parent' },
-              { left: 'Sister', right: 'Female sibling' },
-              { left: 'Aunt', right: 'Parent\'s sister' }
-            ]
-          }
-        ]
-      },
-      daily_routine: {
-        topic: 'Daily Routine',
-        exercises: [
-          {
-            type: 'multiple_choice',
-            question: 'What time do you usually wake up?',
-            options: ['7 AM', '2 PM', '11 PM', 'Midnight'],
-            correct: 0
-          },
-          {
-            type: 'multiple_choice',
-            question: 'What do you do after breakfast?',
-            options: ['Sleep', 'Go to work/school', 'Dinner', 'Lunch'],
-            correct: 1
-          },
-          {
-            type: 'fill_blank',
-            question: 'I _______ my teeth every morning.',
-            hint: 'cleaning action',
-            correct: 'brush'
-          },
-          {
-            type: 'true_false',
-            statements: [
-              { text: 'Breakfast is eaten in the morning', answer: true },
-              { text: 'Most people go to bed at noon', answer: false },
-              { text: 'Taking a shower is part of the daily routine', answer: true }
-            ]
-          },
-          {
-            type: 'matching',
-            question: 'Match activities with time of day:',
-            pairs: [
-              { left: 'Breakfast', right: 'Morning' },
-              { left: 'Lunch', right: 'Afternoon' },
-              { left: 'Dinner', right: 'Evening' }
-            ]
-          }
-        ]
-      },
-      travel: {
-        topic: 'Travel',
-        exercises: [
-          {
-            type: 'multiple_choice',
-            question: 'What do you need to travel to another country?',
-            options: ['Passport', 'Driver\'s license', 'School ID', 'Credit card'],
-            correct: 0
-          },
-          {
-            type: 'multiple_choice',
-            question: 'How do you travel long distances?',
-            options: ['Walk', 'Bicycle', 'Airplane', 'Skateboard'],
-            correct: 2
-          },
-          {
-            type: 'fill_blank',
-            question: 'I pack my clothes in a _______ before traveling.',
-            hint: 'luggage item',
-            correct: 'suitcase'
-          },
-          {
-            type: 'true_false',
-            statements: [
-              { text: 'A plane is used for air travel', answer: true },
-              { text: 'A train travels on water', answer: false },
-              { text: 'A hotel is a place to stay', answer: true }
-            ]
-          },
-          {
-            type: 'matching',
-            question: 'Match transport with travel method:',
-            pairs: [
-              { left: 'Plane', right: 'Air' },
-              { left: 'Ship', right: 'Sea' },
-              { left: 'Train', right: 'Land' }
-            ]
-          }
-        ]
-      }
-    };
+    <div id="exercisesContainer"></div>
 
-    function generateExercises() {
-      const input = document.getElementById('topicInput').value.toLowerCase().trim();
-      
-      if (!input) {
-        alert('Digite um tema!');
-        return;
-      }
+    <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
+      <button onclick="checkAnswers()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">✓ Verificar respostas</button>
+      <button onclick="exportPDF()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">📄 Baixar PDF (com gabarito)</button>
+      <button onclick="loadTopic(currentKey)" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">🔄 Limpar respostas</button>
+    </div>
+    <div id="printArea" class="hidden"></div>
+  </div>
+</div>
 
-      currentTopic = input;
-      feedbackShown = false;
-      userAnswers = {};
+<script>
+// ================= BANCO DE EXERCÍCIOS =================
+const bank = {
+  personal:{ label:"Personal Info (to be)", keys:["personal","identity","i am","to be","name","apresent"], exercises:[
+    {type:"multiple_choice",question:"I ___ a teacher.",options:["am","is","are","be"],correct:0},
+    {type:"multiple_choice",question:"She ___ from Brazil.",options:["am","are","is","be"],correct:2},
+    {type:"multiple_choice",question:"They ___ my friends.",options:["is","am","are","be"],correct:2},
+    {type:"multiple_choice",question:"___ you happy today?",options:["Is","Am","Are","Be"],correct:2},
+    {type:"multiple_choice",question:"He ___ 45 years old.",options:["am","is","are","be"],correct:1},
+    {type:"multiple_choice",question:"We ___ students.",options:["is","am","are","been"],correct:2},
+    {type:"fill_blank",question:"My name ___ Ana.",hint:"to be",correct:"is"},
+    {type:"fill_blank",question:"I ___ from Curitiba.",hint:"to be",correct:"am"},
+    {type:"fill_blank",question:"You ___ very kind.",hint:"to be",correct:"are"},
+    {type:"fill_blank",question:"It ___ a nice day.",hint:"to be",correct:"is"},
+    {type:"fill_blank",question:"We ___ tired.",hint:"to be",correct:"are"},
+    {type:"true_false",statements:[
+      {text:"'I'm' is short for 'I am'.",answer:true},
+      {text:"'She are happy' is correct.",answer:false},
+      {text:"We use 'is' with he, she and it.",answer:true},
+      {text:"'Are you a doctor?' is a question.",answer:true},
+      {text:"'They is my family' is correct.",answer:false},
+      {text:"'I'm not' means 'I am not'.",answer:true}
+    ]},
+    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
+      {left:"name",right:"nome"},{left:"age",right:"idade"},{left:"country",right:"país"},
+      {left:"married",right:"casado"},{left:"single",right:"solteiro"}
+    ]}
+  ]},
 
-      // Procura por tema exato ou próximo
-      let template = null;
-      for (let key in exerciseTemplates) {
-        if (key.includes(input) || input.includes(key)) {
-          template = exerciseTemplates[key];
-          break;
-        }
-      }
+  jobs:{ label:"Jobs & Nationalities", keys:["job","profession","national","work","nacional"], exercises:[
+    {type:"multiple_choice",question:"A person who teaches is a ___.",options:["doctor","teacher","nurse","pilot"],correct:1},
+    {type:"multiple_choice",question:"A person from Brazil is ___.",options:["Brazil","Brazilian","Brazilic","Brazilish"],correct:1},
+    {type:"multiple_choice",question:"A ___ works in a hospital and cares for patients.",options:["teacher","nurse","lawyer","chef"],correct:1},
+    {type:"multiple_choice",question:"A person from the United States is ___.",options:["American","America","Americano","US"],correct:0},
+    {type:"multiple_choice",question:"A person who designs bridges is an ___.",options:["artist","engineer","actor","author"],correct:1},
+    {type:"multiple_choice",question:"What ___ you do for work?",options:["do","are","is","be"],correct:0},
+    {type:"fill_blank",question:"I teach English. I'm a ___.",hint:"profissão",correct:"teacher"},
+    {type:"fill_blank",question:"She's from Italy. She's ___.",hint:"nacionalidade",correct:"italian"},
+    {type:"fill_blank",question:"He flies planes. He's a ___.",hint:"profissão",correct:"pilot"},
+    {type:"fill_blank",question:"A person who cooks in a restaurant is a ___.",hint:"profissão",correct:"chef"},
+    {type:"fill_blank",question:"I'm from Brazil, so I'm ___.",hint:"nacionalidade",correct:"brazilian"},
+    {type:"true_false",statements:[
+      {text:"A nurse works in a hospital.",answer:true},
+      {text:"A person from France is 'Frenchian'.",answer:false},
+      {text:"An engineer designs and builds things.",answer:true},
+      {text:"'Teacher' is a nationality.",answer:false},
+      {text:"A person from Japan is Japanese.",answer:true},
+      {text:"A retired person works every day.",answer:false}
+    ]},
+    {type:"matching",question:"Ligue a profissão à tradução:",pairs:[
+      {left:"teacher",right:"professor"},{left:"nurse",right:"enfermeiro"},{left:"engineer",right:"engenheiro"},
+      {left:"lawyer",right:"advogado"},{left:"retired",right:"aposentado"}
+    ]}
+  ]},
 
-      // Se não encontrar, usa um template aleatório
-      if (!template) {
-        const keys = Object.keys(exerciseTemplates);
-        template = exerciseTemplates[keys[Math.floor(Math.random() * keys.length)]];
-      }
+  family:{ label:"Family", keys:["family","famil","família"], exercises:[
+    {type:"multiple_choice",question:"My mother's mother is my ___.",options:["aunt","grandmother","sister","cousin"],correct:1},
+    {type:"multiple_choice",question:"My father's brother is my ___.",options:["uncle","cousin","nephew","grandfather"],correct:0},
+    {type:"multiple_choice",question:"My brother's daughter is my ___.",options:["sister","niece","aunt","cousin"],correct:1},
+    {type:"multiple_choice",question:"My sister's son is my ___.",options:["nephew","niece","uncle","cousin"],correct:0},
+    {type:"multiple_choice",question:"The children of my aunt are my ___.",options:["siblings","cousins","parents","nieces"],correct:1},
+    {type:"multiple_choice",question:"My wife's mother is my ___.",options:["sister","mother-in-law","aunt","cousin"],correct:1},
+    {type:"fill_blank",question:"My mother and father are my ___.",hint:"plural",correct:"parents"},
+    {type:"fill_blank",question:"My brother and sister are my ___.",hint:"irmãos",correct:"siblings"},
+    {type:"fill_blank",question:"My son and daughter are my ___.",hint:"filhos",correct:"children"},
+    {type:"fill_blank",question:"My father's wife is my ___.",hint:"mãe",correct:"mother"},
+    {type:"fill_blank",question:"I'm married. My female partner is my ___.",hint:"esposa",correct:"wife"},
+    {type:"true_false",statements:[
+      {text:"Your parents are your mother and father.",answer:true},
+      {text:"Your uncle is your mother's sister.",answer:false},
+      {text:"Cousins are children of your parents' siblings.",answer:true},
+      {text:"A daughter is a female child.",answer:true},
+      {text:"Your grandmother is your mother's daughter.",answer:false},
+      {text:"'Siblings' means brothers and sisters.",answer:true}
+    ]},
+    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
+      {left:"mother",right:"mãe"},{left:"husband",right:"marido"},{left:"daughter",right:"filha"},
+      {left:"brother",right:"irmão"},{left:"parents",right:"pais"}
+    ]}
+  ]},
 
-      exercises = JSON.parse(JSON.stringify(template.exercises));
-      renderExercises();
+  routine:{ label:"Daily Routine", keys:["routine","daily","rotina","day"], exercises:[
+    {type:"multiple_choice",question:"I ___ up at 7 AM.",options:["wake","sleep","cook","work"],correct:0},
+    {type:"multiple_choice",question:"She ___ to work by bus.",options:["go","goes","going","gone"],correct:1},
+    {type:"multiple_choice",question:"I have ___ in the morning.",options:["dinner","breakfast","lunch","night"],correct:1},
+    {type:"multiple_choice",question:"He ___ a shower every day.",options:["take","takes","taking","took"],correct:1},
+    {type:"multiple_choice",question:"At night, I go to ___.",options:["bed","work","school","gym"],correct:0},
+    {type:"multiple_choice",question:"We ___ dinner at 8 PM.",options:["have","has","having","to have"],correct:0},
+    {type:"fill_blank",question:"I ___ up at 6 o'clock.",hint:"acordar",correct:"wake"},
+    {type:"fill_blank",question:"She ___ (go) to work at 8.",hint:"he/she + s",correct:"goes"},
+    {type:"fill_blank",question:"I ___ (have) breakfast at 7.",hint:"I + verbo",correct:"have"},
+    {type:"fill_blank",question:"He ___ (brush) his teeth.",hint:"he/she + es",correct:"brushes"},
+    {type:"fill_blank",question:"They ___ (sleep) eight hours.",hint:"they + verbo",correct:"sleep"},
+    {type:"true_false",statements:[
+      {text:"We usually have breakfast in the morning.",answer:true},
+      {text:"'He go to work' is correct.",answer:false},
+      {text:"'Wake up' means to stop sleeping.",answer:true},
+      {text:"People normally sleep at noon.",answer:false},
+      {text:"'She has lunch at 1 PM' is correct.",answer:true},
+      {text:"We add -s to the verb with he, she, it.",answer:true}
+    ]},
+    {type:"matching",question:"Ligue a ação à tradução:",pairs:[
+      {left:"wake up",right:"acordar"},{left:"have lunch",right:"almoçar"},{left:"cook",right:"cozinhar"},
+      {left:"sleep",right:"dormir"},{left:"go to bed",right:"ir dormir"}
+    ]}
+  ]},
+
+  frequency:{ label:"Frequency", keys:["frequency","often","adverb","frequência"], exercises:[
+    {type:"multiple_choice",question:"'100% of the time' = ___.",options:["never","always","rarely","sometimes"],correct:1},
+    {type:"multiple_choice",question:"'0% of the time' = ___.",options:["always","never","often","usually"],correct:1},
+    {type:"multiple_choice",question:"I ___ drink coffee (about 90%).",options:["never","usually","rarely","sometimes"],correct:1},
+    {type:"multiple_choice",question:"She is ___ late (raramente).",options:["rarely","always","often","usually"],correct:0},
+    {type:"multiple_choice",question:"Correct: 'I ___ go to the gym.'",options:["always","go always","am always go","go to always"],correct:0},
+    {type:"multiple_choice",question:"'once a week' means ___.",options:["uma vez por semana","todo dia","nunca","sempre"],correct:0},
+    {type:"fill_blank",question:"I ___ eat breakfast (100%).",hint:"sempre",correct:"always"},
+    {type:"fill_blank",question:"He ___ smokes (0%).",hint:"nunca",correct:"never"},
+    {type:"fill_blank",question:"They ___ travel (às vezes).",hint:"às vezes",correct:"sometimes"},
+    {type:"fill_blank",question:"She is ___ happy (geralmente).",hint:"geralmente",correct:"usually"},
+    {type:"fill_blank",question:"We go to church ___ a week (uma vez).",hint:"uma vez",correct:"once"},
+    {type:"true_false",statements:[
+      {text:"'Always' means 100% of the time.",answer:true},
+      {text:"Frequency adverbs go after the main verb.",answer:false},
+      {text:"'Never' is a negative idea.",answer:true},
+      {text:"'She is always late' is correct.",answer:true},
+      {text:"'I go usually to work' is correct word order.",answer:false},
+      {text:"'Every day' means daily.",answer:true}
+    ]},
+    {type:"matching",question:"Ligue o advérbio à tradução:",pairs:[
+      {left:"always",right:"sempre"},{left:"never",right:"nunca"},{left:"sometimes",right:"às vezes"},
+      {left:"usually",right:"geralmente"},{left:"rarely",right:"raramente"}
+    ]}
+  ]},
+
+  freetime:{ label:"Free Time / Hobbies", keys:["free time","hobby","hobbies","leisure","freetime","tempo livre"], exercises:[
+    {type:"multiple_choice",question:"I like ___ (read) books.",options:["read","reading","reads","to reading"],correct:1},
+    {type:"multiple_choice",question:"She loves ___ (dance).",options:["dance","dancing","dances","danced"],correct:1},
+    {type:"multiple_choice",question:"I don't ___ cooking.",options:["likes","like","liking","to like"],correct:1},
+    {type:"multiple_choice",question:"He ___ playing video games.",options:["enjoy","enjoys","enjoying","to enjoy"],correct:1},
+    {type:"multiple_choice",question:"'I hate ___ early' (wake).",options:["wake","waking","wakes","woke"],correct:1},
+    {type:"multiple_choice",question:"A ___ is an activity you do for fun.",options:["job","hobby","homework","chore"],correct:1},
+    {type:"fill_blank",question:"I like ___ (listen) to music.",hint:"like + -ing",correct:"listening"},
+    {type:"fill_blank",question:"She enjoys ___ (paint).",hint:"enjoy + -ing",correct:"painting"},
+    {type:"fill_blank",question:"They love ___ (travel).",hint:"love + -ing",correct:"traveling"},
+    {type:"fill_blank",question:"I don't like ___ (cook).",hint:"like + -ing",correct:"cooking"},
+    {type:"fill_blank",question:"My favorite ___ is reading.",hint:"passatempo",correct:"hobby"},
+    {type:"true_false",statements:[
+      {text:"After 'like', the verb takes -ing.",answer:true},
+      {text:"'I like read' is correct.",answer:false},
+      {text:"'Enjoy' is followed by -ing.",answer:true},
+      {text:"A hobby is something you do for work.",answer:false},
+      {text:"'She loves dancing' is correct.",answer:true},
+      {text:"'Don't' is used with I, you, we, they.",answer:true}
+    ]},
+    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
+      {left:"read",right:"ler"},{left:"travel",right:"viajar"},{left:"dance",right:"dançar"},
+      {left:"relax",right:"relaxar"},{left:"hobby",right:"passatempo"}
+    ]}
+  ]},
+
+  sports:{ label:"Sports", keys:["sport","esporte"], exercises:[
+    {type:"multiple_choice",question:"You play this with feet and a ball: ___.",options:["tennis","football","swimming","boxing"],correct:1},
+    {type:"multiple_choice",question:"This sport is in water: ___.",options:["running","swimming","cycling","golf"],correct:1},
+    {type:"multiple_choice",question:"You ride a bike in ___.",options:["walking","cycling","yoga","boxing"],correct:1},
+    {type:"multiple_choice",question:"Right now I ___ (play) tennis.",options:["play","am playing","plays","played"],correct:1},
+    {type:"multiple_choice",question:"She ___ (run) in the park at the moment.",options:["runs","is running","run","ran"],correct:1},
+    {type:"multiple_choice",question:"A group of players is a ___.",options:["team","gym","coach","ball"],correct:0},
+    {type:"fill_blank",question:"I go to the ___ to exercise.",hint:"academia",correct:"gym"},
+    {type:"fill_blank",question:"Look! They ___ (swim) now.",hint:"agora: are + -ing",correct:"are swimming"},
+    {type:"fill_blank",question:"He usually ___ (play) football on Sundays.",hint:"hábito: he + s",correct:"plays"},
+    {type:"fill_blank",question:"Right now we ___ (watch) a game.",hint:"agora: are + -ing",correct:"are watching"},
+    {type:"fill_blank",question:"My favorite ___ is basketball.",hint:"esporte",correct:"sport"},
+    {type:"true_false",statements:[
+      {text:"Present continuous = am/is/are + verb-ing.",answer:true},
+      {text:"'I am play football now' is correct.",answer:false},
+      {text:"Swimming is a water sport.",answer:true},
+      {text:"'She plays tennis every week' talks about a habit.",answer:true},
+      {text:"'They are run' is correct.",answer:false},
+      {text:"A team is one single player.",answer:false}
+    ]},
+    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
+      {left:"football",right:"futebol"},{left:"swimming",right:"natação"},{left:"gym",right:"academia"},
+      {left:"team",right:"time"},{left:"win",right:"ganhar"}
+    ]}
+  ]},
+
+  food:{ label:"Food & Drinks", keys:["food","eat","drink","comida"], exercises:[
+    {type:"multiple_choice",question:"Which is a fruit? ___.",options:["carrot","apple","lettuce","potato"],correct:1},
+    {type:"multiple_choice",question:"Which is a drink? ___.",options:["bread","water","rice","meat"],correct:1},
+    {type:"multiple_choice",question:"Which is a vegetable? ___.",options:["banana","carrot","milk","chicken"],correct:1},
+    {type:"multiple_choice",question:"We ___ breakfast in the morning.",options:["have","has","having","drinks"],correct:0},
+    {type:"multiple_choice",question:"Rice is ___ : we say 'some rice'.",options:["countable","uncountable","plural","a number"],correct:1},
+    {type:"multiple_choice",question:"'How ___ apples do you want?'",options:["much","many","any","lot"],correct:1},
+    {type:"fill_blank",question:"I drink ___ in the morning.",hint:"café",correct:"coffee"},
+    {type:"fill_blank",question:"An ___ a day keeps the doctor away.",hint:"maçã",correct:"apple"},
+    {type:"fill_blank",question:"I have ___ (ovos) for breakfast.",hint:"plural",correct:"eggs"},
+    {type:"fill_blank",question:"'How ___ water do you drink?'",hint:"não contável",correct:"much"},
+    {type:"fill_blank",question:"Chicken and beef are types of ___.",hint:"carne",correct:"meat"},
+    {type:"true_false",statements:[
+      {text:"An apple is a fruit.",answer:true},
+      {text:"Chicken is a vegetable.",answer:false},
+      {text:"Water is a drink.",answer:true},
+      {text:"We use 'many' with countable nouns.",answer:true},
+      {text:"'Rice' is countable: one rice, two rices.",answer:false},
+      {text:"Milk is a dairy product.",answer:true}
+    ]},
+    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
+      {left:"apple",right:"maçã"},{left:"water",right:"água"},{left:"bread",right:"pão"},
+      {left:"meat",right:"carne"},{left:"egg",right:"ovo"}
+    ]}
+  ]},
+
+  travel:{ label:"Travel", keys:["travel","trip","vacation","holiday","viagem"], exercises:[
+    {type:"multiple_choice",question:"You need a ___ to travel to another country.",options:["ticket","passport","map","hotel"],correct:1},
+    {type:"multiple_choice",question:"You sleep here on a trip: ___.",options:["airport","hotel","station","beach"],correct:1},
+    {type:"multiple_choice",question:"You travel by air in an ___.",options:["car","airplane","train","ship"],correct:1},
+    {type:"multiple_choice",question:"You pack your clothes in a ___.",options:["wallet","suitcase","passport","ticket"],correct:1},
+    {type:"multiple_choice",question:"A ship travels on the ___.",options:["land","sea","air","road"],correct:1},
+    {type:"multiple_choice",question:"You buy a ___ to enter the plane.",options:["suitcase","ticket","hotel","map"],correct:1},
+    {type:"fill_blank",question:"I keep my clothes in a ___.",hint:"mala",correct:"suitcase"},
+    {type:"fill_blank",question:"We fly in an ___.",hint:"avião",correct:"airplane"},
+    {type:"fill_blank",question:"At night we stay in a ___.",hint:"hotel",correct:"hotel"},
+    {type:"fill_blank",question:"I need my ___ to travel abroad.",hint:"passaporte",correct:"passport"},
+    {type:"fill_blank",question:"A ___ travels on rails.",hint:"trem",correct:"train"},
+    {type:"true_false",statements:[
+      {text:"A plane is used for air travel.",answer:true},
+      {text:"A train travels on water.",answer:false},
+      {text:"A hotel is a place to stay.",answer:true},
+      {text:"You need a passport to travel to another country.",answer:true},
+      {text:"A suitcase is a small wallet.",answer:false},
+      {text:"The sea is where ships travel.",answer:true}
+    ]},
+    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
+      {left:"passport",right:"passaporte"},{left:"suitcase",right:"mala"},{left:"airplane",right:"avião"},
+      {left:"hotel",right:"hotel"},{left:"ticket",right:"passagem"}
+    ]}
+  ]}
+};
+
+// ================= ESTADO =================
+let currentKey = null;
+let exercises = [];
+let answers = {};
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function renderThemeButtons(){
+  const c=document.getElementById('themeButtons');
+  c.innerHTML=Object.keys(bank).map(k=>`<button class="theme-btn ${k===currentKey?'active':''}" onclick="loadTopic('${k}')">${bank[k].label}</button>`).join('');
+}
+
+function loadTopic(key){
+  currentKey=key;
+  answers={};
+  exercises=JSON.parse(JSON.stringify(bank[key].exercises));
+  // pre-shuffle matching option lists
+  exercises.forEach(ex=>{ if(ex.type==='matching'){ ex._opts=shuffle(ex.pairs.map(p=>p.right)); } });
+  document.getElementById('currentTopic').textContent=bank[key].label;
+  document.getElementById('scoreDisplay').textContent='—';
+  renderThemeButtons();
+  renderExercises();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderExercises(){
+  const c=document.getElementById('exercisesContainer');
+  c.innerHTML='';
+  let num=0;
+  exercises.forEach((ex,ei)=>{
+    const card=document.createElement('div');
+    card.className='card ex-card';
+    if(ex.type==='multiple_choice'){
+      num++;
+      card.innerHTML=`<p class="tag">Múltipla escolha</p>
+        <p class="text-white text-lg font-semibold mb-3">${num}. ${ex.question}</p>
+        <div>${ex.options.map((o,oi)=>`<button class="opt" id="opt-${ei}-${oi}" onclick="pick(${ei},${oi})">${String.fromCharCode(65+oi)}) ${o}</button>`).join('')}</div>`;
     }
-
-    function renderExercises() {
-      const container = document.getElementById('exercisesContainer');
-      container.innerHTML = '';
-
-      exercises.forEach((ex, idx) => {
-        const exCard = document.createElement('div');
-        exCard.className = 'card exercise-card';
-        exCard.innerHTML = `<h3 class="text-xl font-bold text-white mb-4">Exercício ${idx + 1}</h3>`;
-
-        if (ex.type === 'multiple_choice') {
-          exCard.innerHTML += `
-            <p class="text-slate-300 mb-4">${ex.question}</p>
-            <div>
-              ${ex.options.map((opt, optIdx) => `
-                <button class="option-btn" onclick="selectOption(${idx}, ${optIdx})">
-                  ${String.fromCharCode(65 + optIdx)}) ${opt}
-                </button>
-              `).join('')}
+    if(ex.type==='fill_blank'){
+      num++;
+      card.innerHTML=`<p class="tag">Complete</p>
+        <p class="text-white text-lg font-semibold mb-3">${num}. ${ex.question}</p>
+        <input class="inp" id="fill-${ei}" placeholder="Sua resposta..." oninput="answers[${ei}]=this.value">
+        <p class="text-slate-400 text-sm mt-2 italic">💡 ${ex.hint}</p>
+        <p class="correct-note" id="note-${ei}" style="display:none"></p>`;
+    }
+    if(ex.type==='true_false'){
+      card.innerHTML=`<p class="tag">Verdadeiro ou Falso</p>
+        <div class="space-y-3 mt-2">${ex.statements.map((s,si)=>`
+          <div>
+            <p class="text-white mb-2">${si+1}. ${s.text}</p>
+            <div style="display:flex;gap:8px">
+              <button class="opt" style="flex:1;text-align:center" id="tf-${ei}-${si}-t" onclick="pickTF(${ei},${si},true)">✓ True</button>
+              <button class="opt" style="flex:1;text-align:center" id="tf-${ei}-${si}-f" onclick="pickTF(${ei},${si},false)">✗ False</button>
             </div>
-          `;
-        }
+          </div>`).join('')}</div>`;
+    }
+    if(ex.type==='matching'){
+      card.innerHTML=`<p class="tag">Ligar / Matching</p>
+        <p class="text-white text-lg font-semibold mb-3">${ex.question}</p>
+        <div class="space-y-2">${ex.pairs.map((p,pi)=>`
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="flex:1"><span class="text-white font-bold">${p.left}</span></div>
+            <select class="inp" style="flex:1" id="match-${ei}-${pi}" onchange="pickMatch(${ei},${pi},this.value)">
+              <option value="">Escolha...</option>
+              ${ex._opts.map(r=>`<option value="${r}">${r}</option>`).join('')}
+            </select>
+            <span id="mnote-${ei}-${pi}" style="width:28px;text-align:center"></span>
+          </div>`).join('')}</div>`;
+    }
+    c.appendChild(card);
+  });
+}
 
-        if (ex.type === 'fill_blank') {
-          exCard.innerHTML += `
-            <p class="text-slate-300 mb-4">${ex.question}</p>
-            <input type="text" class="input-field" placeholder="Digite sua resposta..." 
-              onchange="saveFillBlank(${idx}, this.value)" id="fill-${idx}">
-            <p class="text-slate-400 text-sm italic">Dica: ${ex.hint}</p>
-          `;
-        }
+function pick(ei,oi){
+  answers[ei]=oi;
+  exercises[ei].options.forEach((_,i)=>document.getElementById(`opt-${ei}-${i}`).classList.remove('sel'));
+  document.getElementById(`opt-${ei}-${oi}`).classList.add('sel');
+}
+function pickTF(ei,si,val){
+  if(!answers[ei])answers[ei]=[];
+  answers[ei][si]=val;
+  document.getElementById(`tf-${ei}-${si}-t`).classList.toggle('sel',val===true);
+  document.getElementById(`tf-${ei}-${si}-f`).classList.toggle('sel',val===false);
+}
+function pickMatch(ei,pi,val){
+  if(!answers[ei])answers[ei]=[];
+  answers[ei][pi]=val;
+}
 
-        if (ex.type === 'true_false') {
-          exCard.innerHTML += `
-            <p class="text-slate-300 mb-4">Marque Verdadeiro (V) ou Falso (F):</p>
-            <div>
-              ${ex.statements.map((stmt, stmtIdx) => `
-                <div class="mb-3">
-                  <p class="text-slate-300 mb-2">${stmt.text}</p>
-                  <div style="display: flex; gap: 10px;">
-                    <button class="option-btn" style="flex: 1;" onclick="selectTrueFalse(${idx}, ${stmtIdx}, true)">
-                      ✓ Verdadeiro
-                    </button>
-                    <button class="option-btn" style="flex: 1;" onclick="selectTrueFalse(${idx}, ${stmtIdx}, false)">
-                      ✗ Falso
-                    </button>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          `;
-        }
-
-        if (ex.type === 'matching') {
-          exCard.innerHTML += `
-            <p class="text-slate-300 mb-4">${ex.question}</p>
-            <div class="space-y-3">
-              ${ex.pairs.map((pair, pairIdx) => `
-                <div class="flex gap-4 items-center">
-                  <div class="flex-1">
-                    <p class="text-slate-300 font-bold">${pair.left}</p>
-                  </div>
-                  <select class="option-btn" onchange="saveMatching(${idx}, ${pairIdx}, this.value)">
-                    <option value="">Escolha...</option>
-                    ${ex.pairs.map(p => `<option value="${p.right}">${p.right}</option>`).join('')}
-                  </select>
-                </div>
-              `).join('')}
-            </div>
-          `;
-        }
-
-        container.appendChild(exCard);
+function checkAnswers(){
+  if(!currentKey){alert('Escolha um tema primeiro!');return;}
+  let correct=0,total=0;
+  exercises.forEach((ex,ei)=>{
+    if(ex.type==='multiple_choice'){
+      total++;
+      const sel=answers[ei];
+      ex.options.forEach((_,i)=>{
+        const el=document.getElementById(`opt-${ei}-${i}`);
+        el.classList.remove('sel','right','wrong');
+        if(i===ex.correct)el.classList.add('right');
+        else if(i===sel)el.classList.add('wrong');
       });
-
-      updateScore();
+      if(sel===ex.correct)correct++;
     }
-
-    function selectOption(exIdx, optIdx) {
-      userAnswers[exIdx] = optIdx;
-      const btns = document.querySelectorAll(`.exercise-card:nth-child(${exIdx + 1}) .option-btn`);
-      btns.forEach((btn, i) => {
-        btn.classList.remove('selected');
-        if (i === optIdx) btn.classList.add('selected');
+    if(ex.type==='fill_blank'){
+      total++;
+      const el=document.getElementById(`fill-${ei}`);
+      const note=document.getElementById(`note-${ei}`);
+      const val=(answers[ei]||'').toLowerCase().trim();
+      el.classList.remove('right','wrong');
+      if(val===ex.correct.toLowerCase()){el.classList.add('right');correct++;note.style.display='none';}
+      else{el.classList.add('wrong');note.style.display='block';note.textContent='Resposta: '+ex.correct;}
+    }
+    if(ex.type==='true_false'){
+      ex.statements.forEach((s,si)=>{
+        total++;
+        const t=document.getElementById(`tf-${ei}-${si}-t`);
+        const f=document.getElementById(`tf-${ei}-${si}-f`);
+        t.classList.remove('sel','right','wrong');f.classList.remove('sel','right','wrong');
+        (s.answer?t:f).classList.add('right');
+        const chosen=answers[ei]?answers[ei][si]:undefined;
+        if(chosen!==undefined&&chosen!==s.answer)(chosen?t:f).classList.add('wrong');
+        if(chosen===s.answer)correct++;
       });
     }
-
-    function saveFillBlank(exIdx, value) {
-      userAnswers[exIdx] = value.toLowerCase().trim();
-    }
-
-    function selectTrueFalse(exIdx, stmtIdx, value) {
-      if (!userAnswers[exIdx]) userAnswers[exIdx] = [];
-      userAnswers[exIdx][stmtIdx] = value;
-    }
-
-    function saveMatching(exIdx, pairIdx, value) {
-      if (!userAnswers[exIdx]) userAnswers[exIdx] = [];
-      userAnswers[exIdx][pairIdx] = value;
-    }
-
-    function checkAnswers() {
-      feedbackShown = true;
-      let correct = 0;
-      let total = 0;
-
-      exercises.forEach((ex, exIdx) => {
-        if (ex.type === 'multiple_choice') {
-          total++;
-          if (userAnswers[exIdx] === ex.correct) correct++;
-        }
-        if (ex.type === 'fill_blank') {
-          total++;
-          if (userAnswers[exIdx] === ex.correct) correct++;
-        }
-        if (ex.type === 'true_false') {
-          ex.statements.forEach((stmt, stmtIdx) => {
-            total++;
-            if (userAnswers[exIdx] && userAnswers[exIdx][stmtIdx] === stmt.answer) correct++;
-          });
-        }
-        if (ex.type === 'matching') {
-          ex.pairs.forEach((pair, pairIdx) => {
-            total++;
-            if (userAnswers[exIdx] && userAnswers[exIdx][pairIdx] === pair.right) correct++;
-          });
-        }
+    if(ex.type==='matching'){
+      ex.pairs.forEach((p,pi)=>{
+        total++;
+        const sel=document.getElementById(`match-${ei}-${pi}`);
+        const note=document.getElementById(`mnote-${ei}-${pi}`);
+        sel.classList.remove('right','wrong');
+        const val=answers[ei]?answers[ei][pi]:'';
+        if(val===p.right){sel.classList.add('right');note.textContent='✓';note.style.color='#34d399';correct++;}
+        else{sel.classList.add('wrong');note.textContent='✗';note.style.color='#ef4444';}
       });
-
-      document.getElementById('scoreDisplay').textContent = `${correct}/${total}`;
-      alert(`Você acertou ${correct} de ${total} questões!`);
     }
+  });
+  document.getElementById('scoreDisplay').textContent=`${correct}/${total}`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-    function updateScore() {
-      let answered = Object.keys(userAnswers).length;
-      document.getElementById('scoreDisplay').textContent = `${answered}/${exercises.length}`;
+function exportPDF(){
+  if(!currentKey){alert('Escolha um tema primeiro!');return;}
+  const pa=document.getElementById('printArea');
+  let num=0;
+  let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
+    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">⭐ Exercícios — ${bank[currentKey].label}</h1>`;
+  exercises.forEach(ex=>{
+    if(ex.type==='multiple_choice'){num++;
+      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b></p>`;
+      ex.options.forEach((o,i)=>h+=`<p style="margin-left:15px">${String.fromCharCode(65+i)}) ${o} ${i===ex.correct?'<b>✔</b>':''}</p>`);
     }
-
-    function exportResults() {
-      const printArea = document.getElementById('printArea');
-      let html = `<h1 style="text-align: center; border-bottom: 3px solid #667eea; padding-bottom: 15px;">⭐ EXERCÍCIOS - ${currentTopic.toUpperCase()}</h1>`;
-      
-      exercises.forEach((ex, idx) => {
-        html += `<div style="margin-bottom: 30px;"><h2>Exercício ${idx + 1}</h2>`;
-        
-        if (ex.type === 'multiple_choice') {
-          html += `<p><strong>${ex.question}</strong></p><ul>`;
-          ex.options.forEach((opt, optIdx) => {
-            html += `<li>${String.fromCharCode(65 + optIdx)}) ${opt} ${optIdx === ex.correct ? '✓ CORRETA' : ''}</li>`;
-          });
-          html += `</ul>`;
-        }
-        
-        html += `</div>`;
-      });
-
-      printArea.innerHTML = html;
-      const opt = {
-        margin: 10,
-        filename: `Exercicios-${currentTopic}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-      };
-      html2pdf().set(opt).from(printArea).save();
+    if(ex.type==='fill_blank'){num++;
+      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b> &nbsp; <span style="color:#059669"><b>(${ex.correct})</b></span></p>`;
     }
-
-    function resetExercises() {
-      userAnswers = {};
-      feedbackShown = false;
-      document.getElementById('exercisesContainer').innerHTML = '';
-      document.getElementById('scoreDisplay').textContent = '0/0';
+    if(ex.type==='true_false'){
+      h+=`<p style="margin-top:14px"><b>Verdadeiro ou Falso:</b></p>`;
+      ex.statements.forEach((s,i)=>h+=`<p style="margin-left:15px">${i+1}. ${s.text} — <b>${s.answer?'True':'False'}</b></p>`);
     }
-
-    function goHome() {
-      window.location.href = 'index.html';
+    if(ex.type==='matching'){
+      h+=`<p style="margin-top:14px"><b>${ex.question}</b></p>`;
+      ex.pairs.forEach(p=>h+=`<p style="margin-left:15px">${p.left} → <b>${p.right}</b></p>`);
     }
-  </script>
+  });
+  h+=`</div>`;
+  pa.innerHTML=h;
+  html2pdf().set({margin:8,filename:`Exercicios-${bank[currentKey].label.replace(/[^a-zA-Z]/g,'')}.pdf`,image:{type:'jpeg',quality:.98},html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}).from(pa).save();
+}
+
+function goHome(){window.location.href='index.html';}
+
+// INIT
+renderThemeButtons();
+loadTopic('personal');
+</script>
 </body>
 </html>
