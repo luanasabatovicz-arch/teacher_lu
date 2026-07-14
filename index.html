@@ -4,105 +4,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sabatovicz — Sistema Completo de Aulas Online</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--surface:#1c1a15;--surface2:#211E17;--line:rgba(201,169,97,.16);--text:#ECE6DA;--muted:#A79F8E;--gold:#C9A961;--gold2:#B4924F;}
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif;}
-    body{background:linear-gradient(180deg,#151310 0%,#100E0B 100%);color:var(--text);min-height:100vh;}
-    h1,h2{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.01em;}
-    .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
-    header{text-align:center;padding:72px 24px 40px;border-bottom:1px solid var(--line);}
-    .eyebrow{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;}
-    h1{font-size:64px;line-height:1.05;margin:14px 0 10px;color:#F3EEE3;}
-    .sub{color:var(--muted);font-size:17px;font-weight:300;letter-spacing:.02em;}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:48px 0 24px;}
-    @media(max-width:760px){.grid{grid-template-columns:1fr;}h1{font-size:46px;}}
-    .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:34px 32px;text-decoration:none;display:block;transition:all .25s ease;position:relative;}
-    .card:hover{border-color:rgba(201,169,97,.4);background:var(--surface2);transform:translateY(-3px);}
-    .card .eyebrow{font-size:11px;letter-spacing:.28em;}
-    .card h2{font-size:30px;color:#F1EBDF;margin:12px 0 12px;}
-    .card p{color:var(--muted);font-size:15px;line-height:1.6;font-weight:300;margin-bottom:20px;}
-    .divider{height:1px;background:var(--line);margin:18px 0;}
-    .feat{list-style:none;margin-bottom:24px;}
-    .feat li{color:#C4BCAB;font-size:13.5px;padding:5px 0;display:flex;align-items:center;gap:10px;font-weight:300;}
-    .feat li::before{content:"—";color:var(--gold);font-weight:400;}
-    .cta{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(201,169,97,.4);padding:11px 20px;border-radius:8px;transition:all .2s;}
-    .card:hover .cta{background:var(--gold);color:#181510;border-color:var(--gold);}
-    footer{text-align:center;padding:40px 24px 56px;color:#6d675c;font-size:12.5px;letter-spacing:.04em;font-weight:300;}
-    footer .brand{color:var(--gold);letter-spacing:.24em;text-transform:uppercase;font-size:11px;}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+    body{background:#ffffff;color:#1e293b;min-height:100vh;}
+    h1,h2{font-family:'Poppins',sans-serif;font-weight:800;}
+    .hero{background:linear-gradient(120deg,#7c3aed 0%,#db2777 55%,#f59e0b 100%);color:#fff;text-align:center;padding:64px 24px 56px;box-shadow:0 8px 30px rgba(124,58,237,.3);}
+    .hero .eyebrow{font-size:12px;letter-spacing:.3em;text-transform:uppercase;opacity:.9;font-weight:600;}
+    .hero h1{font-size:60px;line-height:1.05;margin:12px 0 8px;}
+    .hero p{font-size:18px;opacity:.95;font-weight:400;}
+    .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:46px 0 20px;}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:620px){.grid{grid-template-columns:1fr;}.hero h1{font-size:44px;}}
+    .card{background:#fff;border:1px solid #eee7fb;border-radius:16px;padding:0;text-decoration:none;overflow:hidden;transition:all .25s;box-shadow:0 4px 18px rgba(124,58,237,.08);display:flex;flex-direction:column;}
+    .card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(124,58,237,.2);}
+    .bar{height:8px;}
+    .b1{background:linear-gradient(90deg,#ec4899,#f472b6);}
+    .b2{background:linear-gradient(90deg,#f59e0b,#facc15);}
+    .b3{background:linear-gradient(90deg,#22c55e,#4ade80);}
+    .b4{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
+    .b5{background:linear-gradient(90deg,#7c3aed,#a78bfa);}
+    .inner{padding:28px 26px 26px;display:flex;flex-direction:column;flex:1;}
+    .eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;}
+    .e1{color:#db2777;}.e2{color:#d97706;}.e3{color:#16a34a;}.e4{color:#0891b2;}.e5{color:#7c3aed;}
+    .card h2{font-size:25px;color:#1e293b;margin:10px 0 10px;}
+    .card p{color:#64748b;font-size:14px;line-height:1.55;margin-bottom:18px;flex:1;}
+    .cta{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.04em;padding:11px 18px;border-radius:10px;color:#fff;width:fit-content;}
+    .c1{background:linear-gradient(135deg,#ec4899,#f472b6);}
+    .c2{background:linear-gradient(135deg,#f59e0b,#facc15);color:#7a4a00;}
+    .c3{background:linear-gradient(135deg,#22c55e,#4ade80);}
+    .c4{background:linear-gradient(135deg,#06b6d4,#22d3ee);}
+    .c5{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+    footer{text-align:center;padding:40px 24px 56px;color:#94a3b8;font-size:13px;}
+    footer b{color:#7c3aed;letter-spacing:.2em;text-transform:uppercase;font-size:12px;}
   </style>
 </head>
 <body>
-  <header>
+  <div class="hero">
     <p class="eyebrow">Sistema de Ensino</p>
     <h1>Sabatovicz</h1>
-    <p class="sub">Sistema Completo de Aulas Online</p>
-  </header>
+    <p>Sistema Completo de Aulas Online</p>
+  </div>
 
   <div class="wrap">
     <div class="grid">
 
       <a class="card" href="lessons.html">
-        <p class="eyebrow">Conversação</p>
-        <h2>Aulas de Conversação</h2>
-        <p>Aulas prontas por tema para adultos iniciantes. Oito semanas com perguntas de conversação, vocabulário com transcrição fonética e áudio, e diálogos guiados.</p>
-        <div class="divider"></div>
-        <ul class="feat">
-          <li>Oito semanas prontas</li>
-          <li>Transcrição fonética e áudio</li>
-          <li>Role-plays e conversação</li>
-          <li>Exportação em PDF</li>
-        </ul>
-        <span class="cta">Abrir aulas →</span>
+        <div class="bar b1"></div>
+        <div class="inner">
+          <span class="eyebrow e1">Conversação</span>
+          <h2>Aulas de Conversação</h2>
+          <p>Aulas prontas por tema para adultos iniciantes: perguntas de conversação, vocabulário com fonética e áudio, e diálogos guiados.</p>
+          <span class="cta c1">Abrir aulas →</span>
+        </div>
       </a>
 
       <a class="card" href="grammar.html">
-        <p class="eyebrow">Gramática</p>
-        <h2>Aulas de Gramática</h2>
-        <p>Banco de aulas de tempos verbais para abrir, explicar e praticar. Dez tempos com estrutura clara, exemplos com áudio, erros comuns e prática com gabarito.</p>
-        <div class="divider"></div>
-        <ul class="feat">
-          <li>Dez tempos verbais</li>
-          <li>Estrutura e exemplos</li>
-          <li>Erros comuns comentados</li>
-          <li>Prática e exportação</li>
-        </ul>
-        <span class="cta">Abrir gramática →</span>
+        <div class="bar b2"></div>
+        <div class="inner">
+          <span class="eyebrow e2">Gramática</span>
+          <h2>Aulas de Gramática</h2>
+          <p>Banco de tempos verbais para abrir, explicar e praticar: estrutura, exemplos com áudio, erros comuns e prática com gabarito.</p>
+          <span class="cta c2">Abrir gramática →</span>
+        </div>
       </a>
 
       <a class="card" href="exercise-generator.html">
-        <p class="eyebrow">Exercícios</p>
-        <h2>Banco de Exercícios</h2>
-        <p>Nove temas com bastante prática: múltipla escolha, preenchimento, verdadeiro ou falso e correspondência, com correção imediata e destaque de acertos e erros.</p>
-        <div class="divider"></div>
-        <ul class="feat">
-          <li>Cerca de vinte questões por tema</li>
-          <li>Correção visual imediata</li>
-          <li>Pontuação por sessão</li>
-          <li>Exportação com gabarito</li>
-        </ul>
-        <span class="cta">Praticar →</span>
+        <div class="bar b3"></div>
+        <div class="inner">
+          <span class="eyebrow e3">Exercícios</span>
+          <h2>Banco de Exercícios</h2>
+          <p>Vários temas com bastante prática: múltipla escolha, preenchimento, verdadeiro ou falso e correspondência, com correção imediata.</p>
+          <span class="cta c3">Praticar →</span>
+        </div>
+      </a>
+
+      <a class="card" href="games.html">
+        <div class="bar b4"></div>
+        <div class="inner">
+          <span class="eyebrow e4">Jogos</span>
+          <h2>Jogos de Aula</h2>
+          <p>Oito jogos para animar a aula: Forca, Categorias, 20 Perguntas, Odd One Out, Category Sort, Spelling Bee, Guess the Emoji e Word Chains.</p>
+          <span class="cta c4">Jogar →</span>
+        </div>
       </a>
 
       <a class="card" href="annual-plan.html">
-        <p class="eyebrow">Planejamento</p>
-        <h2>Mapa Curricular</h2>
-        <p>Plano anual dos sete alunos, com cinquenta e duas semanas em progressão do nível básico ao pré-intermediário, controle de progresso e exportação individual.</p>
-        <div class="divider"></div>
-        <ul class="feat">
-          <li>Sete alunos acompanhados</li>
-          <li>Cinquenta e duas semanas</li>
-          <li>Progresso por aluno</li>
-          <li>Exportação em PDF</li>
-        </ul>
-        <span class="cta">Ver plano →</span>
+        <div class="bar b5"></div>
+        <div class="inner">
+          <span class="eyebrow e5">Planejamento</span>
+          <h2>Mapa Curricular</h2>
+          <p>Plano anual dos sete alunos, com progressão do básico ao pré-intermediário, controle de progresso e exportação individual.</p>
+          <span class="cta c5">Ver plano →</span>
+        </div>
       </a>
 
     </div>
   </div>
 
   <footer>
-    <p class="brand">Sabatovicz</p>
+    <b>Sabatovicz</b>
     <p style="margin-top:8px">Sistema Completo de Aulas Online</p>
   </footer>
 </body>
