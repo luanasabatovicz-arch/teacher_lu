@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,7 +104,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
       <div class="flex justify-between items-center mb-4">
         <div>
           <h1 class="text-2xl md:text-3xl font-bold">Exercise Generator</h1>
-          <p class="text-[#B7AE9C] text-sm">Exercícios com bastante prática · A1</p>
+          <p class="text-[#B7AE9C] text-sm">Lots of practice · A1</p>
         </div>
         <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 text-sm">← Menu</button>
       </div>
@@ -116,11 +116,11 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
   <div class="max-w-4xl mx-auto p-4 md:p-6">
     <div class="card rounded-xl p-5 mb-6 flex items-center justify-between flex-wrap gap-3">
       <div>
-        <p class="text-slate-400 text-sm">Tema atual</p>
+        <p class="text-slate-400 text-sm">Current topic</p>
         <p class="text-white text-xl font-bold" id="currentTopic">—</p>
       </div>
       <div class="text-right">
-        <p class="text-slate-400 text-sm">Pontuação</p>
+        <p class="text-slate-400 text-sm">Score</p>
         <p class="text-emerald-400 text-2xl font-bold" id="scoreDisplay">—</p>
       </div>
     </div>
@@ -128,16 +128,16 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
     <div id="exercisesContainer"></div>
 
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
-      <button onclick="checkAnswers()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">✓ Verificar respostas</button>
-      <button onclick="exportPDF()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">Baixar PDF (com gabarito)</button>
-      <button onclick="loadTopic(currentKey)" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Limpar respostas</button>
+      <button onclick="checkAnswers()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">✓ Check answers</button>
+      <button onclick="exportPDF()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">Download PDF (with answer key)</button>
+      <button onclick="loadTopic(currentKey)" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Clear answers</button>
     </div>
     <div id="printArea" class="hidden"></div>
   </div>
 </div>
 
 <script>
-// ================= BANCO DE EXERCÍCIOS =================
+// ================= EXERCISE BANK =================
 const bank = {
   personal:{ label:"Personal Info (to be)", keys:["personal","identity","i am","to be","name","apresent"], exercises:[
     {type:"multiple_choice",question:"I ___ a teacher.",options:["am","is","are","be"],correct:0},
@@ -159,9 +159,9 @@ const bank = {
       {text:"'They is my family' is correct.",answer:false},
       {text:"'I'm not' means 'I am not'.",answer:true}
     ]},
-    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
-      {left:"name",right:"nome"},{left:"age",right:"idade"},{left:"country",right:"país"},
-      {left:"married",right:"casado"},{left:"single",right:"solteiro"}
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"name",right:"what people call you"},{left:"age",right:"how old you are"},{left:"country",right:"a nation"},
+      {left:"married",right:"has a husband or wife"},{left:"single",right:"not married"}
     ]}
   ]},
 
@@ -172,11 +172,11 @@ const bank = {
     {type:"multiple_choice",question:"A person from the United States is ___.",options:["American","America","Americano","US"],correct:0},
     {type:"multiple_choice",question:"A person who designs bridges is an ___.",options:["artist","engineer","actor","author"],correct:1},
     {type:"multiple_choice",question:"What ___ you do for work?",options:["do","are","is","be"],correct:0},
-    {type:"fill_blank",question:"I teach English. I'm a ___.",hint:"profissão",correct:"teacher"},
-    {type:"fill_blank",question:"She's from Italy. She's ___.",hint:"nacionalidade",correct:"italian"},
-    {type:"fill_blank",question:"He flies planes. He's a ___.",hint:"profissão",correct:"pilot"},
-    {type:"fill_blank",question:"A person who cooks in a restaurant is a ___.",hint:"profissão",correct:"chef"},
-    {type:"fill_blank",question:"I'm from Brazil, so I'm ___.",hint:"nacionalidade",correct:"brazilian"},
+    {type:"fill_blank",question:"I teach English. I'm a ___.",hint:"profession",correct:"teacher"},
+    {type:"fill_blank",question:"She's from Italy. She's ___.",hint:"nationality",correct:"italian"},
+    {type:"fill_blank",question:"He flies planes. He's a ___.",hint:"profession",correct:"pilot"},
+    {type:"fill_blank",question:"A person who cooks in a restaurant is a ___.",hint:"profession",correct:"chef"},
+    {type:"fill_blank",question:"I'm from Brazil, so I'm ___.",hint:"nationality",correct:"brazilian"},
     {type:"true_false",statements:[
       {text:"A nurse works in a hospital.",answer:true},
       {text:"A person from France is 'Frenchian'.",answer:false},
@@ -185,13 +185,13 @@ const bank = {
       {text:"A person from Japan is Japanese.",answer:true},
       {text:"A retired person works every day.",answer:false}
     ]},
-    {type:"matching",question:"Ligue a profissão à tradução:",pairs:[
-      {left:"teacher",right:"professor"},{left:"nurse",right:"enfermeiro"},{left:"engineer",right:"engenheiro"},
-      {left:"lawyer",right:"advogado"},{left:"retired",right:"aposentado"}
+    {type:"matching",question:"Match the job to its meaning:",pairs:[
+      {left:"teacher",right:"teaches students"},{left:"nurse",right:"cares for patients"},{left:"engineer",right:"designs machines"},
+      {left:"lawyer",right:"works with the law"},{left:"retired",right:"stopped working"}
     ]}
   ]},
 
-  family:{ label:"Family", keys:["family","famil","família"], exercises:[
+  family:{ label:"Family", keys:["family","famil","relatives"], exercises:[
     {type:"multiple_choice",question:"My mother's mother is my ___.",options:["aunt","grandmother","sister","cousin"],correct:1},
     {type:"multiple_choice",question:"My father's brother is my ___.",options:["uncle","cousin","nephew","grandfather"],correct:0},
     {type:"multiple_choice",question:"My brother's daughter is my ___.",options:["sister","niece","aunt","cousin"],correct:1},
@@ -199,10 +199,10 @@ const bank = {
     {type:"multiple_choice",question:"The children of my aunt are my ___.",options:["siblings","cousins","parents","nieces"],correct:1},
     {type:"multiple_choice",question:"My wife's mother is my ___.",options:["sister","mother-in-law","aunt","cousin"],correct:1},
     {type:"fill_blank",question:"My mother and father are my ___.",hint:"plural",correct:"parents"},
-    {type:"fill_blank",question:"My brother and sister are my ___.",hint:"irmãos",correct:"siblings"},
-    {type:"fill_blank",question:"My son and daughter are my ___.",hint:"filhos",correct:"children"},
-    {type:"fill_blank",question:"My father's wife is my ___.",hint:"mãe",correct:"mother"},
-    {type:"fill_blank",question:"I'm married. My female partner is my ___.",hint:"esposa",correct:"wife"},
+    {type:"fill_blank",question:"My brother and sister are my ___.",hint:"siblings",correct:"siblings"},
+    {type:"fill_blank",question:"My son and daughter are my ___.",hint:"children",correct:"children"},
+    {type:"fill_blank",question:"My father's wife is my ___.",hint:"mother",correct:"mother"},
+    {type:"fill_blank",question:"I'm married. My female partner is my ___.",hint:"wife",correct:"wife"},
     {type:"true_false",statements:[
       {text:"Your parents are your mother and father.",answer:true},
       {text:"Your uncle is your mother's sister.",answer:false},
@@ -211,24 +211,24 @@ const bank = {
       {text:"Your grandmother is your mother's daughter.",answer:false},
       {text:"'Siblings' means brothers and sisters.",answer:true}
     ]},
-    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
-      {left:"mother",right:"mãe"},{left:"husband",right:"marido"},{left:"daughter",right:"filha"},
-      {left:"brother",right:"irmão"},{left:"parents",right:"pais"}
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"mother",right:"female parent"},{left:"husband",right:"married man"},{left:"daughter",right:"female child"},
+      {left:"brother",right:"male sibling"},{left:"parents",right:"mother and father"}
     ]}
   ]},
 
-  routine:{ label:"Daily Routine", keys:["routine","daily","rotina","day"], exercises:[
+  routine:{ label:"Daily Routine", keys:["routine","daily","everyday","day"], exercises:[
     {type:"multiple_choice",question:"I ___ up at 7 AM.",options:["wake","sleep","cook","work"],correct:0},
     {type:"multiple_choice",question:"She ___ to work by bus.",options:["go","goes","going","gone"],correct:1},
     {type:"multiple_choice",question:"I have ___ in the morning.",options:["dinner","breakfast","lunch","night"],correct:1},
     {type:"multiple_choice",question:"He ___ a shower every day.",options:["take","takes","taking","took"],correct:1},
     {type:"multiple_choice",question:"At night, I go to ___.",options:["bed","work","school","gym"],correct:0},
     {type:"multiple_choice",question:"We ___ dinner at 8 PM.",options:["have","has","having","to have"],correct:0},
-    {type:"fill_blank",question:"I ___ up at 6 o'clock.",hint:"acordar",correct:"wake"},
+    {type:"fill_blank",question:"I ___ up at 6 o'clock.",hint:"wake up",correct:"wake"},
     {type:"fill_blank",question:"She ___ (go) to work at 8.",hint:"he/she + s",correct:"goes"},
-    {type:"fill_blank",question:"I ___ (have) breakfast at 7.",hint:"I + verbo",correct:"have"},
+    {type:"fill_blank",question:"I ___ (have) breakfast at 7.",hint:"I + verb",correct:"have"},
     {type:"fill_blank",question:"He ___ (brush) his teeth.",hint:"he/she + es",correct:"brushes"},
-    {type:"fill_blank",question:"They ___ (sleep) eight hours.",hint:"they + verbo",correct:"sleep"},
+    {type:"fill_blank",question:"They ___ (sleep) eight hours.",hint:"they + verb",correct:"sleep"},
     {type:"true_false",statements:[
       {text:"We usually have breakfast in the morning.",answer:true},
       {text:"'He go to work' is correct.",answer:false},
@@ -237,24 +237,24 @@ const bank = {
       {text:"'She has lunch at 1 PM' is correct.",answer:true},
       {text:"We add -s to the verb with he, she, it.",answer:true}
     ]},
-    {type:"matching",question:"Ligue a ação à tradução:",pairs:[
-      {left:"wake up",right:"acordar"},{left:"have lunch",right:"almoçar"},{left:"cook",right:"cozinhar"},
-      {left:"sleep",right:"dormir"},{left:"go to bed",right:"ir dormir"}
+    {type:"matching",question:"Match the action to its meaning:",pairs:[
+      {left:"wake up",right:"stop sleeping"},{left:"have lunch",right:"eat at midday"},{left:"cook",right:"prepare food"},
+      {left:"sleep",right:"rest at night"},{left:"go to bed",right:"go to sleep"}
     ]}
   ]},
 
-  frequency:{ label:"Frequency", keys:["frequency","often","adverb","frequência"], exercises:[
+  frequency:{ label:"Frequency", keys:["frequency","often","adverb","how often"], exercises:[
     {type:"multiple_choice",question:"'100% of the time' = ___.",options:["never","always","rarely","sometimes"],correct:1},
     {type:"multiple_choice",question:"'0% of the time' = ___.",options:["always","never","often","usually"],correct:1},
     {type:"multiple_choice",question:"I ___ drink coffee (about 90%).",options:["never","usually","rarely","sometimes"],correct:1},
-    {type:"multiple_choice",question:"She is ___ late (raramente).",options:["rarely","always","often","usually"],correct:0},
+    {type:"multiple_choice",question:"She is ___ late (rarely).",options:["rarely","always","often","usually"],correct:0},
     {type:"multiple_choice",question:"Correct: 'I ___ go to the gym.'",options:["always","go always","am always go","go to always"],correct:0},
-    {type:"multiple_choice",question:"'once a week' means ___.",options:["uma vez por semana","todo dia","nunca","sempre"],correct:0},
-    {type:"fill_blank",question:"I ___ eat breakfast (100%).",hint:"sempre",correct:"always"},
-    {type:"fill_blank",question:"He ___ smokes (0%).",hint:"nunca",correct:"never"},
-    {type:"fill_blank",question:"They ___ travel (às vezes).",hint:"às vezes",correct:"sometimes"},
-    {type:"fill_blank",question:"She is ___ happy (geralmente).",hint:"geralmente",correct:"usually"},
-    {type:"fill_blank",question:"We go to church ___ a week (uma vez).",hint:"uma vez",correct:"once"},
+    {type:"multiple_choice",question:"'Once a week' means ___.",options:["one time every week","every day","never","always"],correct:0},
+    {type:"fill_blank",question:"I ___ eat breakfast (100%).",hint:"always",correct:"always"},
+    {type:"fill_blank",question:"He ___ smokes (0%).",hint:"never",correct:"never"},
+    {type:"fill_blank",question:"They ___ travel (sometimes).",hint:"sometimes",correct:"sometimes"},
+    {type:"fill_blank",question:"She is ___ happy (usually).",hint:"usually",correct:"usually"},
+    {type:"fill_blank",question:"We go to church ___ a week (once).",hint:"once",correct:"once"},
     {type:"true_false",statements:[
       {text:"'Always' means 100% of the time.",answer:true},
       {text:"Frequency adverbs go after the main verb.",answer:false},
@@ -263,9 +263,9 @@ const bank = {
       {text:"'I go usually to work' is correct word order.",answer:false},
       {text:"'Every day' means daily.",answer:true}
     ]},
-    {type:"matching",question:"Ligue o advérbio à tradução:",pairs:[
-      {left:"always",right:"sempre"},{left:"never",right:"nunca"},{left:"sometimes",right:"às vezes"},
-      {left:"usually",right:"geralmente"},{left:"rarely",right:"raramente"}
+    {type:"matching",question:"Match the adverb to its meaning:",pairs:[
+      {left:"always",right:"100% of the time"},{left:"never",right:"0% of the time"},{left:"sometimes",right:"now and then"},
+      {left:"usually",right:"most of the time"},{left:"rarely",right:"almost never"}
     ]}
   ]},
 
@@ -280,7 +280,7 @@ const bank = {
     {type:"fill_blank",question:"She enjoys ___ (paint).",hint:"enjoy + -ing",correct:"painting"},
     {type:"fill_blank",question:"They love ___ (travel).",hint:"love + -ing",correct:"traveling"},
     {type:"fill_blank",question:"I don't like ___ (cook).",hint:"like + -ing",correct:"cooking"},
-    {type:"fill_blank",question:"My favorite ___ is reading.",hint:"passatempo",correct:"hobby"},
+    {type:"fill_blank",question:"My favorite ___ is reading.",hint:"a hobby",correct:"hobby"},
     {type:"true_false",statements:[
       {text:"After 'like', the verb takes -ing.",answer:true},
       {text:"'I like read' is correct.",answer:false},
@@ -289,24 +289,24 @@ const bank = {
       {text:"'She loves dancing' is correct.",answer:true},
       {text:"'Don't' is used with I, you, we, they.",answer:true}
     ]},
-    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
-      {left:"read",right:"ler"},{left:"travel",right:"viajar"},{left:"dance",right:"dançar"},
-      {left:"relax",right:"relaxar"},{left:"hobby",right:"passatempo"}
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"read",right:"look at a book"},{left:"travel",right:"go to other places"},{left:"dance",right:"move to music"},
+      {left:"relax",right:"rest and calm down"},{left:"hobby",right:"a free-time activity"}
     ]}
   ]},
 
-  sports:{ label:"Sports", keys:["sport","esporte"], exercises:[
+  sports:{ label:"Sports", keys:["sport","sports"], exercises:[
     {type:"multiple_choice",question:"You play this with feet and a ball: ___.",options:["tennis","football","swimming","boxing"],correct:1},
     {type:"multiple_choice",question:"This sport is in water: ___.",options:["running","swimming","cycling","golf"],correct:1},
     {type:"multiple_choice",question:"You ride a bike in ___.",options:["walking","cycling","yoga","boxing"],correct:1},
     {type:"multiple_choice",question:"Right now I ___ (play) tennis.",options:["play","am playing","plays","played"],correct:1},
     {type:"multiple_choice",question:"She ___ (run) in the park at the moment.",options:["runs","is running","run","ran"],correct:1},
     {type:"multiple_choice",question:"A group of players is a ___.",options:["team","gym","coach","ball"],correct:0},
-    {type:"fill_blank",question:"I go to the ___ to exercise.",hint:"academia",correct:"gym"},
-    {type:"fill_blank",question:"Look! They ___ (swim) now.",hint:"agora: are + -ing",correct:"are swimming"},
-    {type:"fill_blank",question:"He usually ___ (play) football on Sundays.",hint:"hábito: he + s",correct:"plays"},
-    {type:"fill_blank",question:"Right now we ___ (watch) a game.",hint:"agora: are + -ing",correct:"are watching"},
-    {type:"fill_blank",question:"My favorite ___ is basketball.",hint:"esporte",correct:"sport"},
+    {type:"fill_blank",question:"I go to the ___ to exercise.",hint:"a place to exercise",correct:"gym"},
+    {type:"fill_blank",question:"Look! They ___ (swim) now.",hint:"now: are + -ing",correct:"are swimming"},
+    {type:"fill_blank",question:"He usually ___ (play) football on Sundays.",hint:"habit: he + s",correct:"plays"},
+    {type:"fill_blank",question:"Right now we ___ (watch) a game.",hint:"now: are + -ing",correct:"are watching"},
+    {type:"fill_blank",question:"My favorite ___ is basketball.",hint:"a sport",correct:"sport"},
     {type:"true_false",statements:[
       {text:"Present continuous = am/is/are + verb-ing.",answer:true},
       {text:"'I am play football now' is correct.",answer:false},
@@ -315,9 +315,9 @@ const bank = {
       {text:"'They are run' is correct.",answer:false},
       {text:"A team is one single player.",answer:false}
     ]},
-    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
-      {left:"football",right:"futebol"},{left:"swimming",right:"natação"},{left:"gym",right:"academia"},
-      {left:"team",right:"time"},{left:"win",right:"ganhar"}
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"football",right:"game with feet and a ball"},{left:"swimming",right:"sport in water"},{left:"gym",right:"place to exercise"},
+      {left:"team",right:"group of players"},{left:"win",right:"to be first"}
     ]}
   ]},
 
@@ -328,11 +328,11 @@ const bank = {
     {type:"multiple_choice",question:"We ___ breakfast in the morning.",options:["have","has","having","drinks"],correct:0},
     {type:"multiple_choice",question:"Rice is ___ : we say 'some rice'.",options:["countable","uncountable","plural","a number"],correct:1},
     {type:"multiple_choice",question:"'How ___ apples do you want?'",options:["much","many","any","lot"],correct:1},
-    {type:"fill_blank",question:"I drink ___ in the morning.",hint:"café",correct:"coffee"},
-    {type:"fill_blank",question:"An ___ a day keeps the doctor away.",hint:"maçã",correct:"apple"},
-    {type:"fill_blank",question:"I have ___ (ovos) for breakfast.",hint:"plural",correct:"eggs"},
-    {type:"fill_blank",question:"'How ___ water do you drink?'",hint:"não contável",correct:"much"},
-    {type:"fill_blank",question:"Chicken and beef are types of ___.",hint:"carne",correct:"meat"},
+    {type:"fill_blank",question:"I drink ___ in the morning.",hint:"a hot drink",correct:"coffee"},
+    {type:"fill_blank",question:"An ___ a day keeps the doctor away.",hint:"a fruit",correct:"apple"},
+    {type:"fill_blank",question:"I have ___ (eggs) for breakfast.",hint:"plural",correct:"eggs"},
+    {type:"fill_blank",question:"'How ___ water do you drink?'",hint:"uncountable",correct:"much"},
+    {type:"fill_blank",question:"Chicken and beef are types of ___.",hint:"meat",correct:"meat"},
     {type:"true_false",statements:[
       {text:"An apple is a fruit.",answer:true},
       {text:"Chicken is a vegetable.",answer:false},
@@ -341,9 +341,9 @@ const bank = {
       {text:"'Rice' is countable: one rice, two rices.",answer:false},
       {text:"Milk is a dairy product.",answer:true}
     ]},
-    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
-      {left:"apple",right:"maçã"},{left:"water",right:"água"},{left:"bread",right:"pão"},
-      {left:"meat",right:"carne"},{left:"egg",right:"ovo"}
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"apple",right:"a round fruit"},{left:"water",right:"a clear drink"},{left:"bread",right:"made from wheat"},
+      {left:"meat",right:"chicken or beef"},{left:"egg",right:"comes from a hen"}
     ]}
   ]},
 
@@ -354,11 +354,11 @@ const bank = {
     {type:"multiple_choice",question:"You pack your clothes in a ___.",options:["wallet","suitcase","passport","ticket"],correct:1},
     {type:"multiple_choice",question:"A ship travels on the ___.",options:["land","sea","air","road"],correct:1},
     {type:"multiple_choice",question:"You buy a ___ to enter the plane.",options:["suitcase","ticket","hotel","map"],correct:1},
-    {type:"fill_blank",question:"I keep my clothes in a ___.",hint:"mala",correct:"suitcase"},
-    {type:"fill_blank",question:"We fly in an ___.",hint:"avião",correct:"airplane"},
+    {type:"fill_blank",question:"I keep my clothes in a ___.",hint:"a bag",correct:"suitcase"},
+    {type:"fill_blank",question:"We fly in an ___.",hint:"a plane",correct:"airplane"},
     {type:"fill_blank",question:"At night we stay in a ___.",hint:"hotel",correct:"hotel"},
-    {type:"fill_blank",question:"I need my ___ to travel abroad.",hint:"passaporte",correct:"passport"},
-    {type:"fill_blank",question:"A ___ travels on rails.",hint:"trem",correct:"train"},
+    {type:"fill_blank",question:"I need my ___ to travel abroad.",hint:"a document",correct:"passport"},
+    {type:"fill_blank",question:"A ___ travels on rails.",hint:"runs on rails",correct:"train"},
     {type:"true_false",statements:[
       {text:"A plane is used for air travel.",answer:true},
       {text:"A train travels on water.",answer:false},
@@ -367,9 +367,9 @@ const bank = {
       {text:"A suitcase is a small wallet.",answer:false},
       {text:"The sea is where ships travel.",answer:true}
     ]},
-    {type:"matching",question:"Ligue a palavra à tradução:",pairs:[
-      {left:"passport",right:"passaporte"},{left:"suitcase",right:"mala"},{left:"airplane",right:"avião"},
-      {left:"hotel",right:"hotel"},{left:"ticket",right:"passagem"}
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"passport",right:"travel document"},{left:"suitcase",right:"bag for clothes"},{left:"airplane",right:"flies in the sky"},
+      {left:"hotel",right:"place to sleep on a trip"},{left:"ticket",right:"pass to travel"}
     ]}
   ]}
 };
@@ -408,20 +408,20 @@ function renderExercises(){
     card.className='card ex-card';
     if(ex.type==='multiple_choice'){
       num++;
-      card.innerHTML=`<p class="tag">Múltipla escolha</p>
+      card.innerHTML=`<p class="tag">Multiple choice</p>
         <p class="text-white text-lg font-semibold mb-3">${num}. ${ex.question}</p>
         <div>${ex.options.map((o,oi)=>`<button class="opt" id="opt-${ei}-${oi}" onclick="pick(${ei},${oi})">${String.fromCharCode(65+oi)}) ${o}</button>`).join('')}</div>`;
     }
     if(ex.type==='fill_blank'){
       num++;
-      card.innerHTML=`<p class="tag">Complete</p>
+      card.innerHTML=`<p class="tag">Fill in the blank</p>
         <p class="text-white text-lg font-semibold mb-3">${num}. ${ex.question}</p>
-        <input class="inp" id="fill-${ei}" placeholder="Sua resposta..." oninput="answers[${ei}]=this.value">
+        <input class="inp" id="fill-${ei}" placeholder="Your answer..." oninput="answers[${ei}]=this.value">
         <p class="text-slate-400 text-sm mt-2 italic">${ex.hint}</p>
         <p class="correct-note" id="note-${ei}" style="display:none"></p>`;
     }
     if(ex.type==='true_false'){
-      card.innerHTML=`<p class="tag">Verdadeiro ou Falso</p>
+      card.innerHTML=`<p class="tag">True or False</p>
         <div class="space-y-3 mt-2">${ex.statements.map((s,si)=>`
           <div>
             <p class="text-white mb-2">${si+1}. ${s.text}</p>
@@ -432,13 +432,13 @@ function renderExercises(){
           </div>`).join('')}</div>`;
     }
     if(ex.type==='matching'){
-      card.innerHTML=`<p class="tag">Ligar / Matching</p>
+      card.innerHTML=`<p class="tag">Matching</p>
         <p class="text-white text-lg font-semibold mb-3">${ex.question}</p>
         <div class="space-y-2">${ex.pairs.map((p,pi)=>`
           <div style="display:flex;gap:10px;align-items:center">
             <div style="flex:1"><span class="text-white font-bold">${p.left}</span></div>
             <select class="inp" style="flex:1" id="match-${ei}-${pi}" onchange="pickMatch(${ei},${pi},this.value)">
-              <option value="">Escolha...</option>
+              <option value="">Choose...</option>
               ${ex._opts.map(r=>`<option value="${r}">${r}</option>`).join('')}
             </select>
             <span id="mnote-${ei}-${pi}" style="width:28px;text-align:center"></span>
@@ -465,7 +465,7 @@ function pickMatch(ei,pi,val){
 }
 
 function checkAnswers(){
-  if(!currentKey){alert('Escolha um tema primeiro!');return;}
+  if(!currentKey){alert('Choose a topic first!');return;}
   let correct=0,total=0;
   exercises.forEach((ex,ei)=>{
     if(ex.type==='multiple_choice'){
@@ -517,11 +517,11 @@ function checkAnswers(){
 }
 
 function exportPDF(){
-  if(!currentKey){alert('Escolha um tema primeiro!');return;}
+  if(!currentKey){alert('Choose a topic first!');return;}
   const pa=document.getElementById('printArea');
   let num=0;
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">Exercícios — ${bank[currentKey].label}</h1>`;
+    <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">Exercises — ${bank[currentKey].label}</h1>`;
   exercises.forEach(ex=>{
     if(ex.type==='multiple_choice'){num++;
       h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b></p>`;
@@ -531,7 +531,7 @@ function exportPDF(){
       h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b> &nbsp; <span style="color:#059669"><b>(${ex.correct})</b></span></p>`;
     }
     if(ex.type==='true_false'){
-      h+=`<p style="margin-top:14px"><b>Verdadeiro ou Falso:</b></p>`;
+      h+=`<p style="margin-top:14px"><b>True or False:</b></p>`;
       ex.statements.forEach((s,i)=>h+=`<p style="margin-left:15px">${i+1}. ${s.text} — <b>${s.answer?'True':'False'}</b></p>`);
     }
     if(ex.type==='matching'){
@@ -544,7 +544,7 @@ function exportPDF(){
   printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
 }
 
-function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Permita pop-ups para gerar o PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
+function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
 
 function goHome(){window.location.href='index.html';}
 

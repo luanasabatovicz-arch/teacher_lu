@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sabatovicz — Jogos de Aula</title>
+<title>Sabatovicz — Class Games</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
@@ -54,8 +54,8 @@
   <div class="topwrap">
     <div class="row">
       <div>
-        <h1 style="font-size:26px">Jogos de Aula</h1>
-        <p style="opacity:.9;font-size:14px">Oito jogos para animar a conversação</p>
+        <h1 style="font-size:26px">Class Games</h1>
+        <p style="opacity:.9;font-size:14px">Eight games to energize conversation</p>
       </div>
       <a href="index.html" class="menu-btn">← Menu</a>
     </div>
@@ -67,9 +67,9 @@
 
 <script>
 const GAMES=[
-  {id:'hangman',label:'Forca'},
-  {id:'categories',label:'Categorias (Stop)'},
-  {id:'q20',label:'20 Perguntas'},
+  {id:'hangman',label:'Hangman'},
+  {id:'categories',label:'Categories (Stop)'},
+  {id:'q20',label:'20 Questions'},
   {id:'odd',label:'Odd One Out'},
   {id:'sort',label:'Category Sort'},
   {id:'spelling',label:'Spelling Bee'},
@@ -82,7 +82,7 @@ function renderSelector(){
   document.getElementById('selector').innerHTML=GAMES.map(g=>`<button class="g-btn ${g.id===current?'active':''}" onclick="select('${g.id}')">${g.label}</button>`).join('');
 }
 function select(id){current=id;renderSelector();render();}
-function speak(w){if(!('speechSynthesis'in window)){alert('Áudio não suportado');return;}const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u);}
+function speak(w){if(!('speechSynthesis'in window)){alert('Audio not supported');return;}const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u);}
 function norm(s){return (s||'').toLowerCase().trim().replace(/[^a-z ]/g,'');}
 
 /* ============ 1. HANGMAN ============ */
@@ -101,17 +101,17 @@ function renderHangman(){
   const lost=hLives<=0;
   let g=document.getElementById('gameArea');
   let cats=Object.keys(HANG).map(c=>`<span class="chip ${c===hCat?'active':''}" onclick="hStart('${c}')">${c}</span>`).join('');
-  if(!hWord){g.innerHTML=`<h2 class="title">Forca</h2><p class="desc">Escolha uma categoria e adivinhe a palavra letra por letra.</p><div>${cats}</div>`;return;}
+  if(!hWord){g.innerHTML=`<h2 class="title">Hangman</h2><p class="desc">Pick a category and guess the word letter by letter.</p><div>${cats}</div>`;return;}
   const blanks=hWord.split('').map(c=>c===' '?'&nbsp;&nbsp;':(hGuessed.includes(c)?c:'_')).join(' ');
   const keys='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>`<button class="key" onclick="hGuess('${l}')" ${hGuessed.includes(l)||done||lost?'disabled':''}>${l}</button>`).join('');
   let fb='';
-  if(done)fb=`<div class="feedback ok">Muito bem! A palavra era <b>${hWord}</b>.</div>`;
-  else if(lost)fb=`<div class="feedback no">Fim! A palavra era <b>${hWord}</b>.</div>`;
-  g.innerHTML=`<h2 class="title">Forca — ${hCat}</h2><div>${cats}</div>
+  if(done)fb=`<div class="feedback ok">Well done! The word was <b>${hWord}</b>.</div>`;
+  else if(lost)fb=`<div class="feedback no">Game over! The word was <b>${hWord}</b>.</div>`;
+  g.innerHTML=`<h2 class="title">Hangman — ${hCat}</h2><div>${cats}</div>
     <div class="lives" style="margin-top:14px">${'♥ '.repeat(Math.max(0,hLives))}${'· '.repeat(6-Math.max(0,hLives))}</div>
     <div class="blanks">${blanks}</div>
     <div style="text-align:center;margin:14px 0">${keys}</div>${fb}
-    <div style="text-align:center"><button class="btn purple" onclick="hStart('${hCat}')">Nova palavra</button></div>`;
+    <div style="text-align:center"><button class="btn purple" onclick="hStart('${hCat}')">New word</button></div>`;
 }
 
 /* ============ 2. CATEGORIES (STOP) ============ */
@@ -123,14 +123,14 @@ function cReset(){clearInterval(cTimer);cTime=120;cUpd();}
 function cStart(){clearInterval(cTimer);cTimer=setInterval(()=>{cTime--;cUpd();if(cTime<=0){clearInterval(cTimer);}},1000);}
 function cUpd(){const m=Math.floor(cTime/60),s=cTime%60;const el=document.getElementById('cTime');if(el)el.textContent=`${m}:${String(s).padStart(2,'0')}`;}
 function renderCategories(){
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Categorias (Stop)</h2>
-  <p class="desc">Sorteie uma letra. O aluno diz (ou escreve) uma palavra de cada categoria começando com ela. Quem terminar grita "Stop!".</p>
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Categories (Stop)</h2>
+  <p class="desc">Draw a letter. The student says (or writes) one word for each category starting with that letter. The first to finish shouts "Stop!".</p>
   <div class="big" id="cLetter" style="color:#7c3aed">?</div>
   <div style="text-align:center;font-size:28px;font-weight:800;color:#db2777;margin:6px 0" id="cTime">2:00</div>
   <div style="text-align:center;margin:16px 0">
-    <button class="btn pink" onclick="cNew()">Sortear letra</button>
-    <button class="btn green" onclick="cStart()">Iniciar tempo</button>
-    <button class="btn gray" onclick="cReset()">Zerar</button>
+    <button class="btn pink" onclick="cNew()">Random letter</button>
+    <button class="btn green" onclick="cStart()">Start timer</button>
+    <button class="btn gray" onclick="cReset()">Reset</button>
   </div>
   <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">${CATS.map(c=>`<span class="chip">${c}</span>`).join('')}</div>`;
 }
@@ -142,17 +142,17 @@ function qNew(){qWord=Q20[Math.floor(Math.random()*Q20.length)];qCount=0;qShow=f
 function qToggle(){qShow=!qShow;render();}
 function qInc(){qCount++;render();}
 function renderQ20(){
-  if(!qWord){document.getElementById('gameArea').innerHTML=`<h2 class="title">20 Perguntas</h2><p class="desc">Um jogador vê a palavra secreta; o outro faz até 20 perguntas de sim/não para adivinhar.</p><div style="text-align:center"><button class="btn cyan" onclick="qNew()">Nova palavra secreta</button></div>`;return;}
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">20 Perguntas</h2>
-  <p class="desc">Um jogador olha a palavra (esconda do outro!). O outro faz perguntas de sim/não.</p>
+  if(!qWord){document.getElementById('gameArea').innerHTML=`<h2 class="title">20 Questions</h2><p class="desc">One player sees the secret word; the other asks up to 20 yes/no questions to guess it.</p><div style="text-align:center"><button class="btn cyan" onclick="qNew()">New secret word</button></div>`;return;}
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">20 Questions</h2>
+  <p class="desc">One player looks at the word (hide it from the other!). The other asks yes/no questions.</p>
   <div style="text-align:center;margin:16px 0">
     <div class="big" style="color:#7c3aed">${qShow?qWord.toUpperCase():'• • • • •'}</div>
-    <button class="btn amber" onclick="qToggle()">${qShow?'Esconder':'Mostrar palavra'}</button>
+    <button class="btn amber" onclick="qToggle()">${qShow?'Hide':'Show word'}</button>
   </div>
-  <div style="text-align:center;font-size:20px;font-weight:700;margin:10px 0">Perguntas usadas: <span style="color:#db2777">${qCount}/20</span></div>
+  <div style="text-align:center;font-size:20px;font-weight:700;margin:10px 0">Questions used: <span style="color:#db2777">${qCount}/20</span></div>
   <div style="text-align:center">
-    <button class="btn purple" onclick="qInc()">+1 pergunta</button>
-    <button class="btn green" onclick="qNew()">Nova palavra</button>
+    <button class="btn purple" onclick="qInc()">+1 question</button>
+    <button class="btn green" onclick="qNew()">New word</button>
   </div>`;
 }
 
@@ -175,18 +175,18 @@ function oPick(i){oAns=i;render();}
 function renderOdd(){
   const it=ODD[oIdx];
   let opts=it.w.map((w,i)=>{let cls='opt';if(oAns!==null){if(i===it.odd)cls+=' right';else if(i===oAns)cls+=' wrong';}return `<button class="chip" style="font-size:16px;padding:12px 18px;${oAns!==null&&i===it.odd?'background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff':''}${oAns!==null&&i===oAns&&i!==it.odd?'background:#fee2e2;color:#991b1b':''}" onclick="oPick(${i})">${w}</button>`;}).join(' ');
-  let fb=oAns!==null?`<div class="feedback ${oAns===it.odd?'ok':'no'}">${oAns===it.odd?'Correto! ':'Não. '}<b>${it.w[it.odd]}</b> — ${it.reason}.</div>`:'';
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Odd One Out</h2><p class="desc">Qual palavra não pertence ao grupo? Peça ao aluno para explicar o porquê em inglês.</p>
+  let fb=oAns!==null?`<div class="feedback ${oAns===it.odd?'ok':'no'}">${oAns===it.odd?'Correct! ':'No. '}<b>${it.w[it.odd]}</b> — ${it.reason}.</div>`:'';
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Odd One Out</h2><p class="desc">Which word does not belong in the group? Ask the student to explain why in English.</p>
   <div style="text-align:center;margin:16px 0">${opts}</div>${fb}
-  <div style="text-align:center;margin-top:14px"><button class="btn cyan" onclick="oNew()">Próximo</button></div>`;
+  <div style="text-align:center;margin-top:14px"><button class="btn cyan" onclick="oNew()">Next</button></div>`;
 }
 
 /* ============ 5. CATEGORY SORT ============ */
 const SORT=[
-  {title:'Frutas ou Vegetais?',a:'Fruit',b:'Vegetable',items:[['apple','Fruit'],['carrot','Vegetable'],['banana','Fruit'],['potato','Vegetable'],['orange','Fruit'],['onion','Vegetable']]},
-  {title:'Passado ou Presente?',a:'Past',b:'Present',items:[['went','Past'],['go','Present'],['ate','Past'],['eat','Present'],['saw','Past'],['see','Present']]},
-  {title:'Contável ou Incontável?',a:'Countable',b:'Uncountable',items:[['apple','Countable'],['water','Uncountable'],['book','Countable'],['rice','Uncountable'],['car','Countable'],['milk','Uncountable']]},
-  {title:'Bebida ou Comida?',a:'Drink',b:'Food',items:[['coffee','Drink'],['bread','Food'],['juice','Drink'],['cheese','Food'],['tea','Drink'],['rice','Food']]}
+  {title:'Fruits or Vegetables?',a:'Fruit',b:'Vegetable',items:[['apple','Fruit'],['carrot','Vegetable'],['banana','Fruit'],['potato','Vegetable'],['orange','Fruit'],['onion','Vegetable']]},
+  {title:'Past or Present?',a:'Past',b:'Present',items:[['went','Past'],['go','Present'],['ate','Past'],['eat','Present'],['saw','Past'],['see','Present']]},
+  {title:'Countable or Uncountable?',a:'Countable',b:'Uncountable',items:[['apple','Countable'],['water','Uncountable'],['book','Countable'],['rice','Uncountable'],['car','Countable'],['milk','Uncountable']]},
+  {title:'Drink or Food?',a:'Drink',b:'Food',items:[['coffee','Drink'],['bread','Food'],['juice','Drink'],['cheese','Food'],['tea','Drink'],['rice','Food']]}
 ];
 let sIdx=0,sAns={},sChecked=false;
 function sNew(){sIdx=Math.floor(Math.random()*SORT.length);sAns={};sChecked=false;render();}
@@ -199,9 +199,9 @@ function renderSort(){
     return `<div class="catrow"><div class="w">${it[0]}${mark}</div>
     <select class="inp" style="flex:1" onchange="sSet(${i},this.value)"><option value="">—</option><option ${sAns[i]===t.a?'selected':''}>${t.a}</option><option ${sAns[i]===t.b?'selected':''}>${t.b}</option></select></div>`;
   }).join('');
-  let score='';if(sChecked){let c=t.items.filter((it,i)=>sAns[i]===it[1]).length;score=`<div class="feedback info">Acertos: <b>${c}/${t.items.length}</b></div>`;}
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Category Sort</h2><p class="desc">${t.title} — classifique cada palavra na categoria certa.</p>${rows}${score}
-  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="sCheck()">Verificar</button> <button class="btn cyan" onclick="sNew()">Outro conjunto</button></div>`;
+  let score='';if(sChecked){let c=t.items.filter((it,i)=>sAns[i]===it[1]).length;score=`<div class="feedback info">Correct: <b>${c}/${t.items.length}</b></div>`;}
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Category Sort</h2><p class="desc">${t.title} — sort each word into the correct category.</p>${rows}${score}
+  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="sCheck()">Check</button> <button class="btn cyan" onclick="sNew()">Another set</button></div>`;
 }
 
 /* ============ 6. SPELLING BEE ============ */
@@ -215,13 +215,13 @@ function spNew(lv){if(lv)spLevel=lv;const arr=SPELL[spLevel];spWord=arr[Math.flo
 function spCheck(){spVal=document.getElementById('spInp').value;spChecked=true;render();}
 function renderSpelling(){
   let levels=Object.keys(SPELL).map(l=>`<span class="chip ${l===spLevel?'active':''}" onclick="spNew('${l}')">${l}</span>`).join('');
-  if(!spWord){document.getElementById('gameArea').innerHTML=`<h2 class="title">Spelling Bee</h2><p class="desc">O jogo fala a palavra em inglês; o aluno escreve. Escolha o nível para começar.</p><div>${levels}</div>`;return;}
-  let fb='';if(spChecked){const ok=norm(spVal)===spWord;fb=`<div class="feedback ${ok?'ok':'no'}">${ok?'Perfeito!':'A grafia certa é:'} <b>${spWord}</b></div>`;}
+  if(!spWord){document.getElementById('gameArea').innerHTML=`<h2 class="title">Spelling Bee</h2><p class="desc">The game says the word in English; the student writes it. Choose a level to begin.</p><div>${levels}</div>`;return;}
+  let fb='';if(spChecked){const ok=norm(spVal)===spWord;fb=`<div class="feedback ${ok?'ok':'no'}">${ok?'Perfect!':'The correct spelling is:'} <b>${spWord}</b></div>`;}
   document.getElementById('gameArea').innerHTML=`<h2 class="title">Spelling Bee — ${spLevel}</h2><div>${levels}</div>
-  <p class="desc" style="margin-top:14px">Ouça e escreva a palavra:</p>
-  <div style="text-align:center;margin-bottom:14px"><button class="btn amber" onclick="speak('${spWord}')">🔊 Ouvir de novo</button></div>
-  <input class="inp" id="spInp" placeholder="Escreva aqui..." value="${spChecked?spVal:''}">
-  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="spCheck()">Verificar</button> <button class="btn purple" onclick="spNew()">Próxima</button></div>${fb}`;
+  <p class="desc" style="margin-top:14px">Listen and write the word:</p>
+  <div style="text-align:center;margin-bottom:14px"><button class="btn amber" onclick="speak('${spWord}')">Hear again</button></div>
+  <input class="inp" id="spInp" placeholder="Type here..." value="${spChecked?spVal:''}">
+  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="spCheck()">Check</button> <button class="btn purple" onclick="spNew()">Next</button></div>${fb}`;
 }
 
 /* ============ 7. GUESS THE EMOJI ============ */
@@ -236,11 +236,11 @@ function emNew(){emIdx=Math.floor(Math.random()*EMO.length);emChecked=false;emVa
 function emCheck(){emVal=document.getElementById('emInp').value;emChecked=true;render();}
 function renderEmoji(){
   const it=EMO[emIdx];
-  let fb='';if(emChecked){const ok=it.a.includes(norm(emVal));fb=`<div class="feedback ${ok?'ok':'no'}">${ok?'Isso!':'Resposta:'} <b>${it.a[0]}</b></div>`;}
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Guess the Emoji</h2><p class="desc">Que palavra em inglês o emoji representa?</p>
+  let fb='';if(emChecked){const ok=it.a.includes(norm(emVal));fb=`<div class="feedback ${ok?'ok':'no'}">${ok?'Yes!':'Answer:'} <b>${it.a[0]}</b></div>`;}
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Guess the Emoji</h2><p class="desc">What English word does the emoji show?</p>
   <div style="text-align:center;font-size:80px;margin:10px 0">${it.e}</div>
-  <input class="inp" id="emInp" placeholder="Sua resposta em inglês..." value="${emChecked?emVal:''}">
-  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="emCheck()">Verificar</button> <button class="btn pink" onclick="emNew()">Próximo</button></div>${fb}`;
+  <input class="inp" id="emInp" placeholder="Your answer in English..." value="${emChecked?emVal:''}">
+  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="emCheck()">Check</button> <button class="btn pink" onclick="emNew()">Next</button></div>${fb}`;
 }
 
 /* ============ 8. WORD CHAINS ============ */
@@ -252,19 +252,19 @@ function chAdd(){
   const last=chChain[chChain.length-1];
   const need=last[last.length-1];
   if(!v){return;}
-  if(v[0]!==need){chMsg=`A palavra precisa começar com "${need.toUpperCase()}".`;render();return;}
-  if(chChain.includes(v)){chMsg='Essa palavra já foi usada!';render();return;}
+  if(v[0]!==need){chMsg=`The word must start with "${need.toUpperCase()}".`;render();return;}
+  if(chChain.includes(v)){chMsg='That word was already used!';render();return;}
   chChain.push(v);chMsg='';render();
 }
 function renderChains(){
-  if(!chChain.length){document.getElementById('gameArea').innerHTML=`<h2 class="title">Word Chains</h2><p class="desc">Cada palavra começa com a última letra da anterior (cat → tiger → rabbit...). Comece uma corrente!</p><div style="text-align:center"><button class="btn purple" onclick="chNew()">Começar</button></div>`;return;}
+  if(!chChain.length){document.getElementById('gameArea').innerHTML=`<h2 class="title">Word Chains</h2><p class="desc">Each word starts with the last letter of the previous one (cat → tiger → rabbit...). Start a chain!</p><div style="text-align:center"><button class="btn purple" onclick="chNew()">Start</button></div>`;return;}
   const last=chChain[chChain.length-1];const need=last[last.length-1].toUpperCase();
   let chain=chChain.map((w,i)=>`<span class="chip" style="${i===chChain.length-1?'background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff':''}">${w}</span>`).join(' → ');
   let msg=chMsg?`<div class="feedback no">${chMsg}</div>`:'';
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Word Chains</h2><p class="desc">Próxima palavra deve começar com <b style="color:#db2777;font-size:20px">${need}</b></p>
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Word Chains</h2><p class="desc">Next word must start with <b style="color:#db2777;font-size:20px">${need}</b></p>
   <div style="margin:14px 0;line-height:2.2">${chain}</div>
-  <input class="inp" id="chInp" placeholder="Próxima palavra..." onkeydown="if(event.key==='Enter')chAdd()">
-  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="chAdd()">Adicionar</button> <button class="btn gray" onclick="chNew()">Reiniciar</button></div>${msg}`;
+  <input class="inp" id="chInp" placeholder="Next word..." onkeydown="if(event.key==='Enter')chAdd()">
+  <div style="text-align:center;margin-top:16px"><button class="btn green" onclick="chAdd()">Add</button> <button class="btn gray" onclick="chNew()">Restart</button></div>${msg}`;
 }
 
 /* ============ ROUTER ============ */

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sabatovicz - Aulas de Gramática</title>
+<title>Sabatovicz - Grammar Lessons</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -101,8 +101,8 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
     <div class="max-w-5xl mx-auto">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold">Aulas de Gramática</h1>
-          <p class="text-[#B7AE9C] text-sm font-semibold">Tempos verbais · Abrir, explicar e praticar</p>
+          <h1 class="text-2xl md:text-3xl font-bold">Grammar Lessons</h1>
+          <p class="text-[#B7AE9C] text-sm font-semibold">Essential grammar · Open, explain and practice</p>
         </div>
         <button onclick="goHome()" class=" font-bold py-2 px-4 rounded-lg hover:bg-gray-800 text-sm">← Menu</button>
       </div>
@@ -115,26 +115,26 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
     <div id="lessonTitle" class="card rounded-xl p-6 mb-6"></div>
     <div id="lessonBody"></div>
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
-      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">Baixar aula em PDF</button>
+      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">Download lesson as PDF</button>
     </div>
     <div id="printArea" class="hidden"></div>
   </div>
 </div>
 
 <script>
-// ============ BANCO DE AULAS DE GRAMÁTICA ============
+// ============ GRAMMAR LESSON BANK ============
 const tenses = [
 {
   name:"Verb to be — Present", short:"Verb to be", level:"A1",
-  use:"Usamos o verbo TO BE (ser/estar) para dizer quem somos, como estamos, de onde somos, idade, profissão e características. É o primeiro verbo do inglês.",
+  use:"We use the verb TO BE to say who we are, how we feel, where we are from, age, job and characteristics. It is the first verb in English.",
   form:{
     aff:["I <b>am</b> (I'm) a teacher.","You / We / They <b>are</b> ('re) happy.","He / She / It <b>is</b> ('s) from Brazil."],
     neg:["I <b>am not</b> (I'm not) tired.","You <b>aren't</b> ready.","He <b>isn't</b> at home."],
     q:["<b>Am</b> I right?","<b>Are</b> you a student?","<b>Is</b> she Brazilian?"]
   },
   examples:["I'm a teacher.","She is very happy today.","They are from Curitiba.","Are you tired?","He isn't at home right now."],
-  signals:["nome","idade","origem","sentimentos","profissão","características"],
-  mistakes:["✗ I have 30 years → ✓ I <b>am</b> 30 years old","✗ She have happy → ✓ She <b>is</b> happy","✗ I am agree → ✓ I agree (agree não usa 'be')"],
+  signals:["name","age","origin","feelings","job","characteristics"],
+  mistakes:["✗ I have 30 years → ✓ I <b>am</b> 30 years old","✗ She have happy → ✓ She <b>is</b> happy","✗ I am agree → ✓ I agree (agree doesn't use 'be')"],
   practice:[
     {q:"I ___ a student.",a:"am"},
     {q:"She ___ from Italy.",a:"is"},
@@ -147,7 +147,7 @@ const tenses = [
 },
 {
   name:"Present Simple", short:"Present Simple", level:"A1",
-  use:"Usamos o Present Simple para rotinas, hábitos, fatos e verdades gerais — coisas que acontecem sempre ou regularmente.",
+  use:"We use the Present Simple for routines, habits, facts and general truths — things that happen always or regularly.",
   form:{
     aff:["I / You / We / They + <b>verb</b>: I work.","He / She / It + <b>verb + s</b>: She work<b>s</b>."],
     neg:["I / You / We / They + <b>don't</b> + verb: I don't work.","He / She / It + <b>doesn't</b> + verb: He doesn't work."],
@@ -168,7 +168,7 @@ const tenses = [
 },
 {
   name:"Present Continuous", short:"Present Continuous", level:"A1",
-  use:"Usamos o Present Continuous para ações acontecendo AGORA, no momento da fala, ou situações temporárias / em andamento.",
+  use:"We use the Present Continuous for actions happening NOW, at the moment of speaking, or temporary / ongoing situations.",
   form:{
     aff:["am / is / are + <b>verb-ing</b>: I <b>am</b> study<b>ing</b>."],
     neg:["am / is / are + <b>not</b> + verb-ing: She <b>isn't</b> working."],
@@ -176,7 +176,7 @@ const tenses = [
   },
   examples:["I'm studying English now.","She is cooking dinner.","They aren't sleeping.","Are you listening to me?","Look! It's raining."],
   signals:["now","right now","at the moment","today","Look!","Listen!"],
-  mistakes:["✗ I am study → ✓ I am study<b>ing</b>","✗ She studying → ✓ She <b>is</b> studying","✗ I working now → ✓ I <b>am</b> working now","run → run<b>ning</b> · make → mak<b>ing</b> (cuidado com a grafia)"],
+  mistakes:["✗ I am study → ✓ I am study<b>ing</b>","✗ She studying → ✓ She <b>is</b> studying","✗ I working now → ✓ I <b>am</b> working now","run → run<b>ning</b> · make → mak<b>ing</b> (watch the spelling)"],
   practice:[
     {q:"I ___ (study) right now.",a:"am studying"},
     {q:"She ___ (cook) dinner.",a:"is cooking"},
@@ -188,9 +188,9 @@ const tenses = [
 },
 {
   name:"Present Simple vs Continuous", short:"Simple vs Continuous", level:"A1+",
-  use:"O grande contraste: Present Simple = hábito/rotina/fato. Present Continuous = agora/temporário. Saber a diferença é essencial.",
+  use:"The big contrast: Present Simple = habit/routine/fact. Present Continuous = now/temporary. Knowing the difference is essential.",
   form:{
-    aff:["<b>Simple</b> (hábito): I usually work. He plays football.","<b>Continuous</b> (agora): I'm working now. He is playing at the moment."],
+    aff:["<b>Simple</b> (habit): I usually work. He plays football.","<b>Continuous</b> (now): I'm working now. He is playing at the moment."],
     neg:["Simple: I don't work on Sundays.","Continuous: I'm not working now."],
     q:["Simple: Do you work every day?","Continuous: Are you working now?"]
   },
@@ -208,7 +208,7 @@ const tenses = [
 },
 {
   name:"Verb to be — Past (was / were)", short:"Was / Were", level:"A1+",
-  use:"Usamos was/were para falar de estados e situações no passado: como algo era, onde você estava, como se sentia.",
+  use:"We use was/were to talk about past states and situations: how something was, where you were, how you felt.",
   form:{
     aff:["I / He / She / It + <b>was</b>: I was tired.","You / We / They + <b>were</b>: They were happy."],
     neg:["<b>wasn't</b>: She wasn't at home.","<b>weren't</b>: We weren't ready."],
@@ -228,15 +228,15 @@ const tenses = [
 },
 {
   name:"Past Simple — Regular verbs", short:"Past Regular", level:"A1+",
-  use:"Usamos o Past Simple para ações terminadas no passado. Verbos regulares terminam em -ed.",
+  use:"We use the Past Simple for finished actions in the past. Regular verbs end in -ed.",
   form:{
     aff:["verb + <b>ed</b>: worked, played, lived. I worked yesterday."],
-    neg:["<b>didn't</b> + verbo base: I didn't work. (base, sem -ed!)"],
-    q:["<b>Did</b> + subject + verbo base? Did you work?"]
+    neg:["<b>didn't</b> + base verb: I didn't work. (base, no -ed!)"],
+    q:["<b>Did</b> + subject + base verb? Did you work?"]
   },
   examples:["I worked yesterday.","She played tennis.","We didn't watch the film.","Did you like it?","They lived in Rio."],
   signals:["yesterday","last week","...ago","in 2015","then"],
-  mistakes:["✗ I didn't worked → ✓ I didn't <b>work</b> (base depois de didn't)","✗ Did you worked? → ✓ Did you <b>work</b>?","study → stud<b>ied</b> · stop → stop<b>ped</b>"],
+  mistakes:["✗ I didn't worked → ✓ I didn't <b>work</b> (base after didn't)","✗ Did you worked? → ✓ Did you <b>work</b>?","study → stud<b>ied</b> · stop → stop<b>ped</b>"],
   practice:[
     {q:"I ___ (work) yesterday.",a:"worked"},
     {q:"She ___ (not/like) the film.",a:"didn't like"},
@@ -248,10 +248,10 @@ const tenses = [
 },
 {
   name:"Past Simple — Irregular verbs", short:"Past Irregular", level:"A1+",
-  use:"Muitos verbos comuns NÃO seguem a regra do -ed. Você precisa memorizar as formas irregulares.",
+  use:"Many common verbs do NOT follow the -ed rule. You need to memorize the irregular forms.",
   form:{
-    aff:["forma irregular: go → <b>went</b>, have → <b>had</b>, see → <b>saw</b>. I went home."],
-    neg:["<b>didn't</b> + base: I didn't go. (volta pra base!)"],
+    aff:["irregular form: go → <b>went</b>, have → <b>had</b>, see → <b>saw</b>. I went home."],
+    neg:["<b>didn't</b> + base: I didn't go. (back to the base!)"],
     q:["<b>Did</b> + subject + base? Did you go?"]
   },
   list:["go → went","have → had","do → did","make → made","see → saw","eat → ate","drink → drank","come → came","get → got","take → took","buy → bought","think → thought"],
@@ -269,15 +269,15 @@ const tenses = [
 },
 {
   name:"Future — Going to", short:"Going to", level:"A2",
-  use:"Usamos 'going to' para planos e intenções (coisas já decididas) e para previsões com evidência clara.",
+  use:"We use 'going to' for plans and intentions (things already decided) and for predictions with clear evidence.",
   form:{
-    aff:["am / is / are + <b>going to</b> + verbo: I'm going to travel."],
-    neg:["am / is / are + <b>not</b> + going to + verbo: We aren't going to work."],
-    q:["Am / Is / Are + subject + going to + verbo? Are you going to come?"]
+    aff:["am / is / are + <b>going to</b> + verb: I'm going to travel."],
+    neg:["am / is / are + <b>not</b> + going to + verb: We aren't going to work."],
+    q:["Am / Is / Are + subject + going to + verb? Are you going to come?"]
   },
   examples:["I'm going to travel next month.","She is going to study medicine.","We aren't going to work tomorrow.","Are you going to come?","Look at the clouds — it's going to rain."],
   signals:["tomorrow","next week / month / year","tonight","soon"],
-  mistakes:["✗ I going to travel → ✓ I'm going to travel (use o 'to be')","✗ I'm going to travelling → ✓ I'm going to <b>travel</b> (base)","✗ She go to study → ✓ She <b>is going to</b> study"],
+  mistakes:["✗ I going to travel → ✓ I'm going to travel (use the 'to be')","✗ I'm going to travelling → ✓ I'm going to <b>travel</b> (base)","✗ She go to study → ✓ She <b>is going to</b> study"],
   practice:[
     {q:"I ___ (going to/travel) next week.",a:"am going to travel"},
     {q:"She ___ (going to/study).",a:"is going to study"},
@@ -289,15 +289,15 @@ const tenses = [
 },
 {
   name:"Future — Will", short:"Will", level:"A2",
-  use:"Usamos 'will' para decisões no momento da fala, previsões, promessas e ofertas de ajuda.",
+  use:"We use 'will' for decisions at the moment of speaking, predictions, promises and offers to help.",
   form:{
-    aff:["<b>will</b> + verbo base: I'll help you. (will não muda)"],
-    neg:["<b>won't</b> (will not) + verbo: They won't come."],
-    q:["<b>Will</b> + subject + verbo? Will you be there?"]
+    aff:["<b>will</b> + base verb: I'll help you. (will never changes)"],
+    neg:["<b>won't</b> (will not) + verb: They won't come."],
+    q:["<b>Will</b> + subject + verb? Will you be there?"]
   },
   examples:["I'll help you.","She will call you later.","They won't come.","Will you marry me?","I think it will rain tomorrow."],
   signals:["tomorrow","later","tonight","next...","I think","maybe","probably"],
-  mistakes:["✗ I will to help → ✓ I will <b>help</b> (sem 'to')","✗ She wills → ✓ She <b>will</b> (nunca muda)","✗ I will helping → ✓ I will <b>help</b> (base)"],
+  mistakes:["✗ I will to help → ✓ I will <b>help</b> (no 'to')","✗ She wills → ✓ She <b>will</b> (never changes)","✗ I will helping → ✓ I will <b>help</b> (base)"],
   practice:[
     {q:"I ___ (help) you.",a:"will help"},
     {q:"She ___ (call) you later.",a:"will call"},
@@ -309,15 +309,15 @@ const tenses = [
 },
 {
   name:"Present Perfect", short:"Present Perfect", level:"A2",
-  use:"Usamos o Present Perfect para experiências de vida (sem dizer quando), ações do passado com resultado no presente, e ações que começaram no passado e continuam. NÃO use com tempo específico (yesterday, last week).",
+  use:"We use the Present Perfect for life experiences (without saying when), past actions with a result in the present, and actions that started in the past and continue. Do NOT use it with a specific time (yesterday, last week).",
   form:{
-    aff:["have / has + <b>particípio</b>: I have seen. She has gone."],
-    neg:["haven't / hasn't + particípio: We haven't finished."],
-    q:["Have / Has + subject + particípio? Have you ever been to London?"]
+    aff:["have / has + <b>past participle</b>: I have seen. She has gone."],
+    neg:["haven't / hasn't + past participle: We haven't finished."],
+    q:["Have / Has + subject + past participle? Have you ever been to London?"]
   },
   examples:["I have visited Paris.","She has just arrived.","We haven't finished yet.","Have you ever eaten sushi?","He has lived here for five years."],
   signals:["ever","never","already","just","yet","since","for"],
-  mistakes:["✗ I have visited Paris last year → ✓ I <b>visited</b> Paris last year (tempo específico = Past Simple)","✗ She has went → ✓ She has <b>gone</b> (particípio)","✗ I have ate → ✓ I have <b>eaten</b>"],
+  mistakes:["✗ I have visited Paris last year → ✓ I <b>visited</b> Paris last year (specific time = Past Simple)","✗ She has went → ✓ She has <b>gone</b> (past participle)","✗ I have ate → ✓ I have <b>eaten</b>"],
   practice:[
     {q:"I ___ (see) that film.",a:"have seen"},
     {q:"She ___ (just/arrive).",a:"has just arrived"},
@@ -326,6 +326,87 @@ const tenses = [
     {q:"He ___ (live) here for years.",a:"has lived"}
   ],
   speaking:["Have you ever traveled abroad?","What countries have you visited?","Have you had breakfast today?"]
+}
+,
+{
+  name:"Can / Could", short:"Can / Could", level:"A1",
+  use:"Can = present ability and requests/permission. Could = past ability and more polite requests.",
+  form:{aff:["can / could + base verb: I <b>can</b> swim. She <b>could</b> read at four."],neg:["<b>can't</b> (cannot) / <b>couldn't</b>: I can't drive."],q:["<b>Can/Could</b> + subject + verb? Can you help me?"]},
+  examples:["I can speak English.","She can't come today.","Could you open the window, please?","When I was young, I could run fast.","Can I use your phone?"],
+  signals:["ability","permission","polite requests","could = past"],
+  mistakes:["✗ I can to swim → ✓ I can swim (no 'to')","✗ She cans → ✓ She can (never changes)","✗ Do you can? → ✓ Can you?"],
+  practice:[{q:"I ___ (ability) swim very well.",a:"can"},{q:"She ___ (negative) drive.",a:"can't"},{q:"___ you help me, please?",a:"Can / Could"},{q:"When I was 5, I ___ (past) already read.",a:"could"},{q:"___ I open the window?",a:"Can / Could"}],
+  speaking:["What can you do well?","What can't you do?","Could you swim when you were a child?","Ask me something politely using 'could'."]
+},
+{
+  name:"Comparatives", short:"Comparatives", level:"A2",
+  use:"Compare two things: say that one is bigger, better or more expensive than the other.",
+  form:{aff:["Short: adj + <b>-er</b> + than: cheap<b>er</b> than, big<b>ger</b> than.","Long: <b>more</b> + adj + than: more expensive than."],neg:["<b>not as</b> + adj + <b>as</b>: not as tall as."],q:["Is A + comparativo + than B? Is it bigger than a cat?"]},
+  examples:["My car is faster than yours.","This book is more interesting than that one.","She is taller than her brother.","Today is hotter than yesterday.","A plane is not as cheap as a bus."],
+  signals:["than","-er (short)","more (long adj)","as...as","irregular: good→better, bad→worse"],
+  mistakes:["✗ more bigger → ✓ bigger","✗ more cheaper → ✓ cheaper","✗ gooder → ✓ better","✗ taller that → ✓ taller than"],
+  practice:[{q:"A car is ___ (fast) than a bike.",a:"faster"},{q:"This is ___ (expensive) than that. (long adj)",a:"more expensive"},{q:"Health is ___ (good) than money. (irregular)",a:"better"},{q:"She is ___ (tall) than me.",a:"taller"},{q:"Winter is ___ (cold) than summer.",a:"colder"}],
+  speaking:["Compare your city with another city.","Who is taller, you or your best friend?","What is more important: money or time? Why?","Compare two foods you like."]
+},
+{
+  name:"Superlatives", short:"Superlatives", level:"A2",
+  use:"Say that something is the top of the group: the biggest, the best, the most expensive.",
+  form:{aff:["Short: <b>the</b> + adj + <b>-est</b>: the big<b>gest</b>, the cheap<b>est</b>.","Long: <b>the most</b> + adj: the most expensive."],neg:["<b>the least</b> + adj: the least expensive."],q:["What is <b>the</b> + superlativo? What's the biggest city?"]},
+  examples:["Everest is the highest mountain.","This is the most expensive restaurant.","She is the best student.","It's the hottest day of the year.","He is the tallest in the family."],
+  signals:["the ...-est (short)","the most (long adj)","of / in","irregular: good→best, bad→worst"],
+  mistakes:["✗ the most tallest → ✓ the tallest","✗ the most biggest → ✓ the biggest","✗ the goodest → ✓ the best","✗ the more expensive → ✓ the most expensive"],
+  practice:[{q:"Everest is the ___ (high) mountain.",a:"highest"},{q:"This is the ___ (expensive) hotel. (long adj)",a:"most expensive"},{q:"She is the ___ (good) singer. (irregular)",a:"best"},{q:"It's the ___ (hot) day of the year.",a:"hottest"},{q:"He is the ___ (tall) player.",a:"tallest"}],
+  speaking:["Who is the funniest person in your family?","What's the best film you've ever seen?","What's the most beautiful place in your country?","What's the most difficult thing about English?"]
+},
+{
+  name:"There is / There are", short:"There is/are", level:"A1",
+  use:"Say that something exists (or not) in a place.",
+  form:{aff:["<b>There is</b> (singular): There is a book.","<b>There are</b> (plural): There are three books."],neg:["<b>There isn't / There aren't</b>: There aren't any chairs."],q:["<b>Is there...? Are there...?</b> Is there a bank near here?"]},
+  examples:["There is a car in the garage.","There are many people here.","There isn't any milk.","Are there any questions?","There is a problem."],
+  signals:["singular → is","plural → are","a/an (singular)","some/any (plural)"],
+  mistakes:["✗ There is two cars → ✓ There are two cars","✗ There are a book → ✓ There is a book","✗ Have a book on the table → ✓ There is a book"],
+  practice:[{q:"___ a cat on the sofa.",a:"There is"},{q:"___ five students in the room.",a:"There are"},{q:"There ___ (not) any bread.",a:"isn't"},{q:"___ there a bank near here?",a:"Is"},{q:"There ___ many cars in the street.",a:"are"}],
+  speaking:["What is there in your bedroom?","How many people are there in your family?","Is there a park near your house?","What is there to do in your city?"]
+},
+{
+  name:"Question Words (WH-)", short:"WH- Questions", level:"A1",
+  use:"Ask open questions (not just yes/no): who, what, where, when, why, how.",
+  form:{aff:["WH + auxiliar + sujeito + verb: <b>Where do you</b> live?"],neg:["(mesma estrutura) Why don't you like it?"],q:["What (the thing) · Who (person) · Where (place) · When (time) · Why (reason) · How (manner) · Which (choice) · Whose (owner)"]},
+  examples:["What is your name?","Where do you live?","When does the class start?","Why are you late?","How do you go to work?"],
+  signals:["What / Who / Where","When / Why / How","Which / Whose","How much / How many / How old"],
+  mistakes:["✗ Where you live? → ✓ Where do you live?","✗ What means this? → ✓ What does this mean?","✗ How old you are? → ✓ How old are you?"],
+  practice:[{q:"___ is your name? (what)",a:"What"},{q:"___ do you live? (where)",a:"Where"},{q:"___ are you sad? (why)",a:"Why"},{q:"___ do you go to work? (how)",a:"How"},{q:"___ is that man? (who)",a:"Who"}],
+  speaking:["Ask me three questions with What, Where and When.","Where do you live and why do you like it?","How do you usually spend your weekend?","Who is the most important person in your life?"]
+},
+{
+  name:"Countable & Uncountable", short:"Some / Any", level:"A2",
+  use:"Countable nouns (apple, book) vs uncountable (water, rice). This changes the use of some/any and much/many.",
+  form:{aff:["<b>some</b> (affirmative): I have some water / some apples."],neg:["<b>any</b> (negative/question): I don't have any money. Do you have any bread?"],q:["<b>much</b> (uncountable) / <b>many</b> (countable): How much water? How many apples?"]},
+  examples:["There is some milk in the glass.","I don't have any money.","How many brothers do you have?","How much time do we have?","Would you like some coffee?"],
+  signals:["some (+)","any (- / ?)","many + countable","much + uncountable","a lot of (both)"],
+  mistakes:["✗ How many water → ✓ How much water","✗ I have any apples → ✓ I have some apples","✗ two rices → ✓ two bowls of rice"],
+  practice:[{q:"I have ___ (affirmative) apples.",a:"some"},{q:"There isn't ___ (negative) milk.",a:"any"},{q:"How ___ money do you have? (uncountable)",a:"much"},{q:"How ___ books do you read? (countable)",a:"many"},{q:"Would you like ___ tea?",a:"some"}],
+  speaking:["How much coffee do you drink a day?","How many languages do you speak?","Is there any food you don't eat?","What do you always have some of at home?"]
+},
+{
+  name:"Should / Must / Have to", short:"Should / Must", level:"A2",
+  use:"Give advice and talk about obligation. Should = advice. Must / have to = strong obligation. Mustn't = forbidden.",
+  form:{aff:["<b>should / must</b> + base verb: You should rest. You must stop.","<b>have to</b>: I have to work. He <b>has to</b> study."],neg:["<b>shouldn't</b> (advice) · <b>don't have to</b> (not necessary) · <b>mustn't</b> (forbidden)"],q:["Should I...? Do I have to...? Should I call her?"]},
+  examples:["You should see a doctor.","I have to work tomorrow.","You mustn't smoke here.","She has to study for the test.","You don't have to come if you're tired."],
+  signals:["should = advice","must / have to = obligation","mustn't = forbidden","don't have to = not necessary"],
+  mistakes:["✗ You should to rest → ✓ You should rest","✗ I must to go → ✓ I must go","✗ He have to work → ✓ He has to work"],
+  practice:[{q:"You ___ (advice) drink more water.",a:"should"},{q:"I ___ (obligation) work on Saturday.",a:"have to"},{q:"He ___ (obligation, he) study.",a:"has to"},{q:"You ___ (forbidden) park here.",a:"mustn't"},{q:"You ___ (not necessary) pay; it's free.",a:"don't have to"}],
+  speaking:["What should a tourist do in your city?","What do you have to do every day?","Give me advice for learning English.","What must you never do while driving?"]
+},
+{
+  name:"First Conditional", short:"First Conditional", level:"B1",
+  use:"Talk about real/possible situations in the future and their consequences: if X happens, then Y.",
+  form:{aff:["<b>If</b> + present simple, ... <b>will</b> + verb: If it rains, I will stay home."],neg:["If + present simple, ... <b>won't</b>: If you don't hurry, you won't catch the bus."],q:["What will you do <b>if</b>...? What will you do if it rains?"]},
+  examples:["If I have time, I will call you.","If it rains, we will stay home.","She will pass if she studies.","If you don't eat, you will be hungry.","What will you do if he says no?"],
+  signals:["if","will / won't","when","unless (= if not)","real/possible situation"],
+  mistakes:["✗ If it will rain, I will stay → ✓ If it rains, I will stay","✗ If I will have time → ✓ If I have time","✗ I will help you if you will ask → ✓ ...if you ask"],
+  practice:[{q:"If it ___ (rain), we will stay home.",a:"rains"},{q:"If you study, you ___ (pass).",a:"will pass"},{q:"I ___ (call) you if I have time.",a:"will call"},{q:"If you don't hurry, you ___ (not/catch) the bus.",a:"won't catch"},{q:"What will you do if he ___ (say) no?",a:"says"}],
+  speaking:["What will you do if it rains this weekend?","If you have a holiday next month, where will you go?","If you win some money, what will you buy?","Finish: 'If I study English every day, ...'"]
 }
 ];
 
@@ -339,7 +420,7 @@ function renderSelector(){
 function selectTense(i){current=i;renderSelector();renderLesson();window.scrollTo({top:0,behavior:'smooth'});}
 
 function speak(txt){
-  if(!('speechSynthesis' in window)){alert('Áudio não suportado neste navegador');return;}
+  if(!('speechSynthesis' in window)){alert('Audio not supported in this browser');return;}
   const u=new SpeechSynthesisUtterance(txt);u.lang='en-US';u.rate=0.9;
   speechSynthesis.cancel();speechSynthesis.speak(u);
 }
@@ -353,54 +434,54 @@ function renderLesson(){
   const t=tenses[current];
   document.getElementById('lessonTitle').innerHTML=`
     <div class="flex items-center gap-3 mb-1">
-      <span class="text-xs bg-[#B08F4C] text-[#181510] px-2 py-1 rounded font-bold">GRAMÁTICA</span>
+      <span class="text-xs bg-[#B08F4C] text-[#181510] px-2 py-1 rounded font-bold">GRAMMAR</span>
       <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${t.level}</span>
     </div>
     <h2 class="text-2xl md:text-3xl font-bold text-white">${t.name}</h2>`;
 
   let h='';
   // 1 QUANDO USAR
-  h+=stageBlock('#f59e0b','Quando usar',`<p class="text-slate-300">${t.use}</p>`);
+  h+=stageBlock('#f59e0b','When to use',`<p class="text-slate-300">${t.use}</p>`);
 
   // 2 FORMA
-  h+=stageBlock('#3b82f6','Estrutura',
-    `<div class="form-box"><div class="label" style="color:#34d399">Afirmativa</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#f87171">Negativa</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#60a5fa">Pergunta</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
+  h+=stageBlock('#3b82f6','Structure',
+    `<div class="form-box"><div class="label" style="color:#34d399">Affirmative</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
+     <div class="form-box"><div class="label" style="color:#f87171">Negative</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
+     <div class="form-box"><div class="label" style="color:#60a5fa">Question</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
 
-  // (lista de irregulares, se houver)
+  // (irregular verbs list, if any)
   if(t.list){
-    h+=stageBlock('#a855f7','Verbos irregulares comuns',
+    h+=stageBlock('#a855f7','Common irregular verbs',
       `<div class="grid grid-cols-2 md:grid-cols-3 gap-2">${t.list.map(v=>`<div class="form-box" style="margin:0;padding:10px"><span class="text-white font-semibold text-sm">${v}</span></div>`).join('')}</div>`);
   }
 
-  // 3 EXEMPLOS (com áudio)
-  h+=stageBlock('#10b981','Exemplos (clique ► para ouvir)',
+  // 3 EXAMPLES (with audio)
+  h+=stageBlock('#10b981','Examples (click ► to listen)',
     t.examples.map(e=>`<div class="ex-line"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/'/g,"\\'")}')">►</button></div>`).join(''));
 
-  // 4 PALAVRAS-SINAL
-  h+=stageBlock('#eab308','Palavras-sinal',
+  // 4 SIGNAL WORDS
+  h+=stageBlock('#eab308','Signal words',
     `<div>${t.signals.map(s=>`<span class="chip">${s}</span>`).join('')}</div>`);
 
   // 5 ERROS COMUNS
-  h+=stageBlock('#ef4444','Erros comuns do brasileiro',
+  h+=stageBlock('#ef4444','Common mistakes',
     t.mistakes.map(m=>`<div class="mistake text-slate-200 text-sm">${m}</div>`).join(''));
 
-  // 6 PRÁTICA
-  h+=stageBlock('#ec4899','Prática',
+  // 6 PRACTICE
+  h+=stageBlock('#ec4899','Practice',
     t.practice.map((p,idx)=>{
       const id=`ans-${current}-${idx}`;
       return `<div class="ex-line" style="display:block">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
           <span>${idx+1}. ${p.q}</span>
-          <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded flex-shrink-0">ver resposta</button>
+          <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded flex-shrink-0">show answer</button>
         </div>
         <div id="${id}" class="answer">✓ ${p.a}</div>
       </div>`;
     }).join(''));
 
   // 7 FALE AGORA
-  h+=stageBlock('#06b6d4','Fale agora (use o tempo verbal)',
+  h+=stageBlock('#06b6d4','Speak now (use the tense)',
     t.speaking.map(q=>`<div class="ex-line"><span>${q}</span></div>`).join(''));
 
   document.getElementById('lessonBody').innerHTML=h;
@@ -412,25 +493,25 @@ function exportLesson(){
   const pa=document.getElementById('printArea');
   const strip=s=>s.replace(/<b>/g,'').replace(/<\/b>/g,'');
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #f59e0b;padding-bottom:12px">Gramática — ${t.name}</h1>
-    <p style="text-align:center;color:#666">Nível ${t.level}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Quando usar</h2><p>${t.use}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Estrutura</h2>
-    <p><b>Afirmativa:</b></p>${t.form.aff.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
-    <p><b>Negativa:</b></p>${t.form.neg.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
-    <p><b>Pergunta:</b></p>${t.form.q.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}`;
-  if(t.list){h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Verbos irregulares</h2><p>${t.list.join(' · ')}</p>`;}
-  h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Exemplos</h2>${t.examples.map(e=>`<p style="margin-left:15px">• ${e}</p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Palavras-sinal</h2><p>${t.signals.join(' · ')}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Erros comuns</h2>${t.mistakes.map(m=>`<p style="margin-left:15px">${strip(m)}</p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Prática (com gabarito)</h2>${t.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${p.q} &nbsp; <b style="color:#059669">(${p.a})</b></p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Fale agora</h2>${t.speaking.map(q=>`<p style="margin-left:15px">• ${q}</p>`).join('')}
+    <h1 style="text-align:center;border-bottom:3px solid #f59e0b;padding-bottom:12px">Grammar — ${t.name}</h1>
+    <p style="text-align:center;color:#666">Level ${t.level}</p>
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">When to use</h2><p>${t.use}</p>
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Structure</h2>
+    <p><b>Affirmative:</b></p>${t.form.aff.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
+    <p><b>Negative:</b></p>${t.form.neg.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
+    <p><b>Question:</b></p>${t.form.q.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}`;
+  if(t.list){h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Irregular verbs</h2><p>${t.list.join(' · ')}</p>`;}
+  h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Examples</h2>${t.examples.map(e=>`<p style="margin-left:15px">• ${e}</p>`).join('')}
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Signal words</h2><p>${t.signals.join(' · ')}</p>
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Common mistakes</h2>${t.mistakes.map(m=>`<p style="margin-left:15px">${strip(m)}</p>`).join('')}
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Practice (with answer key)</h2>${t.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${p.q} &nbsp; <b style="color:#059669">(${p.a})</b></p>`).join('')}
+    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Speak now</h2>${t.speaking.map(q=>`<p style="margin-left:15px">• ${q}</p>`).join('')}
     </div>`;
   pa.innerHTML=h;
   printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
 }
 
-function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Permita pop-ups para gerar o PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
+function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
 
 function goHome(){window.location.href='index.html';}
 
