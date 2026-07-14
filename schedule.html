@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabatovicz — Lesson Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+  h1,h2,h3{font-family:'Poppins',sans-serif;font-weight:700;}
+  body{background:#fff;color:#1e293b;min-height:100vh;}
+  .topbar{background:linear-gradient(120deg,#0ea5a5 0%,#7c3aed 55%,#db2777 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(124,58,237,.28);}
+  .topwrap{max-width:1000px;margin:0 auto;}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
+  .menu-btn:hover{background:rgba(255,255,255,.38);}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 24px 70px;}
+  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;}
+  .stu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:700px){.stu-grid{grid-template-columns:1fr 1fr;}}
+  .stu{padding:10px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#f1edfd;color:#5b21b6;border:2px solid transparent;transition:all .2s;}
+  .stu:hover{border-color:#a78bfa;}
+  .stu.active{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;}
+  .navrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;}
+  .nav-btn{background:#f1edfd;color:#5b21b6;border:none;border-radius:10px;width:42px;height:42px;font-size:20px;font-weight:700;cursor:pointer;transition:all .2s;}
+  .nav-btn:hover{background:#7c3aed;color:#fff;}
+  .month-label{font-family:'Poppins';font-size:22px;font-weight:800;background:linear-gradient(90deg,#7c3aed,#db2777);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
+  .dow div{text-align:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;padding:4px 0;}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .day{aspect-ratio:1;border-radius:10px;border:2px solid #ece7fb;background:#faf9ff;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .15s;padding:2px;}
+  .day:hover{border-color:#a78bfa;transform:translateY(-2px);}
+  .day.blank{background:transparent;border:none;cursor:default;}
+  .day.blank:hover{transform:none;}
+  .day .n{font-weight:700;font-size:15px;color:#334155;}
+  .day.today{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.28);}
+  .day.done{background:#dcfce7;border-color:#22c55e;}
+  .day.done .n{color:#166534;}
+  .day.cancelled{background:#fee2e2;border-color:#ef4444;}
+  .day.cancelled .n{color:#991b1b;}
+  .day.scheduled{background:#e0f2fe;border-color:#0ea5e9;}
+  .day.scheduled .n{color:#075985;}
+  .mark{font-size:12px;font-weight:800;line-height:1;}
+  .notedot{position:absolute;bottom:4px;width:5px;height:5px;border-radius:99px;background:#7c3aed;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:#64748b;}
+  .lg{display:flex;align-items:center;gap:6px;}
+  .sw{width:14px;height:14px;border-radius:4px;border:2px solid;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media(max-width:700px){.stats{grid-template-columns:1fr 1fr;}}
+  .stat{border-radius:12px;padding:14px;text-align:center;border:1px solid #ece7fb;}
+  .stat .v{font-family:'Poppins';font-size:28px;font-weight:800;}
+  .stat .l{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin-top:2px;}
+  .btn{border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(124,58,237,.2);}
+  .btn:hover{transform:translateY(-2px);}
+  .btn.green{background:linear-gradient(135deg,#22c55e,#4ade80);}
+  .btn.purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+  .btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
+  .btn.red{background:linear-gradient(135deg,#ef4444,#f87171);}
+  .btn.cyan{background:linear-gradient(135deg,#0ea5e9,#38bdf8);}
+  .btn.sm{padding:9px 14px;font-size:13px;}
+  /* modal */
+  .ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;}
+  .ov.show{display:flex;}
+  .modal{background:#fff;border-radius:18px;padding:26px;max-width:430px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);}
+  .modal h3{font-size:22px;margin-bottom:4px;}
+  .modal .sub{color:#64748b;font-size:14px;margin-bottom:16px;}
+  .inp{width:100%;padding:12px;border:2px solid #e2ddf5;border-radius:10px;font-size:15px;color:#1e293b;background:#f8f7fe;font-family:'Inter';}
+  .inp:focus{outline:none;border-color:#7c3aed;}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1 style="font-size:26px">Lesson Calendar</h1>
+        <p style="opacity:.9;font-size:14px">Track every lesson, student by student</p>
+      </div>
+      <a href="index.html" class="menu-btn">← Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- STUDENTS -->
+  <div class="card">
+    <h3 style="font-size:15px;margin-bottom:10px">Select student</h3>
+    <div class="stu-grid" id="stuGrid"></div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="card">
+    <div class="navrow">
+      <button class="nav-btn" onclick="shiftMonth(-1)">‹</button>
+      <div class="month-label" id="monthLabel"></div>
+      <button class="nav-btn" onclick="shiftMonth(1)">›</button>
+    </div>
+    <div class="dow"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+    <div class="cal" id="cal"></div>
+    <div class="legend">
+      <div class="lg"><span class="sw" style="background:#dcfce7;border-color:#22c55e"></span> Lesson done</div>
+      <div class="lg"><span class="sw" style="background:#e0f2fe;border-color:#0ea5e9"></span> Scheduled</div>
+      <div class="lg"><span class="sw" style="background:#fee2e2;border-color:#ef4444"></span> Cancelled</div>
+      <div class="lg"><span class="sw" style="background:#faf9ff;border-color:#ece7fb"></span> No lesson</div>
+      <div class="lg"><span style="width:5px;height:5px;border-radius:99px;background:#7c3aed;display:inline-block"></span> Has note</div>
+    </div>
+    <p style="color:#94a3b8;font-size:13px;margin-top:10px">Click any day to mark what happened and add a note.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="card">
+    <h3 style="font-size:15px;margin-bottom:12px" id="statsTitle">This month</h3>
+    <div class="stats">
+      <div class="stat" style="background:#f0fdf4;border-color:#bbf7d0"><div class="v" style="color:#16a34a" id="sDone">0</div><div class="l">Done</div></div>
+      <div class="stat" style="background:#eff6ff;border-color:#bfdbfe"><div class="v" style="color:#0284c7" id="sSched">0</div><div class="l">Scheduled</div></div>
+      <div class="stat" style="background:#fef2f2;border-color:#fecaca"><div class="v" style="color:#dc2626" id="sCanc">0</div><div class="l">Cancelled</div></div>
+      <div class="stat" style="background:#faf5ff;border-color:#e9d5ff"><div class="v" style="color:#7c3aed" id="sTotal">0</div><div class="l">Done all time</div></div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn green" onclick="exportMonth()">Download month PDF</button>
+      <button class="btn cyan" onclick="exportAll()">Download full history PDF</button>
+      <button class="btn gray" onclick="goToday()">Go to today</button>
+    </div>
+  </div>
+</div>
+
+<!-- DAY MODAL -->
+<div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3 id="mTitle">Lesson</h3>
+    <p class="sub" id="mSub"></p>
+    <div class="opts">
+      <button class="btn green sm" onclick="setStatus('done')">✓ Lesson done</button>
+      <button class="btn cyan sm" onclick="setStatus('scheduled')">◷ Scheduled</button>
+      <button class="btn red sm" onclick="setStatus('cancelled')">✗ Cancelled</button>
+      <button class="btn gray sm" onclick="setStatus('')">Clear</button>
+    </div>
+    <label style="font-size:13px;font-weight:700;color:#475569;display:block;margin-bottom:6px">Note (topic, homework, absence reason...)</label>
+    <input class="inp" id="mNote" placeholder="e.g. Week 5 — Frequency adverbs">
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn purple" style="flex:1" onclick="saveNote()">Save</button>
+      <button class="btn gray" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STUDENTS=['Natali','Heitor','João','Ieda','Maria','Lais','Régis'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let student=STUDENTS[0];
+let view=new Date(2026,6,1);   // July 2026
+let selKey=null;
+
+/* ---------- storage ---------- */
+function keyFor(s,d){return 'sched|'+s+'|'+d;}
+function getRec(s,d){try{const v=localStorage.getItem(keyFor(s,d));return v?JSON.parse(v):null;}catch(e){return null;}}
+function setRec(s,d,rec){
+  try{
+    if(!rec||(!rec.status&&!rec.note))localStorage.removeItem(keyFor(s,d));
+    else localStorage.setItem(keyFor(s,d),JSON.stringify(rec));
+  }catch(e){alert('Could not save. Check your browser storage settings.');}
+}
+function allRecs(s){
+  const out=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith('sched|'+s+'|')){
+        const d=k.split('|')[2];
+        const r=JSON.parse(localStorage.getItem(k));
+        if(r)out.push({date:d,...r});
+      }
+    }
+  }catch(e){}
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+/* ---------- helpers ---------- */
+function iso(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+function todayISO(){const t=new Date();return iso(t.getFullYear(),t.getMonth(),t.getDate());}
+function pretty(d){const[y,m,dd]=d.split('-');return dd+' '+MONTHS[+m-1]+' '+y;}
+function dowName(d){const dt=new Date(d+'T12:00:00');return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dt.getDay()];}
+
+/* ---------- render ---------- */
+function renderStudents(){
+  document.getElementById('stuGrid').innerHTML=STUDENTS.map(s=>
+    `<button class="stu ${s===student?'active':''}" onclick="pickStudent('${s}')">${s}</button>`).join('');
+}
+function pickStudent(s){student=s;renderStudents();renderCal();}
+
+function renderCal(){
+  const y=view.getFullYear(),m=view.getMonth();
+  document.getElementById('monthLabel').textContent=MONTHS[m]+' '+y;
+  document.getElementById('statsTitle').textContent=student+' — '+MONTHS[m]+' '+y;
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  let h='';
+  for(let i=0;i<first;i++)h+='<div class="day blank"></div>';
+  let done=0,sch=0,canc=0;
+  for(let d=1;d<=days;d++){
+    const k=iso(y,m,d);
+    const r=getRec(student,k);
+    const st=r&&r.status?r.status:'';
+    if(st==='done')done++;else if(st==='scheduled')sch++;else if(st==='cancelled')canc++;
+    const isToday=k===todayISO();
+    const mark=st==='done'?'✓':st==='cancelled'?'✗':st==='scheduled'?'◷':'';
+    const col=st==='done'?'#16a34a':st==='cancelled'?'#dc2626':st==='scheduled'?'#0284c7':'';
+    h+=`<div class="day ${st} ${isToday?'today':''}" onclick="openDay('${k}')" title="${r&&r.note?r.note.replace(/"/g,'&quot;'):''}">
+          <div class="n">${d}</div>
+          ${mark?`<div class="mark" style="color:${col}">${mark}</div>`:''}
+          ${r&&r.note?'<div class="notedot"></div>':''}
+        </div>`;
+  }
+  document.getElementById('cal').innerHTML=h;
+  document.getElementById('sDone').textContent=done;
+  document.getElementById('sSched').textContent=sch;
+  document.getElementById('sCanc').textContent=canc;
+  document.getElementById('sTotal').textContent=allRecs(student).filter(r=>r.status==='done').length;
+}
+
+function shiftMonth(n){view=new Date(view.getFullYear(),view.getMonth()+n,1);renderCal();}
+function goToday(){const t=new Date();view=new Date(t.getFullYear(),t.getMonth(),1);renderCal();}
+
+/* ---------- modal ---------- */
+function openDay(k){
+  selKey=k;
+  const r=getRec(student,k)||{};
+  document.getElementById('mTitle').textContent=student;
+  document.getElementById('mSub').textContent=dowName(k)+', '+pretty(k);
+  document.getElementById('mNote').value=r.note||'';
+  document.getElementById('ov').classList.add('show');
+}
+function closeModal(){document.getElementById('ov').classList.remove('show');selKey=null;}
+function setStatus(st){
+  if(!selKey)return;
+  const r=getRec(student,selKey)||{};
+  r.status=st;
+  r.note=document.getElementById('mNote').value.trim();
+  setRec(student,selKey,r);
+  renderCal();closeModal();
+}
+function saveNote(){
+  if(!selKey)return;
+  const r=getRec(student,selKey)||{};
+  r.note=document.getElementById('mNote').value.trim();
+  if(!r.status&&r.note)r.status='done';
+  setRec(student,selKey,r);
+  renderCal();closeModal();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ---------- export ---------- */
+function label(s){return s==='done'?'Lesson done':s==='cancelled'?'Cancelled':s==='scheduled'?'Scheduled':'—';}
+function rowsToTable(rows){
+  if(!rows.length)return '<p>No lessons recorded.</p>';
+  return `<table><thead><tr><th>Date</th><th>Day</th><th>Status</th><th>Note</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr><td>${pretty(r.date)}</td><td>${dowName(r.date)}</td><td>${label(r.status)}</td><td>${r.note||''}</td></tr>`).join('')+
+    `</tbody></table>`;
+}
+function exportMonth(){
+  const y=view.getFullYear(),m=view.getMonth();
+  const pre=iso(y,m,1).slice(0,7);
+  const rows=allRecs(student).filter(r=>r.date.startsWith(pre));
+  const done=rows.filter(r=>r.status==='done').length;
+  const canc=rows.filter(r=>r.status==='cancelled').length;
+  const html=`<h1>Lesson Calendar — ${student}</h1>
+    <p><b>Month:</b> ${MONTHS[m]} ${y}</p>
+    <p><b>Lessons done:</b> ${done} · <b>Cancelled:</b> ${canc}</p>
+    ${rowsToTable(rows)}`;
+  printDoc(html,'Calendar-'+student+'-'+MONTHS[m]+y);
+}
+function exportAll(){
+  const rows=allRecs(student);
+  const done=rows.filter(r=>r.status==='done').length;
+  const html=`<h1>Lesson History — ${student}</h1>
+    <p><b>Total lessons done:</b> ${done}</p>
+    ${rowsToTable(rows)}`;
+  printDoc(html,'History-'+student);
+}
+function printDoc(html,title){
+  var w=window.open('','_blank');
+  if(!w){alert('Allow pop-ups to generate the PDF.');return;}
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1{border-bottom:3px solid #7c3aed;padding-bottom:10px;}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;}td,th{border:1px solid #ccc;padding:7px;text-align:left;}th{background:#f3f0fd;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');
+  w.document.close();
+}
+
+renderStudents();renderCal();
+</script>
+</body>
+</html>
