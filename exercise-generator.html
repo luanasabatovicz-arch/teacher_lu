@@ -30,6 +30,30 @@
   .theme-btn.active{background:linear-gradient(135deg,#6366f1 0%,#818cf8 100%);color:#fff;}
   .correct-note{color:#34d399;font-weight:600;font-size:13px;margin-top:6px;}
   select.inp option{background:#0f172a;}
+  /* ===== LIVE CLASS MODE ===== */
+  .opt{font-size:17px;font-weight:600;}
+  .opt .letter{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;background:#ede9fe;color:#6d28d9;font-weight:800;margin-right:10px;flex-shrink:0;}
+  .opt.right .letter{background:#22c55e;color:#fff;}
+  .opt.wrong .letter{background:#ef4444;color:#fff;}
+  .opt:disabled{cursor:default;}
+  .opt.dim{opacity:.45;}
+  .q-big{font-size:22px !important;line-height:1.45;}
+  .reveal-btn{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;font-weight:700;padding:12px 22px;border-radius:10px;font-size:16px;cursor:pointer;}
+  .answer-big{font-size:30px;font-weight:800;color:#16a34a;margin:10px 0;font-family:'Poppins',sans-serif;}
+  .judge{padding:10px 18px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;border:2px solid transparent;}
+  .judge.jr{background:#dcfce7;color:#166534;}
+  .judge.jw{background:#fee2e2;color:#991b1b;}
+  .judge.picked{border-color:currentColor;}
+  .judge:disabled{opacity:.45;cursor:default;}
+  .legend{background:#f8f7fe;border:1px solid #ece7fb;border-radius:10px;padding:12px 16px;margin-bottom:12px;}
+  .legend p{font-size:16px;margin:4px 0;color:#334155;}
+  .legend b{color:#6d28d9;margin-right:8px;}
+  .mletter{width:42px;height:42px;border-radius:10px;background:#f1edfd;color:#5b21b6;font-weight:800;font-size:17px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+  .mletter:hover{border-color:#a78bfa;}
+  .mletter.right{background:#22c55e;color:#fff;}
+  .mletter.wrong{background:#ef4444;color:#fff;}
+  .mletter:disabled{cursor:default;}
+  .mletter.dim{opacity:.4;}
 
 
 /* ===== LIGHT VIVID THEME (Sabatovicz) ===== */
@@ -128,9 +152,8 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
     <div id="exercisesContainer"></div>
 
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
-      <button onclick="checkAnswers()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">✓ Check answers</button>
+      <button onclick="loadTopic(currentKey)" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">↺ Restart</button>
       <button onclick="exportPDF()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">Download PDF (with answer key)</button>
-      <button onclick="loadTopic(currentKey)" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Clear answers</button>
     </div>
     <div id="printArea" class="hidden"></div>
   </div>
@@ -505,9 +528,16 @@ const bank = {
 };
 
 // ================= ESTADO =================
+// LIVE CLASS MODE: the student watches the shared screen and SAYS the answer
+// (e.g. "letter B!"); the TEACHER clicks it. Feedback is instant, score is live.
 let currentKey = null;
 let exercises = [];
-let answers = {};
+let correctCount = 0, answeredCount = 0, totalCount = 0;
+
+function updateScore(ok){
+  answeredCount++; if(ok)correctCount++;
+  document.getElementById('scoreDisplay').textContent=`${correctCount}/${answeredCount} · ${totalCount} total`;
+}
 
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -518,12 +548,17 @@ function renderThemeButtons(){
 
 function loadTopic(key){
   currentKey=key;
-  answers={};
+  correctCount=0;answeredCount=0;totalCount=0;
   exercises=JSON.parse(JSON.stringify(bank[key].exercises));
   // pre-shuffle matching option lists
   exercises.forEach(ex=>{ if(ex.type==='matching'){ ex._opts=shuffle(ex.pairs.map(p=>p.right)); } });
+  exercises.forEach(ex=>{
+    if(ex.type==='multiple_choice'||ex.type==='fill_blank')totalCount++;
+    if(ex.type==='true_false')totalCount+=ex.statements.length;
+    if(ex.type==='matching')totalCount+=ex.pairs.length;
+  });
   document.getElementById('currentTopic').textContent=bank[key].label;
-  document.getElementById('scoreDisplay').textContent='—';
+  document.getElementById('scoreDisplay').textContent=`0/0 · ${totalCount} total`;
   renderThemeButtons();
   renderExercises();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -538,23 +573,22 @@ function renderExercises(){
     card.className='card ex-card';
     if(ex.type==='multiple_choice'){
       num++;
-      card.innerHTML=`<p class="tag">Multiple choice</p>
-        <p class="text-white text-lg font-semibold mb-3">${num}. ${ex.question}</p>
-        <div>${ex.options.map((o,oi)=>`<button class="opt" id="opt-${ei}-${oi}" onclick="pick(${ei},${oi})">${String.fromCharCode(65+oi)}) ${o}</button>`).join('')}</div>`;
+      card.innerHTML=`<p class="tag">Multiple choice · student says the letter</p>
+        <p class="text-white q-big font-semibold mb-3">${num}. ${ex.question}</p>
+        <div>${ex.options.map((o,oi)=>`<button class="opt" id="opt-${ei}-${oi}" onclick="pick(${ei},${oi})"><span class="letter">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div>`;
     }
     if(ex.type==='fill_blank'){
       num++;
-      card.innerHTML=`<p class="tag">Fill in the blank</p>
-        <p class="text-white text-lg font-semibold mb-3">${num}. ${ex.question}</p>
-        <input class="inp" id="fill-${ei}" placeholder="Your answer..." oninput="answers[${ei}]=this.value">
-        <p class="text-slate-400 text-sm mt-2 italic">${ex.hint}</p>
-        <p class="correct-note" id="note-${ei}" style="display:none"></p>`;
+      card.innerHTML=`<p class="tag">Fill in the blank · student says the word</p>
+        <p class="text-white q-big font-semibold mb-2">${num}. ${ex.question}</p>
+        <p class="text-slate-400 text-sm mb-3 italic">Hint: ${ex.hint}</p>
+        <div id="fb-${ei}"><button class="reveal-btn" onclick="reveal(${ei})">👁 Show answer</button></div>`;
     }
     if(ex.type==='true_false'){
-      card.innerHTML=`<p class="tag">True or False</p>
+      card.innerHTML=`<p class="tag">True or False · student says true or false</p>
         <div class="space-y-3 mt-2">${ex.statements.map((s,si)=>`
           <div>
-            <p class="text-white mb-2">${si+1}. ${s.text}</p>
+            <p class="text-white q-big mb-2">${si+1}. ${s.text}</p>
             <div style="display:flex;gap:8px">
               <button class="opt" style="flex:1;text-align:center" id="tf-${ei}-${si}-t" onclick="pickTF(${ei},${si},true)">✓ True</button>
               <button class="opt" style="flex:1;text-align:center" id="tf-${ei}-${si}-f" onclick="pickTF(${ei},${si},false)">✗ False</button>
@@ -562,88 +596,78 @@ function renderExercises(){
           </div>`).join('')}</div>`;
     }
     if(ex.type==='matching'){
-      card.innerHTML=`<p class="tag">Matching</p>
-        <p class="text-white text-lg font-semibold mb-3">${ex.question}</p>
+      card.innerHTML=`<p class="tag">Matching · student says the letter for each word</p>
+        <p class="text-white q-big font-semibold mb-3">${ex.question}</p>
+        <div class="legend">${ex._opts.map((r,ri)=>`<p><b>${String.fromCharCode(65+ri)}</b>${r}</p>`).join('')}</div>
         <div class="space-y-2">${ex.pairs.map((p,pi)=>`
-          <div style="display:flex;gap:10px;align-items:center">
-            <div style="flex:1"><span class="text-white font-bold">${p.left}</span></div>
-            <select class="inp" style="flex:1" id="match-${ei}-${pi}" onchange="pickMatch(${ei},${pi},this.value)">
-              <option value="">Choose...</option>
-              ${ex._opts.map(r=>`<option value="${r}">${r}</option>`).join('')}
-            </select>
-            <span id="mnote-${ei}-${pi}" style="width:28px;text-align:center"></span>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div style="min-width:110px"><span class="text-white font-bold" style="font-size:18px">${p.left}</span></div>
+            <div style="display:flex;gap:6px">${ex._opts.map((r,ri)=>`<button class="mletter" id="ml-${ei}-${pi}-${ri}" onclick="pickMatch(${ei},${pi},${ri})">${String.fromCharCode(65+ri)}</button>`).join('')}</div>
           </div>`).join('')}</div>`;
     }
     c.appendChild(card);
   });
 }
 
+// Teacher clicks the option the student SAID → instant feedback, question locks.
 function pick(ei,oi){
-  answers[ei]=oi;
-  exercises[ei].options.forEach((_,i)=>document.getElementById(`opt-${ei}-${i}`).classList.remove('sel'));
-  document.getElementById(`opt-${ei}-${oi}`).classList.add('sel');
-}
-function pickTF(ei,si,val){
-  if(!answers[ei])answers[ei]=[];
-  answers[ei][si]=val;
-  document.getElementById(`tf-${ei}-${si}-t`).classList.toggle('sel',val===true);
-  document.getElementById(`tf-${ei}-${si}-f`).classList.toggle('sel',val===false);
-}
-function pickMatch(ei,pi,val){
-  if(!answers[ei])answers[ei]=[];
-  answers[ei][pi]=val;
+  const ex=exercises[ei];
+  if(ex._done)return; ex._done=true;
+  const ok=oi===ex.correct;
+  ex.options.forEach((_,i)=>{
+    const el=document.getElementById(`opt-${ei}-${i}`);
+    el.disabled=true;
+    if(i===ex.correct)el.classList.add('right');
+    else if(i===oi)el.classList.add('wrong');
+    else el.classList.add('dim');
+  });
+  updateScore(ok);
 }
 
-function checkAnswers(){
-  if(!currentKey){alert('Choose a topic first!');return;}
-  let correct=0,total=0;
-  exercises.forEach((ex,ei)=>{
-    if(ex.type==='multiple_choice'){
-      total++;
-      const sel=answers[ei];
-      ex.options.forEach((_,i)=>{
-        const el=document.getElementById(`opt-${ei}-${i}`);
-        el.classList.remove('sel','right','wrong');
-        if(i===ex.correct)el.classList.add('right');
-        else if(i===sel)el.classList.add('wrong');
-      });
-      if(sel===ex.correct)correct++;
-    }
-    if(ex.type==='fill_blank'){
-      total++;
-      const el=document.getElementById(`fill-${ei}`);
-      const note=document.getElementById(`note-${ei}`);
-      const val=(answers[ei]||'').toLowerCase().trim();
-      el.classList.remove('right','wrong');
-      if(val===ex.correct.toLowerCase()){el.classList.add('right');correct++;note.style.display='none';}
-      else{el.classList.add('wrong');note.style.display='block';note.textContent='Resposta: '+ex.correct;}
-    }
-    if(ex.type==='true_false'){
-      ex.statements.forEach((s,si)=>{
-        total++;
-        const t=document.getElementById(`tf-${ei}-${si}-t`);
-        const f=document.getElementById(`tf-${ei}-${si}-f`);
-        t.classList.remove('sel','right','wrong');f.classList.remove('sel','right','wrong');
-        (s.answer?t:f).classList.add('right');
-        const chosen=answers[ei]?answers[ei][si]:undefined;
-        if(chosen!==undefined&&chosen!==s.answer)(chosen?t:f).classList.add('wrong');
-        if(chosen===s.answer)correct++;
-      });
-    }
-    if(ex.type==='matching'){
-      ex.pairs.forEach((p,pi)=>{
-        total++;
-        const sel=document.getElementById(`match-${ei}-${pi}`);
-        const note=document.getElementById(`mnote-${ei}-${pi}`);
-        sel.classList.remove('right','wrong');
-        const val=answers[ei]?answers[ei][pi]:'';
-        if(val===p.right){sel.classList.add('right');note.textContent='✓';note.style.color='#34d399';correct++;}
-        else{sel.classList.add('wrong');note.textContent='✗';note.style.color='#ef4444';}
-      });
-    }
+function pickTF(ei,si,val){
+  const ex=exercises[ei];
+  if(!ex._done)ex._done={};
+  if(ex._done[si])return; ex._done[si]=true;
+  const s=ex.statements[si];
+  const t=document.getElementById(`tf-${ei}-${si}-t`);
+  const f=document.getElementById(`tf-${ei}-${si}-f`);
+  t.disabled=true;f.disabled=true;
+  (s.answer?t:f).classList.add('right');
+  if(val!==s.answer)(val?t:f).classList.add('wrong');
+  updateScore(val===s.answer);
+}
+
+function pickMatch(ei,pi,ri){
+  const ex=exercises[ei];
+  if(!ex._done)ex._done={};
+  if(ex._done[pi])return; ex._done[pi]=true;
+  const correctIdx=ex._opts.indexOf(ex.pairs[pi].right);
+  ex._opts.forEach((_,i)=>{
+    const el=document.getElementById(`ml-${ei}-${pi}-${i}`);
+    el.disabled=true;
+    if(i===correctIdx)el.classList.add('right');
+    else if(i===ri)el.classList.add('wrong');
+    else el.classList.add('dim');
   });
-  document.getElementById('scoreDisplay').textContent=`${correct}/${total}`;
-  window.scrollTo({top:0,behavior:'smooth'});
+  updateScore(ri===correctIdx);
+}
+
+// Fill in the blank: student says the word aloud → teacher reveals → marks right/wrong.
+function reveal(ei){
+  const box=document.getElementById(`fb-${ei}`);
+  box.innerHTML=`<p class="answer-big">${exercises[ei].correct}</p>
+    <div style="display:flex;gap:8px">
+      <button class="judge jr" id="jr-${ei}" onclick="judge(${ei},true)">✓ Student got it</button>
+      <button class="judge jw" id="jw-${ei}" onclick="judge(${ei},false)">✗ Missed it</button>
+    </div>`;
+}
+function judge(ei,ok){
+  const ex=exercises[ei];
+  if(ex._done)return; ex._done=true;
+  const r=document.getElementById(`jr-${ei}`),w=document.getElementById(`jw-${ei}`);
+  r.disabled=true;w.disabled=true;
+  (ok?r:w).classList.add('picked');
+  updateScore(ok);
 }
 
 function exportPDF(){
@@ -654,33 +678,4 @@ function exportPDF(){
     <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">Exercises — ${bank[currentKey].label}</h1>`;
   exercises.forEach(ex=>{
     if(ex.type==='multiple_choice'){num++;
-      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b></p>`;
-      ex.options.forEach((o,i)=>h+=`<p style="margin-left:15px">${String.fromCharCode(65+i)}) ${o} ${i===ex.correct?'<b>✔</b>':''}</p>`);
-    }
-    if(ex.type==='fill_blank'){num++;
-      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b> &nbsp; <span style="color:#059669"><b>(${ex.correct})</b></span></p>`;
-    }
-    if(ex.type==='true_false'){
-      h+=`<p style="margin-top:14px"><b>True or False:</b></p>`;
-      ex.statements.forEach((s,i)=>h+=`<p style="margin-left:15px">${i+1}. ${s.text} — <b>${s.answer?'True':'False'}</b></p>`);
-    }
-    if(ex.type==='matching'){
-      h+=`<p style="margin-top:14px"><b>${ex.question}</b></p>`;
-      ex.pairs.forEach(p=>h+=`<p style="margin-left:15px">${p.left} → <b>${p.right}</b></p>`);
-    }
-  });
-  h+=`</div>`;
-  pa.innerHTML=h;
-  printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
-}
-
-function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
-
-function goHome(){window.location.href='index.html';}
-
-// INIT
-renderThemeButtons();
-loadTopic('personal');
-</script>
-</body>
-</html>
+      h+=`<p style="margin-top:14px"><b>${num}. ${ex.qu

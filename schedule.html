@@ -86,7 +86,10 @@
 <div class="wrap">
   <!-- STUDENTS -->
   <div class="card">
-    <h3 style="font-size:15px;margin-bottom:10px">Select student</h3>
+    <div class="row" style="margin-bottom:10px">
+      <h3 style="font-size:15px">Select student</h3>
+      <a href="students.html" style="font-size:13px;font-weight:700;color:#7c3aed;text-decoration:none">⚙ Manage students</a>
+    </div>
     <div class="stu-grid" id="stuGrid"></div>
   </div>
 
@@ -147,7 +150,27 @@
 </div>
 
 <script>
-const STUDENTS=['Natali','Heitor','João','Ieda','Maria','Lais','Régis'];
+/* ---------- shared student store (managed in students.html) ---------- */
+const STU_KEY='sabatovicz_students';
+const DEFAULT_STUDENTS=[
+  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
+  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
+  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
+  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
+  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
+  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
+  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
+];
+function loadStudents(){
+  try{
+    const v=localStorage.getItem(STU_KEY);
+    if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}
+  }catch(e){}
+  localStorage.setItem(STU_KEY,JSON.stringify(DEFAULT_STUDENTS));
+  return DEFAULT_STUDENTS.slice();
+}
+const STUDENTS_DATA=loadStudents();
+const STUDENTS=STUDENTS_DATA.map(s=>s.name);
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 let student=STUDENTS[0];
 let view=new Date(2026,6,1);   // July 2026
@@ -185,10 +208,10 @@ function dowName(d){const dt=new Date(d+'T12:00:00');return ['Sunday','Monday','
 
 /* ---------- render ---------- */
 function renderStudents(){
-  document.getElementById('stuGrid').innerHTML=STUDENTS.map(s=>
-    `<button class="stu ${s===student?'active':''}" onclick="pickStudent('${s}')">${s}</button>`).join('');
+  document.getElementById('stuGrid').innerHTML=STUDENTS_DATA.map((s,i)=>
+    `<button class="stu ${s.name===student?'active':''}" onclick="pickStudent(${i})">${s.emoji?s.emoji+' ':''}${s.name}</button>`).join('');
 }
-function pickStudent(s){student=s;renderStudents();renderCal();}
+function pickStudent(i){student=STUDENTS_DATA[i].name;renderStudents();renderCal();}
 
 function renderCal(){
   const y=view.getFullYear(),m=view.getMonth();
@@ -269,24 +292,4 @@ function exportMonth(){
     <p><b>Month:</b> ${MONTHS[m]} ${y}</p>
     <p><b>Lessons done:</b> ${done} · <b>Cancelled:</b> ${canc}</p>
     ${rowsToTable(rows)}`;
-  printDoc(html,'Calendar-'+student+'-'+MONTHS[m]+y);
-}
-function exportAll(){
-  const rows=allRecs(student);
-  const done=rows.filter(r=>r.status==='done').length;
-  const html=`<h1>Lesson History — ${student}</h1>
-    <p><b>Total lessons done:</b> ${done}</p>
-    ${rowsToTable(rows)}`;
-  printDoc(html,'History-'+student);
-}
-function printDoc(html,title){
-  var w=window.open('','_blank');
-  if(!w){alert('Allow pop-ups to generate the PDF.');return;}
-  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1{border-bottom:3px solid #7c3aed;padding-bottom:10px;}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;}td,th{border:1px solid #ccc;padding:7px;text-align:left;}th{background:#f3f0fd;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');
-  w.document.close();
-}
-
-renderStudents();renderCal();
-</script>
-</body>
-</html>
+  printDoc(

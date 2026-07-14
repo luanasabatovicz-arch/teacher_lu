@@ -17,8 +17,12 @@
   .inp{width:100%;padding:13px;border:2px solid #e2ddf5;border-radius:10px;font-size:16px;color:#1e293b;background:#f8f7fe;}
   .inp:focus{outline:none;border-color:#7c3aed;}
   .qnum{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7c3aed;}
-  .qtext{font-size:17px;font-weight:600;margin:6px 0 12px;}
-  .opt{display:block;width:100%;text-align:left;background:#f8f7fe;border:2px solid #e6e0f7;color:#334155;padding:12px 14px;margin:7px 0;border-radius:10px;cursor:pointer;transition:all .15s;font-size:15px;}
+  .qtext{font-size:21px;font-weight:600;margin:6px 0 12px;}
+  .opt{display:block;width:100%;text-align:left;background:#f8f7fe;border:2px solid #e6e0f7;color:#334155;padding:14px 16px;margin:7px 0;border-radius:10px;cursor:pointer;transition:all .15s;font-size:17px;font-weight:600;}
+  .opt .letter{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:#ede9fe;color:#6d28d9;font-weight:800;margin-right:10px;}
+  .opt.sel .letter{background:#fff;color:#7c3aed;}
+  .opt.right .letter{background:#22c55e;color:#fff;}
+  .opt.wrong .letter{background:#ef4444;color:#fff;}
   .opt:hover{border-color:#a78bfa;}
   .opt.sel{background:#7c3aed;border-color:#7c3aed;color:#fff;}
   .opt.right{background:#dcfce7;border-color:#22c55e;color:#166534;}
@@ -107,7 +111,7 @@ function renderQuestions(){
     <div class="card">
       <div class="qnum">Question ${i+1} · ${it.band}</div>
       <div class="qtext">${it.q}</div>
-      ${it.o.map((op,j)=>`<button class="opt" id="o-${i}-${j}" onclick="pick(${i},${j})">${String.fromCharCode(65+j)}) ${op}</button>`).join('')}
+      ${it.o.map((op,j)=>`<button class="opt" id="o-${i}-${j}" onclick="pick(${i},${j})"><span class="letter">${String.fromCharCode(65+j)}</span>${op}</button>`).join('')}
     </div>`).join('');
 }
 function pick(i,j){
@@ -176,9 +180,4 @@ function exportPDF(correct){
   printDoc(html,'Nivelamento-'+name);
 }
 
-function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;}td,th{border:1px solid #ccc;padding:6px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
-
-renderQuestions();
-</script>
-</body>
-</html>
+function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;colo

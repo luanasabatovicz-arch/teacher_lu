@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabatovicz — Students</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+  h1,h2,h3{font-family:'Poppins',sans-serif;font-weight:700;}
+  body{background:#fff;color:#1e293b;min-height:100vh;}
+  .topbar{background:linear-gradient(120deg,#7c3aed 0%,#db2777 55%,#f59e0b 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(124,58,237,.28);}
+  .topwrap{max-width:900px;margin:0 auto;}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
+  .menu-btn:hover{background:rgba(255,255,255,.38);}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 24px 70px;}
+  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;}
+  .stu-list{display:grid;gap:12px;}
+  .stu-row{display:flex;align-items:center;gap:14px;border:1px solid #ece7fb;border-radius:14px;padding:14px 16px;background:#faf9ff;transition:all .2s;}
+  .stu-row:hover{border-color:#d6c8f5;box-shadow:0 6px 18px rgba(124,58,237,.12);}
+  .stu-emoji{font-size:34px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #ece7fb;border-radius:12px;flex-shrink:0;}
+  .stu-info{flex:1;min-width:0;}
+  .stu-name{font-family:'Poppins';font-weight:700;font-size:17px;}
+  .stu-meta{font-size:13px;color:#64748b;margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .lvl-badge{display:inline-block;background:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;font-weight:800;font-size:11px;letter-spacing:.06em;padding:3px 9px;border-radius:99px;}
+  .icon-btn{border:none;border-radius:10px;width:38px;height:38px;font-size:16px;cursor:pointer;transition:all .2s;background:#f1edfd;color:#5b21b6;}
+  .icon-btn:hover{background:#7c3aed;color:#fff;transform:translateY(-1px);}
+  .icon-btn.del{background:#fee2e2;color:#dc2626;}
+  .icon-btn.del:hover{background:#ef4444;color:#fff;}
+  .btn{border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(124,58,237,.2);}
+  .btn:hover{transform:translateY(-2px);}
+  .btn.purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+  .btn.pink{background:linear-gradient(135deg,#ec4899,#f472b6);}
+  .btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
+  .empty{text-align:center;color:#94a3b8;padding:26px 10px;font-size:14px;}
+  /* modal */
+  .ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;}
+  .ov.show{display:flex;}
+  .modal{background:#fff;border-radius:18px;padding:26px;max-width:430px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);}
+  .modal h3{font-size:22px;margin-bottom:16px;}
+  .lbl{font-size:13px;font-weight:700;color:#475569;display:block;margin:12px 0 6px;}
+  .inp{width:100%;padding:12px;border:2px solid #e2ddf5;border-radius:10px;font-size:15px;color:#1e293b;background:#f8f7fe;font-family:'Inter';}
+  .inp:focus{outline:none;border-color:#7c3aed;}
+  select.inp{cursor:pointer;}
+  .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px;}
+  .emo{font-size:22px;padding:7px 0;text-align:center;border:2px solid transparent;border-radius:10px;cursor:pointer;background:#f8f7fe;transition:all .15s;}
+  .emo:hover{border-color:#a78bfa;}
+  .emo.sel{border-color:#7c3aed;background:#ede9fe;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1 style="font-size:26px">Students</h1>
+        <p style="opacity:.9;font-size:14px">Add, edit and remove students — the Annual Plan and Calendar update automatically</p>
+      </div>
+      <a href="index.html" class="menu-btn">← Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="row" style="margin-bottom:14px">
+      <h3 style="font-size:15px">Registered students (<span id="count">0</span>)</h3>
+      <button class="btn purple" onclick="openModal()">+ Add student</button>
+    </div>
+    <div class="stu-list" id="list"></div>
+  </div>
+  <p style="color:#94a3b8;font-size:13px">These students appear in the <a href="annual-plan.html" style="color:#7c3aed;font-weight:700">Annual Plan</a> and the <a href="schedule.html" style="color:#7c3aed;font-weight:700">Lesson Calendar</a>. Removing a student keeps their saved progress in the browser in case you add them back with the same name.</p>
+</div>
+
+<!-- MODAL -->
+<div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3 id="mTitle">Add student</h3>
+    <label class="lbl">Emoji</label>
+    <div class="emoji-grid" id="emojiGrid"></div>
+    <label class="lbl">Name</label>
+    <input class="inp" id="fName" placeholder="e.g. Isa">
+    <label class="lbl">Level</label>
+    <select class="inp" id="fLevel">
+      <option>A1</option><option>A1+</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option>
+    </select>
+    <label class="lbl">Age (optional)</label>
+    <input class="inp" id="fAge" type="number" min="1" max="99" placeholder="e.g. 10">
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn purple" style="flex:1" onclick="saveStudent()">Save</button>
+      <button class="btn gray" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- shared student store (used by annual-plan.html and schedule.html) ---------- */
+const STU_KEY='sabatovicz_students';
+const DEFAULT_STUDENTS=[
+  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
+  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
+  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
+  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
+  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
+  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
+  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
+];
+function loadStudents(){
+  try{
+    const v=localStorage.getItem(STU_KEY);
+    if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}
+  }catch(e){}
+  localStorage.setItem(STU_KEY,JSON.stringify(DEFAULT_STUDENTS));
+  return DEFAULT_STUDENTS.slice();
+}
+function saveStudents(a){localStorage.setItem(STU_KEY,JSON.stringify(a));}
+function slug(name){
+  return name.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||('stu'+Date.now());
+}
+
+/* ---------- page state ---------- */
+const EMOJIS=['🌟','🚀','⚽','🌸','🎨','🎸','🦄','🐱','🐶','🦊','🐼','🦋','🌈','🔥','💎','🎮','📚','🎧','🏀','🍀','🧜‍♀️','🦖','👑','🤖'];
+let students=loadStudents();
+let editId=null;
+let selEmoji=EMOJIS[0];
+
+function render(){
+  const list=document.getElementById('list');
+  document.getElementById('count').textContent=students.length;
+  if(!students.length){list.innerHTML='<div class="empty">No students yet. Click "+ Add student" to begin.</div>';return;}
+  list.innerHTML=students.map(s=>`
+    <div class="stu-row">
+      <div class="stu-emoji">${s.emoji||'🙂'}</div>
+      <div class="stu-info">
+        <div class="stu-name">${esc(s.name)}</div>
+        <div class="stu-meta"><span class="lvl-badge">${esc(s.level||'A1')}</span>${s.age?`<span>${s.age} years old</span>`:''}</div>
+      </div>
+      <button class="icon-btn" title="Edit" onclick="openModal('${s.id}')">✏️</button>
+      <button class="icon-btn del" title="Remove" onclick="removeStudent('${s.id}')">🗑️</button>
+    </div>`).join('');
+}
+function esc(t){return String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function renderEmojis(){
+  document.getElementById('emojiGrid').innerHTML=EMOJIS.map(e=>
+    `<div class="emo ${e===selEmoji?'sel':''}" onclick="pickEmoji('${e}')">${e}</div>`).join('');
+}
+function pickEmoji(e){selEmoji=e;renderEmojis();}
+
+function openModal(id){
+  editId=id||null;
+  const s=id?students.find(x=>x.id===id):null;
+  document.getElementById('mTitle').textContent=s?'Edit student':'Add student';
+  document.getElementById('fName').value=s?s.name:'';
+  document.getElementById('fLevel').value=s?(s.level||'A1'):'A1';
+  document.getElementById('fAge').value=s&&s.age?s.age:'';
+  selEmoji=s&&s.emoji?s.emoji:EMOJIS[0];
+  if(s&&s.emoji&&!EMOJIS.includes(s.emoji))EMOJIS.unshift(s.emoji);
+  renderEmojis();
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('fName').focus();
+}
+function closeModal(){document.getElementById('ov').classList.remove('show');editId=null;}
+
+function saveStudent(){
+  const name=document.getElementById('fName').value.trim();
+  if(!name){alert('Please enter a name.');return;}
+  const level=document.getElementById('fLevel').value;
+  const age=document.getElementById('fAge').value.trim();
+  if(editId){
+    const s=students.find(x=>x.id===editId);
+    if(s){s.name=name;s.level=level;s.age=age;s.emoji=selEmoji;}
+  }else{
+    if(students.some(x=>x.name.toLowerCase()===name.toLowerCase())){alert('A student with this name already exists.');return;}
+    let id=slug(name),base=id,n=2;
+    while(students.some(x=>x.id===id))id=base+'-'+(n++);
+    students.push({id,name,emoji:selEmoji,level,age});
+  }
+  saveStudents(students);
+  render();closeModal();
+}
+
+function removeStudent(id){
+  const s=students.find(x=>x.id===id);
+  if(!s)return;
+  if(!confirm(`Remove ${s.name}? Their saved progress stays in the browser in case you add them back.`))return;
+  students=students.filter(x=>x.id!==id);
+  saveStudents(students);
+  render();
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+render();
+</script>
+</body>
+</html>
