@@ -25,6 +25,25 @@
     .custom-checkbox.checked::after { content: "✓"; color: white; font-weight: bold; font-size: 14px; }
   
 
+
+/* ===== SMART PROGRESSION ===== */
+.stair{display:flex;align-items:flex-end;gap:6px;height:150px;padding:10px 4px 0;overflow-x:auto;}
+.step{flex:1;min-width:13px;border-radius:5px 5px 0 0;background:#e9e3fb;position:relative;transition:all .25s;cursor:pointer;}
+.step.done{background:linear-gradient(180deg,#7c3aed,#db2777);}
+.step.current{background:linear-gradient(180deg,#f59e0b,#facc15);box-shadow:0 0 0 3px rgba(245,158,11,.35);}
+.step:hover{filter:brightness(1.12);transform:translateY(-2px);}
+.stage-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+@media(max-width:760px){.stage-grid{grid-template-columns:1fr 1fr;}}
+.stage-box{border-radius:12px;padding:14px;border:1px solid #ece7fb;background:#fff;}
+.stage-box.active{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.22);}
+.stage-name{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.mini-bar{height:7px;background:#ede9fe;border-radius:99px;overflow:hidden;margin-top:8px;}
+.mini-fill{height:100%;border-radius:99px;transition:width .4s;}
+.lvl-track{display:flex;gap:0;margin:14px 0 6px;border-radius:99px;overflow:hidden;height:12px;background:#ede9fe;}
+.lvl-seg{height:100%;position:relative;}
+.badge-now{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f59e0b,#facc15);color:#7a4a00;font-weight:800;padding:8px 14px;border-radius:99px;font-size:13px;}
+.next-card{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;border-radius:14px;padding:18px;}
+
 /* ===== LIGHT VIVID THEME (Sabatovicz) ===== */
 :root{--ink:#1e293b;--gold:#16a34a;--violet:#7c3aed;--pink:#db2777;}
 body{background:#ffffff !important;color:#1e293b !important;}
@@ -136,16 +155,36 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
         </div>
       </div>
 
-      <!-- PROGRESS -->
+      <!-- SMART PROGRESSION -->
       <div class="card rounded-xl p-6 mb-6">
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="text-white font-bold">Year Progress</h3>
+        <div class="flex justify-between items-center mb-1 flex-wrap gap-2">
+          <h3 class="text-white font-bold">Learning Progression</h3>
           <span class="text-emerald-400 font-bold"><span id="progressPercent">0</span>%</span>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        <p class="text-slate-400 text-sm mb-3">A1 → A1+ → A2 · <span id="weeksCompleted">0</span> of 52 weeks completed</p>
+
+        <!-- ascending staircase -->
+        <div class="stair" id="stair"></div>
+        <div class="flex justify-between text-xs text-slate-400 px-1">
+          <span>Week 1 · Beginner</span><span>Week 52 · Pre-intermediate</span>
         </div>
-        <p class="text-slate-400 text-sm mt-2"><span id="weeksCompleted">0</span> of 52 weeks completed</p>
+
+        <!-- level track -->
+        <div class="lvl-track" id="lvlTrack"></div>
+        <div class="flex justify-between text-xs text-slate-400">
+          <span id="lvlA1">A1</span><span id="lvlA1p">A1+</span><span id="lvlA2">A2</span>
+        </div>
+
+        <!-- current position + next lesson -->
+        <div class="mt-4 flex gap-3 flex-wrap items-center">
+          <span class="badge-now" id="badgeNow">Not started</span>
+          <span class="text-slate-400 text-sm" id="levelNow"></span>
+        </div>
+
+        <div class="next-card mt-4" id="nextCard"></div>
+
+        <!-- stages -->
+        <div class="stage-grid" id="stageGrid"></div>
       </div>
 
       <!-- WEEKS GRID -->
@@ -225,6 +264,93 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
     ];
 
     let currentStudent = 'natali';
+
+    const STAGES = [
+      {name:'Foundation', from:1,  to:13, color:'#7c3aed', level:'A1',  goal:'Talk about yourself, your family and your routine'},
+      {name:'Expansion',  from:14, to:26, color:'#db2777', level:'A1+', goal:'Tell stories in the past and describe people and places'},
+      {name:'Projection', from:27, to:39, color:'#f59e0b', level:'A2',  goal:'Talk about plans, the future and past experiences'},
+      {name:'Autonomy',   from:40, to:52, color:'#22c55e', level:'A2',  goal:'Hold longer conversations with more independence'}
+    ];
+
+    function renderProgression() {
+      const p = progress[currentStudent];
+      const doneWeeks = curriculum.filter(i => p[`week${i.week}`]).map(i => i.week);
+      const total = curriculum.length;
+      const count = doneWeeks.length;
+      const pct = Math.round((count / total) * 100);
+
+      // next lesson = first unchecked week
+      const next = curriculum.find(i => !p[`week${i.week}`]);
+      // current position = highest completed
+      const highest = count ? Math.max(...doneWeeks) : 0;
+
+      document.getElementById('progressPercent').textContent = pct;
+      document.getElementById('weeksCompleted').textContent = count;
+
+      // --- staircase: each bar grows with the week number (ascending scale) ---
+      document.getElementById('stair').innerHTML = curriculum.map(i => {
+        const done = p[`week${i.week}`];
+        const isNext = next && i.week === next.week;
+        const h = 22 + (i.week / total) * 78;           // ascending height 22% -> 100%
+        const cls = done ? 'done' : (isNext ? 'current' : '');
+        return `<div class="step ${cls}" style="height:${h}%" title="Week ${i.week} · ${i.theme} (${i.level})" onclick="jumpTo(${i.week})"></div>`;
+      }).join('');
+
+      // --- level track ---
+      const lv = {A1:0,'A1+':0,A2:0};
+      curriculum.forEach(i => { if (p[`week${i.week}`]) lv[i.level]++; });
+      const tot = {A1:0,'A1+':0,A2:0};
+      curriculum.forEach(i => tot[i.level]++);
+      document.getElementById('lvlTrack').innerHTML = ['A1','A1+','A2'].map((k,idx) => {
+        const colors = ['#7c3aed','#db2777','#f59e0b'];
+        const w = (tot[k] / total) * 100;
+        const fill = tot[k] ? (lv[k] / tot[k]) * 100 : 0;
+        return `<div class="lvl-seg" style="width:${w}%;background:#ede9fe">
+                  <div style="height:100%;width:${fill}%;background:${colors[idx]}"></div>
+                </div>`;
+      }).join('');
+      document.getElementById('lvlA1').textContent = `A1 ${lv.A1}/${tot.A1}`;
+      document.getElementById('lvlA1p').textContent = `A1+ ${lv['A1+']}/${tot['A1+']}`;
+      document.getElementById('lvlA2').textContent = `A2 ${lv.A2}/${tot.A2}`;
+
+      // --- current badge ---
+      const cur = highest ? curriculum.find(i => i.week === highest) : null;
+      document.getElementById('badgeNow').textContent = cur ? `Reached: Week ${cur.week}` : 'Not started';
+      document.getElementById('levelNow').textContent = cur ? `Current level: ${cur.level} · ${stageOf(cur.week).name}` : 'Start with Week 1';
+
+      // --- next lesson card ---
+      const nc = document.getElementById('nextCard');
+      if (next) {
+        nc.innerHTML = `<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.85;font-weight:700">Next lesson</div>
+          <div style="font-size:21px;font-weight:800;margin:4px 0">Week ${next.week} — ${next.theme}</div>
+          <div style="font-size:14px;opacity:.95">Grammar: ${next.grammar} · Skills: ${next.skills} · Level ${next.level}</div>`;
+      } else {
+        nc.innerHTML = `<div style="font-size:21px;font-weight:800">Year complete! All 52 weeks done.</div>`;
+      }
+
+      // --- stages ---
+      document.getElementById('stageGrid').innerHTML = STAGES.map(s => {
+        const items = curriculum.filter(i => i.week >= s.from && i.week <= s.to);
+        const d = items.filter(i => p[`week${i.week}`]).length;
+        const pc = Math.round((d / items.length) * 100);
+        const active = next && next.week >= s.from && next.week <= s.to;
+        return `<div class="stage-box ${active ? 'active' : ''}">
+          <div class="stage-name" style="color:${s.color}">${s.name}</div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px">Weeks ${s.from}-${s.to} · ${s.level}</div>
+          <div style="font-size:13px;color:#475569;margin-top:6px;line-height:1.4">${s.goal}</div>
+          <div class="mini-bar"><div class="mini-fill" style="width:${pc}%;background:${s.color}"></div></div>
+          <div style="font-size:12px;color:#64748b;margin-top:5px;font-weight:600">${d}/${items.length} · ${pc}%</div>
+        </div>`;
+      }).join('');
+    }
+
+    function stageOf(week) { return STAGES.find(s => week >= s.from && week <= s.to) || STAGES[0]; }
+
+    function jumpTo(week) {
+      const el = document.getElementById('week-' + week);
+      if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.style.transition='box-shadow .3s'; el.style.boxShadow='0 0 0 3px #f59e0b'; setTimeout(()=>el.style.boxShadow='',1400); }
+    }
+
     let progress = {};
 
     function initProgress() {
@@ -258,6 +384,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
         
         const weekDiv = document.createElement('div');
         weekDiv.className = `card week-card rounded-xl p-6 ${isChecked ? 'completed' : ''}`;
+        weekDiv.id = 'week-' + item.week;
         weekDiv.onclick = () => toggleWeek(currentStudent, key);
         
         weekDiv.innerHTML = `
@@ -293,13 +420,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
     }
 
     function updateProgress() {
-      const total = curriculum.length;
-      const completed = Object.values(progress[currentStudent]).filter(v => v).length;
-      const percent = Math.round((completed / total) * 100);
-
-      document.getElementById('progressPercent').textContent = percent;
-      document.getElementById('progressFill').style.width = percent + '%';
-      document.getElementById('weeksCompleted').textContent = completed;
+      renderProgression();
     }
 
     function exportPlan() {

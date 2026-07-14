@@ -347,6 +347,136 @@ const bank = {
     ]}
   ]},
 
+  restaurant:{ label:"Restaurant", keys:["restaurant","order","waiter","menu"], exercises:[
+    {type:"multiple_choice",question:"I ___ like a coffee, please.",options:["would","will","want to","am"],correct:0},
+    {type:"multiple_choice",question:"The person who serves you is the ___.",options:["chef","waiter","manager","guest"],correct:1},
+    {type:"multiple_choice",question:"You pay at the end. You ask for the ___.",options:["menu","bill","tip","order"],correct:1},
+    {type:"multiple_choice",question:"___ you like a dessert?",options:["Would","Do","Are","Will"],correct:0},
+    {type:"multiple_choice",question:"The sweet dish at the end is the ___.",options:["starter","main course","dessert","side"],correct:2},
+    {type:"multiple_choice",question:"Extra money for good service is a ___.",options:["bill","tip","price","discount"],correct:1},
+    {type:"fill_blank",question:"I'd like ___ book a table for two.",hint:"would like + ?",correct:"to"},
+    {type:"fill_blank",question:"___ I have the menu, please?",hint:"polite request",correct:"could"},
+    {type:"fill_blank",question:"The list of food is the ___.",hint:"you read it",correct:"menu"},
+    {type:"fill_blank",question:"We'd like ___ order now.",hint:"would like + ?",correct:"to"},
+    {type:"fill_blank",question:"The paper showing what you pay is the ___.",hint:"you ask for it",correct:"bill"},
+    {type:"true_false",statements:[
+      {text:"'I'd like' is more polite than 'I want'.",answer:true},
+      {text:"A starter comes after the main course.",answer:false},
+      {text:"'Could I have...?' is a polite request.",answer:true},
+      {text:"A waiter cooks the food.",answer:false},
+      {text:"You ask for the bill when you want to pay.",answer:true},
+      {text:"'Would you like a drink?' is an offer.",answer:true}
+    ]},
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"menu",right:"list of dishes"},{left:"waiter",right:"person who serves"},{left:"bill",right:"what you must pay"},
+      {left:"tip",right:"extra money for service"},{left:"dessert",right:"sweet dish at the end"}
+    ]}
+  ]},
+
+  shopping:{ label:"Shopping", keys:["shopping","shop","buy","price","store"], exercises:[
+    {type:"multiple_choice",question:"___ shirt here is nice.",options:["This","That","These","Those"],correct:0},
+    {type:"multiple_choice",question:"___ shoes here are expensive.",options:["This","That","These","Those"],correct:2},
+    {type:"multiple_choice",question:"How much ___ this bag?",options:["is","are","do","does"],correct:0},
+    {type:"multiple_choice",question:"How much ___ those glasses?",options:["is","are","do","much"],correct:1},
+    {type:"multiple_choice",question:"Something that costs a lot is ___.",options:["cheap","expensive","free","small"],correct:1},
+    {type:"multiple_choice",question:"Money taken off the price is a ___.",options:["bill","receipt","discount","tip"],correct:2},
+    {type:"fill_blank",question:"___ car over there is new. (far, singular)",hint:"that/this",correct:"that"},
+    {type:"fill_blank",question:"How ___ is this shirt?",hint:"asking price",correct:"much"},
+    {type:"fill_blank",question:"The paper proving you paid is the ___.",hint:"keep it",correct:"receipt"},
+    {type:"fill_blank",question:"It costs little money. It's ___.",hint:"opposite of expensive",correct:"cheap"},
+    {type:"fill_blank",question:"I don't have cash. Can I pay by ___ card?",hint:"plastic",correct:"credit"},
+    {type:"true_false",statements:[
+      {text:"'These' is plural and near.",answer:true},
+      {text:"'That' is used for things near you.",answer:false},
+      {text:"'How much is it?' asks about the price.",answer:true},
+      {text:"Cheap is the opposite of expensive.",answer:true},
+      {text:"'How much are this shoes?' is correct.",answer:false},
+      {text:"A receipt proves you paid.",answer:true}
+    ]},
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"price",right:"how much it costs"},{left:"discount",right:"money off"},{left:"receipt",right:"proof of payment"},
+      {left:"cash",right:"notes and coins"},{left:"size",right:"how big it is"}
+    ]}
+  ]},
+
+  clothes:{ label:"Clothes", keys:["clothes","clothing","wear","dress"], exercises:[
+    {type:"multiple_choice",question:"Right now I ___ a shirt.",options:["wear","am wearing","wears","wore"],correct:1},
+    {type:"multiple_choice",question:"I usually ___ jeans at the weekend.",options:["wear","am wearing","wearing","worn"],correct:0},
+    {type:"multiple_choice",question:"You wear these on your feet: ___.",options:["gloves","shoes","hat","scarf"],correct:1},
+    {type:"multiple_choice",question:"She ___ a uniform every day.",options:["wear","wears","is wear","wearing"],correct:1},
+    {type:"multiple_choice",question:"A short coat is a ___.",options:["dress","jacket","shirt","sock"],correct:1},
+    {type:"multiple_choice",question:"To put clothes on to test them is to ___.",options:["try on","wear out","take off","fit in"],correct:0},
+    {type:"fill_blank",question:"Today I ___ (wear) a dress.",hint:"now: am + -ing",correct:"am wearing"},
+    {type:"fill_blank",question:"He ___ (wear) a suit to work every day.",hint:"habit: he + s",correct:"wears"},
+    {type:"fill_blank",question:"Clothing for your legs: ___.",hint:"plural",correct:"trousers"},
+    {type:"fill_blank",question:"These shoes are the right size. They ___ me.",hint:"to be the right size",correct:"fit"},
+    {type:"fill_blank",question:"It looks good on you: 'It ___ you.'",hint:"compliment",correct:"suits"},
+    {type:"true_false",statements:[
+      {text:"'I'm wearing jeans' talks about now.",answer:true},
+      {text:"'I wear a coat now' is the best way to say what you have on at this moment.",answer:false},
+      {text:"'Trousers' is plural in English.",answer:true},
+      {text:"A jacket is a kind of shoe.",answer:false},
+      {text:"'It suits you' is a compliment.",answer:true},
+      {text:"'She wears black every day' describes a habit.",answer:true}
+    ]},
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"wear",right:"have clothes on"},{left:"try on",right:"test clothes in a shop"},{left:"fit",right:"be the right size"},
+      {left:"jacket",right:"a short coat"},{left:"comfortable",right:"easy and nice to wear"}
+    ]}
+  ]},
+
+  city:{ label:"City & Directions", keys:["city","directions","places","town"], exercises:[
+    {type:"multiple_choice",question:"___ a bank near my house.",options:["There is","There are","It is","Have"],correct:0},
+    {type:"multiple_choice",question:"___ three parks in my city.",options:["There is","There are","It has","Have"],correct:1},
+    {type:"multiple_choice",question:"You buy medicine at the ___.",options:["bank","pharmacy","bakery","library"],correct:1},
+    {type:"multiple_choice",question:"The cinema is ___ the square. (facing it)",options:["next","opposite","between","on"],correct:1},
+    {type:"multiple_choice",question:"My house is ___ the school and the bank.",options:["next","opposite","between","near of"],correct:2},
+    {type:"multiple_choice",question:"To change direction: '___ left at the corner.'",options:["Go","Turn","Cross","Take"],correct:1},
+    {type:"fill_blank",question:"___ a park near here? (question)",hint:"Is there / Are there",correct:"is there"},
+    {type:"fill_blank",question:"The pharmacy is ___ to the bank. (at the side)",hint:"preposition",correct:"next"},
+    {type:"fill_blank",question:"The city centre is also called ___.",hint:"one word",correct:"downtown"},
+    {type:"fill_blank",question:"You wait for the bus at the bus ___.",hint:"place",correct:"stop"},
+    {type:"fill_blank",question:"The area where you live is your ___.",hint:"place",correct:"neighbourhood"},
+    {type:"true_false",statements:[
+      {text:"'There are' is used with plural nouns.",answer:true},
+      {text:"'There is two parks' is correct.",answer:false},
+      {text:"'Opposite' means facing something.",answer:true},
+      {text:"'Between' needs two things.",answer:true},
+      {text:"A pharmacy is where you keep money.",answer:false},
+      {text:"'Turn right' is a direction.",answer:true}
+    ]},
+    {type:"matching",question:"Match the word to its meaning:",pairs:[
+      {left:"downtown",right:"the city centre"},{left:"pharmacy",right:"where you buy medicine"},{left:"square",right:"open public space"},
+      {left:"next to",right:"at the side of"},{left:"between",right:"in the middle of two"}
+    ]}
+  ]},
+
+  past:{ label:"Past Simple", keys:["past","yesterday","ago","last"], exercises:[
+    {type:"multiple_choice",question:"Yesterday I ___ to the park.",options:["go","went","gone","going"],correct:1},
+    {type:"multiple_choice",question:"She ___ tennis last week.",options:["play","played","plays","playing"],correct:1},
+    {type:"multiple_choice",question:"I ___ watch TV last night.",options:["didn't","don't","wasn't","haven't"],correct:0},
+    {type:"multiple_choice",question:"___ you like the film?",options:["Did","Do","Was","Were"],correct:0},
+    {type:"multiple_choice",question:"We ___ dinner at 8 last night.",options:["have","had","has","having"],correct:1},
+    {type:"multiple_choice",question:"He ___ a new car two years ago.",options:["buy","bought","buys","buyed"],correct:1},
+    {type:"fill_blank",question:"I ___ (work) yesterday.",hint:"regular: +ed",correct:"worked"},
+    {type:"fill_blank",question:"She ___ (go) to Rio last year.",hint:"irregular",correct:"went"},
+    {type:"fill_blank",question:"They ___ (not/come) to the party.",hint:"didn't + base",correct:"didn't come"},
+    {type:"fill_blank",question:"___ you ___ (eat) lunch?",hint:"Did + base",correct:"Did / eat"},
+    {type:"fill_blank",question:"He ___ (study) all night.",hint:"y → ied",correct:"studied"},
+    {type:"true_false",statements:[
+      {text:"Regular past verbs end in -ed.",answer:true},
+      {text:"'I didn't went' is correct.",answer:false},
+      {text:"After 'did', we use the base verb.",answer:true},
+      {text:"'Yesterday' is a past signal word.",answer:true},
+      {text:"The past of 'go' is 'goed'.",answer:false},
+      {text:"'Was' and 'were' are past forms of 'to be'.",answer:true}
+    ]},
+    {type:"matching",question:"Match the verb to its past form:",pairs:[
+      {left:"go",right:"went"},{left:"have",right:"had"},{left:"see",right:"saw"},
+      {left:"buy",right:"bought"},{left:"eat",right:"ate"}
+    ]}
+  ]},
+
   travel:{ label:"Travel", keys:["travel","trip","vacation","holiday","viagem"], exercises:[
     {type:"multiple_choice",question:"You need a ___ to travel to another country.",options:["ticket","passport","map","hotel"],correct:1},
     {type:"multiple_choice",question:"You sleep here on a trip: ___.",options:["airport","hotel","station","beach"],correct:1},
