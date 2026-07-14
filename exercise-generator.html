@@ -678,4 +678,33 @@ function exportPDF(){
     <h1 style="text-align:center;border-bottom:3px solid #6366f1;padding-bottom:12px">Exercises — ${bank[currentKey].label}</h1>`;
   exercises.forEach(ex=>{
     if(ex.type==='multiple_choice'){num++;
-      h+=`<p style="margin-top:14px"><b>${num}. ${ex.qu
+      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b></p>`;
+      ex.options.forEach((o,i)=>h+=`<p style="margin-left:15px">${String.fromCharCode(65+i)}) ${o} ${i===ex.correct?'<b>✔</b>':''}</p>`);
+    }
+    if(ex.type==='fill_blank'){num++;
+      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b> &nbsp; <span style="color:#059669"><b>(${ex.correct})</b></span></p>`;
+    }
+    if(ex.type==='true_false'){
+      h+=`<p style="margin-top:14px"><b>True or False:</b></p>`;
+      ex.statements.forEach((s,i)=>h+=`<p style="margin-left:15px">${i+1}. ${s.text} — <b>${s.answer?'True':'False'}</b></p>`);
+    }
+    if(ex.type==='matching'){
+      h+=`<p style="margin-top:14px"><b>${ex.question}</b></p>`;
+      ex.pairs.forEach(p=>h+=`<p style="margin-left:15px">${p.left} → <b>${p.right}</b></p>`);
+    }
+  });
+  h+=`</div>`;
+  pa.innerHTML=h;
+  printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
+}
+
+function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
+
+function goHome(){window.location.href='index.html';}
+
+// INIT
+renderThemeButtons();
+loadTopic('personal');
+</script>
+</body>
+</html>
