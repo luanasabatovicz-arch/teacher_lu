@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,28 +120,28 @@
 <div class="wrap">
   <!-- HOME -->
   <div id="home">
-    <h2 style="font-size:30px;color:#4a3b7a;margin-bottom:4px">Escolha uma aula! 🚀</h2>
-    <p style="color:#a08a6f;font-weight:700;margin-bottom:16px">Toque numa figura para começar a jogar.</p>
+    <h2 style="font-size:30px;color:#4a3b7a;margin-bottom:4px">Kies een les! 🚀</h2>
+    <p style="color:#a08a6f;font-weight:700;margin-bottom:16px">Klik op een plaatje en speel!</p>
     <div class="grid" id="lessonGrid"></div>
     <div class="center" style="margin-top:24px">
-      <button class="btn purple big" onclick="openEx()">📝 Caderno de Exercícios</button>
+      <button class="btn purple big" onclick="openEx()">📝 Oefenboek</button>
     </div>
     <div class="center" style="margin-top:22px">
-      <button class="btn gray" onclick="resetAll()">Apagar todo o progresso</button>
+      <button class="btn gray" onclick="resetAll()">Alles wissen</button>
     </div>
   </div>
 
   <!-- EXERCISES -->
   <div id="exView" class="hide">
-    <button class="btn gray" style="margin-bottom:14px" onclick="goHome()">← Voltar</button>
-    <h2 style="font-size:30px;color:#4a3b7a;margin-bottom:4px">📝 Caderno de Exercícios</h2>
-    <p style="color:#a08a6f;font-weight:700;margin-bottom:14px">Escolha um tema. A palavra azul é em português — ela te ajuda! 🇧🇷</p>
+    <button class="btn gray" style="margin-bottom:14px" onclick="goHome()">← Terug</button>
+    <h2 style="font-size:30px;color:#4a3b7a;margin-bottom:4px">📝 Oefenboek</h2>
+    <p style="color:#a08a6f;font-weight:700;margin-bottom:14px">Kies een thema en doe de oefeningen!</p>
     <div class="tabs" id="exTabs"></div>
     <div id="exScore"></div>
     <div id="exBody"></div>
     <div class="center" style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="btn green big" onclick="checkEx()">✓ Ver resultado</button>
-      <button class="btn orange" onclick="buildEx(exTheme)">🔄 Novos exercícios</button>
+      <button class="btn green big" onclick="checkEx()">✓ Kijk na</button>
+      <button class="btn orange" onclick="buildEx(exTheme)">🔄 Nieuwe oefeningen</button>
       <button class="btn purple" onclick="exportEx()">📄 PDF</button>
     </div>
     <div id="exPrint" class="hide"></div>
@@ -149,7 +149,7 @@
 
   <!-- LESSON -->
   <div id="lesson" class="hide">
-    <button class="btn gray" style="margin-bottom:14px" onclick="goHome()">← Voltar</button>
+    <button class="btn gray" style="margin-bottom:14px" onclick="goHome()">← Terug</button>
     <h2 id="lTitle" style="font-size:30px;color:#4a3b7a;margin-bottom:12px"></h2>
     <div class="tabs" id="tabs"></div>
     <div class="panel" id="panel"></div>
@@ -160,72 +160,72 @@
 <div class="cel" id="cel" onclick="closeCel()">
   <div class="celbox">
     <div class="big" id="celEmoji">🎉</div>
-    <h2 id="celTitle">Muito bem!</h2>
+    <h2 id="celTitle">Goed gedaan!</h2>
     <p id="celText"></p>
-    <button class="btn green big" onclick="closeCel()">Oba!</button>
+    <button class="btn green big" onclick="closeCel()">Joepie!</button>
   </div>
 </div>
 
 <script>
 /* ================= CONTENT ================= */
 const LESSONS=[
- {id:'people', name:'Pessoas', icon:'👦', frame:'Dit is mijn ___', words:[
+ {id:'people', name:'Mensen', icon:'👦', frame:'Dit is mijn ___', words:[
    {w:'mama',e:'👩',pt:'mãe'},{w:'papa',e:'👨',pt:'pai'},{w:'oma',e:'👵',pt:'vovó'},{w:'opa',e:'👴',pt:'vovô'},
    {w:'broer',e:'👦',pt:'irmão'},{w:'zus',e:'👧',pt:'irmã'},{w:'vriend',e:'🧒',pt:'amigo'},{w:'juf',e:'👩‍🏫',pt:'professora'}],
   say:[{nl:'Hallo! Ik ben Hendrik.',pt:'Olá! Eu sou o Hendrik.'},{nl:'Dit is mijn mama.',pt:'Esta é a minha mãe.'},{nl:'Dit is mijn papa.',pt:'Este é o meu pai.'},{nl:'Dit is mijn oma.',pt:'Esta é a minha vovó.'}]},
 
- {id:'colors', name:'Cores', icon:'🎨', frame:'Het is ___', words:[
+ {id:'colors', name:'Kleuren', icon:'🎨', frame:'Het is ___', words:[
    {w:'rood',e:'🔴',pt:'vermelho'},{w:'blauw',e:'🔵',pt:'azul'},{w:'groen',e:'🟢',pt:'verde'},{w:'geel',e:'🟡',pt:'amarelo'},
    {w:'oranje',e:'🟠',pt:'laranja'},{w:'paars',e:'🟣',pt:'roxo'},{w:'zwart',e:'⚫',pt:'preto'},{w:'wit',e:'⚪',pt:'branco'}],
   say:[{nl:'Het is rood.',pt:'É vermelho.'},{nl:'Ik hou van blauw.',pt:'Eu gosto de azul.'},{nl:'De zon is geel.',pt:'O sol é amarelo.'},{nl:'Groen is mooi.',pt:'Verde é bonito.'}]},
 
- {id:'numbers', name:'Números', icon:'🔢', frame:'Ik ben ___ jaar', words:[
+ {id:'numbers', name:'Getallen', icon:'🔢', frame:'Ik ben ___ jaar', words:[
    {w:'een',e:'1️⃣',pt:'um'},{w:'twee',e:'2️⃣',pt:'dois'},{w:'drie',e:'3️⃣',pt:'três'},{w:'vier',e:'4️⃣',pt:'quatro'},
    {w:'vijf',e:'5️⃣',pt:'cinco'},{w:'zes',e:'6️⃣',pt:'seis'},{w:'zeven',e:'7️⃣',pt:'sete'},{w:'acht',e:'8️⃣',pt:'oito'}],
   say:[{nl:'Een, twee, drie!',pt:'Um, dois, três!'},{nl:'Ik ben zeven jaar.',pt:'Eu tenho sete anos.'},{nl:'Ik heb twee handen.',pt:'Eu tenho duas mãos.'},{nl:'Tel tot vijf!',pt:'Conte até cinco!'}]},
 
- {id:'animals', name:'Animais', icon:'🐶', frame:'Ik zie een ___', words:[
+ {id:'animals', name:'Dieren', icon:'🐶', frame:'Ik zie een ___', words:[
    {w:'hond',e:'🐶',pt:'cachorro'},{w:'kat',e:'🐱',pt:'gato'},{w:'vogel',e:'🐦',pt:'pássaro'},{w:'vis',e:'🐟',pt:'peixe'},
    {w:'koe',e:'🐮',pt:'vaca'},{w:'varken',e:'🐷',pt:'porco'},{w:'paard',e:'🐴',pt:'cavalo'},{w:'eend',e:'🦆',pt:'pato'}],
   say:[{nl:'Ik zie een hond.',pt:'Eu vejo um cachorro.'},{nl:'De kat is klein.',pt:'O gato é pequeno.'},{nl:'Ik hou van dieren.',pt:'Eu gosto de animais.'},{nl:'Een eend zegt kwak!',pt:'O pato faz quá!'}]},
 
- {id:'food', name:'Comida', icon:'🍎', frame:'Ik hou van ___', words:[
+ {id:'food', name:'Eten', icon:'🍎', frame:'Ik hou van ___', words:[
    {w:'appel',e:'🍎',pt:'maçã'},{w:'banaan',e:'🍌',pt:'banana'},{w:'brood',e:'🍞',pt:'pão'},{w:'melk',e:'🥛',pt:'leite'},
    {w:'ei',e:'🥚',pt:'ovo'},{w:'kaas',e:'🧀',pt:'queijo'},{w:'taart',e:'🍰',pt:'bolo'},{w:'water',e:'💧',pt:'água'}],
   say:[{nl:'Ik hou van appels.',pt:'Eu gosto de maçãs.'},{nl:'Ik drink melk.',pt:'Eu bebo leite.'},{nl:'Ik eet brood.',pt:'Eu como pão.'},{nl:'Taart is lekker!',pt:'Bolo é gostoso!'}]},
 
- {id:'body', name:'Meu Corpo', icon:'👀', frame:'Dit is mijn ___', words:[
+ {id:'body', name:'Mijn lichaam', icon:'👀', frame:'Dit is mijn ___', words:[
    {w:'oog',e:'👁️',pt:'olho'},{w:'neus',e:'👃',pt:'nariz'},{w:'mond',e:'👄',pt:'boca'},{w:'oor',e:'👂',pt:'orelha'},
    {w:'hand',e:'✋',pt:'mão'},{w:'voet',e:'🦶',pt:'pé'},{w:'haar',e:'💇',pt:'cabelo'},{w:'tand',e:'🦷',pt:'dente'}],
   say:[{nl:'Dit is mijn neus.',pt:'Este é o meu nariz.'},{nl:'Ik heb twee ogen.',pt:'Eu tenho dois olhos.'},{nl:'Ik was mijn handen.',pt:'Eu lavo as minhas mãos.'},{nl:'Mijn haar is bruin.',pt:'Meu cabelo é castanho.'}]},
 
- {id:'toys', name:'Brinquedos', icon:'🧸', frame:'Ik speel met mijn ___', words:[
+ {id:'toys', name:'Speelgoed', icon:'🧸', frame:'Ik speel met mijn ___', words:[
    {w:'bal',e:'⚽',pt:'bola'},{w:'auto',e:'🚗',pt:'carro'},{w:'fiets',e:'🚲',pt:'bicicleta'},{w:'pop',e:'🪆',pt:'boneca'},
    {w:'teddybeer',e:'🧸',pt:'ursinho'},{w:'vlieger',e:'🪁',pt:'pipa'},{w:'blokken',e:'🧱',pt:'blocos'},{w:'trein',e:'🚂',pt:'trem'}],
   say:[{nl:'Ik speel met mijn bal.',pt:'Eu brinco com a minha bola.'},{nl:'Dit is mijn teddybeer.',pt:'Este é o meu ursinho.'},{nl:'Ik hou van mijn fiets.',pt:'Eu gosto da minha bicicleta.'},{nl:'Kom, we gaan spelen!',pt:'Vem, vamos brincar!'}]},
 
- {id:'weather', name:'Tempo', icon:'☀️', frame:'Ik zie de ___', words:[
+ {id:'weather', name:'Het weer', icon:'☀️', frame:'Ik zie de ___', words:[
    {w:'zon',e:'☀️',pt:'sol'},{w:'regen',e:'🌧️',pt:'chuva'},{w:'sneeuw',e:'❄️',pt:'neve'},{w:'wind',e:'💨',pt:'vento'},
    {w:'wolk',e:'☁️',pt:'nuvem'},{w:'regenboog',e:'🌈',pt:'arco-íris'},{w:'ster',e:'⭐',pt:'estrela'},{w:'maan',e:'🌙',pt:'lua'}],
   say:[{nl:'Ik zie de zon.',pt:'Eu vejo o sol.'},{nl:'Het regent vandaag.',pt:'Está chovendo hoje.'},{nl:'Ik hou van sneeuw.',pt:'Eu gosto de neve.'},{nl:'Kijk! Een regenboog!',pt:'Olha! Um arco-íris!'}]},
 
- {id:'actions', name:'Ações', icon:'🏃', frame:'Ik kan ___', words:[
+ {id:'actions', name:'Doen', icon:'🏃', frame:'Ik kan ___', words:[
    {w:'rennen',e:'🏃',pt:'correr'},{w:'springen',e:'🤸',pt:'pular'},{w:'zwemmen',e:'🏊',pt:'nadar'},{w:'eten',e:'🍽️',pt:'comer'},
    {w:'slapen',e:'😴',pt:'dormir'},{w:'lezen',e:'📖',pt:'ler'},{w:'zingen',e:'🎤',pt:'cantar'},{w:'dansen',e:'💃',pt:'dançar'}],
   say:[{nl:'Ik kan rennen.',pt:'Eu sei correr.'},{nl:'Ik kan springen!',pt:'Eu sei pular!'},{nl:'Ik kan zwemmen.',pt:'Eu sei nadar.'},{nl:'Ik hou van zingen.',pt:'Eu gosto de cantar.'}]},
 
- {id:'house', name:'Minha Casa', icon:'🏠', frame:'Ik zie een ___', words:[
+ {id:'house', name:'Mijn huis', icon:'🏠', frame:'Ik zie een ___', words:[
    {w:'huis',e:'🏠',pt:'casa'},{w:'deur',e:'🚪',pt:'porta'},{w:'bed',e:'🛏️',pt:'cama'},{w:'stoel',e:'🪑',pt:'cadeira'},
    {w:'raam',e:'🪟',pt:'janela'},{w:'bad',e:'🛁',pt:'banheira'},{w:'lamp',e:'💡',pt:'lâmpada'},{w:'sleutel',e:'🔑',pt:'chave'}],
   say:[{nl:'Dit is mijn huis.',pt:'Esta é a minha casa.'},{nl:'Ik slaap in mijn bed.',pt:'Eu durmo na minha cama.'},{nl:'Doe de deur open!',pt:'Abre a porta!'},{nl:'Dit is mijn kamer.',pt:'Este é o meu quarto.'}]}
 ];
 
 const GAMES=[
- {id:'words', name:'👂 Palavras'},
- {id:'match', name:'🎯 Ligar'},
- {id:'listen', name:'🔊 Ouvir'},
- {id:'sentence', name:'💬 Frase'},
- {id:'say', name:'🗣️ Falar'}
+ {id:'words', name:'👂 Woorden'},
+ {id:'match', name:'🎯 Verbinden'},
+ {id:'listen', name:'🔊 Luisteren'},
+ {id:'sentence', name:'💬 Zinnen'},
+ {id:'say', name:'🗣️ Zeggen'}
 ];
 
 
@@ -253,25 +253,25 @@ function buildEx(id){
 
   // A) 6x emoji -> Dutch word (4 options)
   shuffle(W).slice(0,6).forEach(q=>{
-    exList.push({t:'mc',e:q.e,pt:q.pt,ask:'O que é isto em holandês?',correct:q.w,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.w)});
+    exList.push({t:'mc',e:q.e,ask:'Wat is dit?',correct:q.w,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.w)});
   });
-  // B) 4x Portuguese -> Dutch word (4 options)
+  // B) 4x Dutch word -> emoji (4 options)
   shuffle(W).slice(0,4).forEach(q=>{
-    exList.push({t:'mc',e:'',pt:q.pt,ask:'Como se diz isto em holandês?',correct:q.w,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.w)});
+    exList.push({t:'mce',word:q.w,ask:'Waar is "'+q.w+'"?',correct:q.e,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.e)});
   });
   // C) 5x type the word
   shuffle(W).slice(0,5).forEach(q=>{
-    exList.push({t:'fill',e:q.e,pt:q.pt,ask:'Escreve a palavra em holandês:',correct:q.w});
+    exList.push({t:'fill',e:q.e,ask:'Schrijf het woord:',correct:q.w});
   });
   // D) 6x true / false
   shuffle(W).slice(0,6).forEach(q=>{
     const lie=Math.random()<0.5;
     const shown=lie?pick(q.w,1)[0].w:q.w;
-    exList.push({t:'tf',e:q.e,ask:'Isto é um "'+shown+'"?',correct:!lie,right:q.w});
+    exList.push({t:'tf',e:q.e,ask:'Is dit "'+shown+'"?',correct:!lie,right:q.w});
   });
-  // E) 5x matching Dutch -> Portuguese
+  // E) 5x matching emoji -> Dutch word
   const mp=shuffle(W).slice(0,5);
-  exList.push({t:'match',ask:'Liga o holandês ao português:',pairs:mp.map(x=>({nlw:x.w,pt:x.pt,e:x.e})),bag:shuffle(mp.map(x=>x.pt))});
+  exList.push({t:'match',ask:'Verbind het plaatje met het woord:',pairs:mp.map(x=>({nlw:x.w,e:x.e})),bag:shuffle(mp.map(x=>x.w))});
 
   renderExTabs();
   document.getElementById('exScore').innerHTML='';
@@ -284,10 +284,9 @@ function renderEx(){
   document.getElementById('exBody').innerHTML=exList.map((q,i)=>{
     if(q.t==='match'){
       return `<div class="ex-item" id="ei-${i}">
-        <div class="ex-tag">Ligar</div><div class="ex-q">${q.ask}</div>
+        <div class="ex-tag">Verbinden</div><div class="ex-q">${q.ask}</div>
         ${q.pairs.map((p,pi)=>`<div class="mrow">
-          <span style="font-size:34px">${p.e}</span>
-          <span class="ml">${p.nlw}</span>
+          <span style="font-size:40px">${p.e}</span>
           <select class="ex-sel" id="ms-${i}-${pi}" style="flex:1" onchange="exAns['${i}-${pi}']=this.value">
             <option value="">...?</option>
             ${q.bag.map(b=>`<option>${b}</option>`).join('')}
@@ -298,8 +297,8 @@ function renderEx(){
     }
     n++;
     let inner='';
-    if(q.t==='mc'){
-      inner=`<div class="ex-opts">${q.opts.map(o=>`<button class="ex-opt" id="eo-${i}-${o}" onclick="pickEx(${i},'${o}')">${o}</button>`).join('')}</div>`;
+    if(q.t==='mc'||q.t==='mce'){
+      inner=`<div class="ex-opts">${q.opts.map((o,oi)=>`<button class="ex-opt" id="eo-${i}-${oi}" onclick="pickEx(${i},${oi})">${o}</button>`).join('')}</div>`;
     }
     if(q.t==='fill'){
       inner=`<input class="ex-inp" id="ef-${i}" placeholder="..." oninput="exAns[${i}]=this.value">
@@ -307,14 +306,13 @@ function renderEx(){
     }
     if(q.t==='tf'){
       inner=`<div class="tf-row">
-        <button class="ex-opt" id="et-${i}-yes" onclick="pickEx(${i},true)">✓ Sim</button>
-        <button class="ex-opt" id="et-${i}-no" onclick="pickEx(${i},false)">✗ Não</button></div>`;
+        <button class="ex-opt" id="et-${i}-yes" onclick="pickEx(${i},true)">✓ Ja</button>
+        <button class="ex-opt" id="et-${i}-no" onclick="pickEx(${i},false)">✗ Nee</button></div>`;
     }
     return `<div class="ex-item" id="ei-${i}">
-      <div class="ex-tag">${q.t==='mc'?'Escolhe':q.t==='fill'?'Escreve':'Sim ou não'}</div>
+      <div class="ex-tag">${(q.t==='mc'||q.t==='mce')?'Kies':q.t==='fill'?'Schrijf':'Ja of nee'}</div>
       <div class="ex-q">${n}. ${q.ask}</div>
       ${q.e?`<div style="font-size:64px;text-align:center;line-height:1">${q.e}</div>`:''}
-      ${q.pt?`<div style="text-align:center;margin:8px 0"><span class="nlhint">🇧🇷 ${q.pt}</span></div>`:''}
       ${inner}
     </div>`;
   }).join('');
@@ -324,7 +322,7 @@ function pickEx(i,v){
   if(exChecked)return;
   exAns[i]=v;
   const q=exList[i];
-  if(q.t==='mc')q.opts.forEach(o=>document.getElementById('eo-'+i+'-'+o).classList.remove('sel'));
+  if(q.t==='mc'||q.t==='mce')q.opts.forEach((o,oi)=>document.getElementById('eo-'+i+'-'+oi).classList.remove('sel'));
   if(q.t==='tf'){document.getElementById('et-'+i+'-yes').classList.remove('sel');document.getElementById('et-'+i+'-no').classList.remove('sel');}
   const id=q.t==='tf'?('et-'+i+'-'+(v?'yes':'no')):('eo-'+i+'-'+v);
   document.getElementById(id).classList.add('sel');
@@ -334,16 +332,16 @@ function checkEx(){
   exChecked=true;
   let correct=0,total=0;
   exList.forEach((q,i)=>{
-    if(q.t==='mc'){
+    if(q.t==='mc'||q.t==='mce'){
       total++;
       const sel=exAns[i];
-      q.opts.forEach(o=>{
-        const el=document.getElementById('eo-'+i+'-'+o);
+      q.opts.forEach((o,oi)=>{
+        const el=document.getElementById('eo-'+i+'-'+oi);
         el.classList.remove('sel');
         if(o===q.correct)el.classList.add('ok');
-        else if(o===sel)el.classList.add('no');
+        else if(oi===sel)el.classList.add('no');
       });
-      if(sel===q.correct)correct++;
+      if(sel!==undefined&&q.opts[sel]===q.correct)correct++;
       else document.getElementById('ei-'+i).classList.add('wrong');
     }
     if(q.t==='fill'){
@@ -369,7 +367,7 @@ function checkEx(){
         const el=document.getElementById('ms-'+i+'-'+pi);
         const mk=document.getElementById('mm-'+i+'-'+pi);
         const v=exAns[i+'-'+pi];
-        if(v===p.pt){el.classList.add('ok');mk.textContent='✓';mk.style.color='#40c057';correct++;}
+        if(v===p.nlw){el.classList.add('ok');mk.textContent='✓';mk.style.color='#40c057';correct++;}
         else{el.classList.add('no');mk.textContent='✗';mk.style.color='#fa5252';}
       });
     }
@@ -379,7 +377,7 @@ function checkEx(){
   document.getElementById('exScore').innerHTML=`<div class="score-box">
     <div style="font-size:40px">${face}</div>
     <div class="sv">${correct} / ${total}</div>
-    <div style="font-weight:800;font-size:17px;margin-top:4px">${pct>=80?'Incrível!':pct>=50?'Muito bem!':'Continua, você consegue!'}</div>
+    <div style="font-weight:800;font-size:17px;margin-top:4px">${pct>=80?'Geweldig!':pct>=50?'Goed gedaan!':'Ga zo door, jij kan het!'}</div>
   </div>`;
   addXP(correct*3);
   window.scrollTo({top:0,behavior:'smooth'});
@@ -388,20 +386,20 @@ function checkEx(){
 function exportEx(){
   const L=LESSONS.find(x=>x.id===exTheme);
   let n=0;
-  let h=`<h1>Hendrik — ${L.name} ${L.icon}</h1><p><b>Exercícios de holandês · ajuda em português</b></p>`;
+  let h=`<h1>Hendrik — ${L.name} ${L.icon}</h1><p><b>Oefeningen Nederlands</b></p>`;
   exList.forEach(q=>{
     if(q.t==='match'){
       h+=`<p style="margin-top:14px"><b>${q.ask}</b></p>`;
-      q.pairs.forEach(p=>h+=`<p style="margin-left:15px">${p.nlw} &nbsp;→&nbsp; <b>${p.pt}</b></p>`);
+      q.pairs.forEach(p=>h+=`<p style="margin-left:15px">${p.e} &nbsp;→&nbsp; <b>${p.nlw}</b></p>`);
       return;
     }
     n++;
-    if(q.t==='mc')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.pt?'(PT: '+q.pt+')':''}<br>${q.opts.map(o=>o===q.correct?'<b>'+o+' ✔</b>':o).join(' · ')}</p>`;
-    if(q.t==='fill')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> (PT: ${q.pt}) &nbsp; <b style="color:#2f9e44">${q.correct}</b></p>`;
-    if(q.t==='tf')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> &nbsp; <b>${q.correct?'YES':'NO'}</b> (${q.right})</p>`;
+    if(q.t==='mc'||q.t==='mce')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e?q.e:''}<br>${q.opts.map(o=>o===q.correct?'<b>'+o+' ✔</b>':o).join(' · ')}</p>`;
+    if(q.t==='fill')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e} &nbsp; <b style="color:#2f9e44">${q.correct}</b></p>`;
+    if(q.t==='tf')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> &nbsp; <b>${q.correct?'JA':'NEE'}</b> (${q.right})</p>`;
   });
   var w=window.open('','_blank');
-  if(!w){alert('Permita pop-ups para gerar o PDF.');return;}
+  if(!w){alert('Sta pop-ups toe om de PDF te maken.');return;}
   w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Hendrik-'+L.name+'</title><style>body{font-family:Arial;padding:28px;color:#111;line-height:1.7;}h1{border-bottom:3px solid #ff8a3d;padding-bottom:10px;}</style></head><body>'+h+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');
   w.document.close();
 }
@@ -434,7 +432,7 @@ function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor
 
 /* ================= TOP ================= */
 function renderTop(){
-  document.getElementById('pLevel').textContent='Nível '+levelOf();
+  document.getElementById('pLevel').textContent='Niveau '+levelOf();
   document.getElementById('pStars').textContent='⭐ '+totalStars();
   document.getElementById('pXP').textContent=P.xp+' XP';
   document.getElementById('xpFill').style.width=(P.xp%100)+'%';
@@ -486,12 +484,12 @@ function gWords(){
   const st=P.lessons[curLesson.id];
   const all=st.heard.length===curLesson.words.length;
   document.getElementById('panel').innerHTML=`
-    <p class="prompt">Toque em cada palavra para ouvir! 👂</p>
+    <p class="prompt">Klik op elk woord en luister! 👂</p>
     <div class="wgrid">${curLesson.words.map((x,i)=>`
       <div class="wcard ${st.heard.includes(x.w)?'heard':''}" id="wc-${i}" onclick="hearWord(${i})">
         <div class="e">${x.e}</div><div class="w">${x.w}</div>
       </div>`).join('')}</div>
-    <div class="feedback" id="fb">${all?'Tudo ouvido! ⭐ Agora joga 🎯 Ligar!':''}</div>`;
+    <div class="feedback" id="fb">${all?'Alles gehoord! ⭐ Speel nu 🎯 Verbinden!':''}</div>`;
 }
 function hearWord(i){
   const x=curLesson.words[i];
@@ -499,7 +497,7 @@ function hearWord(i){
   const st=P.lessons[curLesson.id];
   if(!st.heard.includes(x.w)){st.heard.push(x.w);addXP(2);save();
     document.getElementById('wc-'+i).classList.add('heard');
-    if(st.heard.length===curLesson.words.length){document.getElementById('fb').textContent='Tudo ouvido! ⭐ Agora joga 🎯 Ligar!';}
+    if(st.heard.length===curLesson.words.length){document.getElementById('fb').textContent='Alles gehoord! ⭐ Speel nu 🎯 Verbinden!';}
   }
 }
 
@@ -512,7 +510,7 @@ function gMatch(){
   const opts=shuffle([q,...wrong]);
   document.getElementById('panel').innerHTML=`
     <div class="prog">${qi+1} / ${qOrder.length}</div>
-    <p class="prompt">O que é isto? 🎯</p>
+    <p class="prompt">Wat is dit? 🎯</p>
     <div class="big-em">${q.e}</div>
     <div class="opts">${opts.map(o=>`<button class="opt" id="op-${o.w}" onclick="ansMatch('${o.w}','${q.w}')">${o.w}</button>`).join('')}</div>
     <div class="feedback" id="fb"></div>`;
@@ -523,7 +521,7 @@ function ansMatch(pick,right){
   const ok=pick===right;
   document.getElementById('op-'+right).classList.add('right');
   if(!ok)document.getElementById('op-'+pick).classList.add('wrong');
-  document.getElementById('fb').textContent=ok?'Isso! 🎉':'É "'+right+'" 😊';
+  document.getElementById('fb').textContent=ok?'Ja! 🎉':'Het is "'+right+'" 😊';
   if(ok)addXP(10);
   speak(right);
   setTimeout(()=>{qi++;locked=false;gMatch();},1200);
@@ -538,8 +536,8 @@ function gListen(){
   const opts=shuffle([q,...wrong]);
   document.getElementById('panel').innerHTML=`
     <div class="prog">${qi+1} / ${qOrder.length}</div>
-    <p class="prompt">Ouve e toca na figura certa! 🔊</p>
-    <div class="center" style="margin-bottom:12px"><button class="btn orange big" onclick="speak('${q.w}')">🔊 Ouvir de novo</button></div>
+    <p class="prompt">Luister en klik op het goede plaatje! 🔊</p>
+    <div class="center" style="margin-bottom:12px"><button class="btn orange big" onclick="speak('${q.w}')">🔊 Nog een keer</button></div>
     <div class="opts">${opts.map(o=>`<button class="opt" id="ol-${o.w}" onclick="ansListen('${o.w}','${q.w}')"><span class="oe">${o.e}</span></button>`).join('')}</div>
     <div class="feedback" id="fb"></div>`;
   setTimeout(()=>speak(q.w),350);
@@ -549,7 +547,7 @@ function ansListen(pick,right){
   const ok=pick===right;
   document.getElementById('ol-'+right).classList.add('right');
   if(!ok)document.getElementById('ol-'+pick).classList.add('wrong');
-  document.getElementById('fb').textContent=ok?'Muito bem! 🌟':'Isto é "'+right+'" 😊';
+  document.getElementById('fb').textContent=ok?'Heel goed! 🌟':'Dit is "'+right+'" 😊';
   if(ok)addXP(10);
   speak(right);
   setTimeout(()=>{qi++;locked=false;gListen();},1200);
@@ -565,7 +563,7 @@ function gSentence(){
   const sent=curLesson.frame.replace('___','<span style="color:#ff4d9d">_____</span>');
   document.getElementById('panel').innerHTML=`
     <div class="prog">${qi+1} / ${qOrder.length}</div>
-    <p class="prompt">Completa a frase! 💬</p>
+    <p class="prompt">Maak de zin af! 💬</p>
     <div class="big-em">${q.e}</div>
     <div class="word" style="font-size:30px;margin-bottom:14px">${sent}</div>
     <div class="opts" style="grid-template-columns:1fr 1fr 1fr">${opts.map(o=>`<button class="opt" id="os-${o.w}" onclick="ansSent('${o.w}','${q.w}')">${o.w}</button>`).join('')}</div>
@@ -577,7 +575,7 @@ function ansSent(pick,right){
   document.getElementById('os-'+right).classList.add('right');
   if(!ok)document.getElementById('os-'+pick).classList.add('wrong');
   const full=curLesson.frame.replace('___',right);
-  document.getElementById('fb').textContent=ok?'Perfeito! 🎈':full;
+  document.getElementById('fb').textContent=ok?'Perfect! 🎈':full;
   if(ok)addXP(10);
   speak(full);
   setTimeout(()=>{qi++;locked=false;gSentence();},1600);
@@ -587,12 +585,12 @@ function ansSent(pick,right){
 function gSay(){
   const said=(P.lessons[curLesson.id].said||[]);
   document.getElementById('panel').innerHTML=`
-    <p class="prompt">Fala em voz alta! 🗣️</p>
-    <p class="center" style="color:#a08a6f;font-weight:700;margin-bottom:12px">Toque no 🔊 para ouvir e repita. A professora toca no ✓ quando você falar!</p>
+    <p class="prompt">Zeg het hardop! 🗣️</p>
+    <p class="center" style="color:#a08a6f;font-weight:700;margin-bottom:12px">Klik op 🔊, luister en zeg het na. De juf klikt op ✓ als je het zegt!</p>
     ${curLesson.say.map((s,i)=>`
       <div class="say-row ${said.includes(i)?'ok':''}" id="sr-${i}">
         <span class="e">${curLesson.icon}</span>
-        <span class="t">${s.nl}<br><span style="font-size:14px;color:#a08a6f">🇧🇷 ${s.pt}</span></span>
+        <span class="t">${s.nl}</span>
         <button class="btn orange" onclick="speakSay(${i})">🔊</button>
         <button class="btn green" onclick="saidIt(${i})">✓</button>
       </div>`).join('')}
@@ -616,19 +614,19 @@ function finishGame(g){
   renderTabs();renderTop();
   const s=starsOf(curLesson.id);
   document.getElementById('celEmoji').textContent=s===4?'🏆':'🎉';
-  document.getElementById('celTitle').textContent=s===4?'Aula completa!':'Muito bem!';
+  document.getElementById('celTitle').textContent=s===4?'Les klaar!':'Goed gedaan!';
   document.getElementById('celText').textContent=s===4
-    ? curLesson.name+' terminou! Você ganhou 4 estrelas! ⭐⭐⭐⭐'
-    : 'Você ganhou uma estrela! '+ '⭐'.repeat(s) + '  ('+s+'/4)';
+    ? curLesson.name+' is klaar! Jij hebt 4 sterren! ⭐⭐⭐⭐'
+    : 'Jij hebt een ster! '+ '⭐'.repeat(s) + '  ('+s+'/4)';
   document.getElementById('cel').classList.add('show');
   if(first)addXP(20);
   qi=0;
-  if(g!=='say')document.getElementById('panel').innerHTML='<div class="center"><div class="big-em">'+curLesson.icon+'</div><p class="prompt">Boa! Escolhe outro jogo lá em cima 👆</p></div>';
+  if(g!=='say')document.getElementById('panel').innerHTML='<div class="center"><div class="big-em">'+curLesson.icon+'</div><p class="prompt">Super! Kies een ander spel hierboven 👆</p></div>';
 }
 function closeCel(){document.getElementById('cel').classList.remove('show');}
 
 function resetAll(){
-  if(!confirm("Apagar TODO o progresso do Hendrik? Não dá para desfazer."))return;
+  if(!confirm("Alles wissen? Dit kan niet ongedaan worden."))return;
   P={xp:0,lessons:{}};
   LESSONS.forEach(l=>P.lessons[l.id]={heard:[],games:{},said:[]});
   save();goHome();
@@ -638,3 +636,4 @@ load();renderHome();
 </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                    
