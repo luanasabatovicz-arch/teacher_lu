@@ -6,6 +6,8 @@
 <title>Sabatovicz - Grammar Lessons</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="engine/grammar-topics.js"></script>
+<script src="engine/grammar-engine.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { font-family:'Inter',sans-serif; }
@@ -127,6 +129,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
 // ============ GRAMMAR LESSON BANK ============
 const tenses = [
 {
+  eid:"verb-to-be",
   name:"Verb to be — Present", short:"Verb to be", level:"A1",
   use:"We use the verb TO BE to say who we are, how we feel, where we are from, age, job and characteristics. It is the first verb in English.",
   form:{
@@ -148,6 +151,7 @@ const tenses = [
   speaking:["Who are you?","How are you today?","Where are you from?","Are you a happy person?"]
 },
 {
+  eid:"present-simple",
   name:"Present Simple", short:"Present Simple", level:"A1",
   use:"We use the Present Simple for routines, habits, facts and general truths — things that happen always or regularly.",
   form:{
@@ -169,6 +173,7 @@ const tenses = [
   speaking:["What do you do every day?","What time do you wake up?","Do you like coffee?","What does your best friend do?"]
 },
 {
+  eid:"present-continuous",
   name:"Present Continuous", short:"Present Continuous", level:"A1",
   use:"We use the Present Continuous for actions happening NOW, at the moment of speaking, or temporary / ongoing situations.",
   form:{
@@ -229,6 +234,7 @@ const tenses = [
   speaking:["Where were you yesterday?","How were you last week?","Were you a happy child?"]
 },
 {
+  eid:"past-simple",
   name:"Past Simple — Regular verbs", short:"Past Regular", level:"A1+",
   use:"We use the Past Simple for finished actions in the past. Regular verbs end in -ed.",
   form:{
@@ -417,7 +423,7 @@ let current = 0;
 
 function renderSelector(){
   document.getElementById('tenseSelector').innerHTML =
-    tenses.map((t,i)=>`<button class="tense-btn ${i===current?'active':''}" onclick="selectTense(${i})">${t.short}</button>`).join('');
+    tenses.map((t,i)=>`<button class="tense-btn ${i===current?'active':''}" onclick="selectTense(${i})">${t.eid&&window.ENGINE_TOPICS&&ENGINE_TOPICS[t.eid]?'⚡ ':''}${t.short}</button>`).join('');
 }
 function selectTense(i){current=i;renderSelector();renderLesson();window.scrollTo({top:0,behavior:'smooth'});}
 
@@ -439,12 +445,17 @@ function stageBlock(color,title,inner){
 
 function renderLesson(){
   const t=tenses[current];
+  const engine=t.eid&&window.ENGINE_TOPICS&&ENGINE_TOPICS[t.eid];
   document.getElementById('lessonTitle').innerHTML=`
     <div class="flex items-center gap-3 mb-1">
       <span class="text-xs bg-[#B08F4C] text-[#181510] px-2 py-1 rounded font-bold">GRAMMAR</span>
       <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${t.level}</span>
+      ${engine?'<span class="text-xs px-2 py-1 rounded font-bold" style="background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff">⚡ Grammar Engine v1</span>':''}
     </div>
     <h2 class="text-2xl md:text-3xl font-bold text-white">${t.name}</h2>`;
+
+  // Tópicos migrados usam o motor (GRAMMAR-ENGINE.md); os demais, o renderer legado abaixo.
+  if(engine){ renderStuBar(); GE.start(ENGINE_TOPICS[t.eid]); return; }
 
   let h='';
 
