@@ -66,7 +66,12 @@
   <div class="card">
     <div class="row" style="margin-bottom:14px">
       <h3 style="font-size:15px">Registered students (<span id="count">0</span>)</h3>
-      <button class="btn purple" onclick="openModal()">+ Add student</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn gray" onclick="exportBackup()" title="Download all data (students, progress, calendar, review queues)">⬇ Backup</button>
+        <button class="btn gray" onclick="document.getElementById('impFile').click()" title="Restore a backup file">⬆ Restore</button>
+        <input type="file" id="impFile" accept="application/json" style="display:none" onchange="importBackup(this)">
+        <button class="btn purple" onclick="openModal()">+ Add student</button>
+      </div>
     </div>
     <div class="stu-list" id="list"></div>
   </div>
@@ -129,16 +134,78 @@ function render(){
   const list=document.getElementById('list');
   document.getElementById('count').textContent=students.length;
   if(!students.length){list.innerHTML='<div class="empty">No students yet. Click "+ Add student" to begin.</div>';return;}
-  list.innerHTML=students.map(s=>`
+  list.innerHTML=students.map(s=>{
+    const pend=errCount(s.id);
+    return `
     <div class="stu-row">
       <div class="stu-emoji">${s.emoji||'🙂'}</div>
       <div class="stu-info">
         <div class="stu-name">${esc(s.name)}</div>
-        <div class="stu-meta"><span class="lvl-badge">${esc(s.level||'A1')}</span>${s.age?`<span>${s.age} years old</span>`:''}</div>
+        <div class="stu-meta"><span class="lvl-badge">${esc(s.level||'A1')}</span>${s.age?`<span>${s.age} years old</span>`:''}
+          ${pend?`<button onclick="toggleQueue('${s.id}')" class="lvl-badge" style="background:#fee2e2;color:#dc2626;border-color:#fecaca;cursor:pointer">📝 ${pend} to review ${openQ===s.id?'▴':'▾'}</button>`:''}
+        </div>
       </div>
       <button class="icon-btn" title="Edit" onclick="openModal('${s.id}')">✏️</button>
       <button class="icon-btn del" title="Remove" onclick="removeStudent('${s.id}')">🗑️</button>
-    </div>`).join('');
+    </div>
+    ${openQ===s.id?queuePanel(s.id):''}`;
+  }).join('');
+}
+
+/* ---------- review queue (fed by ✗ marks during class) ---------- */
+function getErrs(id){try{return JSON.parse(localStorage.getItem('errq|'+id)||'[]');}catch(e){return[];}}
+function errCount(id){return getErrs(id).filter(e=>!e.rv).length;}
+let openQ=null;
+function toggleQueue(id){openQ=openQ===id?null:id;render();}
+function queuePanel(id){
+  const items=getErrs(id).map((e,i)=>Object.assign({},e,{_i:i})).filter(e=>!e.rv);
+  return `<div style="border:1px solid #fecdd3;background:#fff7f7;border-radius:14px;padding:12px 16px;margin:-4px 0 4px">
+    <div class="row" style="margin-bottom:8px">
+      <span style="font-size:13px;font-weight:700;color:#9f1239">Review queue — bring these back in the next lesson</span>
+      <button class="btn gray" style="padding:6px 12px;font-size:12px" onclick="clearQueue('${id}')">Clear all</button>
+    </div>
+    ${items.map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-top:1px dashed #fecdd3;font-size:14px">
+      <span><span class="lvl-badge" style="margin-right:6px">${esc(e.topic||e.m||'item')}</span>${esc(e.q)}${e.a?` <span style="color:#16a34a">→ ${esc(e.a)}</span>`:''} <span style="color:#94a3b8;font-size:12px">· ${esc(e.d||'')}</span></span>
+      <button class="icon-btn" style="width:32px;height:32px;font-size:13px" title="Mark as recovered" onclick="resolveErr('${id}',${e._i})">✓</button>
+    </div>`).join('')}
+  </div>`;
+}
+function resolveErr(id,idx){
+  try{const k='errq|'+id;const a=JSON.parse(localStorage.getItem(k)||'[]');if(a[idx])a[idx].rv=1;localStorage.setItem(k,JSON.stringify(a));}catch(e){}
+  render();
+}
+function clearQueue(id){
+  if(!confirm('Clear the whole review queue for this student?'))return;
+  localStorage.removeItem('errq|'+id);openQ=null;render();
+}
+
+/* ---------- backup: export / import EVERYTHING ---------- */
+function exportBackup(){
+  const data={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
+  const blob=new Blob([JSON.stringify({app:'sabatovicz',exported:new Date().toISOString(),data},null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='sabatovicz-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importBackup(input){
+  const f=input.files&&input.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const j=JSON.parse(r.result);
+      if(j.app!=='sabatovicz'||!j.data)throw 0;
+      if(!confirm('Restore backup from '+(j.exported||'?').slice(0,10)+'? This replaces the current data.'))return;
+      Object.entries(j.data).forEach(([k,v])=>{try{localStorage.setItem(k,v);}catch(e){}});
+      alert('Backup restored ✅');
+      location.reload();
+    }catch(e){alert('This file is not a valid Sabatovicz backup.');}
+  };
+  r.readAsText(f);
+  input.value='';
 }
 function esc(t){return String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 

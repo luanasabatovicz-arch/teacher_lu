@@ -92,6 +92,7 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif !important;font-weight:700 !importa
 .border-slate-600,.border-slate-700{border-color:#e2ddf5 !important;}
 select.inp option{background:#fff !important;color:#1e293b !important;}
 .text-emerald-400{color:#16a34a !important;}
+.hide-rule{display:none;}
 </style>
 </head>
 <body>
@@ -113,6 +114,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
   <!-- LESSON -->
   <div class="max-w-5xl mx-auto p-4 md:p-6">
     <div id="lessonTitle" class="card rounded-xl p-6 mb-6"></div>
+    <div id="stuBar" class="card rounded-xl p-4 mb-6"></div>
     <div id="lessonBody"></div>
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
       <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">Download lesson as PDF</button>
@@ -426,6 +428,11 @@ function speak(txt){
 }
 function toggleAnswer(id){document.getElementById(id).classList.toggle('show');}
 
+function revealRule(){
+  document.getElementById('ruleWrap').classList.remove('hide-rule');
+  document.getElementById('ruleReveal').style.display='none';
+}
+
 function stageBlock(color,title,inner){
   return `<div class="stage" style="border-left-color:${color}"><h3 class="text-xl font-bold text-white mb-3">${title}</h3>${inner}</div>`;
 }
@@ -440,51 +447,219 @@ function renderLesson(){
     <h2 class="text-2xl md:text-3xl font-bold text-white">${t.name}</h2>`;
 
   let h='';
-  // 1 QUANDO USAR
-  h+=stageBlock('#f59e0b','When to use',`<p class="text-slate-300">${t.use}</p>`);
 
-  // 2 FORMA
+  // 0 WARM-UP — review queue: the student's past ✗ items return as retrieval (Grammar Engine §2 · SLF G4)
+  wuJudge={};
+  wuItems=getQueue().slice(0,4);
+  if(wuItems.length){
+    h+=stageBlock('#22c55e','0 · Warm-up — '+stuName()+'’s review queue',
+      `<p class="text-slate-400 text-sm mb-2">Ask these aloud first — things ${stuName()} missed before. A ✓ clears the item from the queue.</p>`+
+      wuItems.map((it,i)=>`
+        <div class="ex-line" style="display:block">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+            <span><span class="chip" style="margin:0 6px 0 0">${it.topic||'review'}</span>${it.q}</span>
+            <span style="display:flex;gap:6px;flex-shrink:0">
+              ${it.a?`<button onclick="toggleAnswer('wua-${i}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">answer</button>`:''}
+              <button onclick="judgeWU(${i},true)" id="wuy-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓</button>
+              <button onclick="judgeWU(${i},false)" id="wun-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗</button>
+            </span>
+          </div>
+          ${it.a?`<div id="wua-${i}" class="answer">✓ ${it.a}</div>`:''}
+        </div>`).join('')+`<div id="wuVerdict" style="margin-top:8px"></div>`);
+  }
+
+  // 1 NOTICE — the student discovers the pattern BEFORE seeing the rule (Grammar Engine §3)
+  h+=stageBlock('#10b981','1 · Notice the pattern (listen & discover)',
+    t.examples.map(e=>`<div class="ex-line"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/'/g,"\\'")}')">►</button></div>`).join('')+
+    `<div style="margin-top:12px">
+       <span class="chip">🔍 What repeats in every sentence?</span>
+       <span class="chip">🔍 What changes — and when?</span>
+       <span class="chip">🗣️ Say the rule in YOUR words</span>
+     </div>`);
+
+  // 2 RULE — hidden until the student has said their version (teacher reveals with 1 click)
+  h+=`<div id="ruleReveal" style="text-align:center;margin:4px 0 14px">
+        <button onclick="revealRule()" class="theme-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule — after the student says it</button>
+      </div>
+      <div id="ruleWrap" class="hide-rule">`;
+  h+=stageBlock('#f59e0b','2 · When to use',`<p class="text-slate-300">${t.use}</p>`);
   h+=stageBlock('#3b82f6','Structure',
     `<div class="form-box"><div class="label" style="color:#34d399">Affirmative</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
      <div class="form-box"><div class="label" style="color:#f87171">Negative</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
      <div class="form-box"><div class="label" style="color:#60a5fa">Question</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
-
-  // (irregular verbs list, if any)
   if(t.list){
     h+=stageBlock('#a855f7','Common irregular verbs',
       `<div class="grid grid-cols-2 md:grid-cols-3 gap-2">${t.list.map(v=>`<div class="form-box" style="margin:0;padding:10px"><span class="text-white font-semibold text-sm">${v}</span></div>`).join('')}</div>`);
   }
-
-  // 3 EXAMPLES (with audio)
-  h+=stageBlock('#10b981','Examples (click ► to listen)',
-    t.examples.map(e=>`<div class="ex-line"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/'/g,"\\'")}')">►</button></div>`).join(''));
-
-  // 4 SIGNAL WORDS
   h+=stageBlock('#eab308','Signal words',
     `<div>${t.signals.map(s=>`<span class="chip">${s}</span>`).join('')}</div>`);
+  h+=`</div>`;
 
   // 5 ERROS COMUNS
   h+=stageBlock('#ef4444','Common mistakes',
     t.mistakes.map(m=>`<div class="mistake text-slate-200 text-sm">${m}</div>`).join(''));
 
-  // 6 PRACTICE
-  h+=stageBlock('#ec4899','Practice',
+  // 3 PRACTICE — student says it, teacher reveals and marks (evidence gate ≥80%)
+  prJudge={};
+  h+=stageBlock('#ec4899','3 · Practice — student says it, you check it',
+    `<div id="prScore" class="text-slate-300 text-sm font-bold mb-2">0 / ${t.practice.length} checked · gate: ≥80%</div>`+
     t.practice.map((p,idx)=>{
       const id=`ans-${current}-${idx}`;
-      return `<div class="ex-line" style="display:block">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      return `<div class="ex-line" style="display:block" id="pr-${idx}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
           <span>${idx+1}. ${p.q}</span>
-          <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded flex-shrink-0">show answer</button>
+          <span style="display:flex;gap:6px;flex-shrink:0">
+            <button onclick="toggleAnswer('hint-${idx}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">💡 hint</button>
+            <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">show answer</button>
+          </span>
         </div>
-        <div id="${id}" class="answer">✓ ${p.a}</div>
+        <div id="hint-${idx}" class="answer" style="color:#d97706 !important">💡 It starts with “${(p.a||'?').trim().charAt(0)}…” — try again!</div>
+        <div id="${id}" class="answer">✓ ${p.a}
+          <span style="margin-left:8px">
+            <button onclick="judgePr(${idx},true)" id="pry-${idx}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓ got it</button>
+            <button onclick="judgePr(${idx},false)" id="prn-${idx}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗ missed</button>
+          </span>
+          <div class="text-xs" style="color:#7c3aed;margin-top:5px">↳ follow-up: ${FOLLOWUPS[idx%FOLLOWUPS.length]}</div>
+        </div>
       </div>`;
-    }).join(''));
+    }).join('')+`<div id="prVerdict" style="margin-top:10px"></div>`);
 
-  // 7 FALE AGORA
-  h+=stageBlock('#06b6d4','Speak now (use the tense)',
+  // 4 FALE AGORA
+  h+=stageBlock('#06b6d4','4 · Speak now (use the tense)',
     t.speaking.map(q=>`<div class="ex-line"><span>${q}</span></div>`).join(''));
 
+  // 5 EXIT TICKET — auto-built evidence gate (Grammar Engine §10)
+  etJudge={};
+  const et=buildExit(t);
+  h+=stageBlock('#7c3aed','5 · Exit Ticket — ≥80% (5/6) completes the week',
+    et.map((it,i)=>`
+      <div class="ex-line" style="display:block">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span><span class="chip" style="margin:0 6px 0 0">${it.tag}</span>${it.q}</span>
+          <span style="display:flex;gap:6px;flex-shrink:0">
+            ${it.a?`<button onclick="toggleAnswer('eta-${i}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">answer</button>`:''}
+            <button onclick="judgeET(${i},true)" id="ety-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓</button>
+            <button onclick="judgeET(${i},false)" id="etn-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗</button>
+          </span>
+        </div>
+        ${it.a?`<div id="eta-${i}" class="answer">✓ ${it.a}</div>`:''}
+      </div>`).join('')+`<div id="etVerdict" style="margin-top:10px"></div>`);
+
   document.getElementById('lessonBody').innerHTML=h;
+  renderStuBar();
+}
+
+// ============ EVIDENCE & ERROR QUEUE (Grammar Engine §7/§10 · SLF G3/G4) ============
+const FOLLOWUPS=['Why?','And you? Make it about YOU.','Say it again — faster and natural.','Make one more sentence like this one.','Why not the other form?','Now turn it into a question.'];
+let prJudge={},etJudge={},wuJudge={},wuItems=[];
+
+function getQueue(){
+  if(!curStu)return[];
+  try{
+    const arr=JSON.parse(localStorage.getItem('errq|'+curStu)||'[]');
+    return arr.map((e,idx)=>Object.assign({},e,{_i:idx})).filter(e=>!e.rv);
+  }catch(e){return[];}
+}
+function judgeWU(i,ok){
+  if(wuJudge[i]!==undefined)return;
+  wuJudge[i]=ok;
+  document.getElementById('wuy-'+i).style.opacity=ok?'1':'.35';
+  document.getElementById('wun-'+i).style.opacity=ok?'.35':'1';
+  try{
+    const k='errq|'+curStu;
+    const arr=JSON.parse(localStorage.getItem(k)||'[]');
+    const it=arr[wuItems[i]._i];
+    if(it){ if(ok)it.rv=1; else it.d=new Date().toISOString().slice(0,10); }
+    localStorage.setItem(k,JSON.stringify(arr));
+  }catch(e){}
+  const n=Object.keys(wuJudge).length,c=Object.values(wuJudge).filter(Boolean).length;
+  if(n===wuItems.length){
+    const left=getQueue().length;
+    document.getElementById('wuVerdict').innerHTML=
+      `<div class="mistake" style="background:#f0fdf4 !important;border-color:#bbf7d0 !important;color:#166534 !important;font-weight:700">${c}/${n} recovered · ${left} item${left===1?'':'s'} still in ${stuName()}'s queue. Now let's discover something new ↓</div>`;
+  }
+}
+
+function buildExit(t){
+  const sp=t.speaking.slice(-2);
+  const sg=t.signals.slice(0,2).map(s=>String(s).split(':').pop().split(',')[0].trim());
+  const strip=s=>String(s).replace(/<[^>]*>/g,'');
+  const mk=strip(t.mistakes[0]||'').split('→');
+  const items=[];
+  sp.forEach(q=>items.push({tag:'🗣 speak',q}));
+  sg.forEach(w=>items.push({tag:'✏ create',q:`Make your own sentence with: “${w}”`}));
+  if(mk.length>1)items.push({tag:'⚠ fix it',q:mk[0].replace('✗','').trim(),a:mk[1].replace('✓','').trim()});
+  else items.push({tag:'⚠ fix it',q:'Say one WRONG sentence with this tense — then fix it.'});
+  items.push({tag:'💭 concept',q:`When do we use ${t.short} — and when NOT? Give one example.`});
+  return items;
+}
+
+function judgePr(i,ok){
+  if(prJudge[i]!==undefined)return;
+  prJudge[i]=ok;
+  document.getElementById('pry-'+i).style.opacity=ok?'1':'.35';
+  document.getElementById('prn-'+i).style.opacity=ok?'.35':'1';
+  const t=tenses[current];
+  if(!ok)logError('practice',t.practice[i].q,t.practice[i].a);
+  const n=Object.keys(prJudge).length,c=Object.values(prJudge).filter(Boolean).length;
+  document.getElementById('prScore').textContent=`${c} correct / ${n} checked of ${t.practice.length} · gate: ≥80%`;
+  if(n===t.practice.length){
+    const pct=Math.round(c/n*100);
+    document.getElementById('prVerdict').innerHTML=pct>=80
+      ?`<div class="mistake" style="background:#f0fdf4 !important;border-color:#bbf7d0 !important;color:#166534 !important;font-weight:700">✅ ${pct}% — gate passed. Go to Speak now.</div>`
+      :`<div class="mistake" style="font-weight:700">⚠ ${pct}% — below the gate. Revisit the rule together, then retry the missed ones (misses saved to ${stuName()}'s review queue).</div>`;
+  }
+}
+
+function judgeET(i,ok){
+  if(etJudge[i]!==undefined)return;
+  etJudge[i]=ok;
+  document.getElementById('ety-'+i).style.opacity=ok?'1':'.35';
+  document.getElementById('etn-'+i).style.opacity=ok?'.35':'1';
+  const t=tenses[current];
+  if(!ok)logError('exit',buildExit(t)[i].q,buildExit(t)[i].a||'');
+  const n=Object.keys(etJudge).length,c=Object.values(etJudge).filter(Boolean).length;
+  if(n===6){
+    document.getElementById('etVerdict').innerHTML=c>=5
+      ?`<div class="mistake" style="background:#f0fdf4 !important;border-color:#bbf7d0 !important;color:#166534 !important;font-weight:700">🏆 ${c}/6 — week complete! Mark it in the Annual Plan and tell ${stuName()} one thing they can do now that they couldn't before.</div>`
+      :`<div class="mistake" style="font-weight:700">↩ ${c}/6 — below 80%. This topic returns next class (misses saved to ${stuName()}'s review queue). Don't advance the week.</div>`;
+  }
+}
+
+// ---- shared student store (managed in students.html) ----
+const STU_KEY='sabatovicz_students';
+const DEFAULT_STUDENTS=[
+  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
+  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
+  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
+  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
+  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
+  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
+  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
+];
+function loadStudents(){
+  try{const v=localStorage.getItem(STU_KEY);if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}}catch(e){}
+  localStorage.setItem(STU_KEY,JSON.stringify(DEFAULT_STUDENTS));
+  return DEFAULT_STUDENTS.slice();
+}
+const STUDENTS_DATA=loadStudents();
+let curStu=localStorage.getItem('sabatovicz_current_student');
+if(!STUDENTS_DATA.some(s=>s.id===curStu))curStu=STUDENTS_DATA.length?STUDENTS_DATA[0].id:null;
+function stuName(){const s=STUDENTS_DATA.find(x=>x.id===curStu);return s?s.name:'the student';}
+function pickStu(id){curStu=id;localStorage.setItem('sabatovicz_current_student',id);renderLesson();}
+function renderStuBar(){
+  const el=document.getElementById('stuBar');if(!el)return;
+  el.innerHTML=`<span class="text-slate-300 text-sm font-bold" style="margin-right:8px">Class with:</span>`+
+    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn text-xs font-bold py-2 px-3 rounded-lg" style="margin:2px;${s.id===curStu?'background:linear-gradient(135deg,#7c3aed,#db2777) !important;color:#fff !important':''}">${s.emoji||''} ${s.name}</button>`).join('');
+}
+function logError(kind,q,a){
+  if(!curStu)return;
+  try{
+    const k='errq|'+curStu;
+    const arr=JSON.parse(localStorage.getItem(k)||'[]');
+    arr.push({m:'grammar',topic:tenses[current].short,kind,q:String(q),a:String(a),d:new Date().toISOString().slice(0,10)});
+    localStorage.setItem(k,JSON.stringify(arr));
+  }catch(e){}
 }
 
 // ============ PDF ============
