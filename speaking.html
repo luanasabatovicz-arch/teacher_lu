@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabatovicz — Speaking Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SPEAKING LAB — Sprint 2: UI consome a Speaking Engine real.
+   Layout e fluxo idênticos à Sprint 1 (aprovados no Artifact).
+   SPEAKING-LAB.md v1.0 é a fonte única de verdade.
+   ============================================================ */
+:root{color-scheme:light;--vio:#7c3aed;--pink:#db2777;--amber:#f59e0b;--ink:#1e293b;--mut:#64748b;--bg:#faf9ff;--line:#ece7fb;}
+*{box-sizing:border-box;font-family:'Inter',sans-serif;margin:0;padding:0;}
+h1,h2,h3{font-family:'Poppins',sans-serif;}
+body{background:var(--bg);color:var(--ink);min-height:100vh;}
+.topbar{background:linear-gradient(120deg,var(--vio) 0%,var(--pink) 55%,var(--amber) 100%);color:#fff;padding:18px 22px;box-shadow:0 6px 24px rgba(124,58,237,.28);position:sticky;top:0;z-index:40;}
+.topbar .in{max-width:880px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.topbar h1{font-size:22px;font-weight:800;}
+.topbar small{opacity:.9;font-weight:600;font-size:12px;display:block;}
+.menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins',sans-serif;font-weight:700;padding:8px 16px;border-radius:10px;cursor:pointer;font-size:13px;}
+.menu-btn:hover{background:rgba(255,255,255,.38);}
+#clock{font-weight:900;font-size:17px;min-width:52px;text-align:right;}
+.tabs{display:flex;gap:6px;padding:12px 14px 0;max-width:880px;margin:0 auto;}
+body.inlesson .tabs{display:none;} /* a interface some durante a aula */
+body.inlesson .menu-btn{display:none;}
+.tab{border:none;background:#ede9fe;color:#5b21b6;font-weight:700;padding:8px 15px;border-radius:10px 10px 0 0;cursor:pointer;font-size:13px;font-family:'Poppins',sans-serif;}
+.tab.on{background:linear-gradient(135deg,var(--vio),var(--pink));color:#fff;}
+.wrap{padding:14px;max-width:880px;margin:0 auto;}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 3px 14px rgba(124,58,237,.06);}
+.chip{display:inline-block;background:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;border-radius:20px;padding:4px 11px;margin:2px;font-size:13px;font-weight:600;}
+button.big{background:linear-gradient(135deg,var(--vio),var(--pink));color:#fff;border:none;border-radius:12px;padding:13px 24px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Poppins',sans-serif;}
+button.big:hover{opacity:.92}
+button.soft{background:#f1edfd;color:#5b21b6;border:1px solid #ddd6fe;border-radius:10px;padding:7px 12px;font-weight:700;cursor:pointer;font-size:12.5px;}
+button.soft:hover{background:#e4dcfa}
+.stu{display:inline-block;border:2px solid var(--line);border-radius:12px;padding:8px 14px;margin:4px;cursor:pointer;font-weight:700;background:#fff;}
+.stu.on{border-color:var(--vio);background:#f3efff;}
+.mut{color:var(--mut);font-size:13px;}
+.label{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--vio);margin-bottom:4px;}
+.purpose{font-family:'Poppins',sans-serif;font-size:25px;font-weight:800;line-height:1.4;margin:6px 0;}
+.slotbox{border:2px dashed #c9bdf0;border-radius:12px;padding:22px;text-align:center;color:#8b7cc9;font-weight:700;margin:10px 0;background:#f8f6ff;}
+.hid{display:none}
+.room{max-width:880px;margin:0 auto;padding:14px;}
+.roomtop{display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:13px;padding:2px 4px 8px;}
+.stage{background:#fff;border:1px solid var(--line);border-radius:18px;padding:34px 26px;text-align:center;box-shadow:0 6px 24px rgba(124,58,237,.08);}
+.stage .evid{color:var(--mut);font-size:14px;margin-top:8px}
+.dock{background:#f4f6f9;border:1px solid #dbe2ea;border-radius:14px;margin-top:12px;padding:10px 12px;}
+.dock .label{color:#64748b}
+.sttrow{display:flex;gap:8px;margin:6px 0;}
+.sttrow button{flex:1;border-radius:12px;border:2px solid transparent;padding:11px;font-weight:800;font-size:14px;cursor:pointer;background:#eef2f7;color:#334155;}
+.sttrow button.on{border-color:var(--vio);background:#f3efff;color:#5b21b6;}
+.mrow{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;}
+.mrow button{flex:1;min-width:96px;border:none;border-radius:10px;padding:9px 4px;font-weight:800;font-size:12.5px;cursor:pointer;color:#fff;}
+.sig{background:#fff;border:1px dashed #cbd5e1 !important;color:#475569 !important;font-weight:700 !important;}
+.sig:hover{border-color:#f59e0b !important;background:#fffbeb !important;}
+.panelbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.suggest{background:#fffdf5;border:1px solid #fde68a;border-left:5px solid var(--amber);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14.5px;}
+.suggest small{color:#92400e}
+.evrow{display:flex;gap:10px;margin-top:10px;}
+.evrow button{flex:1;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:900;cursor:pointer;color:#fff;font-family:'Poppins',sans-serif;}
+.ok{background:#16a34a}.bad{background:#dc2626}
+.win{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:14px;padding:18px;text-align:center;margin-bottom:12px;}
+.win h2{margin:4px 0;color:#166534;font-size:22px;}
+.next{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:14px;padding:16px;text-align:center;}
+.blocks{font-family:monospace;font-size:17px;letter-spacing:2px;color:var(--vio);}
+.fprow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.journey{font-size:18px;font-weight:800;color:var(--vio);text-align:center;line-height:1.9;font-family:'Poppins',sans-serif;}
+.sttbar{display:flex;height:16px;border-radius:8px;overflow:hidden;margin:6px 0;background:#e2e8f0;}
+.sttbar .a{background:linear-gradient(90deg,var(--vio),var(--pink));}
+input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px;font-size:14px;}
+.todo{border-left:4px solid var(--amber);}
+.todo ul{margin:6px 0;padding-left:18px;line-height:1.55;font-size:12.5px;color:var(--mut);}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="in">
+  <div><h1>🗣 Speaking Lab</h1><small id="topsub">Sprint 2 · Speaking Engine real · SPEAKING-LAB.md é a fonte de verdade</small></div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span id="clock">–</span>
+    <button class="menu-btn" onclick="goHome()">← Menu</button>
+  </div>
+</div></div>
+
+<div class="tabs">
+  <button class="tab on" id="tb0" onclick="tab(0)">Briefing</button>
+  <button class="tab" id="tb2" onclick="tab(2)">Fechamento</button>
+  <button class="tab" id="tb3" onclick="tab(3)">Footprint</button>
+</div>
+
+<div class="wrap" id="p0">
+  <div class="card"><div class="label">Aula de hoje — quem?</div><div id="stuRow"></div></div>
+  <div class="card" id="brief"></div>
+  <div class="card" id="briefAlt"></div>
+  <div class="card todo">
+    <div class="label" style="color:#92400e">⚠ TODOs — lacunas de spec (a página NÃO decide)</div>
+    <ul>
+      <li><b>TODO-1</b> · §16 não define o limiar de quebra da Interaction Chain — os 8s daqui são placeholder.</li>
+      <li><b>TODO-2</b> · §19.2(a): a engine já aceita "objetivo da semana", mas a fonte desse objetivo ainda não existe na plataforma.</li>
+      <li><b>TODO-3</b> · W9: regra de formulação do "Today's Win" não especificada — heurística ilustrativa.</li>
+      <li><b>TODO-4</b> · Tempos-alvo por nível são calibração operacional (§12), valores de teste.</li>
+      <li><b>TODO-5</b> · Evidence Checklist é auxílio visual; a spec só conhece o ✓/✗ final (V3).</li>
+      <li><b>TODO-6</b> · P6: as estruturas destravadas por aluno vêm de uma lista mock por nível — integração com o currículo de gramática pendente.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="p1" class="hid"><div class="room">
+  <div class="roomtop"><span id="mTop"></span><span id="mTime"></span></div>
+  <div class="stage" id="stage"></div>
+  <div class="dock" id="dock"></div>
+</div></div>
+
+<div class="wrap hid" id="p2"><div id="closing"><p class="mut">Nenhuma missão encerrada ainda nesta sessão.</p></div></div>
+<div class="wrap hid" id="p3"><div id="fpView"></div></div>
+
+<script src="engine/speaking-activities.js"></script>
+<script src="engine/speaking-engine.js"></script>
+<script>
+/* ============================================================
+   Sprint 2: esta página é APENAS consumidora da SpeakingEngine.
+   Nenhuma regra pedagógica vive aqui — só render e cliques.
+   ============================================================ */
+
+/* ALUNOS MOCKADOS — integração com students.html é sprint futura. */
+const STUDENTS=[
+  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10},
+  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:9},
+  {id:'regis',name:'Régis',emoji:'🎸',level:'A2',age:34},
+  {id:'natali',name:'Natali',emoji:'🌟',level:'A2',age:28}
+];
+/* Estruturas destravadas MOCK por nível (TODO-6 — P6 real virá do currículo) */
+function unlockedFor(st){
+  const base=['verb to be'];
+  if(st.level!=='A1')base.push('present simple','imperativo','do/does questions');
+  return base;
+}
+
+/* Recovery §21 — escadas graduadas construídas sobre a MISSÃO fundida pela engine */
+const RECOVERY={
+ silence:{n:'😶 silêncio',steps:m=>['Espere 5 segundos — silêncio é processamento (protocolo §21). Conte no relógio.',`Reformule mais simples: ${m.reform}`,'Ofereça escolha binária: "X or Y?"',`Desça um degrau: ${m.simple}`]},
+ mono:{n:'💬 só "yes"',steps:m=>[`Expanda: "${m.followups[0]||'Tell me more.'}"`,'Peça o porquê: "Why? Give me one more."','Personalize: "And YOU? And in your house?"']},
+ pt:{n:'🇧🇷 português',steps:m=>[`Aceite o conteúdo, devolva a palavra-chave em inglês (pista): ${m.rescue.map(s=>'“'+s+'”').join(' · ')}`,'Provoque circumlocução: "Tell me in English — another way."',`Se travar de novo: ${m.simple}`]},
+ stuck:{n:'🧊 travou',steps:m=>['Espere 5s. Não roube a fala que está vindo.','"Explain it another way" — circumlocução antes de pista.',`Pista por palavra/imagem (teto do socorro — R2): ${m.rescue.map(s=>'“'+s+'”').join(' · ')}`]}
+};
+
+/* ================= estado de UI ================= */
+let stu=STUDENTS[0],mission=null,altMission=null,S=null,clockTimer=null;
+
+/* ================= briefing (consome SpeakingEngine.propose) ================= */
+function brief(){
+ const p=SpeakingEngine.propose(stu,{unlocked:unlockedFor(stu)});
+ if(!p){document.getElementById('brief').innerHTML='<p class="mut">Nenhuma atividade elegível para este perfil.</p>';return;}
+ mission=p.mission;altMission=p.alt;
+ document.getElementById('brief').innerHTML=`
+  <div class="label">Missão de hoje — pronta (W1)</div>
+  <div class="purpose" style="font-size:21px">${mission.actName} <span style="color:var(--pink)">×</span> ${mission.theme}</div>
+  <p style="margin:6px 0">${mission.purpose}</p>
+  <p class="mut">🎯 ${mission.evid} &nbsp;·&nbsp; ⏱ ${mission.stt} &nbsp;·&nbsp; 🧭 ${p.why}</p>
+  <button class="big" onclick="startMission(mission)">▶ Start Mission</button>`;
+ document.getElementById('briefAlt').innerHTML=altMission?`
+  <div class="label">Prefere outra? (W2 — 1 clique)</div>
+  <b>${altMission.actName} × ${altMission.theme}</b> <span class="mut">· ${altMission.evid}</span>
+  <div style="margin-top:6px"><button class="soft" onclick="startMission(altMission)">Usar esta</button></div>`:'';
+}
+function renderStu(){
+ document.getElementById('stuRow').innerHTML=STUDENTS.map(s=>
+  `<span class="stu ${s.id===stu.id?'on':''}" onclick="pick('${s.id}')">${s.emoji||'🙂'} ${s.name} · ${s.level}</span>`).join('');
+}
+function pick(id){stu=STUDENTS.find(s=>s.id===id);renderStu();brief();}
+
+/* ================= missão (sala de aula) ================= */
+function startMission(m){
+ mission=m;
+ S={t0:Date.now(),stt:0,ttt:0,talk:null,talkT0:0,run:0,chain:0,chains:[],sus:0,ini:0,rep:0,err:{estrutural:0,lexical:0,pron:0},rec:{},panel:null,check:{}};
+ document.getElementById('mTop').innerHTML=`${stu.emoji||''} <b>${stu.name}</b> · ${m.actName} × ${m.theme}`;
+ document.getElementById('mTime').innerHTML=`⏱ ${m.stt}`;
+ document.getElementById('stage').innerHTML=`
+  <div class="purpose">${m.purpose}</div>
+  <div class="evid">🎯 ${m.evid}</div>
+  ${m.slot?`<div class="slotbox">🖼 IMAGE SLOT · ${m.slot} — asset do tema "${m.theme}" (pendência nº1 da spec)</div>`:''}`;
+ renderDock();
+ document.body.classList.add('inlesson');
+ show(1);
+ clearInterval(clockTimer);clockTimer=setInterval(paint,1000);
+}
+function renderDock(){
+ document.getElementById('dock').innerHTML=`
+  <div class="sttrow">
+    <button id="bs" onclick="talk('s')">🧑‍🎓 ${stu.name} fala</button>
+    <button id="bt" onclick="talk('t')">👩‍🏫 Eu falo</button>
+  </div>
+  <div class="mut" style="text-align:center">conversa atual <b id="vc">0s</b> · maior <b id="vl">0s</b></div>
+  <div class="mrow">
+    <button style="background:#7c3aed" onclick="mk('sus')" title="turno de 3+ frases">💜 Sustentou <span id="ns">0</span></button>
+    <button style="background:#db2777" onclick="mk('ini')" title="perguntou/propôs sem pedir">💗 Iniciativa <span id="ni">0</span></button>
+    <button style="background:#f59e0b" onclick="mk('rep')" title="resolveu travada em inglês">🧡 Reparo <span id="nr">0</span></button>
+  </div>
+  <div class="label" style="margin-top:6px">o aluno... (Recovery §21 — sugestão discreta, sem trocar de atividade)</div>
+  <div class="mrow">${Object.keys(RECOVERY).map(k=>`<button class="sig" onclick="recover('${k}')">${RECOVERY[k].n}</button>`).join('')}</div>
+  <div id="suggest"></div>
+  <div class="panelbar">
+    <button class="soft" onclick="panel('brief')">📋 Brief</button>
+    <button class="soft" onclick="panel('fu')">💬 Follow-up</button>
+    <button class="soft" onclick="panel('soc')">🛟 Rescue</button>
+    <button class="soft" onclick="panel('compl')">⚡ Complication</button>
+    <button class="soft" onclick="panel('check')">✅ Evidence</button>
+    <button class="soft" onclick="panel('err')">✗ Erro</button>
+  </div>
+  <div id="panelBody"></div>
+  <div class="evrow">
+    <button class="ok" onclick="finish(true)">✓ Evidência — encerrar e registrar</button>
+    <button class="bad" onclick="finish(false)">✗ Não rolou — encerrar e registrar</button>
+  </div>`;
+ panel('fu'); /* padrão: o follow-up é o que ela mais precisa */
+}
+function panel(k){
+ const m=mission,el=document.getElementById('panelBody');
+ if(S.panel===k){S.panel=null;el.innerHTML='';return;}
+ S.panel=k;
+ const bodies={
+  brief:`<div class="suggest"><small>MISSION BRIEF</small><br>${m.brief}</div>`,
+  fu:`<div class="suggest"><small>FOLLOW-UP SUGERIDO (bancos §8)</small><br>${m.followups.map(f=>'<span class="chip">'+f+'</span>').join('')}</div>`,
+  soc:`<div class="suggest"><small>VOCABULARY RESCUE — palavra/imagem, nunca frase pronta (R2)</small><br>${m.rescue.map(s=>'<span class="chip">'+s+'</span>').join('')}</div>`,
+  compl:`<div class="suggest"><small>COMPLICATION — injete quando ficar confortável (W6)</small><br>⚡ ${m.compl}</div>`,
+  check:`<div class="suggest"><small>EVIDENCE CHECKLIST (auxílio visual — o registro é o ✓/✗ final · TODO-5)</small><br>${m.check.map((c,i)=>`<span class="chip" style="cursor:pointer;${S.check[i]?'background:#dcfce7;color:#166534;border-color:#86efac':''}" onclick="ck(${i})">${S.check[i]?'✓ ':''}${c}</span>`).join('')}</div>`,
+  err:`<div class="suggest"><small>ANOTAR ERRO → fila (G4) — causa §17, 1 clique</small><br>
+    <button class="soft" onclick="err('estrutural')">estrutural <b id="ee">${S.err.estrutural}</b></button>
+    <button class="soft" onclick="err('lexical')">lexical <b id="el">${S.err.lexical}</b></button>
+    <button class="soft" onclick="err('pron')">pronúncia <b id="ep">${S.err.pron}</b></button></div>`
+ };
+ el.innerHTML=bodies[k]||'';
+}
+function ck(i){S.check[i]=!S.check[i];S.panel=null;panel('check');}
+function err(k){S.err[k]++;S.panel=null;panel('err');}
+function recover(k){
+ const st=RECOVERY[k].steps(mission);
+ const step=Math.min(S.rec[k]||0,st.length-1);
+ document.getElementById('suggest').innerHTML=
+  `<div class="suggest"><small>RECOVERY · ${RECOVERY[k].n} — degrau ${step+1}/${st.length} (R1: um por vez)</small><br>${st[step]}</div>`;
+ S.rec[k]=step+1;
+}
+function talk(w){flushTalk();S.talk=w;S.talkT0=Date.now();
+ document.getElementById('bs').classList.toggle('on',w==='s');
+ document.getElementById('bt').classList.toggle('on',w==='t');}
+function flushTalk(){
+ if(!S||!S.talk)return;
+ const d=(Date.now()-S.talkT0)/1000;
+ if(S.talk==='s'){S.stt+=d;S.chain+=d;S.run=0;}
+ else{S.ttt+=d;S.run+=d;if(S.run>8){S.chains.push(S.chain);S.chain=0;S.run=0;}} /* TODO-1: limiar placeholder */
+ S.talkT0=Date.now();
+}
+function mk(k){S[k]++;paint();}
+function fmt(s){s=Math.round(s);return s>=60?Math.floor(s/60)+'m'+(s%60?('0'+s%60).slice(-2):''):s+'s';}
+function paint(){
+ if(!S)return;flushTalk();
+ const longest=Math.max(S.chain,...(S.chains.length?S.chains:[0]));
+ const q=id=>document.getElementById(id);
+ if(q('vc')){q('vc').textContent=fmt(S.chain);q('vl').textContent=fmt(longest);
+  q('ns').textContent=S.sus;q('ni').textContent=S.ini;q('nr').textContent=S.rep;}
+ if(q('ee')){q('ee').textContent=S.err.estrutural;q('el').textContent=S.err.lexical;q('ep').textContent=S.err.pron;}
+ const t=Math.floor((Date.now()-S.t0)/1000);
+ q('clock').textContent=Math.floor(t/60)+':'+('0'+t%60).slice(-2);
+}
+
+/* ================= fechamento — o ✓/✗ registra via engine (§19.7, atômico) ================= */
+function finish(ok){
+ flushTalk();S.talk=null;S.chains.push(S.chain);
+ clearInterval(clockTimer);
+ const longest=Math.round(Math.max(...S.chains,0));
+ const sttPct=S.stt+S.ttt>0?S.stt/(S.stt+S.ttt):0;
+ const errTotal=S.err.estrutural+S.err.lexical+S.err.pron;
+ const prev=SpeakingEngine.footprint(stu);
+ const recBest=prev.journey.length?Math.max.apply(null,prev.journey):0;
+ SpeakingEngine.record(stu,mission,{ok,longest,sttPct,sus:S.sus,ini:S.ini,rep:S.rep,err:S.err});
+ /* Today's Win (heurística — TODO-3) */
+ const win=S.ini>0?`${stu.name} puxou a conversa ${S.ini}x por conta própria`:
+   longest>=30?`${stu.name} sustentou ${fmt(longest)} de conversa${longest>recBest&&recBest>0?' — novo recorde 🏆':''}`:
+   S.rep>0?`${stu.name} destravou ${S.rep}x em inglês, sem desistir`:
+   `${stu.name} falou ${ok?'até a evidência':'e tentou até o fim'}`;
+ const nf=SpeakingEngine.nextFrontier(stu,{unlocked:unlockedFor(stu)});
+ document.getElementById('closing').innerHTML=`
+  <div class="card" style="text-align:center;padding:10px"><span class="chip" style="background:#dcfce7;color:#166534;border-color:#86efac">✓ Registrado em 1 clique (§19.7 atômico) — evidência ${ok?'✓':'✗'} · STT · cadeias · maior conversa · iniciativa · reparo · ${errTotal} erro(s) → fila</span></div>
+  <div class="win"><div class="label" style="color:#166534">🏆 Today's Win — diga isto a ${stu.name}</div><h2>"${win}"</h2>
+  ${!ok?'<p class="mut">R4: antes de fechar, 1 interação de algo que ele(a) domina — a aula termina num ✓.</p>':''}</div>
+  <div class="next"><div class="label">🧭 Next Frontier</div><b style="font-size:17px">${nf?nf.comp+' — '+nf.v+'/'+nf.need+' para consolidar · sugerida: '+nf.suggest:'—'}</b></div>
+  <div class="card" style="margin-top:12px">
+    <div class="sttbar"><div class="a" style="width:${Math.round(sttPct*100)}%"></div></div>
+    <p class="mut" style="text-align:center;margin:2px 0">quem falou mais? <b>${sttPct>=.5?stu.name+' 🎉':'você ⚠ (D1)'}</b> · maior conversa: <b>${fmt(longest)}</b></p>
+    <input class="obs" placeholder="Observação opcional — 1 linha (W10)" onchange="SpeakingEngine.setObs(stu,this.value)">
+    <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+      <button class="big" onclick="leaveLesson(0);brief()">▶ Próxima missão</button>
+      <button class="soft" onclick="leaveLesson(3)">Ver Footprint</button>
+    </div>
+  </div>`;
+ leaveLesson(2);
+}
+
+/* ================= footprint (§18 — dados reais da engine) ================= */
+function fpView(){
+ const fp=SpeakingEngine.footprint(stu);
+ const bars=fp.bars.map(b=>{
+  const blk='█'.repeat(Math.min(b.v,5))+'░'.repeat(Math.max(5-b.v,0));
+  return `<div class="fprow"><b>${b.c}${b.consolidated?' ✅':''}</b><span class="blocks">${blk}</span></div>`;}).join('');
+ const blocked=fp.blocked.map(b=>`<span class="chip" style="background:#f1f5f9;color:#64748b;border-color:#e2e8f0">🔒 ${b.c} — aguarda: ${b.dep}</span>`).join('');
+ const journey=fp.journey.length?fp.journey.map(fmt).join('<br>↓<br>'):'—';
+ document.getElementById('fpView').innerHTML=`
+  <div class="card"><div class="label">Speaking Footprint — ${stu.emoji||''} ${stu.name} · evolução comunicativa (sem notas)</div>${bars}
+   ${blocked?'<div style="margin-top:10px"><div class="label" style="color:#64748b">bloqueadas por dependência gramatical (P6)</div>'+blocked+'</div>':''}</div>
+  <div class="card" style="display:flex;gap:14px;flex-wrap:wrap">
+   <div style="flex:1;min-width:170px;text-align:center"><div class="label">Longest Conversation</div><div class="journey">${journey}</div></div>
+   <div style="flex:1;min-width:170px">
+     <div class="label">quem fala mais nas aulas?</div>
+     <div class="sttbar"><div class="a" style="width:${Math.round(fp.sttAvg*100)}%"></div></div>
+     <p class="mut">${fp.sttAvg>=.5?stu.name+' fala mais que a professora 🎉':fp.total?'a professora ainda fala mais ⚠':'—'}</p>
+     <div class="label" style="margin-top:8px">interações significativas por aula</div>
+     <p style="font-size:20px;margin:2px 0">${'🔗'.repeat(Math.min(fp.chainsAvg,8))||'—'}</p>
+   </div></div>
+  <div class="card">
+   <div class="label">onde ${stu.name} está</div>
+   <p>✅ <b>Consolidadas:</b> ${fp.consolidated.length?fp.consolidated.join(', '):'ainda nenhuma — a jornada está começando'}</p>
+   <p>🌱 <b>Em desenvolvimento:</b> ${fp.developing.length?fp.developing.join(', '):'—'}</p>
+   <p>🔒 <b>Aguardando gramática:</b> ${fp.blocked.map(b=>b.c).join(', ')||'—'}</p>
+   ${fp.total?'<p class="mut">'+fp.total+' missões vividas · última: '+fp.last.act+' × '+fp.last.theme+'</p>':''}
+  </div>`;
+}
+
+/* ================= navegação ================= */
+function show(i){['p0','p1','p2','p3'].forEach((p,k)=>document.getElementById(p).classList.toggle('hid',k!==i));
+ [['tb0',0],['tb2',2],['tb3',3]].forEach(([id,k])=>{const e=document.getElementById(id);if(e)e.classList.toggle('on',k===i);});
+ if(i===3)fpView();}
+function tab(i){show(i);}
+function leaveLesson(i){document.body.classList.remove('inlesson');S=null;document.getElementById('clock').textContent='–';show(i);}
+function goHome(){window.location.href='index.html';}
+renderStu();brief();
+</script>
+</body>
+</html>
