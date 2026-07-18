@@ -41,7 +41,7 @@ function freshState(){
     judged:{},           // judged[secId] = {idx:bool}
     ccqRound:1, ccqReserveOn:false, noticeRetry:false, abortAdvised:false,
     c3On:false, c3Items:[], c3Judged:{}, practiceRound:1, conceptGap:false,
-    cuts:{}, cutIdx:0,
+    cuts:{}, cutIdx:0, mapOpen:true,
     secStart:Date.now(), clockTimer:null,
     ruleRevealed:false, weekComplete:null, finished:false
   };
@@ -82,10 +82,10 @@ function audit(t){
   need(t.ccqs&&t.ccqs.main&&t.ccqs.main.length===5,'§4 exige 5 CCQs');
   need(t.ccqs&&t.ccqs.reserve&&t.ccqs.reserve.length===3,'§4 exige 3 CCQs reserva');
   need(t.watchout&&t.watchout.length===4,'§6 exige exatamente 4 erros');
-  need(t.practice&&t.practice.length===12,'§7 exige 12 itens');
+  need(t.practice&&t.practice.length>=12,'§7 exige ≥12 itens');
   if(t.practice){
     const c={};t.practice.forEach(p=>c[p.t]=(c[p.t]||0)+1);
-    need(c.fill===3&&c.mc===3&&c.us===2&&c.ec===2&&c.tr===2,'§7 ordem fixa: 3 fill · 3 mc · 2 us · 2 ec · 2 tr (encontrado: '+JSON.stringify(c)+')');
+    need((c.fill||0)>=3&&(c.mc||0)>=3&&(c.us||0)>=2&&(c.ec||0)>=2&&(c.tr||0)>=2,'§7 mínimos por tipo: ≥3 fill · ≥3 mc · ≥2 us · ≥2 ec · ≥2 tr (encontrado: '+JSON.stringify(c)+')');
     need(t.practice.every(p=>p.hint&&p.fu),'§7: todo item exige hint + follow-up (C2)');
   }
   need(t.makeit&&t.makeit.length===6,'§8 exige 6 stems');
@@ -132,6 +132,92 @@ function visual(type){
   return '';
 }
 
+/* ---------- bloco rico de exemplos (opcional: T.examples) ----------
+   "o aluno aprende observando muitos exemplos antes de ser avaliado".
+   afirmativos · negativos · interrogativos · contextualizados · certo×errado. */
+function examplesBlock(){
+  const E=T.examples;
+  if(!E)return '';
+  const line=x=>{const plain=P(x).replace(/<[^>]*>/g,'');return '<div class="ex-line"><span>'+P(x)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';};
+  const grp=(label,color,arr)=> (arr&&arr.length)?'<div class="form-box"><div class="label" style="color:'+color+'">'+label+'</div>'+arr.map(line).join('')+'</div>':'';
+  let h='<div class="label" style="color:#7c3aed;margin:14px 0 4px;font-size:12px;font-weight:800;border-top:1px solid #ece7fb;padding-top:10px">📚 Many examples — study these BEFORE practising (read aloud)</div>';
+  // exemplos agrupados por USO (opcional: E.byUse = [{use, ex:[...]}])
+  if(E.byUse&&E.byUse.length){
+    h+='<p class="text-slate-400 text-sm mb-1" style="color:#64748b">First, by meaning — see the SAME verb doing different jobs:</p>';
+    E.byUse.forEach(function(g){ h+='<div class="form-box"><div class="label" style="color:#0ea5a5">'+P(g.use)+'</div>'+g.ex.map(line).join('')+'</div>'; });
+    h+='<p class="text-slate-400 text-sm mb-1 mt-2" style="color:#64748b">Now, by form — affirmative, negative, question:</p>';
+  }
+  h+=grp('Affirmative','#16a34a',E.aff);
+  h+=grp('Negative','#dc2626',E.neg);
+  h+=grp('Question','#3b82f6',E.q);
+  h+=grp('In real life (everyday situations)','#7c3aed',E.context);
+  if(E.contrast&&E.contrast.length){
+    h+='<div class="form-box"><div class="label" style="color:#f59e0b">Correct vs incorrect</div>'+
+      E.contrast.map(c=>'<div class="mistake text-sm"><span style="color:#dc2626">❌ '+P(c.bad)+'</span> → <span style="color:#16a34a;font-weight:700">✅ '+P(c.good)+'</span>'+(c.why?'<span class="text-slate-400" style="margin-left:8px">('+P(c.why)+')</span>':'')+'</div>').join('')+'</div>';
+  }
+  return h;
+}
+
+/* ---------- painel "Aula completa" (mapa da aula, sempre no topo) ----------
+   Resolve a primeira impressão: mostra objetivo, contagem de exemplos/atividades
+   e as 10 etapas em cards navegáveis — a estrutura completa nunca fica escondida. */
+function examplesCount(){
+  const E=T.examples; if(!E)return 0; let n=0;
+  ['aff','neg','q','context'].forEach(k=>{ if(E[k])n+=E[k].length; });
+  if(E.byUse)E.byUse.forEach(g=>n+=g.ex.length);
+  if(E.contrast)n+=E.contrast.length;
+  return n;
+}
+function sectionDesc(id){
+  const pr=(T.practice?T.practice.length:0)+((T.practiceMore||[]).length);
+  switch(id){
+    case 'goal':     return 'O que você vai conseguir fazer';
+    case 'warmup':   return 'Aquecimento e revisão';
+    case 'notice':   return (T.notice?T.notice.examples.length:0)+' frases para descobrir o padrão';
+    case 'ccq':      return (T.ccqs?T.ccqs.main.length:0)+' perguntas de conceito';
+    case 'rule':     return 'Explicação'+(T.explain?' ('+T.explain.length+' cartões)':'')+(examplesCount()?' + '+examplesCount()+' exemplos':'');
+    case 'watchout': return (T.watchout?T.watchout.length:0)+' erros comuns (certo × errado)';
+    case 'practice': return pr+' atividades · 3 estágios (simples → livre)';
+    case 'makeit':   return (T.makeit?T.makeit.length:0)+' produções sobre a sua vida';
+    case 'task':     return 'Missão: '+P(T.task?T.task.title:'');
+    case 'exit':     return (T.exit?T.exit.length:0)+' itens de revisão final';
+    default:         return '';
+  }
+}
+function overviewPanel(){
+  const ex=examplesCount(), pr=(T.practice?T.practice.length:0)+((T.practiceMore||[]).length);
+  const chips=[
+    T.explain?('🧠 '+T.explain.length+' explicações'):null,
+    ex?('📚 '+ex+' exemplos'):null,
+    '🎯 '+(T.ccqs?T.ccqs.main.length:0)+' CCQs',
+    '✍️ '+pr+' atividades',
+    '🗣 '+(T.makeit?T.makeit.length:0)+' produções livres',
+    '🎬 1 task',
+    '✅ '+(T.exit?T.exit.length:0)+' na revisão'
+  ].filter(Boolean).map(c=>'<span class="chip">'+c+'</span>').join('');
+  const goal=P(env.isKid()&&T.goal.kid?T.goal.kid:T.goal.can);
+  const open=S.mapOpen!==false;
+  const cards=SECTIONS.map(function(s,i){
+    const done=i<S.maxSec, cur=i===S.sec;
+    const icon=cur?'▶':(done?'✓':'○');
+    const bg=cur?'linear-gradient(135deg,#7c3aed,#db2777)':(done?'#f0fdf4':'#faf8ff');
+    const col=cur?'#fff':'#334155';
+    return '<button onclick="GE.goto('+i+')" style="text-align:left;border:1px solid '+(cur?'#7c3aed':'#ece7fb')+';background:'+bg+';color:'+col+';border-radius:10px;padding:8px 10px;cursor:pointer;min-width:150px;flex:1 1 150px">'+
+      '<div style="font-size:11px;font-weight:800;opacity:.85">'+icon+' '+s.n+' · '+s.t+'</div>'+
+      '<div style="font-size:11.5px;margin-top:2px;line-height:1.3">'+sectionDesc(s.id)+'</div></button>';
+  }).join('');
+  return '<div class="card" style="padding:14px 16px;margin-bottom:14px;border-left:5px solid #7c3aed !important">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">'+
+      '<div style="flex:1;min-width:220px"><div class="label" style="color:#7c3aed">📘 Aula completa · '+P(T.name)+' · '+SECTIONS.length+' etapas</div>'+
+      '<p style="font-weight:700;color:#1e293b;margin-top:3px;font-size:15px">🎯 By the end, '+env.stuName()+' can '+goal+'</p></div>'+
+      '<button onclick="GE.toggleMap()" class="theme-btn text-xs font-bold" style="padding:6px 12px;border-radius:8px;white-space:nowrap">'+(open?'▾ ocultar mapa':'▸ ver a aula toda')+'</button>'+
+    '</div>'+
+    '<div style="margin-top:8px">'+chips+'</div>'+
+    (open?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+cards+'</div>'+
+      '<p style="margin-top:8px;font-size:12px;color:#94a3b8">Clique em qualquer etapa para ir até ela — a aula avança passo a passo, mas a estrutura completa fica sempre à vista.</p>':'')+
+    '</div>';
+}
+
 /* ---------- renderizadores por seção ---------- */
 const R={};
 
@@ -147,7 +233,10 @@ R.goal=function(){
 };
 
 R.warmup=function(){
-  const q=env.queue().slice(0,3);
+  /* fila CACHEADA no estado: re-ler a cada clique deslocava os índices
+     quando um ✓ removia item — e o clique seguinte marcava o item errado */
+  if(!S.wuItems)S.wuItems=env.queue().slice(0,3);
+  const q=S.wuItems;
   let h='';
   if(q.length){
     h+='<p class="text-slate-400 text-sm mb-2">Retrieval — coisas que '+env.stuName()+' errou antes. Pergunte num <b>formato novo</b> (nunca o original). ✓ limpa o item da fila.</p>';
@@ -204,12 +293,22 @@ R.rule=function(){
     return bigCard(h);
   }
   h+='<p style="font-size:16px;line-height:1.7;color:#334155"><b style="color:#16a34a">Exatamente o que você percebeu:</b> '+P(txt)+'</p>';
+  // explicação estruturada — vários pontos, cada um com seus exemplos (opcional: T.explain)
+  if(T.explain&&T.explain.length){
+    h+='<div style="margin-top:10px">'+T.explain.map(function(c){
+      return '<div class="form-box"><div class="label" style="color:#7c3aed">'+P(c.title)+'</div>'+
+        '<p class="text-sm" style="color:#334155;margin-bottom:'+(c.ex?'6px':'0')+'">'+P(c.text)+'</p>'+
+        (c.ex?c.ex.map(function(e){var plain=P(e).replace(/<[^>]*>/g,'');return '<div class="ex-line"><span>'+P(e)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';}).join(''):'')+
+        '</div>';
+    }).join('')+'</div>';
+  }
   h+=visual(T.slots.visual);
   h+='<div class="form-box"><div class="label" style="color:#16a34a">When YES</div>'+T.slots.use.yes.map(u=>'<span class="chip">'+P(u)+'</span>').join('')+'</div>';
   h+='<div class="form-box"><div class="label" style="color:#dc2626">When NO</div>'+T.slots.use.no.map(u=>'<span class="chip" style="color:#dc2626 !important">'+P(u)+'</span>').join('')+'</div>';
   h+='<div class="form-box"><div class="label" style="color:#db2777">🔊 Pronunciation</div><p class="text-sm" style="color:#334155">'+P(T.rule.pron)+'</p></div>';
   if(!kid&&T.rule.pt)h+='<div class="form-box"><div class="label" style="color:#7c3aed">🇧🇷 Contraste com o português</div><p class="text-sm" style="color:#334155">'+P(T.rule.pt)+'</p></div>';
-  return bigCard(h)+teacherStrip('Se perguntar "por quê?" além da regra: '+P(T.rule.why||'explique com UM exemplo a mais, não com teoria')+'. Encerra quando '+env.stuName()+' reformular a regra em 1 frase própria.');
+  h+=examplesBlock();
+  return bigCard(h)+teacherStrip('Se perguntar "por quê?" além da regra: '+P(T.rule.why||'explique com UM exemplo a mais, não com teoria')+'. Leia os exemplos em voz alta ANTES de praticar. Encerra quando '+env.stuName()+' reformular a regra em 1 frase própria.');
 };
 
 R.watchout=function(){
@@ -227,12 +326,16 @@ R.practice=function(){
   const kid=env.isKid();
   const items=S.cuts.p8?T.practice.slice(0,8):T.practice;
   const sc=score('practice');
-  let h='<p class="text-slate-400 text-sm mb-2">100% oral: '+env.stuName()+' fala, você revela e marca. <b>Portão: ≥80%</b>.'+(kid?' (Kids: cada ✓ = pontos!)':'')+'</p>';
+  let h='<p class="text-slate-400 text-sm mb-2">100% oral: '+env.stuName()+' fala, você revela e marca. <b>Portão: ≥80%</b>. Progressão: reconhecer → manipular → usar de verdade.'+(kid?' (Kids: cada ✓ = pontos!)':'')+'</p>';
   h+='<div id="ge-pr-score" class="text-sm font-bold mb-2" style="color:#ec4899">'+sc.c+' ✓ / '+sc.n+' marcadas de '+items.length+'</div>';
-  let lastType='';
+  const stageOf=t=>((t==='fill'||t==='mc')?1:2);
+  const stageName={1:'STAGE 1 · Simple — recognise & complete',2:'STAGE 2 · Intermediate — manipulate the form'};
+  let lastType='',lastStage=0;
   h+=items.map(function(p,i){
     let head='';
-    if(p.t!==lastType){lastType=p.t;head='<div class="label" style="color:#ec4899;margin:14px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase">'+PRACTICE_TYPES[p.t]+'</div>';}
+    const st=stageOf(p.t);
+    if(st!==lastStage){lastStage=st;head+='<div class="label" style="color:#7c3aed;margin:16px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #ece7fb;padding-top:8px">'+stageName[st]+'</div>';}
+    if(p.t!==lastType){lastType=p.t;head+='<div class="label" style="color:#ec4899;margin:10px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase">'+PRACTICE_TYPES[p.t]+'</div>';}
     return head+prItem('practice',p,i);
   }).join('');
   h+='<div id="ge-pr-verdict" style="margin-top:10px"></div>';
@@ -242,7 +345,13 @@ R.practice=function(){
     h+=S.c3Items.map(function(p,i){return prItem('c3',p,i);}).join('');
     h+='<div id="ge-c3-verdict" style="margin-top:10px"></div>';
   }
-  return bigCard(h)+teacherStrip('G10 — correção com dignidade: 1º "try again" → 2º hint → só então a resposta. Acertou os 3 primeiros com fluência? Pule fill-in/MC e vá direto ao Unscramble. Plano de tempo: ~1 min/item.');
+  // STAGE 3 — prática livre (opcional: T.practiceMore): perguntas contextualizadas + mini-diálogos.
+  // Não é portão (é consolidação); os erros ainda entram na fila (G4).
+  if(T.practiceMore&&T.practiceMore.length){
+    h+='<div class="label" style="color:#06b6d4;margin:18px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #ece7fb;padding-top:8px">STAGE 3 · Free — use it for real (contexto & diálogo, sem portão)</div>';
+    h+=T.practiceMore.map(function(p,i){return prItem('free',p,i);}).join('');
+  }
+  return bigCard(h)+teacherStrip('G10 — correção com dignidade: 1º "try again" → 2º hint → só então a resposta, e explique o PORQUÊ (a caixa laranja traz por quê + regra + novo exemplo). Plano de tempo: ~1 min/item; a prática livre (Stage 3) alonga até '+env.stuName()+' demonstrar domínio.');
 };
 function prItem(sec,p,i){
   let q='';
@@ -254,16 +363,34 @@ function prItem(sec,p,i){
     q='Find the mistake: <span style="color:#dc2626">“'+P(p.q)+'”</span>';
   }else if(p.t==='tr'){
     q=P(p.q);
+  }else if(p.t==='cq'){                       // pergunta contextualizada (fala livre guiada)
+    q='<span class="chip" style="margin:0 6px 0 0">💬 real life</span>'+P(p.q);
+  }else if(p.t==='md'){                       // mini-diálogo
+    q='<span class="chip" style="margin:0 6px 0 0">🎭 mini-dialogue</span>'+(p.lines?'<div style="margin-top:6px">'+p.lines.map(function(l){return '<div style="padding:2px 0">'+P(l)+'</div>';}).join('')+'</div>':P(p.q));
   }else{ q=P(p.q); }
   const aid='ge-a-'+sec+'-'+i, hid='ge-h-'+sec+'-'+i;
+  const hintBtn=p.hint?'<button onclick="GE.tg(\''+hid+'\')" class="text-xs bg-slate-700 text-white px-3 py-1 rounded">💡 hint</button>':'';
+  const hintDiv=p.hint?'<div id="'+hid+'" class="answer" style="color:#d97706 !important">💡 '+P(p.hint)+'</div>':'';
+  // feedback rico de erro (opcional): por quê + regra + novo exemplo
+  let fb='';
+  if(p.why||p.ruleRef||p.ex){
+    fb='<div style="margin-top:6px;padding:8px 10px;border-radius:8px;background:#fff7ed;border:1px solid #fed7aa">'+
+      '<div class="text-xs" style="color:#9a3412;font-weight:700;margin-bottom:2px">If '+env.stuName()+' misses it, explain — don\'t just give the answer:</div>'+
+      (p.why?'<div class="text-xs" style="color:#b45309">❌ <b>Why the wrong answer is wrong:</b> '+P(p.why)+'</div>':'')+
+      (p.ruleRef?'<div class="text-xs" style="color:#7c3aed">📐 <b>Rule:</b> '+P(p.ruleRef)+'</div>':'')+
+      (p.ex?'<div class="text-xs" style="color:#16a34a">➕ <b>Another example:</b> '+P(p.ex)+'</div>':'')+
+      '</div>';
+  }
   return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">'+
     '<span style="flex:1">'+(i+1)+'. '+q+'</span>'+
-    '<span style="display:flex;gap:6px;flex-shrink:0">'+
-    '<button onclick="GE.tg(\''+hid+'\')" class="text-xs bg-slate-700 text-white px-3 py-1 rounded">💡 hint</button>'+
+    '<span style="display:flex;gap:6px;flex-shrink:0">'+hintBtn+
     '<button onclick="GE.tg(\''+aid+'\')" class="text-xs bg-slate-700 text-white px-3 py-1 rounded">answer</button>'+
     judgeBtns(sec,i)+'</span></div>'+
-    '<div id="'+hid+'" class="answer" style="color:#d97706 !important">💡 '+P(p.hint)+'</div>'+
-    '<div id="'+aid+'" class="answer">✓ '+P(p.a)+'<div class="text-xs" style="color:#7c3aed;margin-top:4px">↳ follow-up: '+P(p.fu)+'</div></div></div>';
+    hintDiv+
+    '<div id="'+aid+'" class="answer">✓ '+P(p.a)+
+      (p.fu?'<div class="text-xs" style="color:#7c3aed;margin-top:4px">↳ follow-up: '+P(p.fu)+'</div>':'')+
+      fb+
+    '</div></div>';
 }
 
 R.makeit=function(){
@@ -317,14 +444,10 @@ function teacherStrip(html){
 
 /* ---------- shell: progresso + timer + navegação ---------- */
 function shell(){
-  const dots=SECTIONS.map(function(s,i){
-    const st=i<S.sec?'background:#16a34a;color:#fff':(i===S.sec?'background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff':'background:#ede9fe;color:#7c3aed');
-    return '<div title="'+s.t+'" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;'+st+'">'+s.n+'</div>';
-  }).join('');
   const cur=SECTIONS[S.sec];
   return '<div class="card" style="padding:14px 16px;margin-bottom:14px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
-    '<div style="display:flex;gap:5px;flex-wrap:wrap">'+dots+'</div>'+
+    '<div class="label" style="color:#7c3aed">Etapa '+(S.sec+1)+' de '+SECTIONS.length+'</div>'+
     '<div style="display:flex;gap:8px;align-items:center">'+
       '<span id="ge-clock" class="text-sm font-bold" style="color:#7c3aed">0:00</span>'+
       '<span class="text-xs" style="color:#94a3b8">/ ~'+cur.time+' min</span>'+
@@ -353,7 +476,8 @@ function gateCheck(){
     return 'FALHOU 3x — o tópico está acima do nível de '+env.stuName()+'. Registre, e encerre com produção do que ele(a) JÁ sabe. Pule para a §9 Task com um tópico dominado (clique em Next para prosseguir mesmo assim). ';
   }
   if(id==='practice'){
-    const total=S.cuts.p8?8:12;
+    const full=T.practice.length;
+    const total=S.cuts.p8?Math.min(8,full):full;
     const gate=Math.ceil(total*0.8);
     const sc=score('practice');
     if(S.c3On){
@@ -388,8 +512,20 @@ function gateCheck(){
 }
 let gateOverride=false;
 
+/* ---------- persistência da aula ao vivo (sobrevive a F5) ---------- */
+function liveKey(){return 'gelive|'+(window.curStu||'?');}
+function saveLive(){
+  if(!S||!T||S.finished)return;
+  try{
+    const c=Object.assign({},S);delete c.clockTimer;
+    localStorage.setItem(liveKey(),JSON.stringify({topic:T.id,S:c,ts:Date.now()}));
+  }catch(e){}
+}
+function clearLive(){try{localStorage.removeItem(liveKey());}catch(e){}}
+
 /* ---------- fim da aula ---------- */
 function finishScreen(){
+  clearLive();
   const ex=score('exit'), pr=score('practice');
   const pass=ex.c>=GATE_EXIT;
   S.weekComplete=pass;
@@ -419,7 +555,7 @@ function finishScreen(){
 function render(){
   if(S.finished){finishScreen();return;}
   const id=SECTIONS[S.sec].id;
-  document.getElementById('lessonBody').innerHTML=shell()+R[id]();
+  document.getElementById('lessonBody').innerHTML=overviewPanel()+shell()+R[id]();
   gateOverride=false;
   clearInterval(S.clockTimer);
   S.clockTimer=setInterval(function(){
@@ -434,8 +570,22 @@ function render(){
 /* ---------- API pública ---------- */
 window.GE={
   start:function(topic){
-    T=topic;S=freshState();audit(T);render();
+    T=topic;S=freshState();audit(T);
+    try{
+      const v=JSON.parse(localStorage.getItem(liveKey())||'null');
+      if(v&&v.topic===topic.id&&Date.now()-v.ts<3*3600*1000&&v.S&&!v.S.finished){
+        S=Object.assign(freshState(),v.S,{clockTimer:null,secStart:Date.now()});
+        render();
+        const el=document.getElementById('ge-gatemsg');
+        if(el)el.innerHTML='<div class="mistake" style="background:#fef3c7 !important;border-color:#fcd34d !important;color:#92400e !important;font-weight:600;font-size:13px">⏸ Aula recuperada de onde parou. <button onclick="GE.restartFresh()" style="margin-left:8px;background:#fff;border:1px solid #fcd34d;border-radius:8px;padding:3px 10px;cursor:pointer;font-weight:700;color:#92400e">↺ Recomeçar do zero</button></div>';
+        return;
+      }
+    }catch(e){}
+    render();
   },
+  restartFresh:function(){clearLive();S=freshState();render();},
+  goto:function(i){ if(!S)return; S.finished=false; S.sec=Math.max(0,Math.min(i,SECTIONS.length-1)); S.maxSec=Math.max(S.maxSec,S.sec); S.secStart=Date.now(); render(); saveLive(); },
+  toggleMap:function(){ if(!S)return; S.mapOpen=(S.mapOpen===false); render(); },
   next:function(){
     const msg=gateOverride?null:gateCheck();
     const el=document.getElementById('ge-gatemsg');
@@ -448,9 +598,9 @@ window.GE={
     if(S.sec===SECTIONS.length-1){S.finished=true;clearInterval(S.clockTimer);finishScreen();return;}
     S.sec++;S.maxSec=Math.max(S.maxSec,S.sec);S.secStart=Date.now();
     // §5 pulável: se §3 foi limpo e §4 deu 5/5, Rule vira confirmação (mantém visual)
-    render();
+    render();saveLive();
   },
-  back:function(){ if(S.sec>0){S.sec--;S.secStart=Date.now();render();} },
+  back:function(){ if(S.sec>0){S.sec--;S.secStart=Date.now();render();saveLive();} },
   judge:function(sec,i,ok){
     S.judged[sec]=S.judged[sec]||{};
     if(sec==='c3'){ if(S.judged.c3&&S.judged.c3[i]!==undefined)return; S.judged.c3=S.judged.c3||{}; S.judged.c3[i]=ok;
@@ -458,8 +608,9 @@ window.GE={
     }else{
       if(S.judged[sec][i]!==undefined)return;
       S.judged[sec][i]=ok;
-      if(sec==='warmup'){ const q=env.queue().slice(0,3); if(q[i])env.markQueue(q[i],ok); }
+      if(sec==='warmup'){ const q=S.wuItems||[]; if(q[i])env.markQueue(q[i],ok); }
       if(sec==='practice'&&!ok){const p=T.practice[i];env.logError('practice',P(p.q),P(p.a));}
+      if(sec==='free'&&!ok){const p=(T.practiceMore||[])[i];if(p)env.logError('practice-free',P(p.q||(p.lines?p.lines.join(' '):'')),P(p.a));}
       if(sec==='ccq'&&!ok){const c=(S.ccqReserveOn?T.ccqs.main.concat(T.ccqs.reserve):T.ccqs.main)[i];env.logError('ccq',P(c.q),c.a?P(c.a):'');}
       if(sec==='exit'&&!ok){const e2=T.exit[i];env.logError('exit',P(e2.q),e2.a?P(e2.a):'');}
     }
@@ -468,8 +619,9 @@ window.GE={
     // placares vivos
     if(sec==='ccq'){const sc=score('ccq');const e3=document.getElementById('ge-ccq-score');if(e3)e3.textContent=sc.c+' ✓ de '+sc.n+' respondidas';}
     if(sec==='practice'||sec==='c3'){const sc=score('practice');const e4=document.getElementById('ge-pr-score');if(e4)e4.textContent=sc.c+' ✓ / '+sc.n+' marcadas';}
+    saveLive();
   },
-  revealRule:function(){S.ruleRevealed=true;render();},
+  revealRule:function(){S.ruleRevealed=true;render();saveLive();},
   cut:function(){
     while(S.cutIdx<CUTS.length&&S.cuts[CUTS[S.cutIdx].k])S.cutIdx++;
     if(S.cutIdx>=CUTS.length)return;
@@ -477,6 +629,7 @@ window.GE={
     const el=document.getElementById('ge-gatemsg');
     if(el)el.innerHTML='<div class="mistake" style="background:#fef3c7 !important;border-color:#fcd34d !important;color:#92400e !important;font-weight:600;font-size:13px">✂ '+c.msg+' Intocáveis: §3, §4, §9, §10.</div>';
     if(['p8','m4','w1'].indexOf(c.k)>=0)render();
+    saveLive();
   },
   tg:function(id){const el=document.getElementById(id);if(el)el.classList.toggle('show');},
   say:function(txt){

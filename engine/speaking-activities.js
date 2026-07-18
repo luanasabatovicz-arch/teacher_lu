@@ -1,9 +1,8 @@
 /* ============================================================
    SPEAKING ENGINE — DADOS (SPEAKING-LAB.md v1.0)
    Só conteúdo; a lógica vive em speaking-engine.js.
-   6 atividades migradas (fichas §14: 14.1, 14.6, 14.8, 14.13,
-   14.17, 14.18). As demais 14 migram gradualmente, como no
-   Grammar Engine. {name} = aluno · {theme} = tema (G7).
+   CATÁLOGO COMPLETO: as 20 atividades das fichas §14.
+   {name} = aluno · {theme} = tema (G7).
    ============================================================ */
 
 /* ---- Bancos de follow-up (§8) — referenciados, nunca duplicados ---- */
@@ -33,16 +32,22 @@ const SPEAKING_COMPETENCES=[
 /* ---- Temas (§13): oferecem slots; nunca carregam lógica (AX2) ----
    assets: pendência oficial nº1 do SPEAKING-LAB.md §22 — placeholders. */
 const SPEAKING_THEMES=[
-  {id:'food',   n:'Comida',  offers:['scene','object-set','options','pair-diff','sequence']},
-  {id:'travel', n:'Viagem',  offers:['scene','object-set','options','pair-diff']},
-  {id:'family', n:'Família', offers:['scene','options']},
-  {id:'routine',n:'Rotina',  offers:['scene','sequence','options']},
-  {id:'animals',n:'Animais', offers:['scene','object-set','pair-diff','options']},
-  {id:'work',   n:'Trabalho',offers:['scene','object-set','options']}
+  {id:'food',   n:'Comida',   offers:['scene','object-set','options','pair-diff','sequence']},
+  {id:'travel', n:'Viagem',   offers:['scene','object-set','options','pair-diff']},
+  {id:'family', n:'Família',  offers:['scene','options']},
+  {id:'routine',n:'Rotina',   offers:['scene','sequence','options']},
+  {id:'animals',n:'Animais',  offers:['scene','object-set','pair-diff','options']},
+  {id:'work',   n:'Trabalho', offers:['scene','object-set','options']},
+  {id:'school', n:'Escola',   offers:['scene','object-set','options','pair-diff','sequence']},
+  {id:'sports', n:'Esportes', offers:['scene','object-set','options','pair-diff']},
+  {id:'house',  n:'Casa',     offers:['scene','object-set','options','pair-diff','sequence']},
+  {id:'city',   n:'Cidade',   offers:['scene','object-set','options','pair-diff']}
 ];
 
 /* ---- Atividades (fichas §14 — camada pedagógica + operacional) ---- */
 const SPEAKING_ACTIVITIES=[
+
+/* ── 14.1 ── */
 { id:'picture-description', n:'Picture Description', comp:'Description',
   lo:1, hi:4, slot:'scene', req:['scene'], stt:'3–5 min', tt:'Low', diff:2,
   goals:['Fluency','Vocabulary'], profiles:['Kids','Teens','Adults'],
@@ -58,6 +63,72 @@ const SPEAKING_ACTIVITIES=[
   reform:'"Look here — who is this? What is he doing?"',
   kid:'A cena tem um absurdo escondido para achar!', adult:'Cena do cotidiano/trabalho.'},
 
+/* ── 14.2 ── */
+{ id:'spot-the-difference', n:'Spot the Difference', comp:'Comparison',
+  lo:1, hi:3, slot:'pair-diff', req:['pair-diff'], stt:'3–5 min', tt:'Low', diff:2,
+  goals:['Vocabulary','Accuracy'], profiles:['Kids','Teens','Adults'],
+  deps:['verb to be'],
+  purpose:'Achar e EXPLICAR 5 diferenças entre as duas cenas de {theme} — comparando, não só apontando.',
+  evid:'≥5 diferenças explicadas com estrutura comparativa do nível',
+  check:['5 diferenças achadas','explicou (não apontou)','estrutura comparativa','1 semelhança (bônus B1)'],
+  brief:'Não confirme rápido — peça a explicação: "Different HOW?"',
+  banks:['Comparison','Justification','Personalization'],
+  compl:'Contagem fechada: "são 6 — ache TODAS" (ou B1: inclua 2 semelhanças).',
+  rescue:['here... there...','this one has...','bigger? smaller?'],
+  simple:'Reduza para 3 diferenças apontadas + 1 explicada (R3).',
+  reform:'"Look: picture A... picture B... same or different?"',
+  kid:'Cronômetro lúdico — ache tudo antes do tempo!', adult:'Versão "duas propostas / dois apartamentos", mesma mecânica.'},
+
+/* ── 14.3 ── */
+{ id:'story-builder', n:'Story Builder', comp:'Narration',
+  lo:2, hi:4, slot:null, req:[], stt:'4–6 min', tt:'Low', diff:3,
+  goals:['Fluency','Vocabulary'], profiles:['Kids','Teens','Adults'],
+  deps:['past simple'],
+  purpose:'Inventar uma história de {theme} com início, desenvolvimento e fim — {name} é o autor.',
+  evid:'História original com as 3 partes presentes e conectadas',
+  check:['início','desenvolvimento','conclusão','conectores (then, after that...)'],
+  brief:'Não guie o enredo — reaja como ouvinte: "No way! And then?"',
+  banks:['Narration','Expansion','Justification'],
+  compl:'Modo elementos: sorteie 3 itens do tema que DEVEM entrar na história.',
+  rescue:['One day...','Then...','Suddenly...','In the end...'],
+  simple:'Aceite lista simples de 3 eventos em ordem (R3).',
+  reform:'"One day... who? where? what happened?"',
+  kid:'Os personagens são os favoritos dele(a)!', adult:'"Conte como se fosse um episódio que aconteceu com você."'},
+
+/* ── 14.4 ── */
+{ id:'picture-sequence', n:'Picture Sequence', comp:'Narration',
+  lo:2, hi:3, slot:'sequence', req:['sequence'], stt:'3–4 min', tt:'Low', diff:2,
+  goals:['Accuracy','Fluency'], profiles:['Kids','Teens','Adults'],
+  deps:['past simple'],
+  purpose:'Narrar a sequência de {theme} do primeiro ao último quadro, com marcadores de tempo.',
+  evid:'Sequência completa com ≥3 marcadores temporais distintos',
+  check:['ordem correta','first','then / next','after that / finally'],
+  brief:'A ordem já existe — o trabalho é CONECTAR. Cobre os marcadores.',
+  banks:['Narration','Personalization'],
+  compl:'Quadros embaralhados — {name} ordena FALANDO; você arrasta.',
+  rescue:['first...','then...','after that...','finally...'],
+  simple:'Reduza para 3 quadros; aceite "then" repetido (R3).',
+  reform:'"Picture 1 — what happens? And next?"',
+  kid:'Sequência de história/desenho.', adult:'Processo real: receita, rotina, trâmite.'},
+
+/* ── 14.5 ── */
+{ id:'continue-the-story', n:'Continue the Story', comp:'Narration',
+  lo:3, hi:4, slot:null, req:[], stt:'4–6 min', tt:'Medium', diff:3,
+  ttWhy:'a professora narra o início — o input é a restrição que define a atividade (ficha 14.5)',
+  goals:['Fluency'], profiles:['Teens','Adults'],
+  deps:['past simple'],
+  purpose:'Eu começo uma história de {theme}; {name} continua mantendo personagens, tempo e lógica.',
+  evid:'Continuação preserva personagens, contexto e tempo — sem contradições',
+  check:['manteve personagens','manteve o tempo narrativo','sem contradições','desfecho'],
+  brief:'Comece com gancho aberto e PARE no clímax. Escuta ativa é pré-condição — não repita o início.',
+  banks:['Narration','Justification'],
+  compl:'Final imposto: "termine com: ...e por isso ela nunca mais voltou lá".',
+  rescue:['So he...','But then...','Because...'],
+  simple:'Revezamento: um pedaço cada, pedaços curtos (R3).',
+  reform:'"OK — the character is at X. What does he do NOW?"',
+  kid:'Variante fantasia: comece com o personagem favorito dele(a).', adult:'Dilema realista (trabalho, viagem).'},
+
+/* ── 14.6 ── */
 { id:'role-play', n:'Role Play', comp:'Interaction',
   lo:1, hi:5, slot:null, req:[], stt:'4–6 min', tt:'Medium', diff:3,
   ttWhy:'a professora é o outro papel — sem interlocutor não há interação (ficha 14.6)',
@@ -74,6 +145,24 @@ const SPEAKING_ACTIVITIES=[
   reform:'"OK — you want... what? Tell me one thing."',
   kid:'Faz-de-conta com missão e personagens.', adult:'Situação real da vida de {name} (P5).'},
 
+/* ── 14.7 ── */
+{ id:'problem-solving', n:'Problem Solving', comp:'Negotiation',
+  lo:2, hi:5, slot:null, req:[], stt:'4–6 min', tt:'Medium', diff:3,
+  ttWhy:'contrapropor é o mecanismo — sem objeção não há negociação (ficha 14.7)',
+  goals:['Fluency','Confidence'], profiles:['Kids','Teens','Adults'],
+  deps:['present simple'],
+  purpose:'Problema de {theme}: propor 2 soluções, defender a melhor e responder à minha objeção — até decidirmos JUNTOS.',
+  evid:'≥2 soluções + justificativa + respondeu ≥1 objeção sem abandonar',
+  check:['solução 1','solução 2','defendeu a preferida','respondeu objeção','decisão conjunta'],
+  brief:'SEMPRE contraproponha 1x ("and if...?"). Ceder cedo mata a atividade.',
+  banks:['Justification','Opinion','Comparison'],
+  compl:'Recursos limitados: "só podem usar 3 itens" — ou prazo: "decidam em 2 minutos".',
+  rescue:['we can...','what about...?','because...'],
+  simple:'Aceite 1 solução + 1 resposta a "and if...?" (R3).',
+  reform:'"Problem: X. What can we do? One idea."',
+  kid:'Missão lúdica: "o dragão bloqueou a estrada — e agora?"', adult:'Dilema realista com consequência.'},
+
+/* ── 14.8 ── */
 { id:'opinion-builder', n:'Opinion Builder', comp:'Opinion',
   lo:2, hi:4, slot:null, req:[], stt:'3–5 min', tt:'Low', diff:2,
   goals:['Fluency','Confidence'], profiles:['Kids','Teens','Adults'],
@@ -89,6 +178,137 @@ const SPEAKING_ACTIVITIES=[
   reform:'"Simple: good or bad? ... Why?"',
   kid:'Opiniões do universo dele(a) — desenhos, comidas.', adult:'Temas do cotidiano adulto.'},
 
+/* ── 14.9 ── */
+{ id:'debate', n:'Debate', comp:'Argumentation',
+  lo:3, hi:5, slot:null, req:[], stt:'5–7 min', tt:'Medium', diff:4,
+  ttWhy:'advogado do diabo — o contra-argumento é o exercício (ficha 14.9)',
+  goals:['Fluency','Exam'], profiles:['Teens','Adults'],
+  deps:['present simple'],
+  purpose:'Defender uma posição sobre {theme} contra meus contra-argumentos — sustentar é o objetivo, não vencer.',
+  evid:'Respondeu ≥2 contra-argumentos mantendo (ou revisando explicitamente) a posição',
+  check:['posição declarada','sobreviveu ao contra 1','sobreviveu ao contra 2','concessão consciente (B2)'],
+  brief:'Seja advogado do diabo com method: contra-argumentos reais, um por vez.',
+  banks:['Justification','Comparison','Repair'],
+  compl:'Troca de lados no meio: agora {name} defende o contrário!',
+  rescue:['I still think...','yes, but...','that is true, however...'],
+  simple:'Reduza a 1 contra-argumento e aceite defesa simples (R3).',
+  reform:'"You said X. I say Y. Why am I wrong?"',
+  kid:'', adult:'Adults: dilemas de trabalho/vida · Teens: cultura pop, escola.'},
+
+/* ── 14.10 ── */
+{ id:'convince-me', n:'Convince Me', comp:'Persuasion',
+  lo:3, hi:5, slot:null, req:[], stt:'4–6 min', tt:'Medium', diff:4,
+  ttWhy:'resistir é o mecanismo — a evidência depende da reação do interlocutor (ficha 14.10)',
+  goals:['Fluency','Confidence'], profiles:['Teens','Adults'],
+  deps:['present simple'],
+  purpose:'Me convencer de algo sobre {theme} — eu resisto; {name} adapta os argumentos até o meu "sim".',
+  evid:'≥3 argumentos distintos adaptados às recusas, até o sim (ou sim parcial)',
+  check:['argumento 1','argumento 2','argumento 3','adaptou à recusa','conseguiu o sim'],
+  brief:'Recuse com critério (preço? tempo? medo?) — e ceda quando o argumento acertar SEU critério.',
+  banks:['Justification','Opinion'],
+  compl:'Inverta: "agora me convença a NÃO fazer".',
+  rescue:['imagine...','you will love it because...','what if...?'],
+  simple:'Ceda no 2º argumento razoável (R3).',
+  reform:'"Why is it GOOD for me? One reason."',
+  kid:'', adult:'Adults: pitch profissional, upgrade, orçamento · Teens: convencer pais/amigos (simulado).'},
+
+/* ── 14.11 ── */
+{ id:'explain-it', n:'Explain It', comp:'Explanation',
+  lo:2, hi:4, slot:null, req:[], stt:'3–5 min', tt:'Low', diff:3,
+  goals:['Fluency','Vocabulary'], profiles:['Kids','Teens','Adults'],
+  deps:['present simple'],
+  purpose:'Explicar algo de {theme} que eu "não conheço" — até eu conseguir reformular certo.',
+  evid:'A professora-leiga reformula certo ("então é um...?") e {name} confirma',
+  check:['o que é','para que serve / por que existe','1 exemplo','confirmou minha reformulação'],
+  brief:'Você é leiga TOTAL no assunto. Reformule errado de propósito 1x — a correção é dele(a).',
+  banks:['Repair','Expansion','Personalization'],
+  compl:'Explique para um "alienígena" — zero pressupostos!',
+  rescue:['it is a kind of...','people use it to...','for example...'],
+  simple:'Aceite categoria + 1 função (R3).',
+  reform:'"Is it a thing? A food? What do people DO with it?"',
+  kid:'Explicar o jogo/desenho favorito.', adult:'Explicar algo do trabalho/hobby dele(a).'},
+
+/* ── 14.12 ── */
+{ id:'teach-me', n:'Teach Me', comp:'Instruction',
+  lo:2, hi:4, slot:null, req:[], stt:'3–5 min', tt:'Low', diff:3,
+  goals:['Accuracy','Vocabulary'], profiles:['Kids','Teens','Adults'],
+  deps:['imperativo'],
+  purpose:'Me ensinar um procedimento de {theme}, passo a passo — eu executo AO PÉ DA LETRA.',
+  evid:'A professora executa a tarefa com sucesso só pelas instruções',
+  check:['3+ passos claros','ordem certa','corrigiu instrução ruim','tarefa executada'],
+  brief:'Obediente literal: execute exatamente o que for dito, inclusive os erros — a correção da instrução é dele(a).',
+  banks:['Repair'],
+  compl:'Instrução às cegas: você "não vê" o resultado esperado — só as palavras guiam.',
+  rescue:['first, take...','put...','now...','don\'t...'],
+  simple:'Reduza para 3 passos (R3).',
+  reform:'"Step 1 — what do I take? What do I DO with it?"',
+  kid:'Ensinar um jogo/desenho dele(a).', adult:'Receita, ferramenta, processo do trabalho.'},
+
+/* ── 14.13 ── */
+{ id:'guess-the-object', n:'Guess the Object', comp:'Circumlocution',
+  lo:2, hi:4, slot:'object-set', req:['object-set'], stt:'3–5 min', tt:'Low', diff:2,
+  goals:['Vocabulary','Confidence'], profiles:['Kids','Teens','Adults'],
+  deps:['present simple'],
+  purpose:'Descrever 4 itens de {theme} SEM dizer a palavra — até a professora adivinhar 3.',
+  evid:'3 de 4 adivinhados sem a palavra-alvo',
+  check:['item 1','item 2','item 3','item 4 (bônus)'],
+  brief:'Adivinhe devagar de propósito — o esforço dele(a) é o exercício.',
+  banks:['Description','Repair'],
+  compl:'Palavra proibida extra no item 4.',
+  rescue:['it\'s a thing for...','you use it when...','it looks like...'],
+  simple:'Libere gestos como apoio (Kids).',
+  reform:'"Is it big? Do you eat it? Where is it?"',
+  kid:'Objetos do universo dele(a) + mímica como último socorro.', adult:'Itens do cotidiano/trabalho.'},
+
+/* ── 14.14 ── */
+{ id:'predict-the-future', n:'Predict the Future', comp:'Prediction',
+  lo:2, hi:4, slot:'scene', req:['scene'], stt:'3–4 min', tt:'Low', diff:3,
+  goals:['Accuracy','Fluency'], profiles:['Kids','Teens','Adults'],
+  deps:['going to / will'],
+  purpose:'Olhar a cena de {theme} e fazer 3 previsões justificadas do que vai acontecer.',
+  evid:'≥3 previsões com estrutura de futuro + justificativa cada',
+  check:['previsão 1 + porquê','previsão 2 + porquê','previsão 3 + porquê','grau de certeza (B1)'],
+  brief:'Exija a base: "Why do you think so?" — previsão sem porquê não conta.',
+  banks:['Justification','Narration'],
+  compl:'Previsão pessoal: "e a SUA semana — o que vai acontecer? Por quê?"',
+  rescue:['going to...','will probably...','because I see...'],
+  simple:'Aceite 2 previsões com "going to" + porquê apontado (R3).',
+  reform:'"Look: what is going to happen NEXT? Why?"',
+  kid:'"O que vai acontecer com o personagem?"', adult:'Planos reais, tendências da área dele(a).'},
+
+/* ── 14.15 ── */
+{ id:'compare-and-choose', n:'Compare and Choose', comp:'Evaluation',
+  lo:2, hi:4, slot:'options', req:['options'], stt:'3–5 min', tt:'Low', diff:2,
+  goals:['Fluency','Vocabulary'], profiles:['Kids','Teens','Adults'],
+  deps:['comparatives'],
+  purpose:'Comparar as opções de {theme} em 2 critérios e ESCOLHER — justificando pelos critérios.',
+  evid:'Comparação em ≥2 critérios + escolha justificada (não "porque sim")',
+  check:['critério 1','critério 2','comparou (…-er / more…)','escolheu e justificou'],
+  brief:'"Porque sim" não fecha — devolva: "Cheaper? Prettier? WHY better?"',
+  banks:['Comparison','Justification','Opinion'],
+  compl:'Restrição: orçamento apertado — a escolha muda? Por quê?',
+  rescue:['cheaper / better...','more... than...','I choose... because...'],
+  simple:'1 critério + escolha (R3).',
+  reform:'"A or B? Why — one reason."',
+  kid:'Escolhas do universo dele(a).', adult:'Decisões de consumo/viagem/trabalho.'},
+
+/* ── 14.16 ── */
+{ id:'ranking-challenge', n:'Ranking Challenge', comp:'Evaluation',
+  lo:2, hi:4, slot:null, req:[], stt:'4–6 min', tt:'Low', diff:3,
+  goals:['Fluency','Confidence'], profiles:['Kids','Teens','Adults'],
+  deps:['comparatives'],
+  purpose:'Ordenar 4 itens de {theme} do melhor ao pior, justificando CADA posição — e defender a ordem.',
+  evid:'≥4 itens ordenados com justificativa + defendeu (ou revisou) sob desafio',
+  check:['posição 1','posição 2','posição 3','posição 4','defendeu sob desafio'],
+  brief:'O alvo é a CONSISTÊNCIA do critério — a posição 3 precisa ser coerente com a 1 e a 4.',
+  banks:['Justification','Comparison','Personalization'],
+  compl:'Desafie uma posição do meio: "por que 3º e não 2º?"',
+  rescue:['first place because...','better than...','the worst is...'],
+  simple:'Top-3 com 1 razão cada (R3).',
+  reform:'"Number 1 — which one? Why?"',
+  kid:'Ranking de personagens, lanches.', adult:'Prioridades reais (o que levar, o que cortar).'},
+
+/* ── 14.17 ── */
 { id:'one-minute-talk', n:'One Minute Talk', comp:'Fluency',
   lo:2, hi:5, slot:null, req:[], stt:'2–4 min', tt:'Low', diff:3,
   goals:['Fluency'], profiles:['Kids','Teens','Adults'],
@@ -104,21 +324,7 @@ const SPEAKING_ACTIVITIES=[
   reform:'"Start with: Every day, I..."',
   kid:'30 segundos + tema muito concreto.', adult:'Tema do repertório dele(a), tempo progressivo.'},
 
-{ id:'guess-the-object', n:'Guess the Object', comp:'Circumlocution',
-  lo:2, hi:4, slot:'object-set', req:['object-set'], stt:'3–5 min', tt:'Low', diff:2,
-  goals:['Vocabulary','Confidence'], profiles:['Kids','Teens','Adults'],
-  deps:['present simple'],
-  purpose:'Descrever 4 itens de {theme} SEM dizer a palavra — até a professora adivinhar 3.',
-  evid:'3 de 4 adivinhados sem a palavra-alvo',
-  check:['item 1','item 2','item 3','item 4 (bônus)'],
-  brief:'Adivinhe devagar de propósito — o esforço dele(a) é o exercício.',
-  banks:['Description','Repair'],
-  compl:'Palavra proibida extra no item 4.',
-  rescue:['it’s a thing for...','you use it when...','it looks like...'],
-  simple:'Libere gestos como apoio (Kids).',
-  reform:'"Is it big? Do you eat it? Where is it?"',
-  kid:'Objetos do universo dele(a) + mímica como último socorro.', adult:'Itens do cotidiano/trabalho.'},
-
+/* ── 14.18 ── */
 { id:'interview', n:'Interview', comp:'Interaction',
   lo:1, hi:4, slot:null, req:[], stt:'4–6 min', tt:'Medium', diff:2,
   ttWhy:'responder é o input da entrevista (ficha 14.18)',
@@ -133,5 +339,38 @@ const SPEAKING_ACTIVITIES=[
   rescue:['What...?','Do you...?','When...?'],
   simple:'Aceite 4 perguntas + 1 follow-up.',
   reform:'"Ask me: what? where? when?"',
-  kid:'Entrevistar um personagem (a professora atua).', adult:'Formato podcast/entrevista profissional.'}
+  kid:'Entrevistar um personagem (a professora atua).', adult:'Formato podcast/entrevista profissional.'},
+
+/* ── 14.19 ── */
+{ id:'detective', n:'Detective', comp:'Question Formation',
+  lo:2, hi:4, slot:null, req:[], stt:'3–5 min', tt:'Low', diff:3,
+  goals:['Accuracy','Fluency'], profiles:['Kids','Teens','Adults'],
+  deps:['do/does questions'],
+  purpose:'Descobrir meu segredo de {theme} com perguntas certeiras — máx. 8 (A2) / 6 (B1+).',
+  evid:'Descobriu com ≤N perguntas bem formadas, sem pergunta "atirada" repetida',
+  check:['perguntas bem formadas','estreitou hipóteses','sem repetição','descobriu'],
+  brief:'Responda SÓ o que a pergunta pedir — respostas curtas por regra. A pergunta é o instrumento.',
+  banks:['Repair'],
+  compl:'B2: você mente 1 vez — {name} precisa detectar a contradição!',
+  rescue:['Is it...?','Do you...?','Where...?','Who...?'],
+  simple:'Suba o teto para 10 perguntas e aceite sim/não (R3).',
+  reform:'"Ask me: is it big? Is it food?"',
+  kid:'Adivinhar o personagem/bicho.', adult:'Descobrir o problema do "cliente".'},
+
+/* ── 14.20 ── */
+{ id:'real-life-mission', n:'Real-Life Mission', comp:'Task Completion',
+  lo:2, hi:5, slot:null, req:[], stt:'5–8 min', tt:'Medium', diff:4,
+  ttWhy:'o mundo responde pela professora — sem o mundo não há tarefa (ficha 14.20)',
+  goals:['Fluency','Confidence','Exam'], profiles:['Teens','Adults'],
+  deps:['present simple'],
+  purpose:'Missão real de {theme} com 2+ etapas — só termina quando o objetivo é atingido E {name} recapitula o combinado.',
+  evid:'Objetivo concreto atingido + recap final em inglês',
+  check:['etapa 1','etapa 2','resolveu imprevisto','recap do combinado'],
+  brief:'O diálogo pode ser lindo e a missão FALHAR — julgue o resultado, não a fala. Exija o recap.',
+  banks:['Repair','Justification'],
+  compl:'Restrição de orçamento/prazo injetada no meio da missão.',
+  rescue:['I need...','can you...?','so, to confirm...'],
+  simple:'Reduza a 1 etapa transacional + recap (R3).',
+  reform:'"Goal: X. Start — what do you say first?"',
+  kid:'Missão dentro de história ("consiga o mapa com o pirata").', adult:'Espelho de necessidades reais declaradas no perfil (P5).'}
 ];

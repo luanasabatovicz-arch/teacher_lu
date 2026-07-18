@@ -6,8 +6,8 @@
 <title>Sabatovicz - Grammar Lessons</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="engine/grammar-topics.js"></script>
-<script src="engine/grammar-engine.js"></script>
+<script src="engine/grammar-topics.js?v=3"></script>
+<script src="engine/grammar-engine.js?v=3"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { font-family:'Inter',sans-serif; }
@@ -194,6 +194,7 @@ const tenses = [
   speaking:["What are you doing right now?","Am I sitting or standing?","Are you learning English at the moment?"]
 },
 {
+  eid:"present-simple-continuous",
   name:"Present Simple vs Continuous", short:"Simple vs Continuous", level:"A1+",
   use:"The big contrast: Present Simple = habit/routine/fact. Present Continuous = now/temporary. Knowing the difference is essential.",
   form:{
@@ -214,6 +215,7 @@ const tenses = [
   speaking:["What do you usually do on weekends?","What are you doing this weekend?","Tell me one habit and one thing you're doing now."]
 },
 {
+  eid:"past-to-be",
   name:"Verb to be — Past (was / were)", short:"Was / Were", level:"A1+",
   use:"We use was/were to talk about past states and situations: how something was, where you were, how you felt.",
   form:{
@@ -255,6 +257,7 @@ const tenses = [
   speaking:["What did you do yesterday?","Where did you go last weekend?","Did you like your weekend?"]
 },
 {
+  eid:"past-irregular",
   name:"Past Simple — Irregular verbs", short:"Past Irregular", level:"A1+",
   use:"Many common verbs do NOT follow the -ed rule. You need to memorize the irregular forms.",
   form:{
@@ -276,6 +279,7 @@ const tenses = [
   speaking:["What did you eat yesterday?","Where did you go on your last holiday?","What did you buy recently?"]
 },
 {
+  eid:"going-to",
   name:"Future — Going to", short:"Going to", level:"A2",
   use:"We use 'going to' for plans and intentions (things already decided) and for predictions with clear evidence.",
   form:{
@@ -296,6 +300,7 @@ const tenses = [
   speaking:["What are you going to do this weekend?","What are your plans for next year?","Are you going to travel soon?"]
 },
 {
+  eid:"will",
   name:"Future — Will", short:"Will", level:"A2",
   use:"We use 'will' for decisions at the moment of speaking, predictions, promises and offers to help.",
   form:{
@@ -316,6 +321,7 @@ const tenses = [
   speaking:["What will you do tomorrow?","Do you think you'll travel this year?","Make a promise using 'will'."]
 },
 {
+  eid:"present-perfect",
   name:"Present Perfect", short:"Present Perfect", level:"A2",
   use:"We use the Present Perfect for life experiences (without saying when), past actions with a result in the present, and actions that started in the past and continue. Do NOT use it with a specific time (yesterday, last week).",
   form:{
@@ -337,6 +343,7 @@ const tenses = [
 }
 ,
 {
+  eid:"can-could",
   name:"Can / Could", short:"Can / Could", level:"A1",
   use:"Can = present ability and requests/permission. Could = past ability and more polite requests.",
   form:{aff:["can / could + base verb: I <b>can</b> swim. She <b>could</b> read at four."],neg:["<b>can't</b> (cannot) / <b>couldn't</b>: I can't drive."],q:["<b>Can/Could</b> + subject + verb? Can you help me?"]},
@@ -347,6 +354,7 @@ const tenses = [
   speaking:["What can you do well?","What can't you do?","Could you swim when you were a child?","Ask me something politely using 'could'."]
 },
 {
+  eid:"comparatives",
   name:"Comparatives", short:"Comparatives", level:"A2",
   use:"Compare two things: say that one is bigger, better or more expensive than the other.",
   form:{aff:["Short: adj + <b>-er</b> + than: cheap<b>er</b> than, big<b>ger</b> than.","Long: <b>more</b> + adj + than: more expensive than."],neg:["<b>not as</b> + adj + <b>as</b>: not as tall as."],q:["Is A + comparativo + than B? Is it bigger than a cat?"]},
@@ -357,6 +365,7 @@ const tenses = [
   speaking:["Compare your city with another city.","Who is taller, you or your best friend?","What is more important: money or time? Why?","Compare two foods you like."]
 },
 {
+  eid:"superlatives",
   name:"Superlatives", short:"Superlatives", level:"A2",
   use:"Say that something is the top of the group: the biggest, the best, the most expensive.",
   form:{aff:["Short: <b>the</b> + adj + <b>-est</b>: the big<b>gest</b>, the cheap<b>est</b>.","Long: <b>the most</b> + adj: the most expensive."],neg:["<b>the least</b> + adj: the least expensive."],q:["What is <b>the</b> + superlativo? What's the biggest city?"]},
@@ -367,6 +376,7 @@ const tenses = [
   speaking:["Who is the funniest person in your family?","What's the best film you've ever seen?","What's the most beautiful place in your country?","What's the most difficult thing about English?"]
 },
 {
+  eid:"there-is-are",
   name:"There is / There are", short:"There is/are", level:"A1",
   use:"Say that something exists (or not) in a place.",
   form:{aff:["<b>There is</b> (singular): There is a book.","<b>There are</b> (plural): There are three books."],neg:["<b>There isn't / There aren't</b>: There aren't any chairs."],q:["<b>Is there...? Are there...?</b> Is there a bank near here?"]},
@@ -377,6 +387,7 @@ const tenses = [
   speaking:["What is there in your bedroom?","How many people are there in your family?","Is there a park near your house?","What is there to do in your city?"]
 },
 {
+  eid:"wh-questions",
   name:"Question Words (WH-)", short:"WH- Questions", level:"A1",
   use:"Ask open questions (not just yes/no): who, what, where, when, why, how.",
   form:{aff:["WH + auxiliar + sujeito + verb: <b>Where do you</b> live?"],neg:["(mesma estrutura) Why don't you like it?"],q:["What (the thing) · Who (person) · Where (place) · When (time) · Why (reason) · How (manner) · Which (choice) · Whose (owner)"]},
@@ -387,6 +398,7 @@ const tenses = [
   speaking:["Ask me three questions with What, Where and When.","Where do you live and why do you like it?","How do you usually spend your weekend?","Who is the most important person in your life?"]
 },
 {
+  eid:"countable-uncountable",
   name:"Countable & Uncountable", short:"Some / Any", level:"A2",
   use:"Countable nouns (apple, book) vs uncountable (water, rice). This changes the use of some/any and much/many.",
   form:{aff:["<b>some</b> (affirmative): I have some water / some apples."],neg:["<b>any</b> (negative/question): I don't have any money. Do you have any bread?"],q:["<b>much</b> (uncountable) / <b>many</b> (countable): How much water? How many apples?"]},
@@ -397,6 +409,7 @@ const tenses = [
   speaking:["How much coffee do you drink a day?","How many languages do you speak?","Is there any food you don't eat?","What do you always have some of at home?"]
 },
 {
+  eid:"should-must",
   name:"Should / Must / Have to", short:"Should / Must", level:"A2",
   use:"Give advice and talk about obligation. Should = advice. Must / have to = strong obligation. Mustn't = forbidden.",
   form:{aff:["<b>should / must</b> + base verb: You should rest. You must stop.","<b>have to</b>: I have to work. He <b>has to</b> study."],neg:["<b>shouldn't</b> (advice) · <b>don't have to</b> (not necessary) · <b>mustn't</b> (forbidden)"],q:["Should I...? Do I have to...? Should I call her?"]},
@@ -407,6 +420,7 @@ const tenses = [
   speaking:["What should a tourist do in your city?","What do you have to do every day?","Give me advice for learning English.","What must you never do while driving?"]
 },
 {
+  eid:"first-conditional",
   name:"First Conditional", short:"First Conditional", level:"B1",
   use:"Talk about real/possible situations in the future and their consequences: if X happens, then Y.",
   form:{aff:["<b>If</b> + present simple, ... <b>will</b> + verb: If it rains, I will stay home."],neg:["If + present simple, ... <b>won't</b>: If you don't hurry, you won't catch the bus."],q:["What will you do <b>if</b>...? What will you do if it rains?"]},
@@ -676,6 +690,8 @@ function logError(kind,q,a){
 // ============ PDF ============
 function exportLesson(){
   const t=tenses[current];
+  // Tópicos migrados ao engine exportam o CONTEÚDO DO ENGINE (não o legado)
+  if(t.eid&&window.ENGINE_TOPICS&&ENGINE_TOPICS[t.eid]){exportEngineLesson(ENGINE_TOPICS[t.eid]);return;}
   const pa=document.getElementById('printArea');
   const strip=s=>s.replace(/<b>/g,'').replace(/<\/b>/g,'');
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
@@ -695,6 +711,31 @@ function exportLesson(){
     </div>`;
   pa.innerHTML=h;
   printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
+}
+
+function exportEngineLesson(T){
+  const nm=stuName();
+  const cl=s=>String(s==null?'':s).replace(/\{name\}/g,nm).replace(/<[^>]*>/g,'');
+  const h2=t=>`<h2 style="border-left:4px solid #7c3aed;padding-left:10px">${t}</h2>`;
+  let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
+    <h1 style="text-align:center;border-bottom:3px solid #7c3aed;padding-bottom:12px">Grammar — ${cl(T.name)}</h1>
+    <p style="text-align:center;color:#666">Level ${T.level} · ${nm}</p>
+    ${h2('Goal')}<p>By the end of this lesson, ${nm} can ${cl(T.goal.can)}.</p>
+    ${h2('Rule')}<p>${cl(T.rule.text)}</p>
+    <p><b>When YES:</b> ${T.slots.use.yes.map(cl).join(' · ')}</p>
+    <p><b>When NO:</b> ${T.slots.use.no.map(cl).join(' · ')}</p>
+    <p><b>Pronunciation:</b> ${cl(T.rule.pron)}</p>
+    ${T.rule.pt?`<p><b>Contraste com o português:</b> ${cl(T.rule.pt)}</p>`:''}
+    ${h2('Watch out — common mistakes')}
+    ${T.watchout.map(w=>`<p style="margin-left:15px">✗ ${cl(w.bad)} → ✓ ${cl(w.good)} <span style="color:#888">(${cl(w.why)})</span></p>`).join('')}
+    ${h2('Examples (Notice)')}${T.notice.examples.map(e=>`<p style="margin-left:15px">• ${cl(e)}</p>`).join('')}
+    ${h2('Practice (with answer key)')}
+    ${T.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${cl(p.q)}${p.opts?' ['+p.opts.map(cl).join(' / ')+']':''} &nbsp;<b style="color:#059669">(${cl(p.a)})</b></p>`).join('')}
+    ${h2('Make it yours')}${T.makeit.map(m=>`<p style="margin-left:15px">• ${cl(m)}</p>`).join('')}
+    ${h2('Task — '+cl(T.task.title))}<p>${cl(T.task.mission)}</p>
+    ${h2('Exit Ticket')}${T.exit.map((e,i)=>`<p style="margin-left:15px">${i+1}. [${cl(e.tag)}] ${cl(e.q)}${e.a?` &nbsp;<b style="color:#059669">(${cl(e.a)})</b>`:''}</p>`).join('')}
+    </div>`;
+  printDoc(h,'Sabatovicz — '+cl(T.name));
 }
 
 function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}

@@ -75,7 +75,7 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
 </head>
 <body>
 <div class="topbar"><div class="in">
-  <div><h1>🗣 Speaking Lab</h1><small id="topsub">Sprint 2 · Speaking Engine real · SPEAKING-LAB.md é a fonte de verdade</small></div>
+  <div><h1>🗣 Speaking Lab</h1><small id="topsub">Catálogo completo · 20 atividades (§14) · SPEAKING-LAB.md é a fonte de verdade</small></div>
   <div style="display:flex;align-items:center;gap:12px">
     <span id="clock">–</span>
     <button class="menu-btn" onclick="goHome()">← Menu</button>
@@ -100,13 +100,13 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
       <li><b>TODO-3</b> · W9: regra de formulação do "Today's Win" não especificada — heurística ilustrativa.</li>
       <li><b>TODO-4</b> · Tempos-alvo por nível são calibração operacional (§12), valores de teste.</li>
       <li><b>TODO-5</b> · Evidence Checklist é auxílio visual; a spec só conhece o ✓/✗ final (V3).</li>
-      <li><b>TODO-6</b> · P6: as estruturas destravadas por aluno vêm de uma lista mock por nível — integração com o currículo de gramática pendente.</li>
+      <li><b>✅ TODO-6 resolvido</b> · P6 real: destravamento = piso por nível + semanas concluídas no Grammar Engine (gev1|). Cadastro de alunos agora é o real (students.html).</li>
     </ul>
   </div>
 </div>
 
 <div id="p1" class="hid"><div class="room">
-  <div class="roomtop"><span id="mTop"></span><span id="mTime"></span></div>
+  <div class="roomtop"><span id="mTop"></span><span style="display:flex;gap:10px;align-items:center"><span id="mTime"></span><button class="soft" onclick="abortMission()" title="Sair sem registrar — para registrar, use ✓/✗">✕ Sair</button></span></div>
   <div class="stage" id="stage"></div>
   <div class="dock" id="dock"></div>
 </div></div>
@@ -114,26 +114,51 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
 <div class="wrap hid" id="p2"><div id="closing"><p class="mut">Nenhuma missão encerrada ainda nesta sessão.</p></div></div>
 <div class="wrap hid" id="p3"><div id="fpView"></div></div>
 
-<script src="engine/speaking-activities.js"></script>
-<script src="engine/speaking-engine.js"></script>
+<script src="engine/speaking-activities.js?v=2"></script>
+<script src="engine/speaking-engine.js?v=2"></script>
 <script>
 /* ============================================================
    Sprint 2: esta página é APENAS consumidora da SpeakingEngine.
    Nenhuma regra pedagógica vive aqui — só render e cliques.
    ============================================================ */
 
-/* ALUNOS MOCKADOS — integração com students.html é sprint futura. */
-const STUDENTS=[
-  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10},
-  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:9},
-  {id:'regis',name:'Régis',emoji:'🎸',level:'A2',age:34},
-  {id:'natali',name:'Natali',emoji:'🌟',level:'A2',age:28}
+/* ALUNOS REAIS — mesmo cadastro de students.html (sabatovicz_students) */
+const STU_KEY='sabatovicz_students';
+const DEFAULT_STUDENTS=[
+  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
+  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
+  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
+  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
+  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
+  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
+  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
 ];
-/* Estruturas destravadas MOCK por nível (TODO-6 — P6 real virá do currículo) */
+function loadStudents(){
+  try{const v=localStorage.getItem(STU_KEY);if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}}catch(e){}
+  return DEFAULT_STUDENTS.slice();
+}
+const STUDENTS=loadStudents();
+
+/* Estruturas destravadas (P6 REAL): piso por nível + semanas concluídas
+   no Grammar Engine (log gev1| gravado por grammar.html). TODO-6 resolvido. */
+const TOPIC_STRUCT={
+  'verb-to-be':['verb to be'],
+  'present-simple':['present simple','do/does questions'],
+  'present-continuous':['present continuous'],
+  'past-simple':['past simple']
+};
 function unlockedFor(st){
-  const base=['verb to be'];
-  if(st.level!=='A1')base.push('present simple','imperativo','do/does questions');
-  return base;
+  const set={};
+  const add=a=>a.forEach(x=>set[x]=1);
+  add(['verb to be']);
+  const L={A1:1,A2:2,B1:3,B2:4,C1:5}[st.level]||1;
+  if(L>=2)add(['present simple','imperativo','do/does questions']);
+  if(L>=3)add(['past simple','present continuous','going to / will','comparatives']);
+  try{
+    const log=JSON.parse(localStorage.getItem('gev1|'+st.id)||'[]');
+    log.forEach(e=>{ if(e.week&&TOPIC_STRUCT[e.topic])add(TOPIC_STRUCT[e.topic]); });
+  }catch(e){}
+  return Object.keys(set);
 }
 
 /* Recovery §21 — escadas graduadas construídas sobre a MISSÃO fundida pela engine */
@@ -147,12 +172,51 @@ const RECOVERY={
 /* ================= estado de UI ================= */
 let stu=STUDENTS[0],mission=null,altMission=null,S=null,clockTimer=null;
 
+/* ===== persistência da missão ao vivo (sobrevive a F5) ===== */
+const LIVE_KEY='slab_live';
+function saveLive(){
+ if(!S||!mission)return;
+ try{localStorage.setItem(LIVE_KEY,JSON.stringify({stu:stu.id,mission,S:Object.assign({},S,{panel:null}),ts:Date.now()}));}catch(e){}
+}
+function loadLive(){
+ try{
+  const v=JSON.parse(localStorage.getItem(LIVE_KEY)||'null');
+  if(v&&Date.now()-v.ts<3*3600*1000)return v;
+ }catch(e){}
+ return null;
+}
+function clearLive(){try{localStorage.removeItem(LIVE_KEY);}catch(e){}}
+function resumeLive(){
+ const v=loadLive();if(!v)return;
+ const st=STUDENTS.find(s=>s.id===v.stu);if(st)stu=st;renderStu();
+ mission=v.mission;S=v.S;S.talk=null;S.talkT0=Date.now();S.panel=null;
+ document.getElementById('mTop').innerHTML=`${stu.emoji||''} <b>${stu.name}</b> · ${mission.actName} × ${mission.theme}`;
+ document.getElementById('mTime').innerHTML=`⏱ ${mission.stt}`;
+ document.getElementById('stage').innerHTML=`
+  <div class="purpose">${mission.purpose}</div>
+  <div class="evid">🎯 ${mission.evid}</div>
+  ${mission.slot?`<div class="slotbox">🖼 IMAGE SLOT · ${mission.slot} — asset do tema "${mission.theme}" (pendência nº1 da spec)</div>`:''}`;
+ renderDock();
+ document.body.classList.add('inlesson');
+ show(1);
+ clearInterval(clockTimer);clockTimer=setInterval(paint,1000);
+}
+function discardLive(){clearLive();brief();}
+
 /* ================= briefing (consome SpeakingEngine.propose) ================= */
 function brief(){
+ const live=loadLive();
+ const liveHtml=live?`
+  <div class="suggest" style="margin-bottom:10px"><small>⏸ MISSÃO EM ANDAMENTO (recuperada)</small><br>
+   <b>${live.mission.actName} × ${live.mission.theme}</b> · aluno: ${live.stu}
+   <div style="margin-top:6px;display:flex;gap:8px">
+    <button class="big" style="padding:9px 16px;font-size:13px" onclick="resumeLive()">▶ Retomar</button>
+    <button class="soft" onclick="discardLive()">Descartar</button>
+   </div></div>`:'';
  const p=SpeakingEngine.propose(stu,{unlocked:unlockedFor(stu)});
- if(!p){document.getElementById('brief').innerHTML='<p class="mut">Nenhuma atividade elegível para este perfil.</p>';return;}
+ if(!p){document.getElementById('brief').innerHTML=liveHtml+'<p class="mut">Nenhuma atividade elegível para este perfil.</p>';return;}
  mission=p.mission;altMission=p.alt;
- document.getElementById('brief').innerHTML=`
+ document.getElementById('brief').innerHTML=liveHtml+`
   <div class="label">Missão de hoje — pronta (W1)</div>
   <div class="purpose" style="font-size:21px">${mission.actName} <span style="color:var(--pink)">×</span> ${mission.theme}</div>
   <p style="margin:6px 0">${mission.purpose}</p>
@@ -183,6 +247,11 @@ function startMission(m){
  document.body.classList.add('inlesson');
  show(1);
  clearInterval(clockTimer);clockTimer=setInterval(paint,1000);
+ saveLive();
+}
+function abortMission(){
+ if(!confirm('Sair SEM registrar? A missão não vai contar.\n\nSe a missão colapsou, o certo é encerrar com ✗ (a causa fica registrada) e fechar com 1 interação que '+stu.name+' domina (R4).'))return;
+ clearInterval(clockTimer);clearLive();leaveLesson(0);brief();
 }
 function renderDock(){
  document.getElementById('dock').innerHTML=`
@@ -261,6 +330,7 @@ function paint(){
  if(q('ee')){q('ee').textContent=S.err.estrutural;q('el').textContent=S.err.lexical;q('ep').textContent=S.err.pron;}
  const t=Math.floor((Date.now()-S.t0)/1000);
  q('clock').textContent=Math.floor(t/60)+':'+('0'+t%60).slice(-2);
+ if(t%5===0)saveLive();
 }
 
 /* ================= fechamento — o ✓/✗ registra via engine (§19.7, atômico) ================= */
@@ -272,7 +342,19 @@ function finish(ok){
  const errTotal=S.err.estrutural+S.err.lexical+S.err.pron;
  const prev=SpeakingEngine.footprint(stu);
  const recBest=prev.journey.length?Math.max.apply(null,prev.journey):0;
- SpeakingEngine.record(stu,mission,{ok,longest,sttPct,sus:S.sus,ini:S.ini,rep:S.rep,err:S.err});
+ SpeakingEngine.record(stu,mission,{ok,longest,sttPct,chains:S.chains.filter(c=>c>=5).length,sus:S.sus,ini:S.ini,rep:S.rep,err:S.err});
+ clearLive();
+ /* G4: erros estruturais → fila de revisão (errq|) — voltam no warm-up de gramática */
+ try{
+  if(S.err.estrutural>0){
+   const k='errq|'+stu.id;
+   const arr=JSON.parse(localStorage.getItem(k)||'[]');
+   for(let i=0;i<S.err.estrutural;i++)arr.push({m:'speaking',topic:(mission.deps&&mission.deps[0])||'speaking',kind:'estrutural',
+    q:'Speaking ("'+mission.actName+' × '+mission.theme+'"): refazer 1 frase da missão com '+((mission.deps||[]).join(' / ')||'a estrutura-alvo')+' correto(a)',
+    a:'',d:new Date().toISOString().slice(0,10)});
+   localStorage.setItem(k,JSON.stringify(arr));
+  }
+ }catch(e){}
  /* Today's Win (heurística — TODO-3) */
  const win=S.ini>0?`${stu.name} puxou a conversa ${S.ini}x por conta própria`:
    longest>=30?`${stu.name} sustentou ${fmt(longest)} de conversa${longest>recBest&&recBest>0?' — novo recorde 🏆':''}`:
@@ -287,10 +369,10 @@ function finish(ok){
   <div class="card" style="margin-top:12px">
     <div class="sttbar"><div class="a" style="width:${Math.round(sttPct*100)}%"></div></div>
     <p class="mut" style="text-align:center;margin:2px 0">quem falou mais? <b>${sttPct>=.5?stu.name+' 🎉':'você ⚠ (D1)'}</b> · maior conversa: <b>${fmt(longest)}</b></p>
-    <input class="obs" placeholder="Observação opcional — 1 linha (W10)" onchange="SpeakingEngine.setObs(stu,this.value)">
+    <input class="obs" id="obsInp" placeholder="Observação opcional — 1 linha (W10)" onchange="SpeakingEngine.setObs(stu,this.value)">
     <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
-      <button class="big" onclick="leaveLesson(0);brief()">▶ Próxima missão</button>
-      <button class="soft" onclick="leaveLesson(3)">Ver Footprint</button>
+      <button class="big" onclick="saveObsLeave(0)">▶ Próxima missão</button>
+      <button class="soft" onclick="saveObsLeave(3)">Ver Footprint</button>
     </div>
   </div>`;
  leaveLesson(2);
@@ -331,6 +413,11 @@ function show(i){['p0','p1','p2','p3'].forEach((p,k)=>document.getElementById(p)
  if(i===3)fpView();}
 function tab(i){show(i);}
 function leaveLesson(i){document.body.classList.remove('inlesson');S=null;document.getElementById('clock').textContent='–';show(i);}
+function saveObsLeave(i){
+ const el=document.getElementById('obsInp');
+ if(el&&el.value.trim())SpeakingEngine.setObs(stu,el.value.trim());
+ leaveLesson(i);if(i===0)brief();
+}
 function goHome(){window.location.href='index.html';}
 renderStu();brief();
 </script>

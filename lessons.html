@@ -116,6 +116,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
   <!-- LESSON -->
   <div class="max-w-5xl mx-auto p-4 md:p-6">
     <div id="lessonTitle" class="card rounded-xl p-6 mb-6"></div>
+    <div id="stuBar" class="card rounded-xl p-4 mb-6"></div>
     <div id="lessonBody"></div>
 
     <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
@@ -627,7 +628,19 @@ let current = 0;
 
 function renderSelector(){
   const s = document.getElementById('weekSelector');
-  s.innerHTML = lessons.map((l,i)=>`<button class="week-btn ${i===current?'active':''}" onclick="selectWeek(${i})">S${l.week} · ${l.theme.split('—')[0].trim()}</button>`).join('');
+  const pilot = i => window.CONV_PLUS && CONV_PLUS[lessons[i].week];
+  let h='';
+  if(lessons.some((l,i)=>pilot(i))){
+    h+=`<span style="display:inline-flex;align-items:center;font-size:11px;font-weight:800;letter-spacing:.5px;color:#7c3aed;background:#ede9fe;border:1px solid #ddd6fe;border-radius:8px;padding:6px 10px;white-space:nowrap">⚡ PILOTO — NOVO PADRÃO</span>`;
+  }
+  h+=lessons.map((l,i)=>{
+    const on=i===current, p=pilot(i);
+    const style=p
+      ? `background:${on?'linear-gradient(135deg,#7c3aed,#db2777)':'#f5f3ff'} !important;color:${on?'#fff':'#6d28d9'} !important;border:2px solid ${on?'#7c3aed':'#c4b5fd'} !important;box-shadow:0 2px 8px rgba(124,58,237,.15)`
+      : '';
+    return `<button class="week-btn ${on?'active':''}" style="${style}" onclick="selectWeek(${i})">${p?'⚡ ':''}S${l.week} · ${l.theme.split('—')[0].trim()}</button>`;
+  }).join('');
+  s.innerHTML=h;
 }
 
 function selectWeek(i){ current=i; renderSelector(); renderLesson(); window.scrollTo({top:0,behavior:'smooth'}); }
@@ -653,13 +666,18 @@ function toggleAnswer(id){ document.getElementById(id).classList.toggle('show');
 
 function renderLesson(){
   const l = lessons[current];
+  const enriched = window.CONV_PLUS && CONV_PLUS[l.week];
   document.getElementById('lessonTitle').innerHTML = `
     <div class="flex items-center gap-3 mb-1">
       <span class="text-xs bg-[#B08F4C] text-white px-2 py-1 rounded font-bold">WEEK ${l.week}</span>
       <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${l.level}</span>
+      ${enriched?'<span class="text-xs px-2 py-1 rounded font-bold" style="background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff">⚡ Conversation Live</span>':''}
     </div>
     <h2 class="text-2xl md:text-3xl font-bold text-white">${l.theme}</h2>
     <p class="text-slate-400 mt-1">Grammar: ${l.grammar} · 60 min</p>`;
+
+  renderStuBar();
+  if(enriched){ renderEnriched(l); return; }
 
   const body = document.getElementById('lessonBody');
   let h = '';
@@ -756,6 +774,348 @@ function exportLesson(){
 function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
 
 function goHome(){ window.location.href='index.html'; }
+
+/* ================================================================
+   CONVERSATION LIVE — piloto SLF módulo 8 (semanas 1–3).
+   Camada aditiva: só as semanas em CONV_PLUS usam o renderizador
+   novo; as demais seguem no renderer legado acima, intactas.
+   ================================================================ */
+const STU_KEY='sabatovicz_students';
+const DEFAULT_STUDENTS=[
+  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
+  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
+  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
+  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
+  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
+  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
+  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
+];
+function loadStudents(){
+  try{const v=localStorage.getItem(STU_KEY);if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}}catch(e){}
+  return DEFAULT_STUDENTS.slice();
+}
+const STUDENTS_DATA=loadStudents();
+let curStu=localStorage.getItem('sabatovicz_current_student');
+if(!STUDENTS_DATA.some(s=>s.id===curStu))curStu=STUDENTS_DATA.length?STUDENTS_DATA[0].id:null;
+function stuName(){const s=STUDENTS_DATA.find(x=>x.id===curStu);return s?s.name:'the student';}
+function pickStu(id){curStu=id;localStorage.setItem('sabatovicz_current_student',id);renderLesson();}
+function renderStuBar(){
+  const el=document.getElementById('stuBar');if(!el)return;
+  if(!(window.CONV_PLUS&&CONV_PLUS[lessons[current].week])){el.style.display='none';return;}
+  el.style.display='';
+  el.innerHTML=`<span class="text-slate-300 text-sm font-bold" style="margin-right:8px">Class with:</span>`+
+    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="week-btn text-xs font-bold py-2 px-3 rounded-lg" style="margin:2px;${s.id===curStu?'background:linear-gradient(135deg,#7c3aed,#db2777) !important;color:#fff !important':''}">${s.emoji||''} ${s.name}</button>`).join('');
+}
+function logError(kind,q,a){
+  if(!curStu)return;
+  try{
+    const k='errq|'+curStu;
+    const arr=JSON.parse(localStorage.getItem(k)||'[]');
+    const l=lessons[current];
+    const topic='Conv W'+l.week+' — '+String(l.theme).split('—')[0].trim();
+    arr.push({m:'conversation',topic,kind,q:String(q),a:String(a),d:new Date().toISOString().slice(0,10)});
+    localStorage.setItem(k,JSON.stringify(arr));
+  }catch(e){}
+}
+function P(s){return String(s==null?'':s).replace(/\{name\}/g,stuName());}
+
+/* ================================================================
+   PADRÃO DEFINITIVO — como propagar uma semana (SÓ dados, sem código):
+   copie este template para CONV_PLUS[<week>]. Warm-up, vocabulário,
+   prática, role-play e homework continuam vindo do objeto `lessons`
+   legado da mesma semana — não se duplicam aqui.
+
+   <week>:{
+     discover:{ examples:['4 frases com a estrutura em <b>negrito</b>'],
+                qs:{form:'pergunta de forma', meaning:'pergunta de sentido'},
+                hints:['dica 1','dica 2','dica 3'] },     // escada de descoberta
+     brTip:'dica curta para brasileiros (armadilha do PT).',
+     practiceFu:['follow-up por item da prática legada (opcional; tem fallback)'],
+     ladder:{ concrete:[{q:'…',fu:['…']}], experience:[…], opinion:[…], hypothesis:[…] },
+     teacherOpinion:'opinião provocadora p/ o aluno reagir.',
+     reactions:['Really?','Me too!','…'],                 // palavras de reação
+     canDoNow:'o que o aluno passa a conseguir fazer.',
+     convGoal:'alvo concreto desta conversa.',
+     studyTip:'sugestão de estudo/áudio para casa.'
+   }
+   Campos ausentes NÃO quebram a página: o validador convMissing() avisa
+   exatamente o que falta. Nenhuma alteração de renderizador é necessária.
+   ================================================================ */
+window.CONV_PLUS={
+ 1:{
+  discover:{
+   examples:['I <b>am</b> a teacher and I<b>\'m</b> from Brazil.','You <b>are</b> my student.','My friend <b>is</b> tired today.','We <b>are</b> here to speak English!'],
+   qs:{form:'Which little words repeat — and how do they change with the person?',meaning:'Is this about actions, or about who/how people ARE?'},
+   hints:['Point at am / is / are — say them aloud.','I → am · he/she/it → is · you/we/they → are.','Try the natural short forms: I\'m, you\'re, she\'s.']
+  },
+  brTip:'Idade em inglês é com "to be", não "have": diga "I AM 30", nunca "I have 30 years".',
+  practiceFu:['And what\'s YOUR name?','Where are you from — city and country?','Are you a student too? Of what?','How old are you? Say it in English!','Are you happy today? Why / why not?'],
+  ladder:{
+   concrete:[{q:'What\'s your name and where are you from?',fu:['Is it a big or small city?','Do you like living there?']},{q:'How old are you?',fu:['And your best friend — how old is he/she?']}],
+   experience:[{q:'Are you married or single? Do you have children?',fu:['Tell me a little about them.']},{q:'How are you feeling today — really?',fu:['Why? What happened?']}],
+   opinion:[{q:'Are you a happy person in general?',fu:['What makes you happy?','And what makes you tired?']}],
+   hypothesis:[{q:'If you could be from any country in the world, where would you be from?',fu:['Why there?','What would be different about you?']}]
+  },
+  teacherOpinion:'I think mornings are the best part of the day — I\'m a morning person. Are you? Convince me you\'re right!',
+  reactions:['Really?','Me too!','No way!','That\'s interesting!','Tell me more.'],
+  canDoNow:'introduce yourself completely — name, age, city and how you feel — all in English.',
+  convGoal:'Keep a real self-introduction going for 5+ exchanges — not just answer, but ask ME back.',
+  studyTip:'Record a 60-second audio introducing yourself (name, age, city, one feeling) and bring it next class.'
+ },
+ 2:{
+  discover:{
+   examples:['I<b>\'m not</b> a doctor.','<b>Are</b> you a teacher?','She <b>isn\'t</b> from the USA.','<b>Is</b> he a student? — Yes, he <b>is</b>.'],
+   qs:{form:'How do we say NO, and how do we ASK? What word moves?',meaning:'Which sentences deny something, and which ask a question?'},
+   hints:['Negative: put NOT after am / is / are.','Question: put am / is / are FIRST.','Short answers: Yes, I am. / No, I\'m not.']
+  },
+  brTip:'Para perguntar com "to be" NÃO se usa "do": diga "ARE you a teacher?", nunca "Do you are a teacher?".',
+  practiceFu:['So — what IS your job exactly?','Where is he from, then?','And what does she really do?','So how ARE you today?'],
+  ladder:{
+   concrete:[{q:'What\'s your job? Are you happy with it?',fu:['Why / why not?']},{q:'What\'s your nationality?',fu:['Are you proud of it?']}],
+   experience:[{q:'Is your job difficult? Are you busy these days?',fu:['Give me a real example from this week.']},{q:'Are your colleagues nice?',fu:['Who\'s your favourite? Why?']}],
+   opinion:[{q:'Are nice colleagues more important than a big salary? What do you think?',fu:['Why?','Has that been true in your life?']}],
+   hypothesis:[{q:'What\'s your dream job? If money wasn\'t a problem, what would you be?',fu:['Why that one?','What stops you now?']}]
+  },
+  teacherOpinion:'I believe a job you love beats a job that just pays well. Do you agree, or is money more important? Tell me honestly.',
+  reactions:['Interesting!','I see.','Really?','That makes sense.','Why?'],
+  canDoNow:'ask and answer questions about jobs and nationality — and say what you are NOT.',
+  convGoal:'Hold a two-way "getting to know you" chat about work — you answer AND ask me questions with Are you...? / Is it...?',
+  studyTip:'Record yourself answering: What do you do? Are you happy with your job? Why? Aim for 4–5 sentences.'
+ },
+ 3:{
+  discover:{
+   examples:['This is <b>my</b> sister. <b>Her</b> name is Ana.','<b>His</b> father is a doctor.','<b>Our</b> house is small but cosy.','They love <b>their</b> parents.'],
+   qs:{form:'These little words show the OWNER — do they change with the thing owned?',meaning:'Whose person or thing are we talking about?'},
+   hints:['my / your / his / her / our / their come BEFORE the noun.','his = a man\'s · her = a woman\'s.','It\'s "her name", never "she name".']
+  },
+  brTip:'Possessivo em inglês não concorda com o objeto: "his mother" e "his brothers" — sempre "his". Não muda em número nem gênero como no português.',
+  practiceFu:['How many brothers or sisters do YOU have?','Whose job is the hardest in your family?','Now describe your own house to me.','Are you close to your parents?'],
+  ladder:{
+   concrete:[{q:'How many people are in your family? Who are they?',fu:['Who\'s the oldest?','Who\'s the funniest?']},{q:'What are your parents\' names?',fu:['What do they do?']}],
+   experience:[{q:'Who are you closest to in your family? Why that person?',fu:['Tell me a little story about them.']},{q:'Do you look like anyone in your family?',fu:['Who? In what way?']}],
+   opinion:[{q:'Is family the most important thing in life? What do you think?',fu:['Why / why not?']}],
+   hypothesis:[{q:'If you could have dinner with one family member from the past, who would it be?',fu:['What would you ask them?']}]
+  },
+  teacherOpinion:'I think we choose our friends but not our family — and that\'s exactly what makes family special. Do you agree?',
+  reactions:['Aww!','That\'s lovely.','Really?','Tell me more.','I understand.'],
+  canDoNow:'talk about your family and say clearly whose people and things are whose.',
+  convGoal:'Describe your family for 5+ exchanges, using my/his/her/their correctly and adding detail without being asked.',
+  studyTip:'Record a 1-minute "meet my family" audio using my / his / her / their. Send it before next class.'
+ }
+};
+
+/* ---- estado de avaliação da aula viva ---- */
+let cpPr={}, cpEv={}, cpMiss=[], cpVocab={};
+function judgeCpPr(i,ok){
+  if(cpPr[i]!==undefined)return; cpPr[i]=ok;
+  document.getElementById('cpy-'+i).style.opacity=ok?'1':'.35';
+  document.getElementById('cpn-'+i).style.opacity=ok?'.35':'1';
+  const l=lessons[current];
+  if(!ok){logError('practice',l.practice[i].q,l.practice[i].a);cpMiss.push({q:l.practice[i].q,a:l.practice[i].a});}
+  const n=Object.keys(cpPr).length,c=Object.values(cpPr).filter(Boolean).length;
+  const el=document.getElementById('cpScore');if(el)el.textContent=`${c} correct / ${n} checked of ${l.practice.length} · gate: ≥80%`;
+  if(n===l.practice.length){
+    const pct=Math.round(c/n*100);
+    document.getElementById('cpVerdict').innerHTML=pct>=80
+      ?`<div class="mistake" style="background:#f0fdf4 !important;border-color:#bbf7d0 !important;color:#166534 !important;font-weight:700">✅ ${pct}% — ready to really talk. Go to the conversation.</div>`
+      :`<div class="mistake" style="font-weight:700">⚠ ${pct}% — revisit the pattern together first (misses saved to ${stuName()}'s review queue).</div>`;
+  }
+}
+function judgeCpEv(i,ok){
+  if(cpEv[i]!==undefined)return; cpEv[i]=ok;
+  document.getElementById('evy-'+i).style.opacity=ok?'1':'.35';
+  document.getElementById('evn-'+i).style.opacity=ok?'.35':'1';
+  const n=Object.keys(cpEv).length,c=Object.values(cpEv).filter(Boolean).length;
+  if(n===3){
+    document.getElementById('evVerdict').innerHTML=
+      `<div class="mistake" style="background:#f5f3ff !important;border-color:#ddd6fe !important;color:#5b21b6 !important;font-weight:700">${c}/3 signs of real conversation. Now build the lesson summary below ↓</div>`;
+  }
+}
+/* vocabulário-alvo destacado e rastreado durante a conversa */
+function markVocab(i){
+  cpVocab[i]=!cpVocab[i];
+  const el=document.getElementById('vchip-'+i);
+  if(el){el.style.background=cpVocab[i]?'#dcfce7':'#ede9fe';el.style.color=cpVocab[i]?'#166534':'#6d28d9';el.style.borderColor=cpVocab[i]?'#86efac':'#ddd6fe';}
+  const used=Object.values(cpVocab).filter(Boolean).length;
+  const cnt=document.getElementById('vUsed');if(cnt)cnt.textContent=String(used);
+}
+/* RESUMO FINAL — desempenho, correções e sugestões de estudo (SLF §8/§10) */
+function buildDebrief(){
+  const l=lessons[current], cp=CONV_PLUS[l.week];
+  const pn=Object.keys(cpPr).length, pc=Object.values(cpPr).filter(Boolean).length;
+  const ppct=pn?Math.round(pc/pn*100):0;
+  const en=Object.keys(cpEv).length, ec=Object.values(cpEv).filter(Boolean).length;
+  const vt=l.vocab.length, vu=Object.values(cpVocab).filter(Boolean).length;
+  const bar=(label,val,tone)=>`<div class="q-item" style="display:flex;justify-content:space-between;align-items:center"><span>${label}</span><b style="color:${tone}">${val}</b></div>`;
+  let h=`<div class="p-4 rounded-xl" style="background:#fff;border:1px solid #eee7fb">`;
+  // desempenho
+  h+=`<p class="font-bold mb-2" style="color:#7c3aed">📊 Performance</p>`;
+  h+=bar('Grammar practice',pn?`${pc}/${pn} · ${ppct}%${ppct>=80?' ✅':' ⚠'}`:'not marked','#1e293b');
+  h+=bar('Signs of real conversation',`${ec}/3`,'#1e293b');
+  h+=bar('Target words recycled while speaking',`${vu}/${vt}`,'#1e293b');
+  // correções
+  h+=`<p class="font-bold mt-4 mb-2" style="color:#dc2626">✎ Corrections to revisit (say: "try again", then the answer)</p>`;
+  if(cpMiss.length){
+    h+=cpMiss.map(m=>`<div class="mistake" style="font-size:14px">✗ ${m.q} &nbsp;→&nbsp; <b style="color:#16a34a">${m.a}</b></div>`).join('');
+    h+=`<p class="text-slate-400 text-xs mt-1">These are saved to ${stuName()}'s review queue — they return in the next warm-up.</p>`;
+  }else{
+    h+=`<div class="q-item" style="color:#166534">Nothing missed — great control today! 🎉</div>`;
+  }
+  // sugestões de estudo
+  h+=`<p class="font-bold mt-4 mb-2" style="color:#0ea5a5">🎯 What ${stuName()} can do now & study suggestion</p>`;
+  h+=`<div class="q-item">Tell ${stuName()}: “Today you can ${P(cp.canDoNow)}” 🎉</div>`;
+  h+=`<div class="q-item">🎧 Homework focus: ${cp.studyTip}</div>`;
+  if(cpMiss.length)h+=`<div class="q-item">📌 Extra: review <b>${l.theme.split('—').slice(-1)[0].trim()}</b> — the exact items above.</div>`;
+  h+=`<a href="${l.homework.link}" target="_blank" class="inline-block mt-3 gradient-coral text-white font-bold py-2 px-4 rounded-lg text-sm">Practice on Test-English →</a>`;
+  h+=`</div>`;
+  document.getElementById('cpDebrief').innerHTML=h;
+}
+
+/* validador de propagação: garante que uma semana nova só precisa de DADOS.
+   Retorna a lista de campos faltando — a página avisa em vez de quebrar. */
+function convMissing(cp){
+  if(!cp)return['(sem dados para esta semana)'];
+  const m=[],need=(c,n)=>{if(!c)m.push(n);};
+  need(cp.discover&&cp.discover.examples&&cp.discover.examples.length>=1,'discover.examples');
+  need(cp.discover&&cp.discover.qs&&cp.discover.qs.form&&cp.discover.qs.meaning,'discover.qs (form+meaning)');
+  need(cp.discover&&cp.discover.hints&&cp.discover.hints.length>=3,'discover.hints (3)');
+  need(cp.brTip,'brTip');
+  need(cp.ladder&&['concrete','experience','opinion','hypothesis'].every(k=>Array.isArray(cp.ladder[k])),'ladder (4 níveis)');
+  need(cp.teacherOpinion,'teacherOpinion');
+  need(cp.reactions&&cp.reactions.length,'reactions');
+  need(cp.canDoNow,'canDoNow');
+  need(cp.convGoal,'convGoal');
+  need(cp.studyTip,'studyTip');
+  return m;
+}
+
+function renderEnriched(l){
+  const cp=CONV_PLUS[l.week];
+  const miss=convMissing(cp);
+  if(miss.length){
+    try{console.warn('[Conversation Live] semana '+l.week+' incompleta — falta: '+miss.join(', '));}catch(e){}
+    document.getElementById('lessonBody').innerHTML=stageBlock('#f59e0b',
+      '⚠ Conversation Live — dados incompletos',
+      'Para publicar a semana '+l.week+', complete CONV_PLUS['+l.week+'] (só dados, sem mexer no código)',
+      '<p class="text-slate-500">Faltando: <b style="color:#dc2626">'+miss.join(', ')+'</b></p>'+
+      '<p class="text-slate-400 text-sm mt-2">O renderizador é reutilizável — nenhuma reconstrução é necessária, apenas estes campos.</p>');
+    return;
+  }
+  cpPr={};cpEv={};cpMiss=[];cpVocab={};
+  const body=document.getElementById('lessonBody');
+  let h='';
+
+  // OBJETIVO DA AULA — claro, no topo
+  h+=`<div class="p-4 rounded-xl mb-4" style="background:linear-gradient(135deg,#faf5ff,#eff6ff);border:1px solid #ddd6fe">
+        <span class="text-xs font-bold" style="color:#7c3aed">🎯 GOAL OF THIS LESSON</span>
+        <p class="text-slate-700 font-bold mt-1" style="font-size:16px">By the end, ${stuName()} can ${P(cp.canDoNow)}</p>
+        <p class="text-slate-500 text-sm mt-1">Conversation target: ${P(cp.convGoal)}</p>
+      </div>`;
+
+  // 1 WARM-UP conversacional
+  h+=stageBlock('#3b82f6','1 · Warm-up — just talk','3–5 min · you only ask & react (100% '+stuName()+' speaking)',
+    l.warmup.map(q=>`<div class="q-item">${q}</div>`).join(''));
+
+  // 2 DISCOVER (noticing antes da regra) — SLF G5
+  h+=stageBlock('#10b981','2 · Discover the pattern','5 min · '+stuName()+' finds the rule BEFORE you explain it',
+    cp.discover.examples.map(e=>`<div class="q-item" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/<[^>]*>/g,'').replace(/'/g,"\\'")}')">►</button></div>`).join('')+
+    `<div class="mt-3"><span class="chip">🔍 ${cp.discover.qs.form}</span><span class="chip">💭 ${cp.discover.qs.meaning}</span><span class="chip">🗣️ Say the rule in YOUR words</span></div>
+     <div class="mt-3 p-3 rounded-lg" style="background:#f8f7fe;border:1px solid #ece7fb">
+       <p class="text-slate-400 text-xs font-bold mb-1">Teacher help — hint ladder (only if stuck, one at a time):</p>
+       <p class="text-slate-500 text-sm">1️⃣ ${cp.discover.hints[0]}<br>2️⃣ ${cp.discover.hints[1]}<br>3️⃣ ${cp.discover.hints[2]}</p>
+     </div>
+     <div class="text-center mt-4" id="cpRuleReveal">
+       <button onclick="document.getElementById('cpRuleBox').style.display='block';this.style.display='none'" class="week-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule — after ${stuName()} says it</button>
+     </div>
+     <div id="cpRuleBox" style="display:none;margin-top:12px">
+       <div class="p-4 rounded-lg" style="background:#fff;border:1px solid #eee7fb;border-left:5px solid #f59e0b">
+         <p class="text-slate-300">${l.grammar.exp}</p>
+         <div class="mt-2 space-y-1">${l.grammar.ex.map(e=>`<div class="q-item" style="margin:4px 0">${e}</div>`).join('')}</div>
+         <div class="mt-3 p-3 rounded-lg" style="background:#fff1f2;border:1px solid #fecdd3"><span class="text-xs font-bold" style="color:#7c3aed">🇧🇷 Dica para brasileiros:</span> <span class="text-slate-600 text-sm">${cp.brTip}</span></div>
+       </div>
+     </div>`);
+
+  // 3 VOCABULARY (reuso) — com pergunta pessoal de uso
+  h+=stageBlock('#eab308','3 · Vocabulary','8 min · click ► to listen · use each word about YOUR life',
+    `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`+
+    l.vocab.map(v=>`<div class="vocab-card"><div><div class="text-white font-bold">${v.en}</div><div class="ipa">${v.ipa}</div><div class="text-slate-400 text-sm">${v.pt}</div></div><button class="speak-btn" onclick="speak('${v.en.replace(/'/g,"\\'")}')">►</button></div>`).join('')+
+    `</div><p class="text-slate-400 text-sm mt-3">👉 After each word: "Now make a sentence about YOU with it."</p>`);
+
+  // 4 CONTROLLED PRACTICE — oral, ✓/✗ na fila de erros, com follow-up (G3/G4/G8)
+  h+=stageBlock('#ec4899','4 · Practice — say it, then check it','8 min · '+stuName()+' says it aloud, you reveal & mark',
+    `<div id="cpScore" class="text-slate-300 text-sm font-bold mb-2">0 / ${l.practice.length} checked · gate: ≥80%</div>`+
+    l.practice.map((p,i)=>{
+      const id=`cpa-${l.week}-${i}`;
+      return `<div class="q-item" style="display:block">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span>${i+1}. ${p.q}</span>
+          <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded flex-shrink-0">show answer</button>
+        </div>
+        <div id="${id}" class="answer">✓ ${p.a}
+          <span style="margin-left:8px">
+            <button onclick="judgeCpPr(${i},true)" id="cpy-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓ got it</button>
+            <button onclick="judgeCpPr(${i},false)" id="cpn-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗ missed</button>
+          </span>
+          <div class="text-xs" style="color:#7c3aed;margin-top:5px">↳ follow-up: ${cp.practiceFu[i]||'And you? Make it about YOUR life.'}</div>
+        </div>
+      </div>`;
+    }).join('')+`<div id="cpVerdict" style="margin-top:10px"></div>`);
+
+  // 5 CONVERSATION (a estrela) — objetivo + escada + follow-ups reativos + vocab ao vivo + provocação
+  const rung=(label,color,items)=>`<div style="margin:10px 0"><span class="chip" style="background:${color}22;color:${color};border-color:${color}55">${label}</span>`+
+    items.map(it=>`<div class="q-item" style="margin-top:6px"><div>${it.q}</div>${it.fu&&it.fu.length?`<div class="text-xs" style="color:#7c3aed;margin-top:5px">↳ dig deeper: ${it.fu.map(f=>'“'+f+'”').join(' · ')}</div>`:''}</div>`).join('')+`</div>`;
+  h+=stageBlock('#06b6d4','5 · Conversation — the real thing','15 min · '+stuName()+' speaks ~80% · a ladder, not an interrogation',
+    `<div class="p-3 rounded-lg mb-2" style="background:#ecfeff;border:1px solid #a5f3fc"><span class="text-xs font-bold" style="color:#0e7490">🎯 THIS CONVERSATION:</span> <span class="text-slate-600 text-sm">${P(cp.convGoal)}</span></div>
+     <p class="text-slate-400 text-sm mb-1">Climb the ladder: concrete first, then deeper. One question → listen → react in 1 sentence → follow-up. Correct nothing now (note it for the summary).</p>`+
+    rung('① Concrete','#0ea5a5',cp.ladder.concrete)+
+    rung('② Your experience','#7c3aed',cp.ladder.experience)+
+    rung('③ Your opinion','#db2777',cp.ladder.opinion)+
+    rung('④ Imagine / hypothesis','#f59e0b',cp.ladder.hypothesis)+
+    // follow-up REATIVO — reage ao que o aluno realmente diz
+    `<div class="mt-4 p-4 rounded-xl" style="background:#fffbeb;border:1px solid #fde68a">
+       <p class="font-bold text-sm" style="color:#92400e">🔁 React to what ${stuName()} actually says (pick the follow-up that fits the answer):</p>
+       <div class="text-slate-600 text-sm mt-2" style="line-height:1.9">
+         • Answer too short / one word → <b>"Tell me more. / Give me an example."</b><br>
+         • No reason given → <b>"Why? / Why do you think so?"</b><br>
+         • Impersonal / generic → <b>"And YOU? Does this happen to you?"</b><br>
+         • Stuck or switches to Portuguese → <b>"Say it another way in English"</b> — give ONE key word, never the whole sentence.
+       </div>
+     </div>
+     <div class="mt-4 p-4 rounded-xl" style="background:#f5f3ff;border:1px solid #ddd6fe">
+       <p class="font-bold text-sm" style="color:#6d28d9">🔑 Target words — tap each one when ${stuName()} uses it in conversation (<b><span id="vUsed">0</span>/${l.vocab.length}</b> recycled):</p>
+       <div class="mt-2">${l.vocab.map((v,i)=>`<span id="vchip-${i}" class="chip" style="cursor:pointer" onclick="markVocab(${i})">${v.en}</span>`).join('')}</div>
+     </div>
+     <div class="mt-4 p-4 rounded-xl" style="background:linear-gradient(135deg,#faf5ff,#fdf2f8);border:1px solid #e9d5ff">
+       <p class="font-bold" style="color:#7c3aed">🎭 Your turn to provoke (conversation is two-way — you talk ~20%):</p>
+       <p class="text-slate-600 text-sm mt-1">"${cp.teacherOpinion}"</p>
+     </div>
+     <div class="mt-3"><span class="text-slate-400 text-xs font-bold">Reaction words to feed ${stuName()} (put them on screen):</span><br>${cp.reactions.map(r=>`<span class="chip">${r}</span>`).join('')}</div>
+     <div class="mt-4 p-4 rounded-xl" style="background:linear-gradient(135deg,#312e81 0%,#1e3a8a 100%);border:1px solid #6366f1">
+       <p class="text-indigo-200 font-bold mb-2">${l.roleplay.title}</p>
+       <p class="text-slate-300 text-sm mb-3">${l.roleplay.scenario}</p>
+       ${l.roleplay.lines.map(line=>`<p class="text-white text-sm mb-1">${line}</p>`).join('')}
+     </div>`);
+
+  // 6 EVIDENCE — 3 sinais de conversa real (SLF §8)
+  h+=stageBlock('#7c3aed','6 · Evidence — signs of real conversation','2 min · mark what you saw',
+    [['Did '+stuName()+'’s turns get LONGER through the lesson?'],
+     [stuName()+' started a topic or added something without being asked?'],
+     [stuName()+' asked YOU a question back?']].map((t,i)=>`
+      <div class="q-item" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <span>${i+1}. ${t[0]}</span>
+        <span style="display:flex;gap:6px;flex-shrink:0">
+          <button onclick="judgeCpEv(${i},true)" id="evy-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓</button>
+          <button onclick="judgeCpEv(${i},false)" id="evn-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗</button>
+        </span>
+      </div>`).join('')+`<div id="evVerdict" style="margin-top:8px"></div>`);
+
+  // 7 LESSON SUMMARY — desempenho + correções + sugestões de estudo
+  h+=stageBlock('#16a34a','7 · Lesson summary','2 min · '+stuName()+'’s report for today',
+    `<button onclick="buildDebrief()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">📋 Build ${stuName()}'s summary</button>
+     <div id="cpDebrief" style="margin-top:12px"></div>`);
+
+  body.innerHTML=h;
+}
 
 renderSelector();
 renderLesson();

@@ -103,7 +103,7 @@ function fuse(student,pick){
     purpose:P(a.purpose,ctx), evid:a.evid, check:a.check.slice(),
     brief:P(a.brief,ctx)+(kid&&a.kid?' · 🧒 '+P(a.kid,ctx):(!kid&&a.adult?' · '+P(a.adult,ctx):'')),
     followups:fus.slice(0,6), rescue:a.rescue.slice(), compl:P(a.compl,ctx),
-    simple:P(a.simple,ctx), reform:a.reform,
+    simple:P(a.simple,ctx), reform:a.reform, deps:(a.deps||[]).slice(),
     slot:a.slot, stt:a.stt, tt:a.tt, diff:a.diff, kid
   };
 }
@@ -121,7 +121,7 @@ function record(student,mission,metrics){
   const entry={
     d:new Date().toISOString().slice(0,10), stu:student.id,
     act:mission.actName, comp:mission.comp, theme:mission.theme,
-    ok:!!metrics.ok, longest:Math.round(metrics.longest||0),
+    ok:!!metrics.ok, longest:Math.round(metrics.longest||0), chains:metrics.chains|0,
     stt:+(metrics.sttPct||0), sus:metrics.sus|0, ini:metrics.ini|0, rep:metrics.rep|0,
     err:metrics.err||{}, obs:String(metrics.obs||'')
   };
@@ -148,7 +148,7 @@ function footprint(student){
     blocked:blocked.map(c=>({c:c.c,dep:c.dep||('nível '+Object.keys(LV)[c.lo-1])})),
     journey:ses.map(s=>s.longest),
     sttAvg:ses.length?ses.reduce((s,x)=>s+x.stt,0)/ses.length:0,
-    chainsAvg:ses.length?Math.round(ses.reduce((s,x)=>s+x.sus+x.ini,0)/ses.length):0,
+    chainsAvg:ses.length?Math.round(ses.reduce((s,x)=>s+(x.chains!=null&&x.chains>0?x.chains:x.sus+x.ini),0)/ses.length):0,
     consolidated:open.filter(c=>st[c.c]&&st[c.c].consolidated).map(c=>c.c),
     developing:open.filter(c=>st[c.c]&&st[c.c].v>0&&!st[c.c].consolidated).map(c=>c.c),
     total:ses.length,
