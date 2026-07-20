@@ -6,6 +6,7 @@
 <title>Sabatovicz - Conversation Lessons</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="engine/teacher-mode.js?v=4"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { font-family: 'Inter', sans-serif; }
@@ -747,7 +748,7 @@ function renderLesson(){
 function stageBlock(color,title,sub,inner){
   return `<div class="stage" style="border-left-color:${color}">
     <div class="mb-4"><h3 class="text-xl font-bold text-white">${title}</h3>
-    <p class="text-slate-400 text-sm">${sub}</p></div>${inner}</div>`;
+    <p class="text-slate-400 text-sm teacher-only">${sub}</p></div>${inner}</div>`;
 }
 
 // ============ PDF ============
@@ -1020,8 +1021,8 @@ function renderEnriched(l){
   h+=stageBlock('#10b981','2 · Discover the pattern','5 min · '+stuName()+' finds the rule BEFORE you explain it',
     cp.discover.examples.map(e=>`<div class="q-item" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/<[^>]*>/g,'').replace(/'/g,"\\'")}')">►</button></div>`).join('')+
     `<div class="mt-3"><span class="chip">🔍 ${cp.discover.qs.form}</span><span class="chip">💭 ${cp.discover.qs.meaning}</span><span class="chip">🗣️ Say the rule in YOUR words</span></div>
-     <div class="mt-3 p-3 rounded-lg" style="background:#f8f7fe;border:1px solid #ece7fb">
-       <p class="text-slate-400 text-xs font-bold mb-1">Teacher help — hint ladder (only if stuck, one at a time):</p>
+     <div class="mt-3 p-3 rounded-lg teacher-only" style="background:#f8f7fe;border:1px solid #ece7fb">
+       <p class="text-slate-400 text-xs font-bold mb-1">Escada de dicas (só se travar, uma por vez):</p>
        <p class="text-slate-500 text-sm">1️⃣ ${cp.discover.hints[0]}<br>2️⃣ ${cp.discover.hints[1]}<br>3️⃣ ${cp.discover.hints[2]}</p>
      </div>
      <div class="text-center mt-4" id="cpRuleReveal">
@@ -1056,14 +1057,14 @@ function renderEnriched(l){
             <button onclick="judgeCpPr(${i},true)" id="cpy-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓ got it</button>
             <button onclick="judgeCpPr(${i},false)" id="cpn-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗ missed</button>
           </span>
-          <div class="text-xs" style="color:#7c3aed;margin-top:5px">↳ follow-up: ${cp.practiceFu[i]||'And you? Make it about YOUR life.'}</div>
+          <div class="text-xs teacher-only" style="color:#7c3aed;margin-top:5px">↳ follow-up: ${cp.practiceFu[i]||'And you? Make it about YOUR life.'}</div>
         </div>
       </div>`;
     }).join('')+`<div id="cpVerdict" style="margin-top:10px"></div>`);
 
   // 5 CONVERSATION (a estrela) — objetivo + escada + follow-ups reativos + vocab ao vivo + provocação
   const rung=(label,color,items)=>`<div style="margin:10px 0"><span class="chip" style="background:${color}22;color:${color};border-color:${color}55">${label}</span>`+
-    items.map(it=>`<div class="q-item" style="margin-top:6px"><div>${it.q}</div>${it.fu&&it.fu.length?`<div class="text-xs" style="color:#7c3aed;margin-top:5px">↳ dig deeper: ${it.fu.map(f=>'“'+f+'”').join(' · ')}</div>`:''}</div>`).join('')+`</div>`;
+    items.map(it=>`<div class="q-item" style="margin-top:6px"><div>${it.q}</div>${it.fu&&it.fu.length?`<div class="text-xs teacher-only" style="color:#7c3aed;margin-top:5px">↳ dig deeper: ${it.fu.map(f=>'“'+f+'”').join(' · ')}</div>`:''}</div>`).join('')+`</div>`;
   h+=stageBlock('#06b6d4','5 · Conversation — the real thing','15 min · '+stuName()+' speaks ~80% · a ladder, not an interrogation',
     `<div class="p-3 rounded-lg mb-2" style="background:#ecfeff;border:1px solid #a5f3fc"><span class="text-xs font-bold" style="color:#0e7490">🎯 THIS CONVERSATION:</span> <span class="text-slate-600 text-sm">${P(cp.convGoal)}</span></div>
      <p class="text-slate-400 text-sm mb-1">Climb the ladder: concrete first, then deeper. One question → listen → react in 1 sentence → follow-up. Correct nothing now (note it for the summary).</p>`+
@@ -1072,7 +1073,7 @@ function renderEnriched(l){
     rung('③ Your opinion','#db2777',cp.ladder.opinion)+
     rung('④ Imagine / hypothesis','#f59e0b',cp.ladder.hypothesis)+
     // follow-up REATIVO — reage ao que o aluno realmente diz
-    `<div class="mt-4 p-4 rounded-xl" style="background:#fffbeb;border:1px solid #fde68a">
+    `<div class="mt-4 p-4 rounded-xl teacher-only" style="background:#fffbeb;border:1px solid #fde68a">
        <p class="font-bold text-sm" style="color:#92400e">🔁 React to what ${stuName()} actually says (pick the follow-up that fits the answer):</p>
        <div class="text-slate-600 text-sm mt-2" style="line-height:1.9">
          • Answer too short / one word → <b>"Tell me more. / Give me an example."</b><br>
@@ -1085,11 +1086,11 @@ function renderEnriched(l){
        <p class="font-bold text-sm" style="color:#6d28d9">🔑 Target words — tap each one when ${stuName()} uses it in conversation (<b><span id="vUsed">0</span>/${l.vocab.length}</b> recycled):</p>
        <div class="mt-2">${l.vocab.map((v,i)=>`<span id="vchip-${i}" class="chip" style="cursor:pointer" onclick="markVocab(${i})">${v.en}</span>`).join('')}</div>
      </div>
-     <div class="mt-4 p-4 rounded-xl" style="background:linear-gradient(135deg,#faf5ff,#fdf2f8);border:1px solid #e9d5ff">
+     <div class="mt-4 p-4 rounded-xl teacher-only" style="background:linear-gradient(135deg,#faf5ff,#fdf2f8);border:1px solid #e9d5ff">
        <p class="font-bold" style="color:#7c3aed">🎭 Your turn to provoke (conversation is two-way — you talk ~20%):</p>
        <p class="text-slate-600 text-sm mt-1">"${cp.teacherOpinion}"</p>
      </div>
-     <div class="mt-3"><span class="text-slate-400 text-xs font-bold">Reaction words to feed ${stuName()} (put them on screen):</span><br>${cp.reactions.map(r=>`<span class="chip">${r}</span>`).join('')}</div>
+     <div class="mt-3"><span class="text-slate-500 text-xs font-bold">Palavras para reagir na conversa:</span><br>${cp.reactions.map(r=>`<span class="chip">${r}</span>`).join('')}</div>
      <div class="mt-4 p-4 rounded-xl" style="background:linear-gradient(135deg,#312e81 0%,#1e3a8a 100%);border:1px solid #6366f1">
        <p class="text-indigo-200 font-bold mb-2">${l.roleplay.title}</p>
        <p class="text-slate-300 text-sm mb-3">${l.roleplay.scenario}</p>
@@ -1097,7 +1098,7 @@ function renderEnriched(l){
      </div>`);
 
   // 6 EVIDENCE — 3 sinais de conversa real (SLF §8)
-  h+=stageBlock('#7c3aed','6 · Evidence — signs of real conversation','2 min · mark what you saw',
+  h+=stageBlock('#7c3aed','6 · Evidence — signs of real conversation','2 min · mark what you saw',"<div class='teacher-only'>"+
     [['Did '+stuName()+'’s turns get LONGER through the lesson?'],
      [stuName()+' started a topic or added something without being asked?'],
      [stuName()+' asked YOU a question back?']].map((t,i)=>`
@@ -1107,7 +1108,7 @@ function renderEnriched(l){
           <button onclick="judgeCpEv(${i},true)" id="evy-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓</button>
           <button onclick="judgeCpEv(${i},false)" id="evn-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗</button>
         </span>
-      </div>`).join('')+`<div id="evVerdict" style="margin-top:8px"></div>`);
+      </div>`).join('')+`<div id="evVerdict" style="margin-top:8px"></div></div>`);
 
   // 7 LESSON SUMMARY — desempenho + correções + sugestões de estudo
   h+=stageBlock('#16a34a','7 · Lesson summary','2 min · '+stuName()+'’s report for today',

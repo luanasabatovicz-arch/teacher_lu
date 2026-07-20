@@ -169,14 +169,22 @@ const ODD=[
   {w:['big','small','tall','chair'],odd:3,reason:'chair is not an adjective'},
   {w:['eye','nose','shoe','mouth'],odd:2,reason:'shoe is not part of the face'}
 ];
-let oIdx=0,oAns=null;
-function oNew(){oIdx=Math.floor(Math.random()*ODD.length);oAns=null;render();}
+function gShuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function gPick(len,last){if(len<2)return 0;let i;do{i=Math.floor(Math.random()*len);}while(i===last);return i;}
+let oIdx=0,oAns=null,oCur=null;
+function oNew(){
+  oIdx=gPick(ODD.length,oIdx);
+  const src=ODD[oIdx], correct=src.w[src.odd];
+  const w=gShuffle(src.w);                      // alternativas em ordem nova a cada rodada
+  oCur={w:w, odd:w.indexOf(correct), reason:src.reason};
+  oAns=null;render();
+}
 function oPick(i){oAns=i;render();}
 function renderOdd(){
-  const it=ODD[oIdx];
+  const it=oCur||(function(){const s=ODD[oIdx];return {w:s.w,odd:s.odd,reason:s.reason};})();
   let opts=it.w.map((w,i)=>{let cls='opt';if(oAns!==null){if(i===it.odd)cls+=' right';else if(i===oAns)cls+=' wrong';}return `<button class="chip" style="font-size:16px;padding:12px 18px;${oAns!==null&&i===it.odd?'background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff':''}${oAns!==null&&i===oAns&&i!==it.odd?'background:#fee2e2;color:#991b1b':''}" onclick="oPick(${i})">${w}</button>`;}).join(' ');
   let fb=oAns!==null?`<div class="feedback ${oAns===it.odd?'ok':'no'}">${oAns===it.odd?'Correct! ':'No. '}<b>${it.w[it.odd]}</b> — ${it.reason}.</div>`:'';
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Odd One Out</h2><p class="desc">The student says which word does not belong (and explains why in English) — then you click it.</p>
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Odd One Out</h2><p class="desc teacher-only">The student says which word does not belong (and explains why in English) — then you click it.</p>
   <div style="text-align:center;margin:16px 0">${opts}</div>${fb}
   <div style="text-align:center;margin-top:14px"><button class="btn cyan" onclick="oNew()">Next</button></div>`;
 }
@@ -188,11 +196,16 @@ const SORT=[
   {title:'Countable or Uncountable?',a:'Countable',b:'Uncountable',items:[['apple','Countable'],['water','Uncountable'],['book','Countable'],['rice','Uncountable'],['car','Countable'],['milk','Uncountable']]},
   {title:'Drink or Food?',a:'Drink',b:'Food',items:[['coffee','Drink'],['bread','Food'],['juice','Drink'],['cheese','Food'],['tea','Drink'],['rice','Food']]}
 ];
-let sIdx=0,sAns={};
-function sNew(){sIdx=Math.floor(Math.random()*SORT.length);sAns={};render();}
+let sIdx=0,sAns={},sCur=null;
+function sNew(){
+  sIdx=gPick(SORT.length,sIdx);
+  const src=SORT[sIdx], flip=Math.random()<0.5;
+  sCur={title:src.title, a:flip?src.b:src.a, b:flip?src.a:src.b, items:gShuffle(src.items)};
+  sAns={};render();
+}
 function sPick(i,v){if(sAns[i]!==undefined)return;sAns[i]=v;render();}
 function renderSort(){
-  const t=SORT[sIdx];
+  const t=sCur||SORT[sIdx];
   let rows=t.items.map((it,i)=>{
     const answered=sAns[i]!==undefined;
     const btn=(label)=>{
@@ -209,7 +222,7 @@ function renderSort(){
   }).join('');
   const done=Object.keys(sAns).length===t.items.length;
   let score='';if(done){let c=t.items.filter((it,i)=>sAns[i]===it[1]).length;score=`<div class="feedback info">Correct: <b>${c}/${t.items.length}</b></div>`;}
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Category Sort</h2><p class="desc">${t.title} — the student says the category for each word, and you click it. Instant feedback.</p>${rows}${score}
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Category Sort</h2><p class="desc"><b>${t.title}</b></p><p class="desc teacher-only">The student says the category for each word, and you click it.</p>${rows}${score}
   <div style="text-align:center;margin-top:16px"><button class="btn cyan" onclick="sNew()">Another set</button></div>`;
 }
 
@@ -295,5 +308,6 @@ function render(){
 }
 renderSelector();render();
 </script>
+<script src="engine/teacher-mode.js?v=4"></script>
 </body>
 </html>

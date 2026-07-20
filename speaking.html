@@ -75,7 +75,7 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
 </head>
 <body>
 <div class="topbar"><div class="in">
-  <div><h1>🗣 Speaking Lab</h1><small id="topsub">Catálogo completo · 20 atividades (§14) · SPEAKING-LAB.md é a fonte de verdade</small></div>
+  <div><h1>🗣 Speaking Lab</h1><small id="topsub">Fale inglês de verdade — uma missão por aula</small></div>
   <div style="display:flex;align-items:center;gap:12px">
     <span id="clock">–</span>
     <button class="menu-btn" onclick="goHome()">← Menu</button>
@@ -92,17 +92,6 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
   <div class="card"><div class="label">Aula de hoje — quem?</div><div id="stuRow"></div></div>
   <div class="card" id="brief"></div>
   <div class="card" id="briefAlt"></div>
-  <div class="card todo">
-    <div class="label" style="color:#92400e">⚠ TODOs — lacunas de spec (a página NÃO decide)</div>
-    <ul>
-      <li><b>TODO-1</b> · §16 não define o limiar de quebra da Interaction Chain — os 8s daqui são placeholder.</li>
-      <li><b>TODO-2</b> · §19.2(a): a engine já aceita "objetivo da semana", mas a fonte desse objetivo ainda não existe na plataforma.</li>
-      <li><b>TODO-3</b> · W9: regra de formulação do "Today's Win" não especificada — heurística ilustrativa.</li>
-      <li><b>TODO-4</b> · Tempos-alvo por nível são calibração operacional (§12), valores de teste.</li>
-      <li><b>TODO-5</b> · Evidence Checklist é auxílio visual; a spec só conhece o ✓/✗ final (V3).</li>
-      <li><b>✅ TODO-6 resolvido</b> · P6 real: destravamento = piso por nível + semanas concluídas no Grammar Engine (gev1|). Cadastro de alunos agora é o real (students.html).</li>
-    </ul>
-  </div>
 </div>
 
 <div id="p1" class="hid"><div class="room">
@@ -114,8 +103,9 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
 <div class="wrap hid" id="p2"><div id="closing"><p class="mut">Nenhuma missão encerrada ainda nesta sessão.</p></div></div>
 <div class="wrap hid" id="p3"><div id="fpView"></div></div>
 
-<script src="engine/speaking-activities.js?v=2"></script>
-<script src="engine/speaking-engine.js?v=2"></script>
+<script src="engine/speaking-activities.js?v=4"></script>
+<script src="engine/speaking-engine.js?v=4"></script>
+<script src="engine/teacher-mode.js?v=4"></script>
 <script>
 /* ============================================================
    Sprint 2: esta página é APENAS consumidora da SpeakingEngine.
@@ -161,9 +151,9 @@ function unlockedFor(st){
   return Object.keys(set);
 }
 
-/* Recovery §21 — escadas graduadas construídas sobre a MISSÃO fundida pela engine */
+/* Recovery  — escadas graduadas construídas sobre a MISSÃO fundida pela engine */
 const RECOVERY={
- silence:{n:'😶 silêncio',steps:m=>['Espere 5 segundos — silêncio é processamento (protocolo §21). Conte no relógio.',`Reformule mais simples: ${m.reform}`,'Ofereça escolha binária: "X or Y?"',`Desça um degrau: ${m.simple}`]},
+ silence:{n:'😶 silêncio',steps:m=>['Espere 5 segundos — silêncio é processamento (protocolo ). Conte no relógio.',`Reformule mais simples: ${m.reform}`,'Ofereça escolha binária: "X or Y?"',`Desça um degrau: ${m.simple}`]},
  mono:{n:'💬 só "yes"',steps:m=>[`Expanda: "${m.followups[0]||'Tell me more.'}"`,'Peça o porquê: "Why? Give me one more."','Personalize: "And YOU? And in your house?"']},
  pt:{n:'🇧🇷 português',steps:m=>[`Aceite o conteúdo, devolva a palavra-chave em inglês (pista): ${m.rescue.map(s=>'“'+s+'”').join(' · ')}`,'Provoque circumlocução: "Tell me in English — another way."',`Se travar de novo: ${m.simple}`]},
  stuck:{n:'🧊 travou',steps:m=>['Espere 5s. Não roube a fala que está vindo.','"Explain it another way" — circumlocução antes de pista.',`Pista por palavra/imagem (teto do socorro — R2): ${m.rescue.map(s=>'“'+s+'”').join(' · ')}`]}
@@ -195,7 +185,7 @@ function resumeLive(){
  document.getElementById('stage').innerHTML=`
   <div class="purpose">${mission.purpose}</div>
   <div class="evid">🎯 ${mission.evid}</div>
-  ${mission.slot?`<div class="slotbox">🖼 IMAGE SLOT · ${mission.slot} — asset do tema "${mission.theme}" (pendência nº1 da spec)</div>`:''}`;
+  ${mission.slot?`<div class="slotbox">🖼 imagem de ${mission.theme}</div>`:''}`;
  renderDock();
  document.body.classList.add('inlesson');
  show(1);
@@ -217,13 +207,13 @@ function brief(){
  if(!p){document.getElementById('brief').innerHTML=liveHtml+'<p class="mut">Nenhuma atividade elegível para este perfil.</p>';return;}
  mission=p.mission;altMission=p.alt;
  document.getElementById('brief').innerHTML=liveHtml+`
-  <div class="label">Missão de hoje — pronta (W1)</div>
+  <div class="label">Missão de hoje</div>
   <div class="purpose" style="font-size:21px">${mission.actName} <span style="color:var(--pink)">×</span> ${mission.theme}</div>
   <p style="margin:6px 0">${mission.purpose}</p>
   <p class="mut">🎯 ${mission.evid} &nbsp;·&nbsp; ⏱ ${mission.stt} &nbsp;·&nbsp; 🧭 ${p.why}</p>
   <button class="big" onclick="startMission(mission)">▶ Start Mission</button>`;
  document.getElementById('briefAlt').innerHTML=altMission?`
-  <div class="label">Prefere outra? (W2 — 1 clique)</div>
+  <div class="label">Prefere outra?</div>
   <b>${altMission.actName} × ${altMission.theme}</b> <span class="mut">· ${altMission.evid}</span>
   <div style="margin-top:6px"><button class="soft" onclick="startMission(altMission)">Usar esta</button></div>`:'';
 }
@@ -242,7 +232,7 @@ function startMission(m){
  document.getElementById('stage').innerHTML=`
   <div class="purpose">${m.purpose}</div>
   <div class="evid">🎯 ${m.evid}</div>
-  ${m.slot?`<div class="slotbox">🖼 IMAGE SLOT · ${m.slot} — asset do tema "${m.theme}" (pendência nº1 da spec)</div>`:''}`;
+  ${m.slot?`<div class="slotbox">🖼 imagem de ${m.theme}</div>`:''}`;
  renderDock();
  document.body.classList.add('inlesson');
  show(1);
@@ -250,7 +240,7 @@ function startMission(m){
  saveLive();
 }
 function abortMission(){
- if(!confirm('Sair SEM registrar? A missão não vai contar.\n\nSe a missão colapsou, o certo é encerrar com ✗ (a causa fica registrada) e fechar com 1 interação que '+stu.name+' domina (R4).'))return;
+ if(!confirm('Sair SEM registrar? A missão não vai contar.\n\nSe a missão colapsou, o certo é encerrar com ✗ (a causa fica registrada) e fechar com 1 interação que '+stu.name+' domina.'))return;
  clearInterval(clockTimer);clearLive();leaveLesson(0);brief();
 }
 function renderDock(){
@@ -265,7 +255,7 @@ function renderDock(){
     <button style="background:#db2777" onclick="mk('ini')" title="perguntou/propôs sem pedir">💗 Iniciativa <span id="ni">0</span></button>
     <button style="background:#f59e0b" onclick="mk('rep')" title="resolveu travada em inglês">🧡 Reparo <span id="nr">0</span></button>
   </div>
-  <div class="label" style="margin-top:6px">o aluno... (Recovery §21 — sugestão discreta, sem trocar de atividade)</div>
+  <div class="label" style="margin-top:6px">o aluno... (se travar)</div>
   <div class="mrow">${Object.keys(RECOVERY).map(k=>`<button class="sig" onclick="recover('${k}')">${RECOVERY[k].n}</button>`).join('')}</div>
   <div id="suggest"></div>
   <div class="panelbar">
@@ -278,8 +268,8 @@ function renderDock(){
   </div>
   <div id="panelBody"></div>
   <div class="evrow">
-    <button class="ok" onclick="finish(true)">✓ Evidência — encerrar e registrar</button>
-    <button class="bad" onclick="finish(false)">✗ Não rolou — encerrar e registrar</button>
+    <button class="ok" onclick="finish(true)">✓ Conseguiu — encerrar</button>
+    <button class="bad" onclick="finish(false)">✗ Não rolou — encerrar</button>
   </div>`;
  panel('fu'); /* padrão: o follow-up é o que ela mais precisa */
 }
@@ -288,12 +278,12 @@ function panel(k){
  if(S.panel===k){S.panel=null;el.innerHTML='';return;}
  S.panel=k;
  const bodies={
-  brief:`<div class="suggest"><small>MISSION BRIEF</small><br>${m.brief}</div>`,
-  fu:`<div class="suggest"><small>FOLLOW-UP SUGERIDO (bancos §8)</small><br>${m.followups.map(f=>'<span class="chip">'+f+'</span>').join('')}</div>`,
-  soc:`<div class="suggest"><small>VOCABULARY RESCUE — palavra/imagem, nunca frase pronta (R2)</small><br>${m.rescue.map(s=>'<span class="chip">'+s+'</span>').join('')}</div>`,
-  compl:`<div class="suggest"><small>COMPLICATION — injete quando ficar confortável (W6)</small><br>⚡ ${m.compl}</div>`,
-  check:`<div class="suggest"><small>EVIDENCE CHECKLIST (auxílio visual — o registro é o ✓/✗ final · TODO-5)</small><br>${m.check.map((c,i)=>`<span class="chip" style="cursor:pointer;${S.check[i]?'background:#dcfce7;color:#166534;border-color:#86efac':''}" onclick="ck(${i})">${S.check[i]?'✓ ':''}${c}</span>`).join('')}</div>`,
-  err:`<div class="suggest"><small>ANOTAR ERRO → fila (G4) — causa §17, 1 clique</small><br>
+  brief:`<div class="suggest"><small>COMO CONDUZIR</small><br>${m.brief}</div>`,
+  fu:`<div class="suggest"><small>PERGUNTAS PARA APROFUNDAR</small><br>${m.followups.map(f=>'<span class="chip">'+f+'</span>').join('')}</div>`,
+  soc:`<div class="suggest"><small>PALAVRAS DE SOCORRO</small><br>${m.rescue.map(s=>'<span class="chip">'+s+'</span>').join('')}</div>`,
+  compl:`<div class="suggest"><small>COMPLICAÇÃO — use se ficar fácil</small><br>⚡ ${m.compl}</div>`,
+  check:`<div class="suggest"><small>CHECKLIST DA MISSÃO</small><br>${m.check.map((c,i)=>`<span class="chip" style="cursor:pointer;${S.check[i]?'background:#dcfce7;color:#166534;border-color:#86efac':''}" onclick="ck(${i})">${S.check[i]?'✓ ':''}${c}</span>`).join('')}</div>`,
+  err:`<div class="suggest"><small>ANOTAR ERRO</small><br>
     <button class="soft" onclick="err('estrutural')">estrutural <b id="ee">${S.err.estrutural}</b></button>
     <button class="soft" onclick="err('lexical')">lexical <b id="el">${S.err.lexical}</b></button>
     <button class="soft" onclick="err('pron')">pronúncia <b id="ep">${S.err.pron}</b></button></div>`
@@ -333,7 +323,7 @@ function paint(){
  if(t%5===0)saveLive();
 }
 
-/* ================= fechamento — o ✓/✗ registra via engine (§19.7, atômico) ================= */
+/* ================= fechamento — o ✓/✗ registra via engine ================= */
 function finish(ok){
  flushTalk();S.talk=null;S.chains.push(S.chain);
  clearInterval(clockTimer);
@@ -362,14 +352,14 @@ function finish(ok){
    `${stu.name} falou ${ok?'até a evidência':'e tentou até o fim'}`;
  const nf=SpeakingEngine.nextFrontier(stu,{unlocked:unlockedFor(stu)});
  document.getElementById('closing').innerHTML=`
-  <div class="card" style="text-align:center;padding:10px"><span class="chip" style="background:#dcfce7;color:#166534;border-color:#86efac">✓ Registrado em 1 clique (§19.7 atômico) — evidência ${ok?'✓':'✗'} · STT · cadeias · maior conversa · iniciativa · reparo · ${errTotal} erro(s) → fila</span></div>
+  <div class="card" style="text-align:center;padding:10px"><span class="chip" style="background:#dcfce7;color:#166534;border-color:#86efac">✓ Registrado em 1 clique — evidência ${ok?'✓':'✗'} · STT · cadeias · maior conversa · iniciativa · reparo · ${errTotal} erro(s) → fila</span></div>
   <div class="win"><div class="label" style="color:#166534">🏆 Today's Win — diga isto a ${stu.name}</div><h2>"${win}"</h2>
   ${!ok?'<p class="mut">R4: antes de fechar, 1 interação de algo que ele(a) domina — a aula termina num ✓.</p>':''}</div>
   <div class="next"><div class="label">🧭 Next Frontier</div><b style="font-size:17px">${nf?nf.comp+' — '+nf.v+'/'+nf.need+' para consolidar · sugerida: '+nf.suggest:'—'}</b></div>
   <div class="card" style="margin-top:12px">
     <div class="sttbar"><div class="a" style="width:${Math.round(sttPct*100)}%"></div></div>
-    <p class="mut" style="text-align:center;margin:2px 0">quem falou mais? <b>${sttPct>=.5?stu.name+' 🎉':'você ⚠ (D1)'}</b> · maior conversa: <b>${fmt(longest)}</b></p>
-    <input class="obs" id="obsInp" placeholder="Observação opcional — 1 linha (W10)" onchange="SpeakingEngine.setObs(stu,this.value)">
+    <p class="mut" style="text-align:center;margin:2px 0">quem falou mais? <b>${sttPct>=.5?stu.name+' 🎉':'você ⚠'}</b> · maior conversa: <b>${fmt(longest)}</b></p>
+    <input class="obs" id="obsInp" placeholder="Observação opcional" onchange="SpeakingEngine.setObs(stu,this.value)">
     <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
       <button class="big" onclick="saveObsLeave(0)">▶ Próxima missão</button>
       <button class="soft" onclick="saveObsLeave(3)">Ver Footprint</button>
@@ -378,7 +368,7 @@ function finish(ok){
  leaveLesson(2);
 }
 
-/* ================= footprint (§18 — dados reais da engine) ================= */
+/* ================= footprint ================= */
 function fpView(){
  const fp=SpeakingEngine.footprint(stu);
  const bars=fp.bars.map(b=>{
@@ -387,8 +377,8 @@ function fpView(){
  const blocked=fp.blocked.map(b=>`<span class="chip" style="background:#f1f5f9;color:#64748b;border-color:#e2e8f0">🔒 ${b.c} — aguarda: ${b.dep}</span>`).join('');
  const journey=fp.journey.length?fp.journey.map(fmt).join('<br>↓<br>'):'—';
  document.getElementById('fpView').innerHTML=`
-  <div class="card"><div class="label">Speaking Footprint — ${stu.emoji||''} ${stu.name} · evolução comunicativa (sem notas)</div>${bars}
-   ${blocked?'<div style="margin-top:10px"><div class="label" style="color:#64748b">bloqueadas por dependência gramatical (P6)</div>'+blocked+'</div>':''}</div>
+  <div class="card"><div class="label">Evolução de ${stu.emoji||''} ${stu.name} · evolução comunicativa (sem notas)</div>${bars}
+   ${blocked?'<div style="margin-top:10px"><div class="label" style="color:#64748b">ainda não liberadas</div>'+blocked+'</div>':''}</div>
   <div class="card" style="display:flex;gap:14px;flex-wrap:wrap">
    <div style="flex:1;min-width:170px;text-align:center"><div class="label">Longest Conversation</div><div class="journey">${journey}</div></div>
    <div style="flex:1;min-width:170px">
