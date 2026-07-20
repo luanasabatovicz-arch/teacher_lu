@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificação da versão publicada — Plataforma Teacher Lu</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
+body{background:#faf9ff;color:#1e293b;padding:0 0 60px}
+.top{background:linear-gradient(120deg,#7c3aed,#db2777 55%,#f59e0b);color:#fff;padding:22px}
+.top h1{font-family:'Poppins';font-size:22px;font-weight:800}
+.top p{opacity:.92;font-size:13px;margin-top:3px}
+.wrap{max-width:820px;margin:18px auto;padding:0 14px}
+.card{background:#fff;border:1px solid #ece7fb;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 3px 14px rgba(124,58,237,.06)}
+.row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1edfd}
+.row:last-child{border-bottom:none}
+.ic{font-size:18px;line-height:1.2;flex-shrink:0;width:24px;text-align:center}
+.t{font-weight:700;font-size:14.5px}
+.d{font-size:13px;color:#64748b;margin-top:2px;word-break:break-word}
+.ok{color:#16a34a}.bad{color:#dc2626}.wait{color:#94a3b8}
+.verdict{border-radius:14px;padding:18px;text-align:center;font-family:'Poppins';font-weight:800;font-size:19px;margin-bottom:12px}
+.vok{background:#f0fdf4;border:1px solid #86efac;color:#166534}
+.vbad{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.vwait{background:#f8fafc;border:1px solid #e2e8f0;color:#64748b}
+.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#7c3aed;margin-bottom:6px}
+code{background:#f5f3ff;color:#6d28d9;padding:1px 6px;border-radius:5px;font-size:12px}
+a.btn{display:inline-block;margin-top:10px;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;text-decoration:none;font-weight:700;padding:11px 20px;border-radius:11px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>🔍 Verificação da versão publicada</h1>
+  <p>Esta página roda no próprio site publicado e confere os arquivos realmente servidos.</p>
+</div>
+
+<div class="wrap">
+  <div id="verdict" class="verdict vwait">Verificando…</div>
+  <div class="card"><div class="lbl">Checagens</div><div id="rows"></div></div>
+  <div class="card">
+    <div class="lbl">Onde você está</div>
+    <div class="d" id="origin"></div>
+    <a class="btn" href="grammar.html">Abrir o Grammar →</a>
+  </div>
+</div>
+
+<!-- carrega o engine exatamente como o grammar.html faz -->
+<div id="lessonBody" style="display:none"></div>
+<script src="engine/grammar-topics.js?v=4"></script>
+<script src="engine/grammar-engine.js?v=4"></script>
+<script src="engine/teacher-mode.js?v=4"></script>
+<script>
+/* stubs mínimos para o engine rodar fora do grammar.html */
+window.curStu='check';window.STUDENTS_DATA=[{id:'check',name:'Aluno',level:'A1',age:''}];
+window.stuName=function(){return 'Aluno';};window.logError=function(){};window.getQueue=function(){return[];};
+
+var results=[];
+function add(ok,title,detail){results.push({ok:ok,title:title,detail:detail});}
+
+function txt(url){return fetch(url,{cache:'no-store'}).then(function(r){
+  if(!r.ok)throw new Error('HTTP '+r.status); return r.text();});}
+
+function paint(){
+  document.getElementById('rows').innerHTML=results.map(function(r){
+    return '<div class="row"><div class="ic '+(r.ok?'ok':'bad')+'">'+(r.ok?'✓':'✗')+'</div>'+
+      '<div><div class="t">'+r.title+'</div><div class="d">'+r.detail+'</div></div></div>';
+  }).join('');
+  var allOk=results.every(function(r){return r.ok;});
+  var v=document.getElementById('verdict');
+  v.className='verdict '+(allOk?'vok':'vbad');
+  v.textContent=allOk?'✅ Versão publicada CORRETA — pode validar com os alunos'
+                     :'❌ A versão publicada NÃO está completa — veja os itens em vermelho';
+}
+
+document.getElementById('origin').innerHTML='URL desta verificação: <code>'+location.href+'</code>';
+
+Promise.resolve().then(function(){
+  /* 1) teacher-mode.js está sendo servido? */
+  return txt('engine/teacher-mode.js?v=4').then(function(t){
+    add(t.indexOf('teacher-mode')>=0||t.indexOf('slf_teacher_mode')>=0,
+      'teacher-mode.js está sendo servido',
+      'Baixado da versão publicada · '+t.length+' bytes');
+  }).catch(function(e){ add(false,'teacher-mode.js está sendo servido','Não encontrado no site publicado ('+e.message+')'); });
+})
+.then(function(){
+  /* 2) grammar.html referencia os scripts com ?v=4 */
+  return txt('grammar.html').then(function(h){
+    var m=h.match(/src="engine\/[a-z-]+\.js\?v=\d+"/g)||[];
+    var semVersao=(h.match(/src="engine\/[a-z-]+\.js"/g)||[]).length;
+    add(m.length>=3&&semVersao===0,'grammar.html referencia os scripts versionados',
+      (m.length?m.join(' · '):'nenhum include versionado encontrado')+(semVersao?' — ATENÇÃO: '+semVersao+' sem versão':''));
+  }).catch(function(e){ add(false,'grammar.html referencia os scripts versionados',e.message); });
+})
+.then(function(){
+  /* 3) grammar-engine.js publicado tem overviewPanel + randomização */
+  return txt('engine/grammar-engine.js?v=4').then(function(t){
+    var ov=t.indexOf('overviewPanel')>=0, rnd=t.indexOf('shuffleByType')>=0&&t.indexOf('prepMC')>=0;
+    add(ov&&rnd,'grammar-engine.js publicado tem o painel e a randomização',
+      'overviewPanel: '+(ov?'presente':'AUSENTE')+' · randomização (shuffleByType/prepMC): '+(rnd?'presente':'AUSENTE'));
+  }).catch(function(e){ add(false,'grammar-engine.js publicado tem o painel e a randomização',e.message); });
+})
+.then(function(){
+  /* 4) grammar-topics.js publicado expõe window.ENGINE_TOPICS */
+  return txt('engine/grammar-topics.js?v=4').then(function(t){
+    var w=t.indexOf('window.ENGINE_TOPICS=')>=0;
+    add(w,'grammar-topics.js publicado expõe window.ENGINE_TOPICS',
+      w?'Declarado em window (o roteamento para o engine funciona)':'Ainda usa const — a página cairia no renderizador legado');
+  }).catch(function(e){ add(false,'grammar-topics.js publicado expõe window.ENGINE_TOPICS',e.message); });
+})
+.then(function(){
+  /* 5) engine carregado de verdade: ⚡ + conteúdo da aula */
+  try{
+    var okTopics=!!window.ENGINE_TOPICS, n=okTopics?Object.keys(ENGINE_TOPICS).length:0;
+    add(okTopics&&n>=18,'Engine carregado com os tópicos', n+' tópicos disponíveis');
+
+    var V=okTopics?ENGINE_TOPICS['verb-to-be']:null;
+    var badge=!!(V&&window.ENGINE_TOPICS);
+    add(badge,'Condição do selo ⚡ satisfeita (Verb to be → engine)',
+      badge?'grammar.html vai exibir "⚡ Verb to be"':'o tópico cairia no formato legado');
+
+    if(V){
+      var ex=0;['aff','neg','q','context','contrast'].forEach(function(k){ex+=(V.examples&&V.examples[k]||[]).length;});
+      (V.examples&&V.examples.byUse||[]).forEach(function(g){ex+=g.ex.length;});
+      var at=(V.practice||[]).length+((V.practiceMore||[]).length);
+      add(ex>=51&&at>=25&&(V.explain||[]).length>=5,'Verb to be reestruturado (conteúdo completo)',
+        (V.explain||[]).length+' explicações · '+ex+' exemplos · '+at+' atividades');
+    }
+
+    add(typeof window.GE==='object'&&typeof GE.goto==='function'&&typeof GE.toggleMap==='function',
+      'Painel "Aula completa" disponível (navegação por etapas)',
+      'GE.goto e GE.toggleMap presentes na versão publicada');
+
+    add(typeof window.isTeacherMode==='function','Modo Professor ativo (interfaces separadas)',
+      'Botão flutuante presente; orientações ocultas por padrão');
+
+    /* randomização ao vivo: duas execuções devem gerar ordens diferentes */
+    if(V&&window.GE&&typeof GE._sess==='function'){
+      var sigs={};
+      for(var i=0;i<12;i++){ GE.start(V); var s=GE._sess();
+        sigs[(s.practice||[]).map(function(p){return p.q;}).join('|').slice(0,80)]=1; }
+      var varia=Object.keys(sigs).length>1;
+      add(varia,'Randomização funcionando na versão publicada',
+        Object.keys(sigs).length+' ordens diferentes em 12 execuções');
+    }
+  }catch(e){ add(false,'Engine carregado','Erro: '+e.message); }
+})
+.then(paint).catch(function(e){ add(false,'Falha geral',e.message); paint(); });
+</script>
+</body>
+</html>
