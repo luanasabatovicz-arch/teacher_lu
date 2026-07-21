@@ -3,54 +3,231 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sabatovicz — Complete Online Lesson System</title>
+  <title>Teacher Lu Platform</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-    body{background:#ffffff;color:#1e293b;min-height:100vh;}
-    h1,h2{font-family:'Poppins',sans-serif;font-weight:800;}
-    .hero{background:linear-gradient(120deg,#7c3aed 0%,#db2777 55%,#f59e0b 100%);color:#fff;text-align:center;padding:64px 24px 56px;box-shadow:0 8px 30px rgba(124,58,237,.3);}
-    .hero .eyebrow{font-size:12px;letter-spacing:.3em;text-transform:uppercase;opacity:.9;font-weight:600;}
-    .hero h1{font-size:60px;line-height:1.05;margin:12px 0 8px;}
-    .hero p{font-size:18px;opacity:.95;font-weight:400;}
-    .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:46px 0 20px;}
-    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr;}}
-    @media(max-width:620px){.grid{grid-template-columns:1fr;}.hero h1{font-size:44px;}}
-    .card{background:#fff;border:1px solid #eee7fb;border-radius:16px;padding:0;text-decoration:none;overflow:hidden;transition:all .25s;box-shadow:0 4px 18px rgba(124,58,237,.08);display:flex;flex-direction:column;}
-    .card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(124,58,237,.2);}
-    .bar{height:8px;}
-    .b1{background:linear-gradient(90deg,#ec4899,#f472b6);}
-    .b2{background:linear-gradient(90deg,#f59e0b,#facc15);}
-    .b3{background:linear-gradient(90deg,#22c55e,#4ade80);}
-    .b4{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
-    .b5{background:linear-gradient(90deg,#7c3aed,#a78bfa);}
-    .b6{background:linear-gradient(90deg,#f43f5e,#fb7185);}
-    .b7{background:linear-gradient(90deg,#0ea5a5,#2dd4bf);}
-    .b8{background:linear-gradient(90deg,#ff8a3d,#ff4d9d);}
-    .inner{padding:28px 26px 26px;display:flex;flex-direction:column;flex:1;}
-    .eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;}
-    .e1{color:#db2777;}.e2{color:#d97706;}.e3{color:#16a34a;}.e4{color:#0891b2;}.e5{color:#7c3aed;}.e6{color:#e11d48;}.e7{color:#0d9488;}.e8{color:#ea580c;}
-    .card h2{font-size:25px;color:#1e293b;margin:10px 0 10px;}
-    .card p{color:#64748b;font-size:14px;line-height:1.55;margin-bottom:18px;flex:1;}
-    .cta{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.04em;padding:11px 18px;border-radius:10px;color:#fff;width:fit-content;}
-    .c1{background:linear-gradient(135deg,#ec4899,#f472b6);}
-    .c2{background:linear-gradient(135deg,#f59e0b,#facc15);color:#7a4a00;}
-    .c3{background:linear-gradient(135deg,#22c55e,#4ade80);}
-    .c4{background:linear-gradient(135deg,#06b6d4,#22d3ee);}
-    .c5{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
-    .c6{background:linear-gradient(135deg,#f43f5e,#fb7185);}
-    .c7{background:linear-gradient(135deg,#0ea5a5,#2dd4bf);}
-    .c8{background:linear-gradient(135deg,#ff8a3d,#ff4d9d);}
-    footer{text-align:center;padding:40px 24px 56px;color:#94a3b8;font-size:13px;}
-    footer b{color:#7c3aed;letter-spacing:.2em;text-transform:uppercase;font-size:12px;}
-  </style>
+ <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+:root{
+    --navy:#121F39;
+    --blue:#166581;
+    --purple:#4E3768;
+    --deep:#321C3A;
+    --rose:#D86375;
+    --pink:#F31CB6;
+
+    --text:#24324A;
+    --text-light:#64748B;
+    --border:#E6E8F2;
+    --background:#F8FAFC;
+    --white:#FFFFFF;
+}
+
+body{
+    background:var(--background);
+    color:var(--text);
+    min-height:100vh;
+}
+
+h1,h2{
+    font-family:'Poppins',sans-serif;
+}
+
+.hero{
+    background:linear-gradient(135deg,var(--navy),var(--purple),var(--blue));
+    color:white;
+    text-align:center;
+    padding:40px 20px 35px;
+    box-shadow:0 8px 30px rgba(72, 17, 78, 0.3);
+}
+
+.hero img{
+    width:190px;
+    max-width:90%;
+    margin-bottom:16px;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.hero h1{
+    font-size:56px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.hero p{
+    font-size:22px;
+    font-weight:500;
+    opacity:.95;
+    margin:0;
+}
+.wrap{
+    max-width:1200px;
+    margin:auto;
+    padding:50px 24px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:26px;
+}
+
+@media(max-width:900px){
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:650px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero h1{
+        font-size:42px;
+    }
+}
+
+.card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    transition:.25s;
+    box-shadow:0 10px 28px rgba(18,31,57,.08);
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 38px rgba(18,31,57,.15);
+}
+
+.bar{
+    height:8px;
+    background:linear-gradient(90deg,var(--purple),var(--pink));
+}
+
+.b1{background:linear-gradient(90deg,var(--purple),var(--pink));}
+.b2{background:linear-gradient(90deg,var(--blue),var(--purple));}
+.b3{background:linear-gradient(90deg,var(--blue),var(--rose));}
+.b4{background:linear-gradient(90deg,var(--navy),var(--blue));}
+.b5{background:linear-gradient(90deg,var(--purple),var(--rose));}
+.b6{background:linear-gradient(90deg,var(--rose),var(--pink));}
+.b7{background:linear-gradient(90deg,var(--blue),var(--pink));}
+.b8{background:linear-gradient(90deg,var(--deep),var(--purple));}
+
+.inner{
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+}
+
+.eyebrow{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--blue);
+}
+
+.e1,.e2,.e3,.e4,.e5,.e6,.e7,.e8{
+    color:var(--blue);
+}
+
+.card h2{
+    margin:10px 0 12px;
+    font-size:24px;
+    color:var(--navy);
+}
+
+.card p{
+    color:var(--text-light);
+    line-height:1.6;
+    font-size:14px;
+    flex:1;
+    margin-bottom:22px;
+}
+
+.cta{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:max-content;
+    padding:12px 20px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--navy),var(--blue));
+    color:white;
+    font-weight:600;
+    font-size:14px;
+    transition:.2s;
+}
+
+.cta:hover{
+    filter:brightness(1.08);
+}
+
+.c1,.c2,.c3,.c4,.c5,.c6,.c7,.c8{
+    background:linear-gradient(135deg,var(--navy),var(--blue));
+    color:white;
+}
+
+footer{
+    margin-top:40px;
+    text-align:center;
+    padding:60px 25px;
+    color:var(--text-light);
+}
+
+footer h2{
+    color:var(--navy);
+    margin-bottom:8px;
+    font-size:28px;
+}
+
+footer .verse{
+    max-width:650px;
+    margin:30px auto 12px;
+    font-style:italic;
+    font-size:16px;
+    line-height:1.8;
+    color:var(--purple);
+}
+
+footer .reference{
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:28px;
+}
+
+footer .copyright{
+    font-size:13px;
+    color:#94A3B8;
+}
+</style>
 </head>
 <body>
   <div class="hero">
-    <p class="eyebrow">Teaching System</p>
-    <h1>Sabatovicz</h1>
-    <p>Complete Online Lesson System</p>
+
+  <img src="assets/logo-teacher-lu.png"
+       alt="Teacher Lu Platform"
+       style="width:280px;max-width:60%;margin-bottom:20px;">
+
+  <p style="font-size:18px;opacity:.95;">
+    Your Complete Teaching Workspace
+  </p>
+
   </div>
 
   <div class="wrap">
@@ -159,9 +336,25 @@
     </div>
   </div>
 
-  <footer>
-    <b>Sabatovicz</b>
-    <p style="margin-top:8px">Complete Online Lesson System</p>
-  </footer>
+<footer>
+
+    <h2>Teacher Lu Platform</h2>
+
+    <p>My Complete Teaching Workspace</p>
+
+    <p class="verse">
+        "Commit to the Lord whatever you do,
+        and He will establish your plans."
+    </p>
+
+    <p class="reference">
+        — Proverbs 16:3
+    </p>
+
+    <p class="copyright">
+        © 2026 Teacher Lu Platform. All rights reserved.
+    </p>
+
+</footer>
 </body>
 </html>
