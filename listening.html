@@ -50,8 +50,12 @@
   .btn{border:none;border-radius:10px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:10px 18px;font-size:14px;color:#fff;transition:all .2s;background:linear-gradient(135deg,#166581,#0d9488);box-shadow:0 4px 14px rgba(13,148,136,.22);}
   .btn:hover{transform:translateY(-2px);}
   .btn.ghost{background:#e6f6f4;color:#0f766e;box-shadow:none;}
+  .transcript-actions{display:flex;gap:9px;flex-wrap:wrap;}
   .transcript{display:none;margin-top:13px;background:#f4fbfa;border:1px solid #d7ebe8;border-radius:10px;padding:15px 17px;font-size:15.5px;line-height:1.7;color:#334155;}
   .transcript.show{display:block;}
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#0f4c48;color:#fff;border-radius:12px;padding:13px 20px;font-size:14px;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:all .22s;z-index:80;}
+  .toast.show{opacity:1;transform:translateX(-50%);}
 
   /* vocabulary */
   .vocab{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -127,6 +131,8 @@
 
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script src="engine/listening-content.js?v=1"></script>
 <script>
 /* ================================================================
@@ -196,7 +202,10 @@ function renderLesson(){
      <div id="audioSlot"></div>
 
      <div class="sec no-print" style="margin-top:16px">
-       <button class="btn ghost" id="btnTranscript" onclick="toggleTranscript()">Show transcript</button>
+       <div class="transcript-actions">
+         <button class="btn ghost" id="btnTranscript" onclick="toggleTranscript()">Show transcript</button>
+         <button class="btn ghost" onclick="copyTranscript()">📋 Copy transcript for TTS</button>
+       </div>
        <div class="transcript" id="transcript">${rich(l.transcript)}</div>
      </div>` +
 
@@ -273,6 +282,42 @@ function toggleTranscript(){
   const b = document.getElementById('btnTranscript');
   const showing = t.classList.toggle('show');
   b.textContent = showing ? 'Hide transcript' : 'Show transcript';
+}
+
+/** Copia o transcript puro (o texto que vai para o TTS) e avisa. */
+function copyTranscript(){
+  const l = CONTENT.find(x=>x.id===curId);
+  if(!l) return;
+  const text = l.transcript;   // texto cru, sem HTML — pronto para o TTS
+
+  const done = ()=>toast('Transcript copied.');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text, done));
+  }else{
+    fallbackCopy(text, done);
+  }
+}
+
+/** Cópia via textarea temporária — funciona sem a Clipboard API. */
+function fallbackCopy(text, done){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); done(); }
+  catch(e){ toast('Could not copy — select the transcript and copy manually.'); }
+  document.body.removeChild(ta);
+}
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2400);
 }
 
 function answerTF(btn, correct){
