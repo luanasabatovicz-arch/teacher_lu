@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabatovicz — Listening Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;font-weight:700;}
+  body{background:#fff;color:#1e293b;min-height:100vh;}
+
+  /* topbar — mesmo padrão dos demais módulos */
+  .topbar{background:linear-gradient(120deg,#166581 0%,#0d9488 55%,#0284c7 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(13,148,136,.28);}
+  .topwrap{max-width:1000px;margin:0 auto;}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
+  .menu-btn:hover{background:rgba(255,255,255,.38);}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 24px 70px;}
+  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(13,148,136,.08);padding:22px;margin-bottom:18px;}
+
+  /* filtros */
+  .filters{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:12px;}
+  @media(max-width:700px){.filters{grid-template-columns:1fr;}}
+  .filters label{display:block;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;}
+  .sel{width:100%;padding:11px 12px;border:2px solid #d7ebe8;border-radius:10px;font-size:14.5px;color:#1e293b;background:#f4fbfa;font-family:'Inter';cursor:pointer;}
+  .sel:focus{outline:none;border-color:#0d9488;}
+
+  /* lição */
+  .lesson-head{border-left:5px solid #0d9488;padding-left:16px;margin-bottom:8px;}
+  .lesson-head h2{font-size:25px;color:#0f4c48;}
+  .lesson-head .meta{color:#64748b;font-size:14px;margin-top:3px;}
+  .lvl{display:inline-block;font-size:10.5px;font-weight:800;background:#ccfbf1;color:#0f766e;border:1px solid #99f6e4;border-radius:99px;padding:3px 9px;margin-left:8px;vertical-align:2px;}
+  .theme-badge{display:inline-block;font-size:11.5px;font-weight:700;background:#e0f2fe;color:#075985;border:1px solid #bae6fd;border-radius:99px;padding:3px 10px;}
+
+  /* player */
+  .player{background:linear-gradient(135deg,#166581,#0d9488);color:#fff;border-radius:14px;padding:18px;margin:14px 0 4px;}
+  .player .lbl{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:10px;}
+  .player audio{width:100%;height:44px;}
+  .player .missing{font-size:13px;opacity:.92;margin-top:10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);border-radius:9px;padding:9px 12px;line-height:1.5;}
+  .player .missing code{background:rgba(255,255,255,.18);border-radius:5px;padding:1px 6px;font-size:12.5px;}
+
+  .sec{margin-top:22px;}
+  .sec > h3{font-size:14px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#0d9488;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:2px solid #d7f0ec;margin-bottom:13px;}
+  .sec > h3 .n{background:#0d9488;color:#fff;width:21px;height:21px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+
+  /* transcript */
+  .btn{border:none;border-radius:10px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:10px 18px;font-size:14px;color:#fff;transition:all .2s;background:linear-gradient(135deg,#166581,#0d9488);box-shadow:0 4px 14px rgba(13,148,136,.22);}
+  .btn:hover{transform:translateY(-2px);}
+  .btn.ghost{background:#e6f6f4;color:#0f766e;box-shadow:none;}
+  .transcript{display:none;margin-top:13px;background:#f4fbfa;border:1px solid #d7ebe8;border-radius:10px;padding:15px 17px;font-size:15.5px;line-height:1.7;color:#334155;}
+  .transcript.show{display:block;}
+
+  /* vocabulary */
+  .vocab{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  @media(max-width:640px){.vocab{grid-template-columns:1fr;}}
+  .vocab .v{background:#f4fbfa;border:1px solid #d7ebe8;border-radius:9px;padding:10px 13px;font-size:14.5px;}
+  .vocab .v b{color:#0f766e;}
+  .vocab .v span{color:#64748b;}
+
+  /* drills */
+  .drill{background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:10px 13px;margin-bottom:6px;font-size:15px;display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
+  .drill .q{flex:1;min-width:190px;}
+  .drill .num{font-weight:800;color:#94a3b8;font-size:13px;}
+  .reveal{background:#e6f6f4;border:none;color:#0f766e;font-weight:700;font-size:12px;padding:5px 12px;border-radius:99px;cursor:pointer;}
+  .reveal:hover{background:#0d9488;color:#fff;}
+  .ans{display:none;color:#15803d;font-weight:700;font-size:14.5px;}
+  .ans.show{display:inline;}
+
+  /* true/false */
+  .tf{display:flex;align-items:center;gap:11px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:10px 13px;margin-bottom:6px;font-size:15px;}
+  .tf .s{flex:1;}
+  .tf .pick{display:flex;gap:6px;}
+  .tf .pick button{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:5px 13px;font-weight:700;font-size:13px;cursor:pointer;color:#475569;}
+  .tf .pick button.on-t{background:#16a34a;border-color:#16a34a;color:#fff;}
+  .tf .pick button.on-f{background:#dc2626;border-color:#dc2626;color:#fff;}
+  .tf .mark{font-weight:800;font-size:15px;width:20px;text-align:center;}
+
+  /* speaking */
+  .speak{background:linear-gradient(135deg,#0284c7,#0d9488);color:#fff;border-radius:12px;padding:15px 17px;}
+  .speak .q{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:8px;padding:9px 13px;font-size:14.5px;margin-bottom:7px;}
+  .speak .q:last-child{margin-bottom:0;}
+
+  .hint{font-size:13px;color:#94a3b8;}
+  @media print{.topbar,.filters,.reveal,.btn,.no-print{display:none!important;}.transcript{display:block!important;}.ans{display:inline!important;}.card{box-shadow:none;border-color:#ddd;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1 style="font-size:26px">🎧 Listening Lab</h1>
+        <p style="opacity:.9;font-size:14px">Micro listenings — pick any image of the same theme, the audio does the rest</p>
+      </div>
+      <a href="index.html" class="menu-btn">← Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- FILTROS -->
+  <div class="card no-print">
+    <div class="filters">
+      <div>
+        <label>Level</label>
+        <select class="sel" id="fLevel"></select>
+      </div>
+      <div>
+        <label>Theme</label>
+        <select class="sel" id="fTheme"></select>
+      </div>
+      <div>
+        <label>Listening</label>
+        <select class="sel" id="fListening"></select>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:11px">Show any photo of the theme (Google, Canva, Pinterest, your own). The listening only works the context — it fits dozens of images of the same subject.</p>
+  </div>
+
+  <!-- LIÇÃO -->
+  <div class="card" id="lessonCard"></div>
+
+</div>
+
+<script src="engine/listening-content.js?v=1"></script>
+<script>
+/* ================================================================
+   Listening Lab — apresentação
+   ----------------------------------------------------------------
+   Esta página só RENDERIZA. Todo o conteúdo vive em
+   engine/listening-content.js. Nenhuma regra de negócio aqui.
+   Módulo isolado: não toca em Learning Progress, Calendar, Finance.
+   ================================================================ */
+
+const LEVELS   = window.LISTENING_LEVELS.slice();
+const THEMES   = window.LISTENING_THEMES.slice();
+const CONTENT  = window.LISTENING_CONTENT.slice();
+const AUDIO_DIR = 'audio/';
+
+let curLevel = LEVELS[0];
+let curTheme = THEMES[0];
+let curId    = null;
+
+const esc  = t => String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const rich = t => esc(t).replace(/&lt;(\/?[bi])&gt;/g,'<$1>');
+
+/** Listenings que batem com o nível e tema atuais. */
+function matching(){
+  return CONTENT.filter(l => l.level===curLevel && l.theme===curTheme);
+}
+
+function fillSelect(el, values, current){
+  el.innerHTML = values.map(v=>{
+    const val = typeof v==='object' ? v.value : v;
+    const lab = typeof v==='object' ? v.label : v;
+    return `<option value="${esc(val)}" ${val===current?'selected':''}>${esc(lab)}</option>`;
+  }).join('');
+}
+
+function renderFilters(){
+  fillSelect(document.getElementById('fLevel'), LEVELS, curLevel);
+  fillSelect(document.getElementById('fTheme'), THEMES, curTheme);
+  const list = matching();
+  // se o listening atual não pertence ao filtro, escolhe o primeiro
+  if(!list.some(l=>l.id===curId)) curId = list.length ? list[0].id : null;
+  fillSelect(document.getElementById('fListening'),
+    list.map(l=>({value:l.id, label:l.title})), curId);
+  document.getElementById('fListening').disabled = !list.length;
+}
+
+/* ---------- as seções ---------- */
+function section(n, title, body){
+  return `<div class="sec"><h3><span class="n">${n}</span>${title}</h3>${body}</div>`;
+}
+
+function renderLesson(){
+  const box = document.getElementById('lessonCard');
+  const l = CONTENT.find(x=>x.id===curId);
+  if(!l){ box.innerHTML = '<p class="hint">No listening for this level and theme yet.</p>'; return; }
+  let n = 0;
+
+  box.innerHTML =
+    `<div class="lesson-head">
+       <h2>${esc(l.title)}<span class="lvl">${esc(l.level)}</span></h2>
+       <div class="meta"><span class="theme-badge">${esc(l.theme)}</span></div>
+     </div>
+
+     <div class="player">
+       <div class="lbl">▶ Audio · listen first</div>
+       <audio controls preload="none" id="player"
+              onerror="document.getElementById('audioMissing').style.display='block'">
+         <source src="${AUDIO_DIR}${esc(l.audio)}" type="audio/mpeg">
+       </audio>
+       <div class="missing" id="audioMissing" style="display:none">
+         The audio file <code>${AUDIO_DIR}${esc(l.audio)}</code> isn't there yet.
+         Drop the MP3 into the <code>audio/</code> folder with this exact name and it will play — no code change needed.
+         You can still use the transcript and all the exercises below.
+       </div>
+     </div>
+
+     <div class="sec no-print" style="margin-top:16px">
+       <button class="btn ghost" id="btnTranscript" onclick="toggleTranscript()">Show transcript</button>
+       <div class="transcript" id="transcript">${rich(l.transcript)}</div>
+     </div>` +
+
+    section(++n, 'Vocabulary',
+      `<div class="vocab">${l.vocabulary.map(v=>
+        `<div class="v"><b>${esc(v.word)}</b> — <span>${esc(v.meaning)}</span></div>`).join('')}</div>`) +
+
+    section(++n, 'Comprehension',
+      l.comprehension.map((c,i)=>`<div class="drill">
+        <span class="num">${i+1}.</span><span class="q">${esc(c.q)}</span>
+        <button class="reveal" onclick="this.nextElementSibling.classList.toggle('show')">answer</button>
+        <span class="ans">${esc(c.a)}</span></div>`).join('')) +
+
+    section(++n, 'Complete the sentence',
+      l.complete.map((c,i)=>`<div class="drill">
+        <span class="num">${i+1}.</span><span class="q">${esc(c.q)}</span>
+        <button class="reveal" onclick="this.nextElementSibling.classList.toggle('show')">answer</button>
+        <span class="ans">${esc(c.a)}</span></div>`).join('')) +
+
+    section(++n, 'True or false',
+      l.trueFalse.map((t,i)=>`<div class="tf">
+        <span class="num">${i+1}.</span><span class="s">${esc(t.s)}</span>
+        <span class="pick">
+          <button onclick="answerTF(this,${t.a===true})">True</button>
+          <button onclick="answerTF(this,${t.a===false})">False</button>
+        </span>
+        <span class="mark"></span></div>`).join('')) +
+
+    section(++n, 'Speaking follow-up',
+      `<div class="speak">${l.speaking.map(q=>`<div class="q">${esc(q)}</div>`).join('')}</div>`);
+}
+
+/* ---------- microinterações ---------- */
+function toggleTranscript(){
+  const t = document.getElementById('transcript');
+  const b = document.getElementById('btnTranscript');
+  const showing = t.classList.toggle('show');
+  b.textContent = showing ? 'Hide transcript' : 'Show transcript';
+}
+
+function answerTF(btn, correct){
+  const wrap = btn.closest('.tf');
+  wrap.querySelectorAll('.pick button').forEach(b=>b.classList.remove('on-t','on-f'));
+  const isTrue = btn.textContent === 'True';
+  btn.classList.add(isTrue ? 'on-t' : 'on-f');
+  wrap.querySelector('.mark').textContent = correct ? '✓' : '✗';
+  wrap.querySelector('.mark').style.color = correct ? '#16a34a' : '#dc2626';
+}
+
+/* ---------- eventos dos filtros ---------- */
+document.getElementById('fLevel').addEventListener('change', e=>{ curLevel=e.target.value; renderFilters(); renderLesson(); });
+document.getElementById('fTheme').addEventListener('change', e=>{ curTheme=e.target.value; renderFilters(); renderLesson(); });
+document.getElementById('fListening').addEventListener('change', e=>{ curId=e.target.value; renderLesson(); });
+
+renderFilters();
+renderLesson();
+</script>
+</body>
+</html>
