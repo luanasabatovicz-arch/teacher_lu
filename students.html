@@ -99,30 +99,17 @@
   </div>
 </div>
 
+<script src="platform-students.js?v=1"></script>
 <script>
 /* ---------- shared student store (used by annual-plan.html and schedule.html) ---------- */
-const STU_KEY='sabatovicz_students';
-const DEFAULT_STUDENTS=[
-  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
-  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
-  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
-  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
-  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
-  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
-  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
-];
-function loadStudents(){
-  try{
-    const v=localStorage.getItem(STU_KEY);
-    if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}
-  }catch(e){}
-  localStorage.setItem(STU_KEY,JSON.stringify(DEFAULT_STUDENTS));
-  return DEFAULT_STUDENTS.slice();
-}
-function saveStudents(a){localStorage.setItem(STU_KEY,JSON.stringify(a));}
-function slug(name){
-  return name.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||('stu'+Date.now());
-}
+/* ---------- student store — fonte única: platform-students.js ----------
+   O bloco DEFAULT_STUDENTS/loadStudents que existia aqui foi centralizado.
+   Estes aliases mantêm o restante desta página inalterado. -------------- */
+const STU_KEY = TeacherLu.Students.KEY;
+const DEFAULT_STUDENTS = TeacherLu.Students.DEFAULTS;
+function loadStudents(){ return TeacherLu.Students.load(); }
+function saveStudents(a){ return TeacherLu.Students.save(a); }
+function slug(name){ return TeacherLu.Students.slug(name); }
 
 /* ---------- page state ---------- */
 const EMOJIS=['🌟','🚀','⚽','🌸','🎨','🎸','🦄','🐱','🐶','🦊','🐼','🦋','🌈','🔥','💎','🎮','📚','🎧','🏀','🍀','🧜‍♀️','🦖','👑','🤖'];
@@ -244,7 +231,14 @@ function saveStudent(){
     while(students.some(x=>x.id===id))id=base+'-'+(n++);
     students.push({id,name,emoji:selEmoji,level,age});
   }
-  saveStudents(students);
+  // F-2: só reporta sucesso se a gravação persistiu. Se falhar (storage cheio),
+  // recarrega o estado salvo para não deixar a tela divergir do disco.
+  if(!saveStudents(students)){
+    alert('Could not save — the browser storage may be full. Nothing was changed.');
+    students=loadStudents();
+    render();
+    return;
+  }
   render();closeModal();
 }
 
@@ -252,8 +246,14 @@ function removeStudent(id){
   const s=students.find(x=>x.id===id);
   if(!s)return;
   if(!confirm(`Remove ${s.name}? Their saved progress stays in the browser in case you add them back.`))return;
+  const backup=students.slice();
   students=students.filter(x=>x.id!==id);
-  saveStudents(students);
+  if(!saveStudents(students)){
+    alert('Could not save — the browser storage may be full. Nothing was changed.');
+    students=backup;
+    render();
+    return;
+  }
   render();
 }
 

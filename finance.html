@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabatovicz — Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="finance.css">
+</head>
+<body>
+
+<!-- ============================ TOP BAR ============================ -->
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1 style="font-size:26px">Finance</h1>
+        <p style="opacity:.9;font-size:14px">Income, expenses and monthly profit for my private lessons</p>
+      </div>
+      <a href="index.html" class="menu-btn">← Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============================ TABS ============================ -->
+  <div class="tabs no-print">
+    <button class="tab active" data-panel="dashboard">Dashboard</button>
+    <button class="tab" data-panel="students">Students</button>
+    <button class="tab" data-panel="income">Income</button>
+    <button class="tab" data-panel="expenses">Expenses</button>
+    <button class="tab" data-panel="reports">Monthly summary</button>
+  </div>
+
+  <!-- ============================ DASHBOARD ============================ -->
+  <section class="panel active" id="panel-dashboard">
+    <div class="card">
+      <div class="row" style="margin-bottom:16px">
+        <h3 class="section-title" style="margin:0">Overview — <span id="dashMonthLabel">—</span></h3>
+        <div class="toolbar" style="margin:0">
+          <input type="month" id="dashMonth" class="inp inp-sm" aria-label="Reference month">
+          <button class="btn gray sm no-print" id="btnExportPdf">⬇ PDF</button>
+          <button class="btn gray sm no-print" id="btnExportCsv">⬇ CSV</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi pos">
+          <div class="bar" style="background:linear-gradient(90deg,#0d9488,#166581)"></div>
+          <div class="kbody">
+            <div class="klabel">Received</div>
+            <div class="kvalue" id="kReceived">—</div>
+            <div class="khint" id="kReceivedHint">this month</div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="bar" style="background:linear-gradient(90deg,#166581,#4E3768)"></div>
+          <div class="kbody">
+            <div class="klabel">Expected</div>
+            <div class="kvalue" id="kExpected">—</div>
+            <div class="khint" id="kExpectedHint">from the billing engine</div>
+          </div>
+        </div>
+        <div class="kpi warn">
+          <div class="bar" style="background:linear-gradient(90deg,#D86375,#F31CB6)"></div>
+          <div class="kbody">
+            <div class="klabel">Pending</div>
+            <div class="kvalue" id="kPending">—</div>
+            <div class="khint" id="kPendingHint">still to receive</div>
+          </div>
+        </div>
+        <div class="kpi neg">
+          <div class="bar" style="background:linear-gradient(90deg,#b91c1c,#D86375)"></div>
+          <div class="kbody">
+            <div class="klabel">Expenses</div>
+            <div class="kvalue" id="kExpenses">—</div>
+            <div class="khint" id="kExpensesHint">this month</div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="bar" style="background:linear-gradient(90deg,#121F39,#166581)"></div>
+          <div class="kbody">
+            <div class="klabel">Net profit</div>
+            <div class="kvalue" id="kProfit">—</div>
+            <div class="khint">received − expenses</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">Who still owes this month</h3>
+      <div class="table-scroll">
+        <table id="tblDue">
+          <thead>
+            <tr>
+              <th class="no-sort">Student</th>
+              <th class="no-sort">Plan</th>
+              <th class="no-sort">Status</th>
+              <th class="no-sort num">Amount due</th>
+              <th class="no-sort num">Action</th>
+            </tr>
+          </thead>
+          <tbody id="dueBody"></tbody>
+        </table>
+      </div>
+      <p class="hint">Everything here is calculated by the billing engine — status, amounts, late fee and interest are never stored, so they can never go out of sync.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">Next charges — 30 days</h3>
+      <div class="table-scroll">
+        <table id="tblUpcoming">
+          <thead>
+            <tr>
+              <th class="no-sort">Student</th>
+              <th class="no-sort">Plan</th>
+              <th class="no-sort">Due</th>
+              <th class="no-sort num">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="upcomingBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ STUDENTS ============================ -->
+  <section class="panel" id="panel-students">
+    <div class="card">
+      <div class="row" style="margin-bottom:14px">
+        <h3 class="section-title" style="margin:0">Billing plans (<span id="stuCount">0</span>)</h3>
+        <button class="btn blue sm no-print" id="btnAddBilling">+ New billing plan</button>
+      </div>
+
+      <div class="toolbar no-print">
+        <input type="search" id="stuSearch" class="inp inp-sm" placeholder="Search student…">
+        <select id="stuStatus" class="inp inp-sm">
+          <option value="">All statuses</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+          <option value="overdue">Overdue</option>
+          <option value="none">No billing set</option>
+        </select>
+        <select id="stuType" class="inp inp-sm"></select>
+        <div class="spacer"></div>
+        <span class="hint" style="margin:0">Month: <b id="stuMonthLabel">—</b></span>
+      </div>
+
+      <div class="table-scroll">
+        <table id="tblStudents">
+          <thead>
+            <tr>
+              <th data-sort="name">Name <span class="arrow">▼</span></th>
+              <th data-sort="type">Plan <span class="arrow">▼</span></th>
+              <th data-sort="expected" class="num">Expected <span class="arrow">▼</span></th>
+              <th data-sort="nextDue">Next due <span class="arrow">▼</span></th>
+              <th data-sort="status">Status <span class="arrow">▼</span></th>
+              <th class="no-sort num">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="stuBody"></tbody>
+        </table>
+      </div>
+      <p class="hint" id="calendarStatus"></p>
+      <p class="hint">
+        The student list is read from the <a href="students.html" style="color:#7c3aed;font-weight:700">Students</a> module
+        and lessons from the <a href="schedule.html" style="color:#7c3aed;font-weight:700">Lesson Calendar</a> —
+        Finance only reads them, never changes them.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ INCOME ============================ -->
+  <section class="panel" id="panel-income">
+    <div class="card">
+      <div class="row" style="margin-bottom:14px">
+        <h3 class="section-title" style="margin:0">Income records (<span id="incCount">0</span>)</h3>
+        <button class="btn blue sm no-print" id="btnAddIncome">+ Add income</button>
+      </div>
+
+      <div class="toolbar no-print">
+        <input type="search" id="incSearch" class="inp inp-sm" placeholder="Search student or notes…">
+        <select id="incStudent" class="inp inp-sm"><option value="">All students</option></select>
+        <select id="incMethod" class="inp inp-sm"><option value="">All methods</option></select>
+        <input type="month" id="incMonth" class="inp inp-sm" aria-label="Filter by month">
+        <button class="btn gray sm" id="incClear">Clear</button>
+      </div>
+
+      <div class="table-scroll">
+        <table id="tblIncome">
+          <thead>
+            <tr>
+              <th data-sort="date">Date <span class="arrow">▼</span></th>
+              <th data-sort="studentName">Student <span class="arrow">▼</span></th>
+              <th data-sort="amount" class="num">Amount <span class="arrow">▼</span></th>
+              <th data-sort="method">Method <span class="arrow">▼</span></th>
+              <th class="no-sort">Notes</th>
+              <th class="no-sort num">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="incBody"></tbody>
+        </table>
+      </div>
+      <p class="hint">Total shown: <b id="incTotal">—</b></p>
+    </div>
+  </section>
+
+  <!-- ============================ EXPENSES ============================ -->
+  <section class="panel" id="panel-expenses">
+    <div class="card">
+      <div class="row" style="margin-bottom:14px">
+        <h3 class="section-title" style="margin:0">Expenses (<span id="expCount">0</span>)</h3>
+        <button class="btn blue sm no-print" id="btnAddExpense">+ Add expense</button>
+      </div>
+
+      <div class="toolbar no-print">
+        <input type="search" id="expSearch" class="inp inp-sm" placeholder="Search description…">
+        <select id="expCategory" class="inp inp-sm"><option value="">All categories</option></select>
+        <input type="month" id="expMonth" class="inp inp-sm" aria-label="Filter by month">
+        <button class="btn gray sm" id="expClear">Clear</button>
+      </div>
+
+      <div class="table-scroll">
+        <table id="tblExpenses">
+          <thead>
+            <tr>
+              <th data-sort="date">Date <span class="arrow">▼</span></th>
+              <th data-sort="category">Category <span class="arrow">▼</span></th>
+              <th data-sort="description">Description <span class="arrow">▼</span></th>
+              <th data-sort="amount" class="num">Amount <span class="arrow">▼</span></th>
+              <th class="no-sort num">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="expBody"></tbody>
+        </table>
+      </div>
+      <p class="hint">Total shown: <b id="expTotal">—</b></p>
+    </div>
+  </section>
+
+  <!-- ============================ REPORTS ============================ -->
+  <section class="panel" id="panel-reports">
+    <div class="card">
+      <div class="row" style="margin-bottom:6px">
+        <h3 class="section-title" style="margin:0">Monthly summary</h3>
+        <select id="repYear" class="inp inp-sm no-print"></select>
+      </div>
+      <div class="chart-grid" style="margin-top:16px">
+        <div>
+          <h3 style="font-size:14px;margin-bottom:10px">Income per month</h3>
+          <div class="chart-box"><canvas id="chartIncome"></canvas></div>
+        </div>
+        <div>
+          <h3 style="font-size:14px;margin-bottom:10px">Expenses by category</h3>
+          <div class="chart-box"><canvas id="chartCategory"></canvas></div>
+        </div>
+      </div>
+      <div style="margin-top:26px">
+        <h3 style="font-size:14px;margin-bottom:10px">Monthly profit</h3>
+        <div class="chart-box"><canvas id="chartProfit"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================ MODAL: BILLING ============================ -->
+<div class="ov" id="ovBilling">
+  <div class="modal" style="max-width:520px">
+    <h3 id="billingTitle">New billing plan</h3>
+    <p class="sub">Each student has their own independent plan.</p>
+
+    <label class="lbl">Student</label>
+    <select class="inp" id="bStudent"></select>
+
+    <label class="lbl">Plan type</label>
+    <select class="inp" id="bType"></select>
+    <p class="hint" id="bTypeHint"></p>
+
+    <!-- Fields below are shown/hidden by plan type (see BILLING_TYPES) -->
+    <div class="form-2">
+      <div data-field="amount">
+        <label class="lbl">Amount (R$)</label>
+        <input class="inp" id="bAmount" type="number" min="0" step="10" placeholder="e.g. 320">
+      </div>
+      <div data-field="dueDay">
+        <label class="lbl">Due day</label>
+        <select class="inp" id="bDueDay"></select>
+      </div>
+      <div data-field="customDay">
+        <label class="lbl">Charge day</label>
+        <select class="inp" id="bCustomDay"></select>
+      </div>
+      <div data-field="weekday">
+        <label class="lbl">Weekday</label>
+        <select class="inp" id="bWeekday"></select>
+      </div>
+      <div data-field="anchorDate">
+        <label class="lbl">Start / purchase date</label>
+        <input class="inp" id="bAnchorDate" type="date">
+      </div>
+      <div data-field="lessonSource">
+        <label class="lbl">Count lessons from</label>
+        <select class="inp" id="bLessonSource">
+          <option value="calendar">Lesson Calendar</option>
+          <option value="estimate">My own forecast</option>
+        </select>
+      </div>
+      <div data-field="lessonsPerMonth">
+        <label class="lbl">Lessons per month</label>
+        <input class="inp" id="bLessonsPerMonth" type="number" min="0" step="1">
+      </div>
+      <div data-field="lessonsTotal">
+        <label class="lbl">Lessons in package</label>
+        <input class="inp" id="bLessonsTotal" type="number" min="1" step="1">
+      </div>
+      <div data-field="lessonsUsed">
+        <label class="lbl">Lessons used</label>
+        <input class="inp" id="bLessonsUsed" type="number" min="0" step="1">
+      </div>
+    </div>
+
+    <!-- Advanced: collapsed by default, most plans never need it -->
+    <div class="adv-toggle" id="bAdvancedToggle">
+      <span><b>Discount, late fee and interest</b>
+        <span class="hint" style="display:block;margin:2px 0 0">optional — off by default</span></span>
+      <span class="chev">▾</span>
+    </div>
+    <div class="adv" id="bAdvanced">
+      <div class="form-2">
+        <div>
+          <label class="lbl">Discount</label>
+          <select class="inp" id="bDiscountType">
+            <option value="none">None</option>
+            <option value="percent">Percent (%)</option>
+            <option value="fixed">Fixed (R$)</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl">Discount value</label>
+          <input class="inp" id="bDiscountValue" type="number" min="0" step="1">
+        </div>
+        <div>
+          <label class="lbl">Late fee (multa)</label>
+          <select class="inp" id="bLateFeeType">
+            <option value="none">None</option>
+            <option value="percent">Percent (%)</option>
+            <option value="fixed">Fixed (R$)</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl">Late fee value</label>
+          <input class="inp" id="bLateFeeValue" type="number" min="0" step="1">
+        </div>
+        <div>
+          <label class="lbl">Interest (% per month)</label>
+          <input class="inp" id="bInterest" type="number" min="0" step="0.5">
+        </div>
+        <div>
+          <label class="lbl">Grace days</label>
+          <input class="inp" id="bGraceDays" type="number" min="0" step="1">
+        </div>
+      </div>
+    </div>
+
+    <label class="lbl">Notes (optional)</label>
+    <input class="inp" id="bNotes" placeholder="e.g. pays between the 5th and the 12th">
+
+    <div class="preview" id="bPreview"></div>
+
+    <div class="modal-actions">
+      <button class="btn blue" style="flex:1" id="bSave">Save plan</button>
+      <button class="btn gray" data-close>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ MODAL: INCOME ============================ -->
+<div class="ov" id="ovIncome">
+  <div class="modal">
+    <h3 id="incomeTitle">Add income</h3>
+    <p class="sub">Record money you actually received.</p>
+
+    <div class="form-2">
+      <div>
+        <label class="lbl">Date</label>
+        <input class="inp" id="iDate" type="date">
+      </div>
+      <div>
+        <label class="lbl">Amount (R$)</label>
+        <input class="inp" id="iAmount" type="number" min="0" step="10" placeholder="e.g. 320">
+      </div>
+    </div>
+
+    <label class="lbl">Student</label>
+    <select class="inp" id="iStudent"></select>
+
+    <label class="lbl">Payment method</label>
+    <select class="inp" id="iMethod"></select>
+
+    <label class="lbl">Notes (optional)</label>
+    <input class="inp" id="iNotes" placeholder="e.g. paid together with the extra Saturday lesson">
+
+    <div class="modal-actions">
+      <button class="btn blue" style="flex:1" id="iSave">Save</button>
+      <button class="btn gray" data-close>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ MODAL: EXPENSE ============================ -->
+<div class="ov" id="ovExpense">
+  <div class="modal">
+    <h3 id="expenseTitle">Add expense</h3>
+    <p class="sub">Anything you spend to run your lessons.</p>
+
+    <div class="form-2">
+      <div>
+        <label class="lbl">Date</label>
+        <input class="inp" id="eDate" type="date">
+      </div>
+      <div>
+        <label class="lbl">Amount (R$)</label>
+        <input class="inp" id="eAmount" type="number" min="0" step="10" placeholder="e.g. 49.90">
+      </div>
+    </div>
+
+    <label class="lbl">Category</label>
+    <select class="inp" id="eCategory"></select>
+
+    <label class="lbl">Description</label>
+    <input class="inp" id="eDescription" placeholder="e.g. Canva Pro subscription">
+
+    <div class="modal-actions">
+      <button class="btn blue" style="flex:1" id="eSave">Save</button>
+      <button class="btn gray" data-close>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- Shared read-only adapter over the Lesson Calendar. Loaded before finance.js. -->
+<script src="platform-calendar.js"></script>
+<script src="finance.js"></script>
+</body>
+</html>

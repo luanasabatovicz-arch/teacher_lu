@@ -126,6 +126,8 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
   </div>
 </div>
 
+<script src="platform-students.js?v=1"></script>
+<script src="platform-print.js?v=1"></script>
 <script>
 // ============ GRAMMAR LESSON BANK ============
 const tenses = [
@@ -653,21 +655,12 @@ function judgeET(i,ok){
 }
 
 // ---- shared student store (managed in students.html) ----
-const STU_KEY='sabatovicz_students';
-const DEFAULT_STUDENTS=[
-  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
-  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
-  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
-  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
-  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
-  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
-  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
-];
-function loadStudents(){
-  try{const v=localStorage.getItem(STU_KEY);if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}}catch(e){}
-  localStorage.setItem(STU_KEY,JSON.stringify(DEFAULT_STUDENTS));
-  return DEFAULT_STUDENTS.slice();
-}
+/* ---------- student store — fonte única: platform-students.js ----------
+   O bloco DEFAULT_STUDENTS/loadStudents que existia aqui foi centralizado.
+   Estes aliases mantêm o restante desta página inalterado. -------------- */
+const STU_KEY = TeacherLu.Students.KEY;
+const DEFAULT_STUDENTS = TeacherLu.Students.DEFAULTS;
+function loadStudents(){ return TeacherLu.Students.load(); }
 const STUDENTS_DATA=loadStudents();
 let curStu=localStorage.getItem('sabatovicz_current_student');
 if(!STUDENTS_DATA.some(s=>s.id===curStu))curStu=STUDENTS_DATA.length?STUDENTS_DATA[0].id:null;
@@ -739,7 +732,7 @@ function exportEngineLesson(T){
   printDoc(h,'Sabatovicz — '+cl(T.name));
 }
 
-function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
+function printDoc(html,title){ TeacherLu.printDoc(html, title); }
 
 function goHome(){window.location.href='index.html';}
 

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabatovicz — Build Today's Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;font-weight:700;}
+  body{background:#fff;color:#1e293b;min-height:100vh;}
+
+  .topbar{background:linear-gradient(120deg,#121F39 0%,#7c3aed 50%,#db2777 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(124,58,237,.3);}
+  .topwrap{max-width:1000px;margin:0 auto;}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
+  .menu-btn:hover{background:rgba(255,255,255,.38);}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 24px 70px;}
+  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;}
+
+  .stu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:700px){.stu-grid{grid-template-columns:1fr 1fr;}}
+  .stu{padding:10px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#f1edfd;color:#5b21b6;border:2px solid transparent;transition:all .2s;}
+  .stu:hover{border-color:#a78bfa;}
+  .stu.active{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;}
+
+  .dur-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .dur{padding:14px 10px;border-radius:12px;cursor:pointer;background:#f8f7fe;border:2px solid #ece7fb;transition:all .2s;text-align:center;}
+  .dur:hover{border-color:#a78bfa;}
+  .dur.active{background:linear-gradient(135deg,#121F39,#7c3aed);border-color:transparent;color:#fff;}
+  .dur .m{font-family:'Poppins';font-weight:800;font-size:22px;}
+  .dur .l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-top:2px;}
+
+  /* contexto lido da plataforma */
+  .ctx{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media(max-width:760px){.ctx{grid-template-columns:1fr 1fr;}}
+  .ctx-box{background:#f8f7fe;border:1px solid #ece7fb;border-radius:11px;padding:12px 14px;}
+  .ctx-box .l{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;}
+  .ctx-box .v{font-family:'Poppins';font-weight:800;font-size:20px;color:#1e293b;margin-top:4px;}
+  .ctx-box .s{font-size:12px;color:#64748b;margin-top:2px;}
+  .sources{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px;}
+  .src{font-size:11.5px;font-weight:700;border-radius:99px;padding:4px 11px;background:#ecfdf5;color:#0f766e;border:1px solid #a7f3d0;}
+  .src.off{background:#f1f5f9;color:#94a3b8;border-color:#e2e8f0;}
+
+  /* blocos do plano */
+  .block{border:1px solid #ece7fb;border-radius:13px;padding:15px 17px;margin-bottom:11px;background:#fff;transition:all .2s;}
+  .block:hover{border-color:#d6c8f5;box-shadow:0 4px 16px rgba(124,58,237,.09);}
+  .block .head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+  .block .tag{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:4px 10px;border-radius:99px;flex-shrink:0;}
+  .block .mins{margin-left:auto;font-size:12px;font-weight:800;color:#7c3aed;background:#f5f3ff;border-radius:99px;padding:4px 11px;flex-shrink:0;}
+  .block .ti{font-size:16.5px;font-weight:700;font-family:'Poppins';color:#1e293b;flex:1;min-width:180px;}
+  .block .why{margin-top:9px;font-size:13.5px;color:#475569;line-height:1.55;background:#f8fafc;border-left:3px solid #a78bfa;border-radius:0 8px 8px 0;padding:9px 12px;}
+  .block .why b{color:#5b21b6;}
+
+  .t-warmup,.t-review{background:#fff7ed;color:#c2410c;}
+  .t-grammar,.t-focus{background:#e0f2fe;color:#075985;}
+  .t-structures{background:#e0f2fe;color:#0284c7;}
+  .t-vocabulary{background:#f5f3ff;color:#6d28d9;}
+  .t-speaking{background:#fce7f3;color:#be185d;}
+  .t-exercise{background:#ecfdf5;color:#047857;}
+  .t-conversation{background:#fef3c7;color:#b45309;}
+  .t-homework{background:#f1f5f9;color:#475569;}
+
+  /* modo aula */
+  .lesson-nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+  .step{background:#f1edfd;color:#5b21b6;border:none;border-radius:99px;padding:7px 14px;font-weight:700;font-size:12.5px;cursor:pointer;transition:all .2s;}
+  .step:hover{background:#ddd6fe;}
+  .step.active{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;}
+  .step.done{background:#dcfce7;color:#15803d;}
+
+  .stage{border-left:5px solid #7c3aed;padding-left:16px;margin-bottom:14px;}
+  .stage h2{font-size:24px;color:#1e293b;}
+  .stage .meta{color:#64748b;font-size:13.5px;margin-top:3px;}
+
+  .sec{margin-top:18px;}
+  .sec h4{font-size:12.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#7c3aed;padding-bottom:6px;border-bottom:2px solid #f1edfd;margin-bottom:11px;}
+  .explain{font-size:15.5px;line-height:1.65;color:#334155;}
+  .points{list-style:none;margin-top:11px;}
+  .points li{background:#f8fafc;border-left:3px solid #c4b5fd;border-radius:0 8px 8px 0;padding:9px 13px;margin-bottom:6px;font-size:14.5px;line-height:1.5;}
+  .ex-group{margin-bottom:12px;}
+  .ex-group .use{font-size:13px;font-weight:800;color:#4E3768;margin-bottom:5px;}
+  .ex-line{background:#faf9ff;border:1px solid #ece7fb;border-radius:9px;padding:9px 13px;margin-bottom:5px;font-size:15px;}
+  .ex-line b{color:#7c3aed;}
+  .mistake{background:#fff7f7;border:1px solid #fecdd3;border-radius:10px;padding:11px 14px;margin-bottom:8px;}
+  .mistake .bad{color:#b91c1c;font-size:14.5px;}.mistake .bad::before{content:'✗ ';font-weight:800;}
+  .mistake .good{color:#15803d;font-size:14.5px;margin-top:3px;}.mistake .good::before{content:'✓ ';font-weight:800;}
+  .mistake .why2{color:#64748b;font-size:12.5px;margin-top:4px;font-style:italic;}
+  .drill{background:#f8f7fe;border:1px solid #ece7fb;border-radius:9px;padding:10px 13px;margin-bottom:6px;font-size:15px;display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
+  .drill .q{flex:1;min-width:190px;}
+  .drill .num{font-weight:800;color:#94a3b8;font-size:13px;}
+  .reveal{background:#ede9fe;border:none;color:#5b21b6;font-weight:700;font-size:12px;padding:5px 12px;border-radius:99px;cursor:pointer;}
+  .reveal:hover{background:#7c3aed;color:#fff;}
+  .ans{display:none;color:#15803d;font-weight:700;font-size:14.5px;}
+  .ans.show{display:inline;}
+  .speak{background:linear-gradient(135deg,#db2777,#f472b6);color:#fff;border-radius:12px;padding:15px 17px;font-size:15.5px;line-height:1.6;}
+  .cue{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38);border-radius:8px;padding:8px 12px;font-size:14px;margin-top:6px;}
+  .conv{background:#faf9ff;border:1px solid #ece7fb;border-radius:9px;padding:10px 13px;margin-bottom:6px;font-size:15px;display:flex;gap:10px;}
+  .conv .n{color:#db2777;font-weight:800;flex-shrink:0;}
+  .review-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px 17px;}
+  .review-box ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+  .review-box li{background:#fff;border:1px solid #bbf7d0;border-radius:99px;padding:6px 13px;font-size:13.5px;color:#15803d;}
+  .review-box .one{font-size:15px;color:#166534;font-weight:600;font-style:italic;}
+  .goal-box{background:linear-gradient(135deg,#121F39,#7c3aed);color:#fff;border-radius:12px;padding:13px 17px;font-size:15px;margin-bottom:6px;}
+
+  .btn{border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(124,58,237,.2);}
+  .btn:hover{transform:translateY(-2px);}
+  .btn.primary{background:linear-gradient(135deg,#121F39,#7c3aed);}
+  .btn.green{background:linear-gradient(135deg,#16a34a,#4ade80);}
+  .btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
+  .btn.sm{padding:9px 15px;font-size:13.5px;border-radius:10px;}
+  .btn.big{padding:16px 34px;font-size:17px;}
+  .actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
+  .hint{font-size:13px;color:#94a3b8;}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#121F39;color:#fff;border-radius:12px;padding:13px 20px;font-size:14px;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:all .22s;z-index:80;}
+  .toast.show{opacity:1;transform:translateX(-50%);}
+  .hide{display:none;}
+  @media print{.topbar,.no-print,.reveal{display:none!important;}.ans{display:inline!important;}.card{box-shadow:none;border-color:#ddd;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1 style="font-size:26px">Build Today's Lesson</h1>
+        <p style="opacity:.9;font-size:14px">What should I teach this student today — answered from what the platform already knows</p>
+      </div>
+      <a href="index.html" class="menu-btn">← Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ PLANEJAMENTO ============ -->
+  <div id="planView">
+
+    <div class="card no-print">
+      <div class="row" style="margin-bottom:10px">
+        <h3 style="font-size:15px">1 · Student</h3>
+        <a href="students.html" style="font-size:13px;font-weight:700;color:#7c3aed;text-decoration:none">⚙ Manage students</a>
+      </div>
+      <div class="stu-grid" id="stuGrid"></div>
+    </div>
+
+    <div class="card no-print">
+      <h3 style="font-size:15px;margin-bottom:12px">2 · How long is the lesson?</h3>
+      <div class="dur-grid" id="durGrid"></div>
+      <p class="hint" id="durNote" style="margin-top:11px"></p>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:15px;margin-bottom:13px">What the platform knows about <span id="ctxName">—</span></h3>
+      <div class="ctx" id="ctxGrid"></div>
+      <div class="sources" id="ctxSources"></div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="margin-bottom:14px">
+        <h3 style="font-size:15px;margin:0">Suggested lesson · <span id="planTotal">—</span></h3>
+        <button class="btn gray sm no-print" onclick="rebuild()">↻ Rebuild</button>
+      </div>
+      <div id="blocks"></div>
+      <div class="actions no-print" style="margin-top:18px">
+        <button class="btn primary big" onclick="startLesson()">▶ Start Lesson</button>
+        <button class="btn gray sm" onclick="window.print()">⬇ PDF</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ MODO AULA ============ -->
+  <div id="lessonView" class="hide">
+    <div class="card no-print">
+      <div class="row">
+        <div>
+          <h3 style="font-size:15px;margin:0">Lesson with <span id="lessonStudent">—</span></h3>
+          <p class="hint" id="lessonMeta"></p>
+        </div>
+        <button class="btn gray sm" onclick="backToPlan()">← Back to plan</button>
+      </div>
+      <div class="lesson-nav" id="lessonNav" style="margin-top:14px"></div>
+    </div>
+
+    <div class="card" id="stageCard"></div>
+
+    <div class="card no-print">
+      <div class="actions">
+        <button class="btn gray" onclick="prevStage()">← Previous</button>
+        <button class="btn primary" onclick="nextStage()">Next →</button>
+        <span style="flex:1"></span>
+        <button class="btn green" onclick="finishLesson()">✓ Finish &amp; record</button>
+      </div>
+      <p class="hint" style="margin-top:10px">Finishing records every content of this lesson in the student's Learning Progress.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="platform-students.js?v=1"></script>
+<script src="platform-content.js?v=1"></script>
+<script src="engine/conversation-lessons.js?v=1"></script>
+<script src="engine/curriculum-map.js?v=1"></script>
+<script src="platform-progress.js?v=1"></script>
+<script src="platform-calendar.js?v=1"></script>
+<script src="engine/grammar-topics.js?v=4"></script>
+<script src="engine/speaking-activities.js?v=4"></script>
+<script src="engine/structures-content.js?v=1"></script>
+<script src="platform-lesson-builder.js?v=1"></script>
+<script>
+/* ================================================================
+   Build Today's Lesson — apresentação
+   ----------------------------------------------------------------
+   Zero conteúdo próprio. Tudo vem do TeacherLu.LessonBuilder, que
+   por sua vez lê Content, Progress, Calendar e o Curriculum Map.
+   ================================================================ */
+
+const LB = TeacherLu.LessonBuilder;
+const STUDENTS = TeacherLu.Students.load();
+
+let student  = STUDENTS.length ? STUDENTS[0].id : null;
+let duration = 45;
+let plan     = null;
+let stageIx  = 0;
+
+const esc  = t => String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const rich = t => esc(t).replace(/&lt;(\/?[bi])&gt;/g,'<$1>');
+
+/* ---------- seletores ---------- */
+function renderStudents(){
+  document.getElementById('stuGrid').innerHTML = STUDENTS.map(s=>
+    `<button class="stu ${s.id===student?'active':''}" onclick="pickStudent('${s.id}')">${s.emoji?s.emoji+' ':''}${esc(s.name)}</button>`
+  ).join('') || '<p class="hint">No students yet.</p>';
+}
+function pickStudent(id){ student=id; renderStudents(); rebuild(); }
+
+function renderDurations(){
+  document.getElementById('durGrid').innerHTML = LB.DURATIONS.map(d=>`
+    <button class="dur ${d===duration?'active':''}" onclick="pickDuration(${d})">
+      <div class="m">${d}</div><div class="l">minutes</div>
+    </button>`).join('');
+  document.getElementById('durNote').textContent = (LB.PROFILES[duration]||{}).note || '';
+}
+function pickDuration(d){ duration=d; renderDurations(); rebuild(); }
+
+/* ---------- contexto ---------- */
+function renderContext(c){
+  document.getElementById('ctxName').textContent = c.name;
+  const last = c.lastLesson
+    ? `${c.lastLesson}<div class="s">${c.daysSince} day(s) ago</div>`
+    : `—<div class="s">no lessons recorded</div>`;
+  document.getElementById('ctxGrid').innerHTML = `
+    <div class="ctx-box"><div class="l">Last lesson</div><div class="v">${last}</div></div>
+    <div class="ctx-box"><div class="l">Lessons done</div><div class="v">${c.lessonsDone}</div><div class="s">in the calendar</div></div>
+    <div class="ctx-box"><div class="l">Overall progress</div><div class="v">${c.overall.pct}%</div><div class="s">${c.overall.done} of ${c.overall.total} contents</div></div>
+    <div class="ctx-box"><div class="l">Weakest skill</div><div class="v">${c.weakest?esc(c.weakest.label):'—'}</div><div class="s">${c.weakest?c.weakest.pct+'% covered':''}</div></div>`;
+
+  const cur = LB.curriculum();
+  document.getElementById('ctxSources').innerHTML = [
+    ['Learning Progress', c.overall.total>0],
+    ['Lesson Calendar',   c.lessonsDone>0],
+    ['Curriculum Map',    !!cur],
+    ['Last lesson',       !!c.lastLesson]
+  ].map(([l,on])=>`<span class="src ${on?'':'off'}">${on?'✓':'○'} ${l}</span>`).join('')
+   + (c.curriculumWeek?`<span class="src">Week ${c.curriculumWeek.week}: ${esc(c.curriculumWeek.theme)}</span>`:'');
+}
+
+/* ---------- plano ---------- */
+function rebuild(){
+  if(!student) return;
+  plan = LB.build(student, duration);
+  renderContext(plan.context);
+  document.getElementById('planTotal').textContent =
+    plan.profile + ' · ' + plan.totalMinutes + ' min';
+  document.getElementById('blocks').innerHTML = plan.blocks.map(b=>`
+    <div class="block">
+      <div class="head">
+        <span class="tag t-${b.id}">${esc(b.label)}</span>
+        <span class="ti">${esc(b.title)}</span>
+        <span class="mins">${b.minutes} min</span>
+      </div>
+      <div class="why"><b>Why:</b> ${rich(b.why)}</div>
+    </div>`).join('');
+}
+
+/* ---------- modo aula ---------- */
+function startLesson(){
+  if(!plan) return;
+  stageIx = 0;
+  document.getElementById('planView').classList.add('hide');
+  document.getElementById('lessonView').classList.remove('hide');
+  document.getElementById('lessonStudent').textContent = plan.studentName;
+  document.getElementById('lessonMeta').textContent =
+    plan.profile + ' · ' + plan.totalMinutes + ' minutes · ' + plan.blocks.length + ' stages';
+  renderStage();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function backToPlan(){
+  document.getElementById('lessonView').classList.add('hide');
+  document.getElementById('planView').classList.remove('hide');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goStage(i){ stageIx=Math.max(0,Math.min(plan.blocks.length-1,i)); renderStage(); window.scrollTo({top:0,behavior:'smooth'}); }
+function nextStage(){ if(stageIx<plan.blocks.length-1) goStage(stageIx+1); }
+function prevStage(){ if(stageIx>0) goStage(stageIx-1); }
+
+function renderStage(){
+  const b = plan.blocks[stageIx];
+  document.getElementById('lessonNav').innerHTML = plan.blocks.map((x,i)=>
+    `<button class="step ${i===stageIx?'active':(i<stageIx?'done':'')}" onclick="goStage(${i})">${i+1}. ${esc(x.label)}</button>`
+  ).join('');
+
+  const c = b.content || {};
+  let h = `<div class="stage">
+      <h2>${esc(b.title)}</h2>
+      <div class="meta">${esc(b.label)} · ${b.minutes} minutes${b.source?' · from '+esc(b.source):''}</div>
+    </div>
+    <div class="why" style="margin-bottom:6px"><b>Why this:</b> ${rich(b.why)}</div>`;
+
+  if(c.goal) h += `<div class="goal-box"><b>Goal:</b> ${rich(c.goal)}</div>`;
+
+  if(c.activity){
+    h += `<div class="sec"><h4>Activity</h4>
+      <div class="ex-line"><b>${esc(c.activity.name)}</b>${c.activity.comp?' · '+esc(c.activity.comp):''}${c.activity.stt?' · '+esc(c.activity.stt):''}</div>
+      ${c.activity.goals?`<div class="ex-line">Goals: ${esc(c.activity.goals.join(' · '))}</div>`:''}
+      ${c.activity.deps?`<div class="ex-line">Needs: ${esc(c.activity.deps.join(' · '))}</div>`:''}</div>`;
+  }
+
+  if(c.explain){
+    h += `<div class="sec"><h4>Explanation</h4>
+      <p class="explain">${rich(c.explain.text)}</p>
+      <ul class="points">${(c.explain.points||[]).map(p=>`<li>${rich(p)}</li>`).join('')}</ul></div>`;
+  }
+  if(c.examples){
+    h += `<div class="sec"><h4>Examples</h4>${c.examples.map(g=>
+      `<div class="ex-group"><div class="use">${rich(g.use)}</div>
+       ${(g.items||[]).map(i=>`<div class="ex-line">${rich(i)}</div>`).join('')}</div>`).join('')}</div>`;
+  }
+  if(c.mistakes){
+    h += `<div class="sec"><h4>Common mistakes</h4>${c.mistakes.map(m=>
+      `<div class="mistake"><div class="bad">${rich(m.bad)}</div>
+       <div class="good">${rich(m.good)}</div><div class="why2">${rich(m.why)}</div></div>`).join('')}</div>`;
+  }
+  if(c.speaking){
+    h += `<div class="sec"><h4>Speaking practice</h4>
+      <div class="speak">${rich(c.speaking.prompt)}
+      ${(c.speaking.cues||[]).map(q=>`<div class="cue">${rich(q)}</div>`).join('')}</div></div>`;
+  }
+  if(c.exercises && c.exercises.length){
+    h += `<div class="sec"><h4>Exercises</h4>${c.exercises.map((e,i)=>
+      `<div class="drill"><span class="num">${i+1}.</span><span class="q">${rich(e.q)}</span>
+       <button class="reveal" onclick="this.nextElementSibling.classList.toggle('show')">answer</button>
+       <span class="ans">${rich(e.a)}</span></div>`).join('')}</div>`;
+  }
+  if(c.complete && c.complete.length){
+    h += `<div class="sec"><h4>Complete the sentence</h4>${c.complete.map((e,i)=>
+      `<div class="drill"><span class="num">${i+1}.</span><span class="q">${rich(e.q)}</span>
+       <button class="reveal" onclick="this.nextElementSibling.classList.toggle('show')">idea</button>
+       <span class="ans">${rich(e.a)}</span></div>`).join('')}</div>`;
+  }
+  if(c.questions && c.questions.length){
+    h += `<div class="sec"><h4>Conversation questions</h4>${c.questions.map((q,i)=>
+      `<div class="conv"><span class="n">${i+1}</span><span>${rich(q)}</span></div>`).join('')}</div>`;
+  }
+  if(c.review){
+    h += `<div class="sec"><h4>Quick review</h4><div class="review-box">
+      <ul>${(c.review.key||[]).map(k=>`<li>${rich(k)}</li>`).join('')}</ul>
+      <div class="one">${rich(c.review.oneLiner)}</div></div></div>`;
+  }
+  if(!c.explain && !c.questions && !c.exercises && !c.activity && !c.review){
+    h += `<p class="hint" style="margin-top:14px">No extra material for this stage — lead it freely.</p>`;
+  }
+
+  document.getElementById('stageCard').innerHTML = h;
+}
+
+/* ---------- gravar a aula ---------- */
+function finishLesson(){
+  if(!plan) return;
+  const n = plan.itemIds.length;
+  if(!n){ toast('Nothing to record in this lesson.'); return; }
+  // F-2: só confirma se a gravação persistiu.
+  if(!LB.recordLesson(plan)){
+    toast('Could not save — the browser storage may be full. Nothing was recorded.');
+    return;
+  }
+  toast(n + ' content(s) recorded in ' + plan.studentName + '’s Learning Progress');
+  rebuild();
+  setTimeout(backToPlan, 900);
+}
+
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+renderStudents(); renderDurations(); rebuild();
+</script>
+</body>
+</html>

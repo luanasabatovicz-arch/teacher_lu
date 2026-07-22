@@ -1,0 +1,239 @@
+/* ==========================================================================
+   Teacher Lu Platform — Finance module
+   Visual language inherited from index.html / students.html:
+   Poppins for headings, Inter for body, soft violet borders, rounded cards.
+   ========================================================================== */
+
+:root{
+  /* Platform palette (from index.html) */
+  --navy:#121F39;
+  --blue:#166581;
+  --purple:#4E3768;
+  --deep:#321C3A;
+  --rose:#D86375;
+  --pink:#F31CB6;
+
+  --text:#1e293b;
+  --text-light:#64748b;
+  --muted:#94a3b8;
+  --border:#ece7fb;
+  --border-strong:#d6c8f5;
+  --surface:#ffffff;
+  --surface-soft:#faf9ff;
+
+  /* Finance semantic colours */
+  --money-in:#0f766e;
+  --money-in-soft:#ecfdf5;
+  --money-out:#b91c1c;
+  --money-out-soft:#fef2f2;
+  --warn:#b45309;
+  --warn-soft:#fffbeb;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+h1,h2,h3{font-family:'Poppins',sans-serif;font-weight:700;}
+body{background:#fff;color:var(--text);min-height:100vh;}
+
+/* ---------- Top bar (same structure as students.html) ---------- */
+.topbar{
+  background:linear-gradient(120deg,var(--navy) 0%,var(--blue) 55%,var(--purple) 100%);
+  color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;
+  box-shadow:0 6px 24px rgba(18,31,57,.28);
+}
+.topwrap{max-width:1100px;margin:0 auto;}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.menu-btn{
+  background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;
+  font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;
+  cursor:pointer;text-decoration:none;font-size:14px;
+}
+.menu-btn:hover{background:rgba(255,255,255,.38);}
+
+/* ---------- Layout ---------- */
+.wrap{max-width:1100px;margin:0 auto;padding:24px 24px 70px;}
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;
+}
+.section-title{font-size:15px;margin-bottom:14px;}
+
+/* ---------- Tabs ---------- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 4px;}
+.tab{
+  border:1px solid var(--border);background:#fff;color:var(--text-light);
+  font-family:'Poppins';font-weight:600;font-size:14px;padding:10px 18px;
+  border-radius:12px;cursor:pointer;transition:all .2s;
+}
+.tab:hover{border-color:var(--border-strong);color:var(--purple);}
+.tab.active{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(18,31,57,.22);
+}
+.panel{display:none;}
+.panel.active{display:block;animation:fade .2s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+/* ---------- KPI cards (same feel as Home cards) ---------- */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+.kpi{
+  background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 18px rgba(124,58,237,.08);transition:.25s;
+}
+.kpi:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(18,31,57,.14);}
+.kpi .bar{height:7px;}
+.kpi .kbody{padding:18px;}
+.kpi .klabel{
+  font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--blue);
+}
+.kpi .kvalue{
+  font-family:'Poppins';font-weight:800;font-size:25px;margin-top:9px;
+  color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+}
+.kpi .khint{font-size:12px;color:var(--muted);margin-top:5px;}
+.kpi.pos .kvalue{color:var(--money-in);}
+.kpi.neg .kvalue{color:var(--money-out);}
+.kpi.warn .kvalue{color:var(--warn);}
+
+/* ---------- Toolbar: filters, search, actions ---------- */
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.toolbar .spacer{flex:1;}
+.inp{
+  width:100%;padding:11px 12px;border:2px solid #e2ddf5;border-radius:10px;
+  font-size:14.5px;color:var(--text);background:#f8f7fe;font-family:'Inter';
+}
+.inp:focus{outline:none;border-color:#7c3aed;}
+select.inp{cursor:pointer;}
+.inp-sm{width:auto;min-width:150px;padding:9px 11px;font-size:14px;}
+.lbl{font-size:13px;font-weight:700;color:#475569;display:block;margin:12px 0 6px;}
+
+/* ---------- Buttons (same classes as students.html) ---------- */
+.btn{
+  border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;
+  padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;
+  box-shadow:0 4px 14px rgba(18,31,57,.18);
+}
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:none;}
+.btn.blue{background:linear-gradient(135deg,var(--navy),var(--blue));}
+.btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
+.btn.sm{padding:9px 15px;font-size:13.5px;border-radius:10px;}
+.icon-btn{
+  border:none;border-radius:10px;width:36px;height:36px;font-size:15px;cursor:pointer;
+  transition:all .2s;background:#f1edfd;color:#5b21b6;
+}
+.icon-btn:hover{background:#7c3aed;color:#fff;transform:translateY(-1px);}
+.icon-btn.del{background:#fee2e2;color:#dc2626;}
+.icon-btn.del:hover{background:#ef4444;color:#fff;}
+
+/* ---------- Tables ---------- */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:640px;}
+th{
+  text-align:left;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-light);padding:11px 14px;border-bottom:2px solid var(--border);
+  white-space:nowrap;cursor:pointer;user-select:none;
+}
+th:hover{color:var(--purple);}
+th.no-sort{cursor:default;}
+th.no-sort:hover{color:var(--text-light);}
+th .arrow{opacity:.35;font-size:10px;margin-left:3px;}
+th.sorted .arrow{opacity:1;color:var(--purple);}
+td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:14.5px;vertical-align:middle;}
+tbody tr:hover{background:var(--surface-soft);}
+tbody tr:last-child td{border-bottom:none;}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+td.actions{text-align:right;white-space:nowrap;}
+td.actions .icon-btn{margin-left:5px;}
+.name-cell{font-weight:600;display:flex;align-items:center;gap:9px;}
+.name-cell .emo{font-size:19px;}
+
+/* ---------- Badges ---------- */
+.badge{
+  display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;
+  padding:4px 11px;border-radius:99px;border:1px solid transparent;white-space:nowrap;
+}
+.badge.paid{background:var(--money-in-soft);color:var(--money-in);border-color:#a7f3d0;}
+.badge.pending{background:#eef2ff;color:#4338ca;border-color:#c7d2fe;}
+.badge.overdue{background:var(--money-out-soft);color:var(--money-out);border-color:#fecaca;}
+.badge.none{background:#f1f5f9;color:var(--muted);border-color:#e2e8f0;}
+.badge.cat{background:#f5f3ff;color:#6d28d9;border-color:#ddd6fe;}
+.badge.plan{background:#ecfeff;color:#0e7490;border-color:#a5f3fc;}
+.badge.cal{background:#ecfdf5;color:#0f766e;border-color:#a7f3d0;}
+
+/* ---------- Billing modal: collapsible advanced block + live preview ------ */
+.adv-toggle{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  border:1px solid var(--border);border-radius:12px;padding:12px 14px;
+  margin-top:16px;cursor:pointer;font-size:14px;color:var(--text-light);
+  transition:all .2s;
+}
+.adv-toggle:hover{border-color:var(--border-strong);background:var(--surface-soft);}
+.adv-toggle b{color:var(--text);}
+.adv-toggle .chev{transition:transform .2s;color:var(--muted);}
+.adv{display:none;padding:14px 2px 2px;}
+.adv.open{display:block;}
+.adv.open + .lbl{margin-top:14px;}
+.adv-toggle:has(+ .adv.open) .chev{transform:rotate(180deg);}
+.preview{
+  background:var(--surface-soft);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;margin-top:18px;font-size:14.5px;line-height:1.5;
+}
+.preview b{color:var(--navy);font-family:'Poppins';}
+
+/* ---------- Charts ---------- */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.chart-box{position:relative;height:300px;}
+
+/* ---------- Modal (same as students.html) ---------- */
+.ov{
+  position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;
+  align-items:center;justify-content:center;z-index:60;padding:20px;
+}
+.ov.show{display:flex;}
+.modal{
+  background:#fff;border-radius:18px;padding:26px;max-width:460px;width:100%;
+  box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;
+}
+.modal h3{font-size:22px;margin-bottom:4px;}
+.modal .sub{font-size:13px;color:var(--text-light);margin-bottom:8px;}
+.form-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-actions{display:flex;gap:10px;margin-top:22px;}
+
+/* ---------- Misc ---------- */
+.empty{text-align:center;color:var(--muted);padding:34px 12px;font-size:14px;}
+.hint{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5;}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);
+  background:var(--navy);color:#fff;border-radius:12px;padding:13px 20px;
+  font-size:14px;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.28);
+  opacity:0;pointer-events:none;transition:all .22s;z-index:80;
+}
+.toast.show{opacity:1;transform:translateX(-50%);}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1000px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .chart-grid{grid-template-columns:1fr;}
+}
+@media(max-width:700px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .wrap{padding:18px 16px 60px;}
+  .card{padding:16px;}
+  .form-2{grid-template-columns:1fr;}
+  .toolbar .inp-sm{flex:1;min-width:0;}
+  .btn{padding:11px 16px;font-size:14px;}
+}
+@media(max-width:430px){
+  .kpi-grid{grid-template-columns:1fr;}
+}
+
+/* ---------- Print (used by the PDF export) ---------- */
+@media print{
+  .topbar,.tabs,.toolbar,.icon-btn,.btn,.no-print{display:none !important;}
+  .panel{display:block !important;}
+  .card{box-shadow:none;border-color:#ddd;page-break-inside:avoid;}
+  body{background:#fff;}
+  .wrap{padding:0;max-width:none;}
+  table{min-width:0;}
+}

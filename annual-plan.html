@@ -106,6 +106,62 @@ h1,h2,h3,h4{font-family:'Poppins',sans-serif !important;font-weight:700 !importa
 .border-slate-600,.border-slate-700{border-color:#e2ddf5 !important;}
 select.inp option{background:#fff !important;color:#1e293b !important;}
 .text-emerald-400{color:#16a34a !important;}
+
+/* ===== LEARNING PROGRESS ===== */
+.lp-skills{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+@media(max-width:900px){.lp-skills{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.lp-skills{grid-template-columns:1fr;}}
+.lp-skill{background:#f8f7fe;border:1px solid #ece7fb;border-radius:12px;padding:13px 15px;}
+.lp-skill .h{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.lp-skill .n{font-weight:800;font-size:14px;color:#1e293b;}
+.lp-skill .c{font-size:12px;color:#64748b;font-weight:700;}
+.lp-skill .bar{height:7px;background:#ece7fb;border-radius:99px;overflow:hidden;margin-top:9px;}
+.lp-skill .bar>i{display:block;height:100%;border-radius:99px;transition:width .3s;}
+.lp-skill.empty{opacity:.6;}
+.lp-skill .tag{font-size:10.5px;color:#94a3b8;margin-top:6px;display:block;}
+
+.lp-next{background:linear-gradient(135deg,#7c3aed,#db2777);border-radius:14px;padding:16px 18px;color:#fff;}
+.lp-next .t{font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.9;font-weight:700;}
+.lp-next .list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.lp-next .chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);
+  border-radius:99px;padding:6px 13px;font-size:13px;font-weight:600;cursor:pointer;}
+.lp-next .chip:hover{background:rgba(255,255,255,.32);}
+.lp-next .chip small{opacity:.8;font-weight:500;margin-left:5px;}
+
+.lp-filters{display:flex;gap:6px;flex-wrap:wrap;}
+.lp-filters button{background:#ece7fb;border:1px solid #ddd6fe;color:#5b21b6;font-weight:700;
+  font-size:12px;padding:6px 12px;border-radius:99px;cursor:pointer;transition:all .2s;}
+.lp-filters button.on{background:#7c3aed;border-color:#7c3aed;color:#fff;}
+.lp-search{width:100%;padding:11px 13px;border:2px solid #e2ddf5;border-radius:10px;
+  font-size:14px;background:#f8f7fe;color:#1e293b;margin-bottom:16px;font-family:inherit;}
+.lp-search:focus{outline:none;border-color:#7c3aed;}
+
+.lp-group{margin-bottom:22px;}
+.lp-group h4{font-size:14px;font-weight:800;color:#1e293b;display:flex;align-items:center;
+  gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #ece7fb;}
+.lp-group h4 .k{margin-left:auto;font-size:12px;color:#64748b;font-weight:700;}
+.lp-items{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+@media(max-width:760px){.lp-items{grid-template-columns:1fr;}}
+.lp-item{display:flex;align-items:flex-start;gap:10px;background:#f8f7fe;border:1px solid #ece7fb;
+  border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .18s;}
+.lp-item:hover{border-color:#d6c8f5;}
+.lp-item.done{background:#f0fdf4;border-color:#bbf7d0;}
+.lp-item .box{width:19px;height:19px;border:2px solid #cbd5e1;border-radius:6px;flex-shrink:0;
+  margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;}
+.lp-item.done .box{background:#16a34a;border-color:#16a34a;}
+.lp-item .txt{flex:1;min-width:0;}
+.lp-item .ti{font-size:13.5px;font-weight:600;color:#1e293b;line-height:1.35;}
+.lp-item.done .ti{color:#15803d;}
+.lp-item .me{font-size:11.5px;color:#94a3b8;margin-top:2px;}
+.lp-item .lv{font-size:10px;font-weight:800;background:#ede9fe;color:#6d28d9;border-radius:99px;
+  padding:2px 7px;flex-shrink:0;}
+.lp-empty{color:#94a3b8;font-size:13px;padding:14px;text-align:center;background:#f8f7fe;
+  border:1px dashed #ddd6fe;border-radius:10px;}
+.lp-add{background:none;border:1px dashed #c4b5fd;color:#7c3aed;font-weight:700;font-size:12.5px;
+  padding:9px;border-radius:10px;cursor:pointer;width:100%;margin-top:8px;}
+.lp-add:hover{background:#f5f3ff;}
+.lp-toggle{background:#ece7fb;border:1px solid #ddd6fe;color:#5b21b6;font-weight:700;font-size:12px;
+  padding:6px 14px;border-radius:99px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -168,8 +224,45 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
         <div class="stage-grid" id="stageGrid"></div>
       </div>
 
-      <!-- WEEKS GRID -->
-      <div id="weeksContainer" class="space-y-4"></div>
+      <!-- ============ LEARNING PROGRESS ============ -->
+      <div class="card rounded-xl p-6 mb-6" id="lpCard">
+        <div class="flex justify-between items-center mb-1 flex-wrap gap-2">
+          <h3 class="text-white font-bold">Learning Progress</h3>
+          <span class="text-emerald-400 font-bold"><span id="lpPercent">0</span>%</span>
+        </div>
+        <p class="text-slate-400 text-sm mb-4">
+          <span id="lpDone">0</span> of <span id="lpTotal">0</span> contents studied ·
+          loaded automatically from the platform modules
+        </p>
+
+        <!-- per-skill bars -->
+        <div class="lp-skills" id="lpSkills"></div>
+
+        <!-- what to teach next -->
+        <div class="lp-next" id="lpNext"></div>
+      </div>
+
+      <!-- content checklist, grouped by skill -->
+      <div class="card rounded-xl p-6 mb-6">
+        <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+          <h3 class="text-white font-bold">Contents</h3>
+          <div class="lp-filters" id="lpFilters"></div>
+        </div>
+        <input id="lpSearch" class="lp-search" placeholder="Search a content…">
+        <div id="lpContents"></div>
+      </div>
+
+      <!-- WEEKS GRID (52-week themes — reference only) -->
+      <div class="card rounded-xl p-6 mb-6">
+        <div class="flex justify-between items-center flex-wrap gap-2">
+          <h3 class="text-white font-bold">52-week themes</h3>
+          <button class="lp-toggle" onclick="toggleWeeks()" id="weeksToggle">Show</button>
+        </div>
+        <p class="text-slate-400 text-sm mt-1">
+          The yearly route. Progress is now tracked by content above, not by week.
+        </p>
+        <div id="weeksContainer" class="space-y-4 mt-4" style="display:none"></div>
+      </div>
 
       <!-- ACTIONS -->
       <div class="card rounded-xl p-6 mt-8 flex gap-4 flex-wrap">
@@ -186,83 +279,30 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
     </div>
   </div>
 
-  <script>
+  <!-- Learning Progress: dados dos módulos + camadas compartilhadas -->
+  <script src="engine/grammar-topics.js?v=4"></script>
+  <script src="engine/speaking-activities.js?v=4"></script>
+<script src="engine/structures-content.js?v=1"></script>
+  <script src="engine/curriculum-map.js?v=1"></script>
+  <script src="platform-students.js?v=1"></script>
+<script src="platform-content.js?v=1"></script>
+<script src="engine/conversation-lessons.js?v=1"></script>
+  <script src="platform-progress.js?v=1"></script>
+
+  <script src="platform-print.js?v=1"></script>
+<script>
     /* ---------- shared student store (managed in students.html) ---------- */
-    const STU_KEY = 'sabatovicz_students';
-    const DEFAULT_STUDENTS = [
-      {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
-      {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
-      {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
-      {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
-      {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
-      {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
-      {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
-    ];
-    function loadStudents() {
-      try {
-        const v = localStorage.getItem(STU_KEY);
-        if (v) { const a = JSON.parse(v); if (Array.isArray(a) && a.length) return a; }
-      } catch (e) {}
-      localStorage.setItem(STU_KEY, JSON.stringify(DEFAULT_STUDENTS));
-      return DEFAULT_STUDENTS.slice();
-    }
+    /* ---------- student store — fonte única: platform-students.js ----------
+       O bloco DEFAULT_STUDENTS/loadStudents que existia aqui foi centralizado.
+       Estes aliases mantêm o restante desta página inalterado. -------------- */
+    const STU_KEY = TeacherLu.Students.KEY;
+    const DEFAULT_STUDENTS = TeacherLu.Students.DEFAULTS;
+    function loadStudents(){ return TeacherLu.Students.load(); }
     const STUDENTS_DATA = loadStudents();
     const students = STUDENTS_DATA.map(s => s.id);
     
-    const curriculum = [
-      { week: 1, theme: "I Am: Personal Identity", level: "A1", grammar: "Verb to be (affirmative)", skills: "Introduce yourself" },
-      { week: 2, theme: "Nationality & Professions", level: "A1", grammar: "Verb to be (negative/questions)", skills: "Describe people" },
-      { week: 3, theme: "Family Members", level: "A1", grammar: "Possessive adjectives", skills: "Talk about family" },
-      { week: 4, theme: "Daily Routine", level: "A1", grammar: "Simple Present", skills: "Describe daily activities" },
-      { week: 5, theme: "Frequency Adverbs", level: "A1", grammar: "Frequency (always, usually, etc)", skills: "Talk about habits" },
-      { week: 6, theme: "Free Time Activities", level: "A1", grammar: "Like + -ing", skills: "Express preferences" },
-      { week: 7, theme: "Sports & Hobbies", level: "A1", grammar: "Present Continuous", skills: "Describe current actions" },
-      { week: 8, theme: "Review & Tests", level: "A1", grammar: "All structures", skills: "Assessment" },
-      { week: 9, theme: "Food & Drinks", level: "A1", grammar: "Countable/Uncountable", skills: "Describe food" },
-      { week: 10, theme: "Restaurants & Ordering", level: "A1", grammar: "Polite requests", skills: "Order food" },
-      { week: 11, theme: "Shopping & Prices", level: "A1", grammar: "How much/How many", skills: "Ask prices" },
-      { week: 12, theme: "Clothes & Fashion", level: "A1", grammar: "Articles (a/an/the)", skills: "Describe clothes" },
-      { week: 13, theme: "Trimester Review", level: "A1", grammar: "All", skills: "Consolidation" },
-      { week: 14, theme: "Past Simple: Regular verbs", level: "A1+", grammar: "Past Simple regular", skills: "Tell stories" },
-      { week: 15, theme: "Past Simple: Irregular verbs", level: "A1+", grammar: "Past Simple irregular", skills: "Talk about past" },
-      { week: 16, theme: "Yesterday Activities", level: "A1+", grammar: "What did you do?", skills: "Ask about past" },
-      { week: 17, theme: "Travel Stories", level: "A1+", grammar: "Past tense", skills: "Describe trips" },
-      { week: 18, theme: "Describing People", level: "A1+", grammar: "Adjectives", skills: "Physical descriptions" },
-      { week: 19, theme: "Personality Traits", level: "A1+", grammar: "Personality adjectives", skills: "Character description" },
-      { week: 20, theme: "Homes & Rooms", level: "A1+", grammar: "There is/There are", skills: "Describe homes" },
-      { week: 21, theme: "Furniture & Objects", level: "A1+", grammar: "Prepositions of place", skills: "Spatial descriptions" },
-      { week: 22, theme: "City & Places", level: "A1+", grammar: "Prepositions", skills: "Describe locations" },
-      { week: 23, theme: "Directions & Maps", level: "A1+", grammar: "Imperative", skills: "Give directions" },
-      { week: 24, theme: "Weather & Seasons", level: "A1+", grammar: "Present Perfect intro", skills: "Weather talk" },
-      { week: 25, theme: "Holidays & Celebrations", level: "A1+", grammar: "Past tense review", skills: "Celebrate" },
-      { week: 26, theme: "Trimester Review 2", level: "A1+", grammar: "All", skills: "Consolidation" },
-      { week: 27, theme: "Future Plans: Going to", level: "A2", grammar: "Going to", skills: "Talk about plans" },
-      { week: 28, theme: "Predictions", level: "A2", grammar: "Will for predictions", skills: "Make predictions" },
-      { week: 29, theme: "Dreams & Ambitions", level: "A2", grammar: "Would like", skills: "Express desires" },
-      { week: 30, theme: "Jobs & Careers", level: "A2", grammar: "Career vocabulary", skills: "Discuss careers" },
-      { week: 31, theme: "Work Environment", level: "A2", grammar: "Present Perfect", skills: "Talk about experience" },
-      { week: 32, theme: "School & Education", level: "A2", grammar: "Education vocab", skills: "Discuss school" },
-      { week: 33, theme: "Technology & Internet", level: "A2", grammar: "Tech vocabulary", skills: "Modern life" },
-      { week: 34, theme: "Social Media", level: "A2", grammar: "Online communication", skills: "Digital life" },
-      { week: 35, theme: "Health & Fitness", level: "A2", grammar: "Health vocabulary", skills: "Discuss wellbeing" },
-      { week: 36, theme: "Doctor's Visit", level: "A2", grammar: "Medical expressions", skills: "Health conversations" },
-      { week: 37, theme: "Environment & Nature", level: "A2", grammar: "Environmental vocab", skills: "Ecology awareness" },
-      { week: 38, theme: "Sustainability", level: "A2", grammar: "Should/shouldn't", skills: "Give advice" },
-      { week: 39, theme: "Trimester Review 3", level: "A2", grammar: "All", skills: "Consolidation" },
-      { week: 40, theme: "Movies & Entertainment", level: "A2", grammar: "Entertainment vocab", skills: "Discuss media" },
-      { week: 41, theme: "Music & Art", level: "A2", grammar: "Arts vocabulary", skills: "Cultural discussion" },
-      { week: 42, theme: "Literature & Stories", level: "A2", grammar: "Storytelling", skills: "Narrative skills" },
-      { week: 43, theme: "Relationships & Emotions", level: "A2", grammar: "Emotion vocabulary", skills: "Express feelings" },
-      { week: 44, theme: "Opinions & Arguments", level: "A2", grammar: "Agreeing/Disagreeing", skills: "Debate basics" },
-      { week: 45, theme: "Problem Solving", level: "A2", grammar: "Conditional (if)", skills: "Logical thinking" },
-      { week: 46, theme: "Cultural Differences", level: "A2", grammar: "Cultural vocab", skills: "Cross-cultural awareness" },
-      { week: 47, theme: "Adventure & Risk", level: "A2", grammar: "Adventure vocab", skills: "Exciting stories" },
-      { week: 48, theme: "Dreams & Reflections", level: "A2", grammar: "Reflection phrases", skills: "Deep thinking" },
-      { week: 49, theme: "Future Vision", level: "A2", grammar: "Future planning", skills: "Long-term goals" },
-      { week: 50, theme: "Celebration & Review", level: "A2", grammar: "Celebration vocab", skills: "Achievement" },
-      { week: 51, theme: "Year Round-up", level: "A2", grammar: "All year review", skills: "Reflection" },
-      { week: 52, theme: "Year Celebration!", level: "A2", grammar: "Fluency showcase", skills: "Speaking fluency" }
-    ];
+    /* Roteiro anual movido para engine/curriculum-map.js — alias abaixo. */
+    const curriculum = window.CURRICULUM_WEEKS;
 
     let currentStudent = students[0];
     function studentName(id) { const s = STUDENTS_DATA.find(x => x.id === id); return s ? s.name : id; }
@@ -274,12 +314,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
       ).join('');
     }
 
-    const STAGES = [
-      {name:'Foundation', from:1,  to:13, color:'#7c3aed', level:'A1',  goal:'Talk about yourself, your family and your routine'},
-      {name:'Expansion',  from:14, to:26, color:'#db2777', level:'A1+', goal:'Tell stories in the past and describe people and places'},
-      {name:'Projection', from:27, to:39, color:'#f59e0b', level:'A2',  goal:'Talk about plans, the future and past experiences'},
-      {name:'Autonomy',   from:40, to:52, color:'#22c55e', level:'A2',  goal:'Hold longer conversations with more independence'}
-    ];
+    const STAGES = window.CURRICULUM_STAGES;
 
     function renderProgression() {
       const p = progress[currentStudent];
@@ -381,6 +416,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
       document.querySelector(`[data-student="${student}"]`).classList.remove('bg-slate-700', 'hover:bg-slate-600');
       document.querySelector(`[data-student="${student}"]`).classList.add('gradient-indigo');
       renderWeeks();
+      renderLearningProgress();
     }
 
     function renderWeeks() {
@@ -492,19 +528,170 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
           progress[currentStudent][`week${item.week}`] = false;
           localStorage.removeItem(key);
         });
+        if (window.TeacherLu && window.TeacherLu.Progress) {
+          window.TeacherLu.Progress.reset(currentStudent);
+        }
         renderWeeks();
+        renderLearningProgress();
       }
     }
 
-    function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
+    function printDoc(html,title){ TeacherLu.printDoc(html, title); }
 
     function goHome() {
       window.location.href = 'index.html';
     }
 
+    /* ================================================================
+       LEARNING PROGRESS
+       ----------------------------------------------------------------
+       Contents come from TeacherLu.Content (the platform registry) and
+       progress from TeacherLu.Progress. This page renders them — it does
+       not own either. A new module appears here automatically as soon as
+       it registers itself; nothing below needs to change.
+       ================================================================ */
+
+    const Content  = window.TeacherLu && window.TeacherLu.Content;
+    const Progress = window.TeacherLu && window.TeacherLu.Progress;
+    let lpFilter = 'all';
+    let lpSearch = '';
+
+    /** One-off migration: the old week checkboxes become vocabulary items. */
+    function migrateWeekProgress() {
+      if (!Progress) return;
+      if (localStorage.getItem('sabatovicz_lp_migrated') === '1') return;
+      STUDENTS_DATA.forEach(s => {
+        const ids = [];
+        curriculum.forEach(item => {
+          if (localStorage.getItem(`${s.id}-week${item.week}`) === 'true') {
+            ids.push('vocabulary:w' + item.week);
+          }
+        });
+        if (ids.length) Progress.record(s.id, ids, '1970-01-01');
+      });
+      localStorage.setItem('sabatovicz_lp_migrated', '1');
+      console.info('[learning-progress] old week progress migrated.');
+    }
+
+    function renderLearningProgress() {
+      if (!Content || !Progress) return;
+      const sid = currentStudent;
+
+      // --- overall + per skill ---
+      const o = Progress.overall(sid);
+      document.getElementById('lpPercent').textContent = o.pct;
+      document.getElementById('lpDone').textContent = o.done;
+      document.getElementById('lpTotal').textContent = o.total;
+
+      document.getElementById('lpSkills').innerHTML = Progress.stats(sid).map(s => `
+        <div class="lp-skill ${s.total ? '' : 'empty'}">
+          <div class="h">
+            <span class="n">${s.icon} ${s.label}</span>
+            <span class="c">${s.done}/${s.total}</span>
+          </div>
+          <div class="bar"><i style="width:${s.pct}%;background:${s.color}"></i></div>
+          ${s.total ? '' : '<span class="tag">no module yet — add contents by hand</span>'}
+        </div>`).join('');
+
+      // --- suggestions ---
+      const next = Progress.suggestions(sid, 6);
+      document.getElementById('lpNext').innerHTML = next.length
+        ? `<div class="t">Suggested next contents</div>
+           <div class="list">${next.map(n => `
+             <span class="chip" onclick="lpToggle('${n.item.id}')">
+               ${n.skill.icon} ${escapeHtml(n.item.title)}
+               ${n.item.level ? `<small>${n.item.level}</small>` : ''}
+             </span>`).join('')}</div>`
+        : `<div class="t">Everything covered</div>
+           <div style="font-size:18px;font-weight:800;margin-top:6px">
+             All registered contents have been studied.</div>`;
+
+      // --- filters ---
+      document.getElementById('lpFilters').innerHTML =
+        [{id:'all',label:'All'}].concat(Content.SKILLS.map(s => ({id:s.id,label:s.label})))
+          .map(f => `<button class="${lpFilter === f.id ? 'on' : ''}"
+                        onclick="lpSetFilter('${f.id}')">${f.label}</button>`).join('');
+
+      // --- checklist ---
+      const skills = Content.SKILLS.filter(s => lpFilter === 'all' || s.id === lpFilter);
+      document.getElementById('lpContents').innerHTML = skills.map(s => {
+        const items = Content.items(s.id).filter(it =>
+          !lpSearch || it.title.toLowerCase().includes(lpSearch.toLowerCase()));
+        const done = items.filter(it => Progress.isCovered(sid, it.id)).length;
+
+        return `<div class="lp-group">
+          <h4><span>${s.icon}</span> ${s.label}
+              <span class="k">${done}/${items.length}</span></h4>
+          ${items.length ? `<div class="lp-items">${items.map(it => {
+            const e = Progress.entry(sid, it.id);
+            const on = !!e;
+            return `<div class="lp-item ${on ? 'done' : ''}" onclick="lpToggle('${it.id}')">
+              <div class="box">${on ? '✓' : ''}</div>
+              <div class="txt">
+                <div class="ti">${escapeHtml(it.title)}</div>
+                <div class="me">${[
+                  it.subtitle,
+                  on && e.lastAt !== '1970-01-01' ? 'last: ' + e.lastAt : '',
+                  on && e.times > 1 ? e.times + '×' : ''
+                ].filter(Boolean).join(' · ')}</div>
+              </div>
+              ${it.level ? `<span class="lv">${escapeHtml(it.level)}</span>` : ''}
+            </div>`;
+          }).join('')}</div>`
+          : `<div class="lp-empty">No contents registered for ${s.label} yet.</div>`}
+          <button class="lp-add" onclick="lpAdd('${s.id}','${s.label}')">+ Add a ${s.label.toLowerCase()} content</button>
+        </div>`;
+      }).join('');
+    }
+
+    function escapeHtml(t) {
+      return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function lpToggle(itemId) {
+      if (!Progress) return;
+      const r = Progress.toggle(currentStudent, itemId);
+      renderLearningProgress();
+      // F-2: a UI já reflete o disco no re-render; avisa se não persistiu.
+      if (r && r.ok === false) {
+        alert('Could not save — the browser storage may be full. Nothing was changed.');
+      }
+    }
+
+    function lpSetFilter(f) { lpFilter = f; renderLearningProgress(); }
+
+    function lpAdd(skillId, label) {
+      const title = prompt('New ' + label + ' content:');
+      if (!title || !title.trim()) return;
+      const added = Progress.addCustomItem(skillId, title.trim());
+      renderLearningProgress();
+      // F-2: addCustomItem devolve null quando a gravação falha.
+      if (!added) {
+        alert('Could not save — the browser storage may be full. Nothing was added.');
+      }
+    }
+
+    function toggleWeeks() {
+      const c = document.getElementById('weeksContainer');
+      const b = document.getElementById('weeksToggle');
+      const hidden = c.style.display === 'none';
+      c.style.display = hidden ? '' : 'none';
+      b.textContent = hidden ? 'Hide' : 'Show';
+    }
+
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.id === 'lpSearch') {
+        lpSearch = e.target.value;
+        renderLearningProgress();
+      }
+    });
+
+
     // INIT
     renderStudentButtons();
     initProgress();
+    migrateWeekProgress();
     if (students.length) selectStudent(students[0]);
   </script>
 </body>

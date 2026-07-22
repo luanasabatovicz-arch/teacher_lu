@@ -374,3 +374,13 @@ const SPEAKING_ACTIVITIES=[
   reform:'"Goal: X. Start — what do you say first?"',
   kid:'Missão dentro de história ("consiga o mapa com o pirata").', adult:'Espelho de necessidades reais declaradas no perfil (P5).'}
 ];
+
+/* ---- Exposição para a plataforma (Learning Progress) --------------------
+   `const` no topo de um <script> NÃO vira propriedade de window (mesma
+   armadilha documentada em grammar-topics.js). Estas linhas apenas expõem
+   os catálogos já definidos acima — nenhum dado é duplicado e nada muda
+   para speaking.html / speaking-engine.js.
+   ---------------------------------------------------------------------- */
+window.SPEAKING_ACTIVITIES = SPEAKING_ACTIVITIES;
+window.SPEAKING_COMPETENCES = SPEAKING_COMPETENCES;
+window.SPEAKING_THEMES = SPEAKING_THEMES;

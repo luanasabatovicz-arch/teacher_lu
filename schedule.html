@@ -140,8 +140,19 @@
       <button class="btn red sm" onclick="setStatus('cancelled')">✗ Cancelled</button>
       <button class="btn gray sm" onclick="setStatus('')">Clear</button>
     </div>
-    <label style="font-size:13px;font-weight:700;color:#475569;display:block;margin-bottom:6px">Note (topic, homework, absence reason...)</label>
-    <input class="inp" id="mNote" placeholder="e.g. Week 5 — Frequency adverbs">
+    <!-- ===== LEARNING PROGRESS — contents covered in this lesson ===== -->
+    <div id="lpBlock" style="margin:14px 0 4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
+        <label style="font-size:13px;font-weight:700;color:#475569">Contents covered</label>
+        <span id="lpCount" style="font-size:11.5px;color:#94a3b8"></span>
+      </div>
+      <div id="lpSuggest"></div>
+      <input class="inp" id="lpSearch" placeholder="Search vocabulary, grammar, speaking…" style="margin-bottom:8px">
+      <div id="lpList" style="max-height:190px;overflow-y:auto;border:1px solid #ece7fb;border-radius:10px;padding:6px"></div>
+    </div>
+
+    <label style="font-size:13px;font-weight:700;color:#475569;display:block;margin-bottom:6px">Note (homework, absence reason...)</label>
+    <input class="inp" id="mNote" placeholder="e.g. she asked for extra practice">
     <div style="display:flex;gap:10px;margin-top:16px">
       <button class="btn purple" style="flex:1" onclick="saveNote()">Save</button>
       <button class="btn gray" onclick="closeModal()">Close</button>
@@ -149,35 +160,39 @@
   </div>
 </div>
 
+<!-- Learning Progress: dados dos módulos + camadas compartilhadas -->
+<script src="engine/grammar-topics.js?v=4"></script>
+<script src="engine/speaking-activities.js?v=4"></script>
+<script src="engine/structures-content.js?v=1"></script>
+<script src="platform-students.js?v=1"></script>
+<script src="platform-content.js?v=1"></script>
+<script src="engine/conversation-lessons.js?v=1"></script>
+<script src="platform-progress.js?v=1"></script>
+
+<script src="platform-print.js?v=1"></script>
 <script>
 /* ---------- shared student store (managed in students.html) ---------- */
-const STU_KEY='sabatovicz_students';
-const DEFAULT_STUDENTS=[
-  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
-  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
-  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
-  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
-  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
-  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
-  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
-];
-function loadStudents(){
-  try{
-    const v=localStorage.getItem(STU_KEY);
-    if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}
-  }catch(e){}
-  localStorage.setItem(STU_KEY,JSON.stringify(DEFAULT_STUDENTS));
-  return DEFAULT_STUDENTS.slice();
-}
+/* ---------- student store — fonte única: platform-students.js ----------
+   O bloco DEFAULT_STUDENTS/loadStudents que existia aqui foi centralizado.
+   Estes aliases mantêm o restante desta página inalterado. -------------- */
+const STU_KEY = TeacherLu.Students.KEY;
+const DEFAULT_STUDENTS = TeacherLu.Students.DEFAULTS;
+function loadStudents(){ return TeacherLu.Students.load(); }
 const STUDENTS_DATA=loadStudents();
-const STUDENTS=STUDENTS_DATA.map(s=>s.name);
+const STUDENTS=STUDENTS_DATA.map(s=>s.id);   // identidade = id (nome é só exibição)
+
+/* Nome de exibição a partir do id — o nome nunca indexa nada. */
+function displayName(id){ return TeacherLu.Students.nameOf(id); }
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-let student=STUDENTS[0];
+let student=STUDENTS[0];   // id do aluno selecionado
 let view=new Date(2026,6,1);   // July 2026
 let selKey=null;
 
 /* ---------- storage ---------- */
-function keyFor(s,d){return 'sched|'+s+'|'+d;}
+/* Chave SEMPRE por student.id — renomear um aluno não pode perder histórico.
+   Registros antigos por nome são convertidos por
+   TeacherLu.Students.migrateScheduleKeys() ao carregar platform-students.js. */
+function keyFor(studentId,d){return 'sched|'+studentId+'|'+d;}
 function getRec(s,d){try{const v=localStorage.getItem(keyFor(s,d));return v?JSON.parse(v):null;}catch(e){return null;}}
 function setRec(s,d,rec){
   try{
@@ -209,14 +224,14 @@ function dowName(d){const dt=new Date(d+'T12:00:00');return ['Sunday','Monday','
 /* ---------- render ---------- */
 function renderStudents(){
   document.getElementById('stuGrid').innerHTML=STUDENTS_DATA.map((s,i)=>
-    `<button class="stu ${s.name===student?'active':''}" onclick="pickStudent(${i})">${s.emoji?s.emoji+' ':''}${s.name}</button>`).join('');
+    `<button class="stu ${s.id===student?'active':''}" onclick="pickStudent(${i})">${s.emoji?s.emoji+' ':''}${s.name}</button>`).join('');
 }
-function pickStudent(i){student=STUDENTS_DATA[i].name;renderStudents();renderCal();}
+function pickStudent(i){student=STUDENTS_DATA[i].id;renderStudents();renderCal();}
 
 function renderCal(){
   const y=view.getFullYear(),m=view.getMonth();
   document.getElementById('monthLabel').textContent=MONTHS[m]+' '+y;
-  document.getElementById('statsTitle').textContent=student+' — '+MONTHS[m]+' '+y;
+  document.getElementById('statsTitle').textContent=displayName(student)+' — '+MONTHS[m]+' '+y;
   const first=new Date(y,m,1).getDay();
   const days=new Date(y,m+1,0).getDate();
   let h='';
@@ -250,10 +265,11 @@ function goToday(){const t=new Date();view=new Date(t.getFullYear(),t.getMonth()
 function openDay(k){
   selKey=k;
   const r=getRec(student,k)||{};
-  document.getElementById('mTitle').textContent=student;
+  document.getElementById('mTitle').textContent=displayName(student);
   document.getElementById('mSub').textContent=dowName(k)+', '+pretty(k);
   document.getElementById('mNote').value=r.note||'';
   document.getElementById('ov').classList.add('show');
+  renderLessonProgress();
 }
 function closeModal(){document.getElementById('ov').classList.remove('show');selKey=null;}
 function setStatus(st){
@@ -274,6 +290,92 @@ function saveNote(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
+/* ================================================================
+   LEARNING PROGRESS — o que foi dado nesta aula
+   ----------------------------------------------------------------
+   O calendário não conhece nenhum módulo de conteúdo. Ele só lê o
+   registro compartilhado (TeacherLu.Content) e grava no histórico
+   do aluno (TeacherLu.Progress). Um módulo novo aparece aqui
+   sozinho, sem que este arquivo mude.
+   ================================================================ */
+const LP_Content  = window.TeacherLu && window.TeacherLu.Content;
+const LP_Progress = window.TeacherLu && window.TeacherLu.Progress;
+let lpFilterText = '';
+
+/** id do aluno atual (o calendário trabalha por nome). */
+function lpStudentId(){ return student; }
+
+function lpEsc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function renderLessonProgress(){
+  if(!LP_Content || !LP_Progress) return;
+  const sid = lpStudentId();
+  const block = document.getElementById('lpBlock');
+  if(!sid || !selKey){ block.style.display='none'; return; }
+  block.style.display='';
+
+  const covered = LP_Progress.ofLesson(sid, selKey);
+  document.getElementById('lpCount').textContent =
+    covered.length ? covered.length + ' marked' : 'nothing marked yet';
+
+  // Sugestões: próximos conteúdos ainda não estudados por este aluno.
+  const sug = LP_Progress.suggestions(sid, 4)
+    .filter(s => covered.indexOf(s.item.id) === -1);
+  document.getElementById('lpSuggest').innerHTML = sug.length
+    ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">
+         <span style="font-size:11px;color:#94a3b8;align-self:center">Suggested:</span>
+         ${sug.map(s=>`<button type="button" onclick="lpMark('${s.item.id}')"
+            style="background:#f5f3ff;border:1px dashed #c4b5fd;color:#6d28d9;font-weight:600;
+                   font-size:12px;padding:5px 10px;border-radius:99px;cursor:pointer">
+            ${s.skill.icon} ${lpEsc(s.item.title)}</button>`).join('')}
+       </div>`
+    : '';
+
+  // Lista completa: marcados primeiro, depois o resto.
+  const rows = [];
+  LP_Content.SKILLS.forEach(sk => {
+    LP_Content.items(sk.id).forEach(it => {
+      if(lpFilterText && it.title.toLowerCase().indexOf(lpFilterText.toLowerCase()) === -1) return;
+      rows.push({ it, sk, on: covered.indexOf(it.id) !== -1 });
+    });
+  });
+  rows.sort((a,b) => (b.on?1:0)-(a.on?1:0));
+
+  document.getElementById('lpList').innerHTML = rows.length
+    ? rows.slice(0,60).map(r=>`
+      <label style="display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;
+                    cursor:pointer;background:${r.on?'#f0fdf4':'transparent'}">
+        <input type="checkbox" ${r.on?'checked':''} onchange="lpMark('${r.it.id}')"
+               style="width:16px;height:16px;accent-color:#16a34a;cursor:pointer">
+        <span style="font-size:13px;color:${r.on?'#15803d':'#334155'};font-weight:${r.on?'600':'400'}">
+          ${r.sk.icon} ${lpEsc(r.it.title)}
+        </span>
+        ${r.it.level?`<span style="margin-left:auto;font-size:10px;font-weight:800;background:#ede9fe;
+           color:#6d28d9;border-radius:99px;padding:2px 7px">${lpEsc(r.it.level)}</span>`:''}
+      </label>`).join('')
+    : '<div style="color:#94a3b8;font-size:13px;padding:14px;text-align:center">No content matches.</div>';
+}
+
+/** Marca/desmarca um conteúdo para a aula aberta — grava na hora. */
+function lpMark(itemId){
+  const sid = lpStudentId();
+  if(!sid || !selKey || !LP_Progress) return;
+  const r = LP_Progress.toggle(sid, itemId, selKey);
+  renderLessonProgress();
+  renderCal();
+  // F-2: o re-render já reflete o disco; avisa se não persistiu.
+  if(r && r.ok === false){
+    alert('Could not save — the browser storage may be full. Nothing was changed.');
+  }
+}
+
+document.addEventListener('input', e => {
+  if(e.target && e.target.id === 'lpSearch'){
+    lpFilterText = e.target.value;
+    renderLessonProgress();
+  }
+});
+
 /* ---------- export ---------- */
 function label(s){return s==='done'?'Lesson done':s==='cancelled'?'Cancelled':s==='scheduled'?'Scheduled':'—';}
 function rowsToTable(rows){
@@ -288,26 +390,21 @@ function exportMonth(){
   const rows=allRecs(student).filter(r=>r.date.startsWith(pre));
   const done=rows.filter(r=>r.status==='done').length;
   const canc=rows.filter(r=>r.status==='cancelled').length;
-  const html=`<h1>Lesson Calendar — ${student}</h1>
+  const html=`<h1>Lesson Calendar — ${displayName(student)}</h1>
     <p><b>Month:</b> ${MONTHS[m]} ${y}</p>
     <p><b>Lessons done:</b> ${done} · <b>Cancelled:</b> ${canc}</p>
     ${rowsToTable(rows)}`;
-  printDoc(html,'Calendar-'+student+'-'+MONTHS[m]+y);
+  printDoc(html,'Calendar-'+displayName(student)+'-'+MONTHS[m]+y);
 }
 function exportAll(){
   const rows=allRecs(student);
   const done=rows.filter(r=>r.status==='done').length;
-  const html=`<h1>Lesson History — ${student}</h1>
+  const html=`<h1>Lesson History — ${displayName(student)}</h1>
     <p><b>Total lessons done:</b> ${done}</p>
     ${rowsToTable(rows)}`;
-  printDoc(html,'History-'+student);
+  printDoc(html,'History-'+displayName(student));
 }
-function printDoc(html,title){
-  var w=window.open('','_blank');
-  if(!w){alert('Allow pop-ups to generate the PDF.');return;}
-  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1{border-bottom:3px solid #7c3aed;padding-bottom:10px;}table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;}td,th{border:1px solid #ccc;padding:7px;text-align:left;}th{background:#f3f0fd;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');
-  w.document.close();
-}
+function printDoc(html,title){ TeacherLu.printDoc(html, title, TeacherLu.PRINT_CSS.CALENDAR); }
 
 renderStudents();renderCal();
 </script>

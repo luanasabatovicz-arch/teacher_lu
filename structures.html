@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sabatovicz — Language Structures</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;font-weight:700;}
+  body{background:#fff;color:#1e293b;min-height:100vh;}
+
+  /* topbar — mesmo padrão dos demais módulos */
+  .topbar{background:linear-gradient(120deg,#0284c7 0%,#4E3768 55%,#db2777 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(2,132,199,.28);}
+  .topwrap{max-width:1000px;margin:0 auto;}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
+  .menu-btn:hover{background:rgba(255,255,255,.38);}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 24px 70px;}
+  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;}
+
+  /* seletor de aluno e de categoria */
+  .stu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:700px){.stu-grid{grid-template-columns:1fr 1fr;}}
+  .stu{padding:10px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#f1edfd;color:#5b21b6;border:2px solid transparent;transition:all .2s;}
+  .stu:hover{border-color:#a78bfa;}
+  .stu.active{background:linear-gradient(135deg,#0284c7,#4E3768);color:#fff;}
+
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+  @media(max-width:860px){.cat-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:620px){.cat-grid{grid-template-columns:1fr 1fr;}}
+  .cat{padding:11px 9px;border-radius:11px;font-weight:700;font-size:13px;cursor:pointer;background:#f0f9ff;color:#075985;border:2px solid transparent;transition:all .2s;text-align:center;position:relative;}
+  .cat:hover{border-color:#7dd3fc;}
+  .cat.active{background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;}
+  .cat .ic{display:block;font-size:19px;margin-bottom:3px;}
+  .cat .dot{position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:99px;background:#16a34a;}
+  .cat.active .dot{background:#bbf7d0;}
+
+  /* lição */
+  .lesson-head{border-left:5px solid #0284c7;padding-left:16px;margin-bottom:6px;}
+  .lesson-head h2{font-size:25px;color:#0c4a6e;}
+  .lesson-head .meta{color:#64748b;font-size:14px;margin-top:3px;}
+  .lvl{display:inline-block;font-size:10.5px;font-weight:800;background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd;border-radius:99px;padding:3px 9px;margin-left:8px;vertical-align:2px;}
+  .goal{background:linear-gradient(135deg,#0284c7,#4E3768);color:#fff;border-radius:12px;padding:14px 18px;margin:14px 0 4px;font-size:15px;}
+  .goal b{font-weight:800;}
+
+  .sec{margin-top:22px;}
+  .sec > h3{font-size:14px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#0284c7;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:2px solid #e0f2fe;margin-bottom:13px;}
+  .sec > h3 .n{background:#0284c7;color:#fff;width:21px;height:21px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+
+  .explain{font-size:15.5px;line-height:1.65;color:#334155;}
+  .points{list-style:none;margin-top:12px;}
+  .points li{background:#f8fafc;border-left:3px solid #7dd3fc;border-radius:0 8px 8px 0;padding:9px 13px;margin-bottom:7px;font-size:14.5px;line-height:1.5;}
+
+  .ex-group{margin-bottom:14px;}
+  .ex-group .use{font-size:13px;font-weight:800;color:#4E3768;margin-bottom:6px;}
+  .ex-line{background:#faf9ff;border:1px solid #ece7fb;border-radius:9px;padding:9px 13px;margin-bottom:5px;font-size:15px;}
+  .ex-line b{color:#0284c7;}
+
+  .mistake{background:#fff7f7;border:1px solid #fecdd3;border-radius:10px;padding:12px 14px;margin-bottom:9px;}
+  .mistake .bad{color:#b91c1c;font-size:14.5px;}
+  .mistake .bad::before{content:'✗ ';font-weight:800;}
+  .mistake .good{color:#15803d;font-size:14.5px;margin-top:3px;}
+  .mistake .good::before{content:'✓ ';font-weight:800;}
+  .mistake .why{color:#64748b;font-size:12.5px;margin-top:5px;font-style:italic;}
+
+  .drill{background:#f8f7fe;border:1px solid #ece7fb;border-radius:9px;padding:11px 14px;margin-bottom:7px;font-size:15px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .drill .q{flex:1;min-width:200px;}
+  .drill .num{font-weight:800;color:#94a3b8;font-size:13px;}
+  .reveal{background:#ede9fe;border:none;color:#5b21b6;font-weight:700;font-size:12px;padding:5px 12px;border-radius:99px;cursor:pointer;}
+  .reveal:hover{background:#7c3aed;color:#fff;}
+  .ans{display:none;color:#15803d;font-weight:700;font-size:14.5px;}
+  .ans.show{display:inline;}
+
+  .speak{background:linear-gradient(135deg,#db2777,#f472b6);color:#fff;border-radius:12px;padding:16px 18px;font-size:15.5px;line-height:1.6;}
+  .cues{margin-top:11px;display:flex;flex-direction:column;gap:6px;}
+  .cue{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38);border-radius:8px;padding:8px 12px;font-size:14px;}
+
+  .conv{background:#faf9ff;border:1px solid #ece7fb;border-radius:9px;padding:11px 14px;margin-bottom:6px;font-size:15px;display:flex;gap:10px;}
+  .conv .q-n{color:#db2777;font-weight:800;flex-shrink:0;}
+
+  .review{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 18px;}
+  .review ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:11px;}
+  .review li{background:#fff;border:1px solid #bbf7d0;border-radius:99px;padding:6px 13px;font-size:13.5px;color:#15803d;}
+  .review .one{font-size:15px;color:#166534;font-weight:600;font-style:italic;}
+
+  /* barra de ações */
+  .actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
+  .btn{border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(2,132,199,.2);}
+  .btn:hover{transform:translateY(-2px);}
+  .btn.blue{background:linear-gradient(135deg,#0284c7,#0369a1);}
+  .btn.green{background:linear-gradient(135deg,#16a34a,#4ade80);}
+  .btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
+  .btn.sm{padding:9px 15px;font-size:13.5px;border-radius:10px;}
+  .btn[disabled]{opacity:.55;cursor:default;transform:none;}
+  .taught{font-size:13px;color:#15803d;font-weight:700;}
+  .hint{font-size:13px;color:#94a3b8;}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#0c4a6e;color:#fff;border-radius:12px;padding:13px 20px;font-size:14px;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:all .22s;z-index:80;}
+  .toast.show{opacity:1;transform:translateX(-50%);}
+  @media print{.topbar,.stu-grid,.cat-grid,.actions,.reveal,.no-print{display:none!important;}.ans{display:inline!important;}.card{box-shadow:none;border-color:#ddd;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1 style="font-size:26px">Language Structures</h1>
+        <p style="opacity:.9;font-size:14px">Prepositions, articles, word order — the structures behind every sentence</p>
+      </div>
+      <a href="index.html" class="menu-btn">← Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ALUNO -->
+  <div class="card no-print">
+    <div class="row" style="margin-bottom:10px">
+      <h3 style="font-size:15px">Class with</h3>
+      <a href="students.html" style="font-size:13px;font-weight:700;color:#7c3aed;text-decoration:none">⚙ Manage students</a>
+    </div>
+    <div class="stu-grid" id="stuGrid"></div>
+  </div>
+
+  <!-- CATEGORIA -->
+  <div class="card no-print">
+    <h3 style="font-size:15px;margin-bottom:12px">Category</h3>
+    <div class="cat-grid" id="catGrid"></div>
+    <p class="hint" style="margin-top:11px">● marks what this student has already studied.</p>
+  </div>
+
+  <!-- LIÇÃO -->
+  <div class="card" id="lessonCard"></div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="platform-students.js?v=1"></script>
+<script src="platform-content.js?v=1"></script>
+<script src="platform-progress.js?v=1"></script>
+<script src="engine/structures-content.js?v=1"></script>
+<script>
+/* ================================================================
+   Language Structures — apresentação
+   ----------------------------------------------------------------
+   Esta página só RENDERIZA. O conteúdo vive em
+   engine/structures-content.js e o progresso em platform-progress.js.
+   Nenhuma regra de negócio aqui.
+   ================================================================ */
+
+const STUDENTS_DATA = TeacherLu.Students.load();
+const CATS   = window.STRUCTURES_CATEGORIES.slice().sort((a,b)=>a.order-b.order);
+const TOPICS = window.STRUCTURES_TOPICS;
+
+let student = STUDENTS_DATA.length ? STUDENTS_DATA[0].id : null;
+let category = CATS[0].id;
+
+const esc = t => String(t==null?'':t)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+/** Permite as tags <b> e <i> que o conteúdo usa para destacar a estrutura. */
+const rich = t => esc(t).replace(/&lt;(\/?[bi])&gt;/g,'<$1>');
+
+/** A lição de uma categoria (hoje uma por categoria; o schema aceita várias). */
+function lessonOf(catId){
+  return Object.keys(TOPICS).map(k=>TOPICS[k])
+    .filter(t=>t.category===catId)
+    .sort((a,b)=>(a.order||0)-(b.order||0))[0] || null;
+}
+
+/** Id do conteúdo no Learning Progress — mesmo formato do registro. */
+const itemIdOf = topic => 'structures:' + topic.id;
+
+function isTaught(topic){
+  return student && TeacherLu.Progress.isCovered(student, itemIdOf(topic));
+}
+
+function renderStudents(){
+  document.getElementById('stuGrid').innerHTML = STUDENTS_DATA.map(s=>
+    `<button class="stu ${s.id===student?'active':''}" onclick="pickStudent('${s.id}')">${s.emoji?s.emoji+' ':''}${esc(s.name)}</button>`
+  ).join('') || '<p class="hint">No students yet.</p>';
+}
+function pickStudent(id){ student=id; renderStudents(); renderCategories(); renderLesson(); }
+
+function renderCategories(){
+  document.getElementById('catGrid').innerHTML = CATS.map(c=>{
+    const t = lessonOf(c.id);
+    const done = t && isTaught(t);
+    return `<button class="cat ${c.id===category?'active':''}" onclick="pickCategory('${c.id}')">
+      ${done?'<span class="dot"></span>':''}
+      <span class="ic">${c.icon}</span>${esc(c.label)}
+    </button>`;
+  }).join('');
+}
+function pickCategory(id){ category=id; renderCategories(); renderLesson(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* ---------- as 8 seções ---------- */
+function section(n,title,body){
+  return `<div class="sec"><h3><span class="n">${n}</span>${title}</h3>${body}</div>`;
+}
+
+function renderLesson(){
+  const t = lessonOf(category);
+  const box = document.getElementById('lessonCard');
+  if(!t){ box.innerHTML='<p class="hint">No lesson for this category yet.</p>'; return; }
+
+  const name = student ? TeacherLu.Students.nameOf(student) : 'the student';
+  const P = s => rich(s).replace(/\{name\}/g, esc(name));
+  let n = 0;
+
+  box.innerHTML =
+    `<div class="lesson-head">
+       <h2>${esc(t.title)}<span class="lvl">${esc(t.level)}</span></h2>
+       <div class="meta">${esc((CATS.find(c=>c.id===t.category)||{}).label)} · ${esc(t.short)}</div>
+     </div>
+     <div class="goal"><b>Goal:</b> ${P(t.goal)}</div>` +
+
+    section(++n,'Explanation',
+      `<p class="explain">${P(t.explain.text)}</p>
+       <ul class="points">${t.explain.points.map(p=>`<li>${P(p)}</li>`).join('')}</ul>`) +
+
+    section(++n,'Examples',
+      t.examples.map(g=>`<div class="ex-group"><div class="use">${P(g.use)}</div>
+        ${g.items.map(i=>`<div class="ex-line">${P(i)}</div>`).join('')}</div>`).join('')) +
+
+    section(++n,'Common mistakes',
+      t.mistakes.map(m=>`<div class="mistake">
+        <div class="bad">${P(m.bad)}</div>
+        <div class="good">${P(m.good)}</div>
+        <div class="why">${P(m.why)}</div></div>`).join('')) +
+
+    section(++n,'Exercises',
+      t.exercises.map((e,i)=>`<div class="drill">
+        <span class="num">${i+1}.</span><span class="q">${P(e.q)}</span>
+        <button class="reveal" onclick="this.nextElementSibling.classList.toggle('show')">answer</button>
+        <span class="ans">${P(e.a)}</span></div>`).join('')) +
+
+    section(++n,'Speaking practice',
+      `<div class="speak">${P(t.speaking.prompt)}
+        <div class="cues">${t.speaking.cues.map(c=>`<div class="cue">${P(c)}</div>`).join('')}</div>
+      </div>`) +
+
+    section(++n,'Complete the sentence',
+      t.complete.map((c,i)=>`<div class="drill">
+        <span class="num">${i+1}.</span><span class="q">${P(c.q)}</span>
+        <button class="reveal" onclick="this.nextElementSibling.classList.toggle('show')">idea</button>
+        <span class="ans">${P(c.a)}</span></div>`).join('')) +
+
+    section(++n,'Conversation questions',
+      t.questions.map((q,i)=>`<div class="conv"><span class="q-n">${i+1}</span><span>${P(q)}</span></div>`).join('')) +
+
+    section(++n,'Quick review',
+      `<div class="review">
+        <ul>${t.review.key.map(k=>`<li>${P(k)}</li>`).join('')}</ul>
+        <div class="one">${P(t.review.oneLiner)}</div>
+      </div>`) +
+
+    `<div class="sec actions no-print" id="lessonActions"></div>`;
+
+  renderActions(t);
+}
+
+/* ---------- registro no Learning Progress ---------- */
+function renderActions(t){
+  const el = document.getElementById('lessonActions');
+  if(!student){ el.innerHTML='<span class="hint">Select a student to record this lesson.</span>'; return; }
+  const done = isTaught(t);
+  const entry = TeacherLu.Progress.entry(student, itemIdOf(t));
+  el.innerHTML =
+    `<button class="btn ${done?'green':'blue'}" onclick="markTaught()">
+       ${done?'✓ Taught':'Mark as taught'}
+     </button>
+     <button class="btn gray sm" onclick="window.print()">⬇ PDF</button>
+     ${done&&entry?`<span class="taught">recorded ${esc(entry.lastAt)}${entry.times>1?' · '+entry.times+'×':''}</span>`:''}
+     ${done?`<button class="btn gray sm" onclick="markTaught()">undo</button>`:''}`;
+}
+
+function markTaught(){
+  const t = lessonOf(category);
+  if(!t || !student) return;
+  const r = TeacherLu.Progress.toggle(student, itemIdOf(t));
+  // F-2: se a gravação falhou, não confirma e recarrega o estado real.
+  if(!r.ok){
+    renderCategories(); renderActions(t);
+    toast('Could not save — the browser storage may be full. Nothing was changed.');
+    return;
+  }
+  renderCategories(); renderActions(t);
+  toast(r.on
+    ? 'Recorded in ' + TeacherLu.Students.nameOf(student) + '’s Learning Progress'
+    : 'Removed from Learning Progress');
+}
+
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+renderStudents(); renderCategories(); renderLesson();
+</script>
+</body>
+</html>

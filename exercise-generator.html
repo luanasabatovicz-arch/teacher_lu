@@ -159,6 +159,7 @@ select.inp option{background:#fff !important;color:#1e293b !important;}
   </div>
 </div>
 
+<script src="platform-print.js?v=1"></script>
 <script>
 // ================= EXERCISE BANK =================
 const bank = {
@@ -698,7 +699,7 @@ function exportPDF(){
   printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
 }
 
-function printDoc(html,title){var w=window.open('','_blank');if(!w){alert('Allow pop-ups to generate the PDF.');return;}w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111;line-height:1.6;}h1,h2{margin:16px 0 8px;}table{width:100%;border-collapse:collapse;margin:10px 0;}td,th{border:1px solid #ccc;padding:8px;text-align:left;}</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');w.document.close();}
+function printDoc(html,title){ TeacherLu.printDoc(html, title); }
 
 function goHome(){window.location.href='index.html';}
 

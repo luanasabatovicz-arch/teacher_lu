@@ -106,6 +106,7 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
 <script src="engine/speaking-activities.js?v=4"></script>
 <script src="engine/speaking-engine.js?v=4"></script>
 <script src="engine/teacher-mode.js?v=4"></script>
+<script src="platform-students.js?v=1"></script>
 <script>
 /* ============================================================
    Sprint 2: esta página é APENAS consumidora da SpeakingEngine.
@@ -113,20 +114,12 @@ input.obs{width:100%;border:2px solid var(--line);border-radius:10px;padding:9px
    ============================================================ */
 
 /* ALUNOS REAIS — mesmo cadastro de students.html (sabatovicz_students) */
-const STU_KEY='sabatovicz_students';
-const DEFAULT_STUDENTS=[
-  {id:'natali',name:'Natali',emoji:'🌟',level:'A1',age:''},
-  {id:'heitor',name:'Heitor',emoji:'🚀',level:'A1',age:''},
-  {id:'joao',name:'João',emoji:'⚽',level:'A1',age:''},
-  {id:'maria',name:'Maria',emoji:'🌸',level:'A1',age:''},
-  {id:'lais',name:'Lais',emoji:'🎨',level:'A1',age:''},
-  {id:'regis',name:'Régis',emoji:'🎸',level:'A1',age:''},
-  {id:'isa',name:'Isa',emoji:'🦄',level:'A1',age:10}
-];
-function loadStudents(){
-  try{const v=localStorage.getItem(STU_KEY);if(v){const a=JSON.parse(v);if(Array.isArray(a)&&a.length)return a;}}catch(e){}
-  return DEFAULT_STUDENTS.slice();
-}
+/* ---------- student store — fonte única: platform-students.js ----------
+   O bloco DEFAULT_STUDENTS/loadStudents que existia aqui foi centralizado.
+   Estes aliases mantêm o restante desta página inalterado. -------------- */
+const STU_KEY = TeacherLu.Students.KEY;
+const DEFAULT_STUDENTS = TeacherLu.Students.DEFAULTS;
+function loadStudents(){ return TeacherLu.Students.load(); }
 const STUDENTS=loadStudents();
 
 /* Estruturas destravadas (P6 REAL): piso por nível + semanas concluídas
