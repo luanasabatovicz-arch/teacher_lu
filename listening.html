@@ -38,8 +38,9 @@
   .player{background:linear-gradient(135deg,#166581,#0d9488);color:#fff;border-radius:14px;padding:18px;margin:14px 0 4px;}
   .player .lbl{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:10px;}
   .player audio{width:100%;height:44px;}
-  .player .missing{font-size:13px;opacity:.92;margin-top:10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);border-radius:9px;padding:9px 12px;line-height:1.5;}
-  .player .missing code{background:rgba(255,255,255,.18);border-radius:5px;padding:1px 6px;font-size:12.5px;}
+  .player.unavailable{background:#f4fbfa;border:1px solid #d7ebe8;color:#64748b;}
+  .player.unavailable .lbl{color:#0d9488;opacity:.85;}
+  .player .na{font-size:14px;color:#64748b;}
 
   .sec{margin-top:22px;}
   .sec > h3{font-size:14px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#0d9488;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:2px solid #d7f0ec;margin-bottom:13px;}
@@ -189,18 +190,10 @@ function renderLesson(){
        <div class="meta"><span class="theme-badge">${esc(l.theme)}</span></div>
      </div>
 
-     <div class="player">
-       <div class="lbl">▶ Audio · listen first</div>
-       <audio controls preload="none" id="player"
-              onerror="document.getElementById('audioMissing').style.display='block'">
-         <source src="${AUDIO_DIR}${esc(l.audio)}" type="audio/mpeg">
-       </audio>
-       <div class="missing" id="audioMissing" style="display:none">
-         The audio file <code>${AUDIO_DIR}${esc(l.audio)}</code> isn't there yet.
-         Drop the MP3 into the <code>audio/</code> folder with this exact name and it will play — no code change needed.
-         You can still use the transcript and all the exercises below.
-       </div>
-     </div>
+     <!-- Preenchido por probeAudio(): o player só é criado se o MP3 existir.
+          Sondamos com fetch HEAD — um 404 de fetch fica só na aba Network,
+          nunca vira erro de console (ao contrário de um <source> quebrado). -->
+     <div id="audioSlot"></div>
 
      <div class="sec no-print" style="margin-top:16px">
        <button class="btn ghost" id="btnTranscript" onclick="toggleTranscript()">Show transcript</button>
@@ -234,6 +227,44 @@ function renderLesson(){
 
     section(++n, 'Speaking follow-up',
       `<div class="speak">${l.speaking.map(q=>`<div class="q">${esc(q)}</div>`).join('')}</div>`);
+
+  // Decide o player DEPOIS de saber se o arquivo existe (sem 404 no console).
+  probeAudio(l);
+}
+
+/* ---------- player condicional ---------- */
+/**
+ * Só cria o <audio> quando o MP3 existe de verdade.
+ * Sonda com fetch HEAD: um 404 de fetch fica apenas na aba Network — não
+ * gera erro de console como um <source> quebrado geraria. Quando o arquivo
+ * for adicionado à pasta audio/, o player aparece sozinho no próximo render,
+ * sem qualquer alteração de código.
+ */
+function probeAudio(l){
+  const slot = document.getElementById('audioSlot');
+  if(!slot) return;
+  const url = AUDIO_DIR + l.audio;
+  const token = curId;                 // evita corrida ao trocar de listening
+
+  const notice =
+    `<div class="player unavailable">
+       <div class="lbl">🎧 Audio</div>
+       <div class="na">Audio not available yet.</div>
+     </div>`;
+  const player =
+    `<div class="player">
+       <div class="lbl">▶ Audio · listen first</div>
+       <audio controls preload="none">
+         <source src="${esc(url)}" type="audio/mpeg">
+       </audio>
+     </div>`;
+
+  // Ambiente sem fetch: degrada para o aviso, sem quebrar.
+  if(typeof fetch !== 'function'){ slot.innerHTML = notice; return; }
+
+  fetch(url, { method: 'HEAD' })
+    .then(res => { if(curId===token) slot.innerHTML = res.ok ? player : notice; })
+    .catch(() => { if(curId===token) slot.innerHTML = notice; });
 }
 
 /* ---------- microinterações ---------- */
