@@ -2,22 +2,12 @@
 
 Os micro listenings do Listening Lab tocam arquivos MP3 desta pasta.
 
-## Gerar os 8 áudios (um comando)
+## Como usar
 
-Num computador com internet:
-
-    pip install edge-tts
-    python3 audio/generate-audio.py
-
-O script `generate-audio.py`:
-- lê os textos **direto** de `engine/listening-content.js` (o áudio corresponde
-  exatamente ao transcript — sempre);
-- usa a voz **en-US-AriaNeural** (feminina, americana, neutra, velocidade
-  natural), do Microsoft Edge Neural TTS — gratuita, sem chave de API;
-- grava os 8 arquivos com os nomes exatos nesta pasta.
-
-Precisa de Python 3, Node.js (já usado pelo projeto) e o pacote `edge-tts`.
-Rode da raiz do projeto ou de dentro de `audio/`.
+Gere os áudios num serviço externo (ElevenLabs, OpenAI TTS, Microsoft Edge...)
+e solte os arquivos aqui com os nomes exatos abaixo. **Nenhuma alteração de
+código é necessária** — o player aparece sozinho no próximo carregamento da
+página assim que o arquivo existir.
 
 ## Nomes esperados (os 8 do banco inicial)
 
@@ -33,15 +23,13 @@ Rode da raiz do projeto ou de dentro de `audio/`.
 Convenção: `<theme>-<level>-<nn>.mp3`. O nome que cada listening espera é o
 campo `audio` em `engine/listening-content.js`.
 
-## Trocar de voz (opcional)
+Voz sugerida: feminina, americana, neutra, velocidade natural.
 
-Edite `VOICE` no topo de `generate-audio.py`. Outras vozes femininas
-americanas: `en-US-JennyNeural`, `en-US-AvaNeural`, `en-US-EmmaNeural`.
-Liste todas com: `edge-tts --list-voices`.
+## Comportamento sem o MP3
 
-## Enquanto o MP3 não existe
-
-O player aparece normalmente e todas as atividades funcionam (transcript,
-vocabulário, compreensão, complete, true/false, speaking). Se o arquivo não
-estiver presente, a página mostra um aviso discreto com o nome a usar. Assim
-que o MP3 for adicionado com o nome correto, ele toca — sem alterar código.
+Enquanto o arquivo não existir, a página **não cria o player** e mostra um
+aviso discreto — *"Audio not available yet."* Todas as atividades continuam
+funcionando normalmente (transcript, vocabulário, compreensão, complete,
+true/false, speaking). Nenhum erro 404 aparece no console: a página verifica
+a existência do arquivo com uma sondagem `fetch` (que não gera erro de
+console), em vez de tentar carregar um `<audio>` quebrado.
