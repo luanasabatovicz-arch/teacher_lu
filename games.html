@@ -65,6 +65,7 @@
 
 <div class="wrap"><div class="card" id="gameArea"></div></div>
 
+<script src="engine/games-content.js?v=4"></script>
 <script>
 const GAMES=[
   {id:'hangman',label:'Hangman'},
@@ -86,15 +87,9 @@ function speak(w){if(!('speechSynthesis'in window)){alert('Audio not supported')
 function norm(s){return (s||'').toLowerCase().trim().replace(/[^a-z ]/g,'');}
 
 /* ============ 1. HANGMAN ============ */
-const HANG={
-  Animals:['DOG','CAT','HORSE','RABBIT','ELEPHANT','MONKEY','TIGER','SNAKE','CHICKEN','DOLPHIN'],
-  Food:['BREAD','APPLE','CHEESE','CHICKEN','COFFEE','ORANGE','POTATO','TOMATO','BANANA','CHOCOLATE'],
-  Verbs:['WORK','STUDY','TRAVEL','COOK','SLEEP','DANCE','LISTEN','WATCH','DRIVE','SWIM'],
-  Jobs:['TEACHER','DOCTOR','NURSE','ENGINEER','LAWYER','WAITER','PILOT','FARMER','ARTIST','DENTIST'],
-  Home:['KITCHEN','BEDROOM','TABLE','WINDOW','GARDEN','MIRROR','SOFA','FRIDGE','SHOWER','CARPET']
-};
+const HANG=GAMES_CONTENT.hangman;
 let hCat='Animals',hWord='',hGuessed=[],hLives=6;
-function hStart(cat){hCat=cat;const arr=HANG[cat];hWord=arr[Math.floor(Math.random()*arr.length)];hGuessed=[];hLives=6;render();}
+function hStart(cat){hCat=cat;hWord=GAMES_CONTENT.next('hangman:'+cat,HANG[cat]);hGuessed=[];hLives=6;render();}
 function hGuess(l){if(hGuessed.includes(l))return;hGuessed.push(l);if(!hWord.includes(l))hLives--;render();}
 function renderHangman(){
   const done=hWord && hWord.split('').every(c=>c===' '||hGuessed.includes(c));
@@ -115,7 +110,7 @@ function renderHangman(){
 }
 
 /* ============ 2. CATEGORIES (STOP) ============ */
-const CATS=['Name','Animal','Food','Country','Object','Verb','Adjective','Color'];
+const CATS=GAMES_CONTENT.stop.map(w=>w.replace(/\b\w/g,c=>c.toUpperCase()));
 const LETTERS='ABCDEFGHIJKLMNOPRSTW'.split('');
 let cTimer=null,cTime=120;
 function cNew(){const l=LETTERS[Math.floor(Math.random()*LETTERS.length)];document.getElementById('cLetter').textContent=l;cReset();}
@@ -136,9 +131,9 @@ function renderCategories(){
 }
 
 /* ============ 3. 20 QUESTIONS ============ */
-const Q20=['elephant','pizza','teacher','airplane','beach','guitar','doctor','mountain','coffee','umbrella','football','kitchen','rainbow','dolphin','bicycle','library','winter','chocolate','hospital','garden'];
+const Q20=GAMES_CONTENT.q20;
 let qWord='',qCount=0,qShow=false;
-function qNew(){qWord=Q20[Math.floor(Math.random()*Q20.length)];qCount=0;qShow=false;render();}
+function qNew(){qWord=GAMES_CONTENT.next('q20',Q20);qCount=0;qShow=false;render();}
 function qToggle(){qShow=!qShow;render();}
 function qInc(){qCount++;render();}
 function renderQ20(){
@@ -157,31 +152,18 @@ function renderQ20(){
 }
 
 /* ============ 4. ODD ONE OUT ============ */
-const ODD=[
-  {w:['apple','banana','carrot','orange'],odd:2,reason:'carrot is a vegetable, the others are fruits'},
-  {w:['dog','cat','horse','table'],odd:3,reason:'table is not an animal'},
-  {w:['red','blue','happy','green'],odd:2,reason:'happy is a feeling, the others are colors'},
-  {w:['run','swim','book','dance'],odd:2,reason:'book is not a verb'},
-  {w:['mother','father','teacher','sister'],odd:2,reason:'teacher is a job, the others are family'},
-  {w:['Monday','Friday','summer','Sunday'],odd:2,reason:'summer is a season, the others are days'},
-  {w:['coffee','tea','water','bread'],odd:3,reason:'bread is food, the others are drinks'},
-  {w:['car','bus','train','kitchen'],odd:3,reason:'kitchen is not transport'},
-  {w:['big','small','tall','chair'],odd:3,reason:'chair is not an adjective'},
-  {w:['eye','nose','shoe','mouth'],odd:2,reason:'shoe is not part of the face'}
-];
 function gShuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function gPick(len,last){if(len<2)return 0;let i;do{i=Math.floor(Math.random()*len);}while(i===last);return i;}
-let oIdx=0,oAns=null,oCur=null;
+const ODD=GAMES_CONTENT.odd;
+let oAns=null,oCur=null;
 function oNew(){
-  oIdx=gPick(ODD.length,oIdx);
-  const src=ODD[oIdx], correct=src.w[src.odd];
+  const src=GAMES_CONTENT.next('odd',ODD), correct=src.w[src.odd];
   const w=gShuffle(src.w);                      // alternativas em ordem nova a cada rodada
   oCur={w:w, odd:w.indexOf(correct), reason:src.reason};
   oAns=null;render();
 }
 function oPick(i){oAns=i;render();}
 function renderOdd(){
-  const it=oCur||(function(){const s=ODD[oIdx];return {w:s.w,odd:s.odd,reason:s.reason};})();
+  const it=oCur;
   let opts=it.w.map((w,i)=>{let cls='opt';if(oAns!==null){if(i===it.odd)cls+=' right';else if(i===oAns)cls+=' wrong';}return `<button class="chip" style="font-size:16px;padding:12px 18px;${oAns!==null&&i===it.odd?'background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff':''}${oAns!==null&&i===oAns&&i!==it.odd?'background:#fee2e2;color:#991b1b':''}" onclick="oPick(${i})">${w}</button>`;}).join(' ');
   let fb=oAns!==null?`<div class="feedback ${oAns===it.odd?'ok':'no'}">${oAns===it.odd?'Correct! ':'No. '}<b>${it.w[it.odd]}</b> — ${it.reason}.</div>`:'';
   document.getElementById('gameArea').innerHTML=`<h2 class="title">Odd One Out</h2><p class="desc teacher-only">The student says which word does not belong (and explains why in English) — then you click it.</p>
@@ -190,22 +172,16 @@ function renderOdd(){
 }
 
 /* ============ 5. CATEGORY SORT ============ */
-const SORT=[
-  {title:'Fruits or Vegetables?',a:'Fruit',b:'Vegetable',items:[['apple','Fruit'],['carrot','Vegetable'],['banana','Fruit'],['potato','Vegetable'],['orange','Fruit'],['onion','Vegetable']]},
-  {title:'Past or Present?',a:'Past',b:'Present',items:[['went','Past'],['go','Present'],['ate','Past'],['eat','Present'],['saw','Past'],['see','Present']]},
-  {title:'Countable or Uncountable?',a:'Countable',b:'Uncountable',items:[['apple','Countable'],['water','Uncountable'],['book','Countable'],['rice','Uncountable'],['car','Countable'],['milk','Uncountable']]},
-  {title:'Drink or Food?',a:'Drink',b:'Food',items:[['coffee','Drink'],['bread','Food'],['juice','Drink'],['cheese','Food'],['tea','Drink'],['rice','Food']]}
-];
-let sIdx=0,sAns={},sCur=null;
+const SORT=GAMES_CONTENT.sort;
+let sAns={},sCur=null;
 function sNew(){
-  sIdx=gPick(SORT.length,sIdx);
-  const src=SORT[sIdx], flip=Math.random()<0.5;
+  const src=GAMES_CONTENT.next('sort',SORT), flip=Math.random()<0.5;
   sCur={title:src.title, a:flip?src.b:src.a, b:flip?src.a:src.b, items:gShuffle(src.items)};
   sAns={};render();
 }
 function sPick(i,v){if(sAns[i]!==undefined)return;sAns[i]=v;render();}
 function renderSort(){
-  const t=sCur||SORT[sIdx];
+  const t=sCur||GAMES_CONTENT.sort[0];
   let rows=t.items.map((it,i)=>{
     const answered=sAns[i]!==undefined;
     const btn=(label)=>{
@@ -227,13 +203,9 @@ function renderSort(){
 }
 
 /* ============ 6. SPELLING BEE ============ */
-const SPELL={
-  Easy:['cat','dog','book','red','sun','milk','tree','fish','blue','door'],
-  Medium:['house','water','happy','friend','school','orange','yellow','family','doctor','garden'],
-  Hard:['beautiful','wednesday','restaurant','different','favourite','necessary','tomorrow','because','together','breakfast']
-};
+const SPELL=GAMES_CONTENT.spelling;
 let spLevel='Easy',spWord='',spChecked=false,spVal='';
-function spNew(lv){if(lv)spLevel=lv;const arr=SPELL[spLevel];spWord=arr[Math.floor(Math.random()*arr.length)];spChecked=false;spVal='';render();setTimeout(()=>speak(spWord),200);}
+function spNew(lv){if(lv)spLevel=lv;spWord=GAMES_CONTENT.next('spell:'+spLevel,SPELL[spLevel]);spChecked=false;spVal='';render();setTimeout(()=>speak(spWord),200);}
 function spCheck(){spVal=document.getElementById('spInp').value;spChecked=true;render();}
 function renderSpelling(){
   let levels=Object.keys(SPELL).map(l=>`<span class="chip ${l===spLevel?'active':''}" onclick="spNew('${l}')">${l}</span>`).join('');
@@ -247,18 +219,13 @@ function renderSpelling(){
 }
 
 /* ============ 7. GUESS THE EMOJI ============ */
-const EMO=[
-  {e:'🐱',a:['cat']},{e:'🏠',a:['house','home']},{e:'⚽',a:['football','soccer','ball']},{e:'🌧️',a:['rain']},
-  {e:'☕',a:['coffee']},{e:'✈️',a:['airplane','plane']},{e:'📚',a:['book','books']},{e:'🍎',a:['apple']},
-  {e:'🎂',a:['cake','birthday']},{e:'⏰',a:['clock','alarm']},{e:'🌙',a:['moon','night']},{e:'💧',a:['water']},
-  {e:'🎵',a:['music','song']},{e:'🚗',a:['car']},{e:'🐶',a:['dog']},{e:'☀️',a:['sun','sunny']},{e:'🍌',a:['banana']},{e:'👨‍👩‍👧',a:['family']}
-];
-let emIdx=0,emState='';   // '' → 'shown' → 'right'/'wrong'
-function emNew(){emIdx=Math.floor(Math.random()*EMO.length);emState='';render();}
+const EMO=GAMES_CONTENT.emoji;
+let emCur=EMO[0],emState='';   // '' → 'shown' → 'right'/'wrong'
+function emNew(){emCur=GAMES_CONTENT.next('emoji',EMO);emState='';render();}
 function emShow(){emState='shown';render();}
 function emJudge(ok){emState=ok?'right':'wrong';render();}
 function renderEmoji(){
-  const it=EMO[emIdx];
+  const it=emCur;
   let area='';
   if(emState===''){
     area=`<div style="text-align:center"><button class="btn amber" onclick="emShow()">👁 Show answer</button></div>`;
@@ -279,9 +246,9 @@ function renderEmoji(){
 }
 
 /* ============ 8. WORD CHAINS ============ */
-const STARTS=['apple','house','table','orange','elephant','rabbit','garden','tiger','river','sunny'];
+const STARTS=GAMES_CONTENT.chains;
 let chChain=[],chMsg='';
-function chNew(){chChain=[STARTS[Math.floor(Math.random()*STARTS.length)]];chMsg='';render();}
+function chNew(){chChain=[GAMES_CONTENT.next('chains',STARTS)];chMsg='';render();}
 function chAdd(){
   const v=norm(document.getElementById('chInp').value);
   const last=chChain[chChain.length-1];
