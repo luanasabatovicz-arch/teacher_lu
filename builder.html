@@ -4,118 +4,285 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sabatovicz — Build Today's Lesson</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-  h1,h2,h3,h4{font-family:'Poppins',sans-serif;font-weight:700;}
-  body{background:#fff;color:#1e293b;min-height:100vh;}
+  /* Builder-only patterns (padrões que só existem nesta tela) */
 
-  .topbar{background:linear-gradient(120deg,#121F39 0%,#7c3aed 50%,#db2777 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(124,58,237,.3);}
-  .topwrap{max-width:1000px;margin:0 auto;}
-  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
-  .menu-btn:hover{background:rgba(255,255,255,.38);}
+  /* Grid de duração */
+  .dur-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--tl-space-2); }
+  .dur {
+    padding: 14px 10px;
+    border-radius: var(--tl-radius-md);
+    cursor: pointer;
+    background: var(--tl-surface-alt);
+    border: 1px solid var(--tl-border);
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+    text-align: center;
+  }
+  .dur:hover { border-color: var(--tl-secondary); }
+  .dur.active { background: var(--tl-primary); border-color: var(--tl-primary); color: var(--tl-text-inverse); }
+  .dur .m { font-weight: var(--tl-fw-bold); font-size: var(--tl-fs-h3); }
+  .dur .l { font-size: 11px; font-weight: var(--tl-fw-bold); letter-spacing: var(--tl-tracking-wide); text-transform: uppercase; opacity: .75; margin-top: 2px; }
 
-  .wrap{max-width:1000px;margin:0 auto;padding:24px 24px 70px;}
-  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;}
+  /* Contexto (o que a plataforma sabe do aluno) */
+  .ctx { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--tl-space-3); }
+  @media (max-width: 760px) { .ctx { grid-template-columns: 1fr 1fr; } }
+  .ctx-box {
+    background: var(--tl-surface-alt);
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius-md);
+    padding: 12px 14px;
+  }
+  .ctx-box .l { font-size: 10.5px; font-weight: var(--tl-fw-bold); letter-spacing: var(--tl-tracking-wider); text-transform: uppercase; color: var(--tl-text-tertiary); }
+  .ctx-box .v { font-weight: var(--tl-fw-bold); font-size: var(--tl-fs-h3); color: var(--tl-text); margin-top: 4px; }
+  .ctx-box .s { font-size: var(--tl-fs-caption); color: var(--tl-text-secondary); margin-top: 2px; }
 
-  .stu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  @media(max-width:700px){.stu-grid{grid-template-columns:1fr 1fr;}}
-  .stu{padding:10px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#f1edfd;color:#5b21b6;border:2px solid transparent;transition:all .2s;}
-  .stu:hover{border-color:#a78bfa;}
-  .stu.active{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;}
+  .sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
+  .src {
+    font-size: 11.5px;
+    font-weight: var(--tl-fw-bold);
+    border-radius: var(--tl-radius-pill);
+    padding: 4px 11px;
+    background: var(--tl-success-soft);
+    color: var(--tl-success-text);
+    border: 1px solid transparent;
+  }
+  .src.off { background: var(--tl-surface-alt); color: var(--tl-text-tertiary); border-color: var(--tl-border); }
 
-  .dur-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  .dur{padding:14px 10px;border-radius:12px;cursor:pointer;background:#f8f7fe;border:2px solid #ece7fb;transition:all .2s;text-align:center;}
-  .dur:hover{border-color:#a78bfa;}
-  .dur.active{background:linear-gradient(135deg,#121F39,#7c3aed);border-color:transparent;color:#fff;}
-  .dur .m{font-family:'Poppins';font-weight:800;font-size:22px;}
-  .dur .l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-top:2px;}
+  /* Blocos do plano */
+  .block {
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius-md);
+    padding: 15px 17px;
+    margin-bottom: 11px;
+    background: var(--tl-surface);
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+  }
+  .block:hover { border-color: var(--tl-border-strong); box-shadow: var(--tl-shadow-sm); }
+  .block .head { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .block .tag {
+    font-size: 10.5px;
+    font-weight: var(--tl-fw-bold);
+    letter-spacing: var(--tl-tracking-wide);
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--tl-radius-pill);
+    flex-shrink: 0;
+  }
+  .block .mins {
+    margin-left: auto;
+    font-size: var(--tl-fs-caption);
+    font-weight: var(--tl-fw-bold);
+    color: var(--tl-primary);
+    background: var(--tl-primary-soft);
+    border-radius: var(--tl-radius-pill);
+    padding: 4px 11px;
+    flex-shrink: 0;
+  }
+  .block .ti {
+    font-size: var(--tl-fs-h4);
+    font-weight: var(--tl-fw-semibold);
+    color: var(--tl-text);
+    flex: 1;
+    min-width: 180px;
+  }
+  .block .why {
+    margin-top: 9px;
+    font-size: 13.5px;
+    color: var(--tl-text-secondary);
+    line-height: var(--tl-lh-normal);
+    background: var(--tl-surface-alt);
+    border-left: 3px solid var(--tl-secondary);
+    border-radius: 0 8px 8px 0;
+    padding: 9px 12px;
+  }
+  .block .why b { color: var(--tl-primary); }
 
-  /* contexto lido da plataforma */
-  .ctx{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-  @media(max-width:760px){.ctx{grid-template-columns:1fr 1fr;}}
-  .ctx-box{background:#f8f7fe;border:1px solid #ece7fb;border-radius:11px;padding:12px 14px;}
-  .ctx-box .l{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;}
-  .ctx-box .v{font-family:'Poppins';font-weight:800;font-size:20px;color:#1e293b;margin-top:4px;}
-  .ctx-box .s{font-size:12px;color:#64748b;margin-top:2px;}
-  .sources{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px;}
-  .src{font-size:11.5px;font-weight:700;border-radius:99px;padding:4px 11px;background:#ecfdf5;color:#0f766e;border:1px solid #a7f3d0;}
-  .src.off{background:#f1f5f9;color:#94a3b8;border-color:#e2e8f0;}
+  .t-warmup, .t-review        { background: var(--tl-warning-soft);   color: var(--tl-warning-text); }
+  .t-grammar, .t-focus        { background: var(--tl-info-soft);      color: var(--tl-info-text); }
+  .t-structures               { background: var(--tl-secondary-soft); color: var(--tl-secondary-hover); }
+  .t-vocabulary               { background: var(--tl-primary-soft);   color: var(--tl-primary); }
+  .t-speaking                 { background: var(--tl-accent-soft);    color: var(--tl-accent-hover); }
+  .t-exercise                 { background: var(--tl-success-soft);   color: var(--tl-success-text); }
+  .t-conversation             { background: var(--tl-warning-soft);   color: var(--tl-warning-text); }
+  .t-homework                 { background: var(--tl-surface-alt);    color: var(--tl-text-secondary); }
 
-  /* blocos do plano */
-  .block{border:1px solid #ece7fb;border-radius:13px;padding:15px 17px;margin-bottom:11px;background:#fff;transition:all .2s;}
-  .block:hover{border-color:#d6c8f5;box-shadow:0 4px 16px rgba(124,58,237,.09);}
-  .block .head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
-  .block .tag{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:4px 10px;border-radius:99px;flex-shrink:0;}
-  .block .mins{margin-left:auto;font-size:12px;font-weight:800;color:#7c3aed;background:#f5f3ff;border-radius:99px;padding:4px 11px;flex-shrink:0;}
-  .block .ti{font-size:16.5px;font-weight:700;font-family:'Poppins';color:#1e293b;flex:1;min-width:180px;}
-  .block .why{margin-top:9px;font-size:13.5px;color:#475569;line-height:1.55;background:#f8fafc;border-left:3px solid #a78bfa;border-radius:0 8px 8px 0;padding:9px 12px;}
-  .block .why b{color:#5b21b6;}
+  /* Modo aula */
+  .lesson-nav { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
+  .step {
+    background: var(--tl-primary-tint);
+    color: var(--tl-primary);
+    border: none;
+    border-radius: var(--tl-radius-pill);
+    padding: 7px 14px;
+    font-weight: var(--tl-fw-bold);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+  }
+  .step:hover { background: var(--tl-primary-soft); }
+  .step.active { background: var(--tl-primary); color: var(--tl-text-inverse); }
+  .step.done   { background: var(--tl-success-soft); color: var(--tl-success-text); }
 
-  .t-warmup,.t-review{background:#fff7ed;color:#c2410c;}
-  .t-grammar,.t-focus{background:#e0f2fe;color:#075985;}
-  .t-structures{background:#e0f2fe;color:#0284c7;}
-  .t-vocabulary{background:#f5f3ff;color:#6d28d9;}
-  .t-speaking{background:#fce7f3;color:#be185d;}
-  .t-exercise{background:#ecfdf5;color:#047857;}
-  .t-conversation{background:#fef3c7;color:#b45309;}
-  .t-homework{background:#f1f5f9;color:#475569;}
+  .stage { border-left: 5px solid var(--tl-primary); padding-left: 16px; margin-bottom: 14px; }
+  .stage h2 { font-size: var(--tl-fs-h2); color: var(--tl-text); }
+  .stage .meta { color: var(--tl-text-secondary); font-size: 13.5px; margin-top: 3px; }
 
-  /* modo aula */
-  .lesson-nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
-  .step{background:#f1edfd;color:#5b21b6;border:none;border-radius:99px;padding:7px 14px;font-weight:700;font-size:12.5px;cursor:pointer;transition:all .2s;}
-  .step:hover{background:#ddd6fe;}
-  .step.active{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;}
-  .step.done{background:#dcfce7;color:#15803d;}
+  .sec { margin-top: 18px; }
+  .sec h4 {
+    font-size: 12.5px;
+    font-weight: var(--tl-fw-bold);
+    letter-spacing: var(--tl-tracking-wide);
+    text-transform: uppercase;
+    color: var(--tl-primary);
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--tl-primary-soft);
+    margin-bottom: 11px;
+  }
+  .explain { font-size: var(--tl-fs-body); line-height: var(--tl-lh-relaxed); color: var(--tl-text); }
+  .points { list-style: none; margin-top: 11px; }
+  .points li {
+    background: var(--tl-surface-alt);
+    border-left: 3px solid var(--tl-secondary);
+    border-radius: 0 8px 8px 0;
+    padding: 9px 13px;
+    margin-bottom: 6px;
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+  .ex-group { margin-bottom: 12px; }
+  .ex-group .use { font-size: var(--tl-fs-label); font-weight: var(--tl-fw-bold); color: var(--tl-primary); margin-bottom: 5px; }
+  .ex-line {
+    background: var(--tl-surface-alt);
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius-sm);
+    padding: 9px 13px;
+    margin-bottom: 5px;
+    font-size: var(--tl-fs-body);
+  }
+  .ex-line b { color: var(--tl-primary); }
+  .mistake {
+    background: var(--tl-danger-soft);
+    border: 1px solid transparent;
+    border-radius: var(--tl-radius-md);
+    padding: 11px 14px;
+    margin-bottom: 8px;
+  }
+  .mistake .bad { color: var(--tl-danger-text); font-size: 14.5px; }
+  .mistake .bad::before { content: '✗ '; font-weight: var(--tl-fw-bold); }
+  .mistake .good { color: var(--tl-success-text); font-size: 14.5px; margin-top: 3px; }
+  .mistake .good::before { content: '✓ '; font-weight: var(--tl-fw-bold); }
+  .mistake .why2 { color: var(--tl-text-secondary); font-size: 12.5px; margin-top: 4px; font-style: italic; }
+  .drill {
+    background: var(--tl-surface-alt);
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius-sm);
+    padding: 10px 13px;
+    margin-bottom: 6px;
+    font-size: var(--tl-fs-body);
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-wrap: wrap;
+  }
+  .drill .q { flex: 1; min-width: 190px; }
+  .drill .num { font-weight: var(--tl-fw-bold); color: var(--tl-text-tertiary); font-size: var(--tl-fs-label); }
+  .reveal {
+    background: var(--tl-primary-soft);
+    border: none;
+    color: var(--tl-primary);
+    font-weight: var(--tl-fw-bold);
+    font-size: var(--tl-fs-caption);
+    padding: 5px 12px;
+    border-radius: var(--tl-radius-pill);
+    cursor: pointer;
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+  }
+  .reveal:hover { background: var(--tl-primary); color: var(--tl-text-inverse); }
+  .ans { display: none; color: var(--tl-success-text); font-weight: var(--tl-fw-bold); font-size: 14.5px; }
+  .ans.show { display: inline; }
+  .speak {
+    background: linear-gradient(135deg, var(--tl-primary), var(--tl-secondary));
+    color: var(--tl-text-inverse);
+    border-radius: var(--tl-radius-md);
+    padding: 15px 17px;
+    font-size: var(--tl-fs-body);
+    line-height: var(--tl-lh-relaxed);
+  }
+  .cue {
+    background: rgba(255, 255, 255, .2);
+    border: 1px solid rgba(255, 255, 255, .38);
+    border-radius: var(--tl-radius-sm);
+    padding: 8px 12px;
+    font-size: var(--tl-fs-small);
+    margin-top: 6px;
+  }
+  .conv {
+    background: var(--tl-surface-alt);
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius-sm);
+    padding: 10px 13px;
+    margin-bottom: 6px;
+    font-size: var(--tl-fs-body);
+    display: flex;
+    gap: 10px;
+  }
+  .conv .n { color: var(--tl-accent); font-weight: var(--tl-fw-bold); flex-shrink: 0; }
+  .review-box {
+    background: var(--tl-success-soft);
+    border: 1px solid transparent;
+    border-radius: var(--tl-radius-md);
+    padding: 15px 17px;
+  }
+  .review-box ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .review-box li {
+    background: var(--tl-surface);
+    border: 1px solid var(--tl-success);
+    border-radius: var(--tl-radius-pill);
+    padding: 6px 13px;
+    font-size: 13.5px;
+    color: var(--tl-success-text);
+  }
+  .review-box .one { font-size: var(--tl-fs-body); color: var(--tl-success-text); font-weight: var(--tl-fw-semibold); font-style: italic; }
+  .goal-box {
+    background: var(--tl-primary);
+    color: var(--tl-text-inverse);
+    border-radius: var(--tl-radius-md);
+    padding: 13px 17px;
+    font-size: var(--tl-fs-body);
+    margin-bottom: 6px;
+  }
 
-  .stage{border-left:5px solid #7c3aed;padding-left:16px;margin-bottom:14px;}
-  .stage h2{font-size:24px;color:#1e293b;}
-  .stage .meta{color:#64748b;font-size:13.5px;margin-top:3px;}
+  .actions { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
+  .hint { font-size: var(--tl-fs-label); color: var(--tl-text-tertiary); }
 
-  .sec{margin-top:18px;}
-  .sec h4{font-size:12.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#7c3aed;padding-bottom:6px;border-bottom:2px solid #f1edfd;margin-bottom:11px;}
-  .explain{font-size:15.5px;line-height:1.65;color:#334155;}
-  .points{list-style:none;margin-top:11px;}
-  .points li{background:#f8fafc;border-left:3px solid #c4b5fd;border-radius:0 8px 8px 0;padding:9px 13px;margin-bottom:6px;font-size:14.5px;line-height:1.5;}
-  .ex-group{margin-bottom:12px;}
-  .ex-group .use{font-size:13px;font-weight:800;color:#4E3768;margin-bottom:5px;}
-  .ex-line{background:#faf9ff;border:1px solid #ece7fb;border-radius:9px;padding:9px 13px;margin-bottom:5px;font-size:15px;}
-  .ex-line b{color:#7c3aed;}
-  .mistake{background:#fff7f7;border:1px solid #fecdd3;border-radius:10px;padding:11px 14px;margin-bottom:8px;}
-  .mistake .bad{color:#b91c1c;font-size:14.5px;}.mistake .bad::before{content:'✗ ';font-weight:800;}
-  .mistake .good{color:#15803d;font-size:14.5px;margin-top:3px;}.mistake .good::before{content:'✓ ';font-weight:800;}
-  .mistake .why2{color:#64748b;font-size:12.5px;margin-top:4px;font-style:italic;}
-  .drill{background:#f8f7fe;border:1px solid #ece7fb;border-radius:9px;padding:10px 13px;margin-bottom:6px;font-size:15px;display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
-  .drill .q{flex:1;min-width:190px;}
-  .drill .num{font-weight:800;color:#94a3b8;font-size:13px;}
-  .reveal{background:#ede9fe;border:none;color:#5b21b6;font-weight:700;font-size:12px;padding:5px 12px;border-radius:99px;cursor:pointer;}
-  .reveal:hover{background:#7c3aed;color:#fff;}
-  .ans{display:none;color:#15803d;font-weight:700;font-size:14.5px;}
-  .ans.show{display:inline;}
-  .speak{background:linear-gradient(135deg,#db2777,#f472b6);color:#fff;border-radius:12px;padding:15px 17px;font-size:15.5px;line-height:1.6;}
-  .cue{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38);border-radius:8px;padding:8px 12px;font-size:14px;margin-top:6px;}
-  .conv{background:#faf9ff;border:1px solid #ece7fb;border-radius:9px;padding:10px 13px;margin-bottom:6px;font-size:15px;display:flex;gap:10px;}
-  .conv .n{color:#db2777;font-weight:800;flex-shrink:0;}
-  .review-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px 17px;}
-  .review-box ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
-  .review-box li{background:#fff;border:1px solid #bbf7d0;border-radius:99px;padding:6px 13px;font-size:13.5px;color:#15803d;}
-  .review-box .one{font-size:15px;color:#166534;font-weight:600;font-style:italic;}
-  .goal-box{background:linear-gradient(135deg,#121F39,#7c3aed);color:#fff;border-radius:12px;padding:13px 17px;font-size:15px;margin-bottom:6px;}
+  /* Toast fixo (bottom-center) */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--tl-primary);
+    color: var(--tl-text-inverse);
+    border-radius: var(--tl-radius-md);
+    padding: 13px 20px;
+    font-size: var(--tl-fs-small);
+    font-weight: var(--tl-fw-semibold);
+    box-shadow: var(--tl-shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transition: all var(--tl-dur-base) var(--tl-ease);
+    z-index: var(--tl-z-toast);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%); }
 
-  .btn{border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(124,58,237,.2);}
-  .btn:hover{transform:translateY(-2px);}
-  .btn.primary{background:linear-gradient(135deg,#121F39,#7c3aed);}
-  .btn.green{background:linear-gradient(135deg,#16a34a,#4ade80);}
-  .btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
-  .btn.sm{padding:9px 15px;font-size:13.5px;border-radius:10px;}
-  .btn.big{padding:16px 34px;font-size:17px;}
-  .actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
-  .hint{font-size:13px;color:#94a3b8;}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#121F39;color:#fff;border-radius:12px;padding:13px 20px;font-size:14px;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:all .22s;z-index:80;}
-  .toast.show{opacity:1;transform:translateX(-50%);}
-  .hide{display:none;}
-  @media print{.topbar,.no-print,.reveal{display:none!important;}.ans{display:inline!important;}.card{box-shadow:none;border-color:#ddd;}}
+  @media print {
+    .topbar, .no-print, .reveal { display: none !important; }
+    .ans { display: inline !important; }
+    .card { box-shadow: none; border-color: #ddd; }
+  }
 </style>
 </head>
 <body>
@@ -124,62 +291,62 @@
   <div class="topwrap">
     <div class="row">
       <div>
-        <h1 style="font-size:26px">Build Today's Lesson</h1>
-        <p style="opacity:.9;font-size:14px">What should I teach this student today — answered from what the platform already knows</p>
+        <h1>Build Today's Lesson</h1>
+        <p>What should I teach this student today — answered from what the platform already knows</p>
       </div>
-      <a href="index.html" class="menu-btn">← Menu</a>
+      <a href="index.html" class="menu-btn"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a>
     </div>
   </div>
 </div>
 
-<div class="wrap">
+<div class="wrap wrap-md">
 
   <!-- ============ PLANEJAMENTO ============ -->
   <div id="planView">
 
     <div class="card no-print">
-      <div class="row" style="margin-bottom:10px">
-        <h3 style="font-size:15px">1 · Student</h3>
-        <a href="students.html" style="font-size:13px;font-weight:700;color:#7c3aed;text-decoration:none">⚙ Manage students</a>
+      <div class="card-hd">
+        <h3>1 · Student</h3>
+        <a href="students.html" style="font-size:13px;font-weight:600"><i data-lucide="settings" class="tl-icon-sm"></i> Manage students</a>
       </div>
       <div class="stu-grid" id="stuGrid"></div>
     </div>
 
     <div class="card no-print">
-      <h3 style="font-size:15px;margin-bottom:12px">2 · How long is the lesson?</h3>
+      <h3 style="margin-bottom:12px">2 · How long is the lesson?</h3>
       <div class="dur-grid" id="durGrid"></div>
       <p class="hint" id="durNote" style="margin-top:11px"></p>
     </div>
 
     <div class="card">
-      <h3 style="font-size:15px;margin-bottom:13px">What the platform knows about <span id="ctxName">—</span></h3>
+      <h3 style="margin-bottom:13px">What the platform knows about <span id="ctxName">—</span></h3>
       <div class="ctx" id="ctxGrid"></div>
       <div class="sources" id="ctxSources"></div>
     </div>
 
     <div class="card">
-      <div class="row" style="margin-bottom:14px">
-        <h3 style="font-size:15px;margin:0">Suggested lesson · <span id="planTotal">—</span></h3>
-        <button class="btn gray sm no-print" onclick="rebuild()">↻ Rebuild</button>
+      <div class="card-hd">
+        <h3>Suggested lesson · <span id="planTotal">—</span></h3>
+        <button class="btn gray sm no-print" onclick="rebuild()"><i data-lucide="refresh-cw" class="tl-icon-sm"></i> Rebuild</button>
       </div>
       <div id="blocks"></div>
       <div class="actions no-print" style="margin-top:18px">
-        <button class="btn primary big" onclick="startLesson()">▶ Start Lesson</button>
-        <button class="btn gray sm" onclick="window.print()">⬇ PDF</button>
+        <button class="btn primary big" onclick="startLesson()"><i data-lucide="play" class="tl-icon-sm"></i> Start Lesson</button>
+        <button class="btn gray sm" onclick="window.print()"><i data-lucide="file-down" class="tl-icon-sm"></i> PDF</button>
       </div>
     </div>
 
   </div>
 
   <!-- ============ MODO AULA ============ -->
-  <div id="lessonView" class="hide">
+  <div id="lessonView" class="tl-hide">
     <div class="card no-print">
       <div class="row">
         <div>
-          <h3 style="font-size:15px;margin:0">Lesson with <span id="lessonStudent">—</span></h3>
+          <h3 style="margin:0">Lesson with <span id="lessonStudent">—</span></h3>
           <p class="hint" id="lessonMeta"></p>
         </div>
-        <button class="btn gray sm" onclick="backToPlan()">← Back to plan</button>
+        <button class="btn gray sm" onclick="backToPlan()"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Back to plan</button>
       </div>
       <div class="lesson-nav" id="lessonNav" style="margin-top:14px"></div>
     </div>
@@ -188,10 +355,10 @@
 
     <div class="card no-print">
       <div class="actions">
-        <button class="btn gray" onclick="prevStage()">← Previous</button>
-        <button class="btn primary" onclick="nextStage()">Next →</button>
+        <button class="btn gray" onclick="prevStage()"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Previous</button>
+        <button class="btn primary" onclick="nextStage()">Next <i data-lucide="arrow-right" class="tl-icon-sm"></i></button>
         <span style="flex:1"></span>
-        <button class="btn green" onclick="finishLesson()">✓ Finish &amp; record</button>
+        <button class="btn success" onclick="finishLesson()"><i data-lucide="check" class="tl-icon-sm"></i> Finish &amp; record</button>
       </div>
       <p class="hint" style="margin-top:10px">Finishing records every content of this lesson in the student's Learning Progress.</p>
     </div>
@@ -214,9 +381,6 @@
 <script>
 /* ================================================================
    Build Today's Lesson — apresentação
-   ----------------------------------------------------------------
-   Zero conteúdo próprio. Tudo vem do TeacherLu.LessonBuilder, que
-   por sua vez lê Content, Progress, Calendar e o Curriculum Map.
    ================================================================ */
 
 const LB = TeacherLu.LessonBuilder;
@@ -291,8 +455,8 @@ function rebuild(){
 function startLesson(){
   if(!plan) return;
   stageIx = 0;
-  document.getElementById('planView').classList.add('hide');
-  document.getElementById('lessonView').classList.remove('hide');
+  document.getElementById('planView').classList.add('tl-hide');
+  document.getElementById('lessonView').classList.remove('tl-hide');
   document.getElementById('lessonStudent').textContent = plan.studentName;
   document.getElementById('lessonMeta').textContent =
     plan.profile + ' · ' + plan.totalMinutes + ' minutes · ' + plan.blocks.length + ' stages';
@@ -300,8 +464,8 @@ function startLesson(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function backToPlan(){
-  document.getElementById('lessonView').classList.add('hide');
-  document.getElementById('planView').classList.remove('hide');
+  document.getElementById('lessonView').classList.add('tl-hide');
+  document.getElementById('planView').classList.remove('tl-hide');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function goStage(i){ stageIx=Math.max(0,Math.min(plan.blocks.length-1,i)); renderStage(); window.scrollTo({top:0,behavior:'smooth'}); }
@@ -383,7 +547,6 @@ function finishLesson(){
   if(!plan) return;
   const n = plan.itemIds.length;
   if(!n){ toast('Nothing to record in this lesson.'); return; }
-  // F-2: só confirma se a gravação persistiu.
   if(!LB.recordLesson(plan)){
     toast('Could not save — the browser storage may be full. Nothing was recorded.');
     return;

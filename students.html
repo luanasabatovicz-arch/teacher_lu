@@ -4,78 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sabatovicz — Students</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-  h1,h2,h3{font-family:'Poppins',sans-serif;font-weight:700;}
-  body{background:#fff;color:#1e293b;min-height:100vh;}
-  .topbar{background:linear-gradient(120deg,#7c3aed 0%,#db2777 55%,#f59e0b 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(124,58,237,.28);}
-  .topwrap{max-width:900px;margin:0 auto;}
-  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
-  .menu-btn:hover{background:rgba(255,255,255,.38);}
-  .wrap{max-width:900px;margin:0 auto;padding:24px 24px 70px;}
-  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;}
-  .stu-list{display:grid;gap:12px;}
-  .stu-row{display:flex;align-items:center;gap:14px;border:1px solid #ece7fb;border-radius:14px;padding:14px 16px;background:#faf9ff;transition:all .2s;}
-  .stu-row:hover{border-color:#d6c8f5;box-shadow:0 6px 18px rgba(124,58,237,.12);}
-  .stu-emoji{font-size:34px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #ece7fb;border-radius:12px;flex-shrink:0;}
-  .stu-info{flex:1;min-width:0;}
-  .stu-name{font-family:'Poppins';font-weight:700;font-size:17px;}
-  .stu-meta{font-size:13px;color:#64748b;margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-  .lvl-badge{display:inline-block;background:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;font-weight:800;font-size:11px;letter-spacing:.06em;padding:3px 9px;border-radius:99px;}
-  .icon-btn{border:none;border-radius:10px;width:38px;height:38px;font-size:16px;cursor:pointer;transition:all .2s;background:#f1edfd;color:#5b21b6;}
-  .icon-btn:hover{background:#7c3aed;color:#fff;transform:translateY(-1px);}
-  .icon-btn.del{background:#fee2e2;color:#dc2626;}
-  .icon-btn.del:hover{background:#ef4444;color:#fff;}
-  .btn{border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(124,58,237,.2);}
-  .btn:hover{transform:translateY(-2px);}
-  .btn.purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
-  .btn.pink{background:linear-gradient(135deg,#ec4899,#f472b6);}
-  .btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
-  .empty{text-align:center;color:#94a3b8;padding:26px 10px;font-size:14px;}
-  /* modal */
-  .ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;}
-  .ov.show{display:flex;}
-  .modal{background:#fff;border-radius:18px;padding:26px;max-width:430px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);}
-  .modal h3{font-size:22px;margin-bottom:16px;}
-  .lbl{font-size:13px;font-weight:700;color:#475569;display:block;margin:12px 0 6px;}
-  .inp{width:100%;padding:12px;border:2px solid #e2ddf5;border-radius:10px;font-size:15px;color:#1e293b;background:#f8f7fe;font-family:'Inter';}
-  .inp:focus{outline:none;border-color:#7c3aed;}
-  select.inp{cursor:pointer;}
-  .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px;}
-  .emo{font-size:22px;padding:7px 0;text-align:center;border:2px solid transparent;border-radius:10px;cursor:pointer;background:#f8f7fe;transition:all .15s;}
-  .emo:hover{border-color:#a78bfa;}
-  .emo.sel{border-color:#7c3aed;background:#ede9fe;}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
 </head>
 <body>
 <div class="topbar">
   <div class="topwrap">
     <div class="row">
       <div>
-        <h1 style="font-size:26px">Students</h1>
-        <p style="opacity:.9;font-size:14px">Add, edit and remove students — the Annual Plan and Calendar update automatically</p>
+        <h1>Students</h1>
+        <p>Add, edit and remove students — the Annual Plan and Calendar update automatically</p>
       </div>
-      <a href="index.html" class="menu-btn">← Menu</a>
+      <a href="index.html" class="menu-btn"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a>
     </div>
   </div>
 </div>
 
-<div class="wrap">
+<div class="wrap wrap-sm">
   <div class="card">
-    <div class="row" style="margin-bottom:14px">
-      <h3 style="font-size:15px">Registered students (<span id="count">0</span>)</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn gray" onclick="exportBackup()" title="Download all data (students, progress, calendar, review queues)">⬇ Backup</button>
-        <button class="btn gray" onclick="document.getElementById('impFile').click()" title="Restore a backup file">⬆ Restore</button>
+    <div class="card-hd">
+      <h3>Registered students (<span id="count">0</span>)</h3>
+      <div class="toolbar">
+        <button class="btn gray sm" onclick="exportBackup()" title="Download all data (students, progress, calendar, review queues)"><i data-lucide="download" class="tl-icon-sm"></i> Backup</button>
+        <button class="btn gray sm" onclick="document.getElementById('impFile').click()" title="Restore a backup file"><i data-lucide="upload" class="tl-icon-sm"></i> Restore</button>
         <input type="file" id="impFile" accept="application/json" style="display:none" onchange="importBackup(this)">
-        <button class="btn purple" onclick="openModal()">+ Add student</button>
+        <button class="btn primary" onclick="openModal()"><i data-lucide="plus" class="tl-icon-sm"></i> Add student</button>
       </div>
     </div>
     <div class="stu-list" id="list"></div>
   </div>
-  <p style="color:#94a3b8;font-size:13px">These students appear in the <a href="annual-plan.html" style="color:#7c3aed;font-weight:700">Annual Plan</a> and the <a href="schedule.html" style="color:#7c3aed;font-weight:700">Lesson Calendar</a>. Removing a student keeps their saved progress in the browser in case you add them back with the same name.</p>
+  <p class="tl-caption">These students appear in the <a href="annual-plan.html">Annual Plan</a> and the <a href="schedule.html">Lesson Calendar</a>. Removing a student keeps their saved progress in the browser in case you add them back with the same name.</p>
 </div>
 
 <!-- MODAL -->
@@ -92,9 +51,9 @@
     </select>
     <label class="lbl">Age (optional)</label>
     <input class="inp" id="fAge" type="number" min="1" max="99" placeholder="e.g. 10">
-    <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="btn purple" style="flex:1" onclick="saveStudent()">Save</button>
+    <div class="actions">
       <button class="btn gray" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveStudent()">Save</button>
     </div>
   </div>
 </div>
@@ -129,11 +88,11 @@ function render(){
       <div class="stu-info">
         <div class="stu-name">${esc(s.name)}</div>
         <div class="stu-meta"><span class="lvl-badge">${esc(s.level||'A1')}</span>${s.age?`<span>${s.age} years old</span>`:''}
-          ${pend?`<button onclick="toggleQueue('${s.id}')" class="lvl-badge" style="background:#fee2e2;color:#dc2626;border-color:#fecaca;cursor:pointer">📝 ${pend} to review ${openQ===s.id?'▴':'▾'}</button>`:''}
+          ${pend?`<button onclick="toggleQueue('${s.id}')" class="badge danger" style="cursor:pointer;border:0">📝 ${pend} to review ${openQ===s.id?'▴':'▾'}</button>`:''}
         </div>
       </div>
-      <button class="icon-btn" title="Edit" onclick="openModal('${s.id}')">✏️</button>
-      <button class="icon-btn del" title="Remove" onclick="removeStudent('${s.id}')">🗑️</button>
+      <button class="icon-btn" title="Edit" onclick="openModal('${s.id}')" aria-label="Edit"><i data-lucide="pencil" class="tl-icon-sm"></i</button>
+      <button class="icon-btn del" title="Remove" onclick="removeStudent('${s.id}')" aria-label="Remove"><i data-lucide="trash-2" class="tl-icon-sm"></i</button>
     </div>
     ${openQ===s.id?queuePanel(s.id):''}`;
   }).join('');
@@ -146,14 +105,14 @@ let openQ=null;
 function toggleQueue(id){openQ=openQ===id?null:id;render();}
 function queuePanel(id){
   const items=getErrs(id).map((e,i)=>Object.assign({},e,{_i:i})).filter(e=>!e.rv);
-  return `<div style="border:1px solid #fecdd3;background:#fff7f7;border-radius:14px;padding:12px 16px;margin:-4px 0 4px">
+  return `<div class="alert danger" style="flex-direction:column;align-items:stretch;margin:-4px 0 4px">
     <div class="row" style="margin-bottom:8px">
-      <span style="font-size:13px;font-weight:700;color:#9f1239">Review queue — bring these back in the next lesson</span>
-      <button class="btn gray" style="padding:6px 12px;font-size:12px" onclick="clearQueue('${id}')">Clear all</button>
+      <span style="font-size:13px;font-weight:700">Review queue — bring these back in the next lesson</span>
+      <button class="btn gray sm" onclick="clearQueue('${id}')">Clear all</button>
     </div>
-    ${items.map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-top:1px dashed #fecdd3;font-size:14px">
-      <span><span class="lvl-badge" style="margin-right:6px">${esc(e.topic||e.m||'item')}</span>${esc(e.q)}${e.a?` <span style="color:#16a34a">→ ${esc(e.a)}</span>`:''} <span style="color:#94a3b8;font-size:12px">· ${esc(e.d||'')}</span></span>
-      <button class="icon-btn" style="width:32px;height:32px;font-size:13px" title="Mark as recovered" onclick="resolveErr('${id}',${e._i})">✓</button>
+    ${items.map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-top:1px dashed rgba(153,27,27,.2);font-size:14px">
+      <span><span class="lvl-badge" style="margin-right:6px">${esc(e.topic||e.m||'item')}</span>${esc(e.q)}${e.a?` <span style="color:var(--tl-success-text)">→ ${esc(e.a)}</span>`:''} <span style="color:var(--tl-text-tertiary);font-size:12px">· ${esc(e.d||'')}</span></span>
+      <button class="icon-btn sm" title="Mark as recovered" onclick="resolveErr('${id}',${e._i})">✓</button>
     </div>`).join('')}
   </div>`;
 }

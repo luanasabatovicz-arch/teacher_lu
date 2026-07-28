@@ -4,33 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verificação da versão publicada — Plataforma Teacher Lu</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
-body{background:#faf9ff;color:#1e293b;padding:0 0 60px}
-.top{background:linear-gradient(120deg,#7c3aed,#db2777 55%,#f59e0b);color:#fff;padding:22px}
-.top h1{font-family:'Poppins';font-size:22px;font-weight:800}
-.top p{opacity:.92;font-size:13px;margin-top:3px}
-.wrap{max-width:820px;margin:18px auto;padding:0 14px}
-.card{background:#fff;border:1px solid #ece7fb;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 3px 14px rgba(124,58,237,.06)}
-.row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1edfd}
-.row:last-child{border-bottom:none}
-.ic{font-size:18px;line-height:1.2;flex-shrink:0;width:24px;text-align:center}
-.t{font-weight:700;font-size:14.5px}
-.d{font-size:13px;color:#64748b;margin-top:2px;word-break:break-word}
-.ok{color:#16a34a}.bad{color:#dc2626}.wait{color:#94a3b8}
-.verdict{border-radius:14px;padding:18px;text-align:center;font-family:'Poppins';font-weight:800;font-size:19px;margin-bottom:12px}
-.vok{background:#f0fdf4;border:1px solid #86efac;color:#166534}
-.vbad{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
-.vwait{background:#f8fafc;border:1px solid #e2e8f0;color:#64748b}
-.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#7c3aed;margin-bottom:6px}
-code{background:#f5f3ff;color:#6d28d9;padding:1px 6px;border-radius:5px;font-size:12px}
-a.btn{display:inline-block;margin-top:10px;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;text-decoration:none;font-weight:700;padding:11px 20px;border-radius:11px;font-size:14px}
+  /* Verificacao — específico desta tela */
+  .top {
+    background: linear-gradient(120deg, var(--tl-primary), #0F5561 55%, var(--tl-secondary));
+    color: var(--tl-text-inverse);
+    padding: 22px;
+  }
+  .top h1 { font-size: 22px; font-weight: var(--tl-fw-bold); color: var(--tl-text-inverse); }
+  .top p { opacity: .92; font-size: 13px; margin-top: 3px; color: var(--tl-text-inverse); }
+  .top a { color: rgba(255, 255, 255, .92) !important; font-weight: var(--tl-fw-semibold); text-decoration: none; }
+  .top a:hover { color: var(--tl-text-inverse) !important; }
+
+  .row { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--tl-border); flex-wrap: nowrap; }
+  .row:last-child { border-bottom: none; }
+  .ic { font-size: 18px; line-height: 1.2; flex-shrink: 0; width: 24px; text-align: center; }
+  .t { font-weight: var(--tl-fw-bold); font-size: 14.5px; }
+  .d { font-size: 13px; color: var(--tl-text-secondary); margin-top: 2px; word-break: break-word; }
+  .ok { color: var(--tl-success); }
+  .bad { color: var(--tl-danger); }
+  .wait { color: var(--tl-text-tertiary); }
+
+  .verdict {
+    border-radius: var(--tl-radius-lg);
+    padding: 18px;
+    text-align: center;
+    font-weight: var(--tl-fw-bold);
+    font-size: 19px;
+    margin-bottom: 12px;
+  }
+  .vok   { background: var(--tl-success-soft); border: 1px solid var(--tl-success); color: var(--tl-success-text); }
+  .vbad  { background: var(--tl-danger-soft);  border: 1px solid var(--tl-danger);  color: var(--tl-danger-text); }
+  .vwait { background: var(--tl-surface-alt);  border: 1px solid var(--tl-border);  color: var(--tl-text-secondary); }
+
+  .lbl {
+    font-size: 10.5px;
+    font-weight: var(--tl-fw-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--tl-tracking-wide);
+    color: var(--tl-primary);
+    margin-bottom: 6px;
+  }
+  code {
+    background: var(--tl-primary-soft);
+    color: var(--tl-primary);
+    padding: 1px 6px;
+    border-radius: var(--tl-radius-xs);
+    font-size: 12px;
+    font-family: var(--tl-font-mono);
+  }
+  a.btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: var(--tl-primary);
+    color: var(--tl-text-inverse);
+    text-decoration: none;
+    font-weight: var(--tl-fw-semibold);
+    padding: 11px 20px;
+    border-radius: var(--tl-radius-md);
+    font-size: var(--tl-fs-small);
+    border: none;
+  }
+  a.btn:hover { background: var(--tl-primary-hover); color: var(--tl-text-inverse); }
 </style>
 </head>
 <body>
 <div class="top">
-  <p style="margin-bottom:14px"><a href="index.html" style="color:#7c3aed;font-weight:700;text-decoration:none">← Menu</a></p>
+  <p style="margin-bottom:14px"><a href="index.html" style="color:#7c3aed;font-weight:700;text-decoration:none"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a></p>
   <h1>🔍 Verificação da versão publicada</h1>
   <p>Esta página roda no próprio site publicado e confere os arquivos realmente servidos.</p>
 </div>

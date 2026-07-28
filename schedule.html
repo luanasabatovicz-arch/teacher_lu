@@ -4,70 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sabatovicz — Lesson Calendar</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-  h1,h2,h3{font-family:'Poppins',sans-serif;font-weight:700;}
-  body{background:#fff;color:#1e293b;min-height:100vh;}
-  .topbar{background:linear-gradient(120deg,#0ea5a5 0%,#7c3aed 55%,#db2777 100%);color:#fff;padding:22px 24px;position:sticky;top:0;z-index:40;box-shadow:0 6px 24px rgba(124,58,237,.28);}
-  .topwrap{max-width:1000px;margin:0 auto;}
-  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-  .menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.75);color:#fff;font-family:'Poppins';font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;text-decoration:none;font-size:14px;}
-  .menu-btn:hover{background:rgba(255,255,255,.38);}
-  .wrap{max-width:1000px;margin:0 auto;padding:24px 24px 70px;}
-  .card{background:#fff;border:1px solid #ece7fb;border-radius:16px;box-shadow:0 4px 18px rgba(124,58,237,.08);padding:22px;margin-bottom:18px;}
-  .stu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  @media(max-width:700px){.stu-grid{grid-template-columns:1fr 1fr;}}
-  .stu{padding:10px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#f1edfd;color:#5b21b6;border:2px solid transparent;transition:all .2s;}
-  .stu:hover{border-color:#a78bfa;}
-  .stu.active{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;}
-  .navrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;}
-  .nav-btn{background:#f1edfd;color:#5b21b6;border:none;border-radius:10px;width:42px;height:42px;font-size:20px;font-weight:700;cursor:pointer;transition:all .2s;}
-  .nav-btn:hover{background:#7c3aed;color:#fff;}
-  .month-label{font-family:'Poppins';font-size:22px;font-weight:800;background:linear-gradient(90deg,#7c3aed,#db2777);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
-  .dow div{text-align:center;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;padding:4px 0;}
-  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
-  .day{aspect-ratio:1;border-radius:10px;border:2px solid #ece7fb;background:#faf9ff;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .15s;padding:2px;}
-  .day:hover{border-color:#a78bfa;transform:translateY(-2px);}
-  .day.blank{background:transparent;border:none;cursor:default;}
-  .day.blank:hover{transform:none;}
-  .day .n{font-weight:700;font-size:15px;color:#334155;}
-  .day.today{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.28);}
-  .day.done{background:#dcfce7;border-color:#22c55e;}
-  .day.done .n{color:#166534;}
-  .day.cancelled{background:#fee2e2;border-color:#ef4444;}
-  .day.cancelled .n{color:#991b1b;}
-  .day.scheduled{background:#e0f2fe;border-color:#0ea5e9;}
-  .day.scheduled .n{color:#075985;}
-  .mark{font-size:12px;font-weight:800;line-height:1;}
-  .notedot{position:absolute;bottom:4px;width:5px;height:5px;border-radius:99px;background:#7c3aed;}
-  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:#64748b;}
-  .lg{display:flex;align-items:center;gap:6px;}
-  .sw{width:14px;height:14px;border-radius:4px;border:2px solid;}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-  @media(max-width:700px){.stats{grid-template-columns:1fr 1fr;}}
-  .stat{border-radius:12px;padding:14px;text-align:center;border:1px solid #ece7fb;}
-  .stat .v{font-family:'Poppins';font-size:28px;font-weight:800;}
-  .stat .l{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin-top:2px;}
-  .btn{border:none;border-radius:12px;font-weight:700;font-family:'Poppins';cursor:pointer;padding:12px 22px;font-size:15px;color:#fff;transition:all .2s;box-shadow:0 4px 14px rgba(124,58,237,.2);}
-  .btn:hover{transform:translateY(-2px);}
-  .btn.green{background:linear-gradient(135deg,#22c55e,#4ade80);}
-  .btn.purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
-  .btn.gray{background:#e2e8f0;color:#475569;box-shadow:none;}
-  .btn.red{background:linear-gradient(135deg,#ef4444,#f87171);}
-  .btn.cyan{background:linear-gradient(135deg,#0ea5e9,#38bdf8);}
-  .btn.sm{padding:9px 14px;font-size:13px;}
-  /* modal */
-  .ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;}
-  .ov.show{display:flex;}
-  .modal{background:#fff;border-radius:18px;padding:26px;max-width:430px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);}
-  .modal h3{font-size:22px;margin-bottom:4px;}
-  .modal .sub{color:#64748b;font-size:14px;margin-bottom:16px;}
-  .inp{width:100%;padding:12px;border:2px solid #e2ddf5;border-radius:10px;font-size:15px;color:#1e293b;background:#f8f7fe;font-family:'Inter';}
-  .inp:focus{outline:none;border-color:#7c3aed;}
-  .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
-  .hide{display:none;}
+  /* Sugestões flutuantes usadas apenas nesta tela */
+  .lp-suggest-list { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px; }
+  .lp-suggest-list .lbl-inline {
+    font-size:11px; color:var(--tl-text-tertiary); align-self:center;
+  }
+  .lp-suggest-list button {
+    background: var(--tl-primary-tint);
+    border: 1px dashed var(--tl-border-strong);
+    color: var(--tl-primary);
+    font-weight: 600;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: var(--tl-radius-pill);
+    cursor: pointer;
+  }
+  .lp-list-item {
+    display:flex; align-items:center; gap:9px;
+    padding:7px 8px; border-radius:var(--tl-radius-sm); cursor:pointer;
+  }
+  .lp-list-item.on { background: var(--tl-success-soft); }
+  .lp-list-item.on span { color: var(--tl-success-text); font-weight: 600; }
+  .lp-list-item input[type="checkbox"] {
+    width:16px; height:16px; accent-color:var(--tl-secondary); cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -75,20 +39,20 @@
   <div class="topwrap">
     <div class="row">
       <div>
-        <h1 style="font-size:26px">Lesson Calendar</h1>
-        <p style="opacity:.9;font-size:14px">Track every lesson, student by student</p>
+        <h1>Lesson Calendar</h1>
+        <p>Track every lesson, student by student</p>
       </div>
-      <a href="index.html" class="menu-btn">← Menu</a>
+      <a href="index.html" class="menu-btn"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a>
     </div>
   </div>
 </div>
 
-<div class="wrap">
+<div class="wrap wrap-md">
   <!-- STUDENTS -->
   <div class="card">
-    <div class="row" style="margin-bottom:10px">
-      <h3 style="font-size:15px">Select student</h3>
-      <a href="students.html" style="font-size:13px;font-weight:700;color:#7c3aed;text-decoration:none">⚙ Manage students</a>
+    <div class="card-hd">
+      <h3>Select student</h3>
+      <a href="students.html" style="font-size:13px;font-weight:600"><i data-lucide="settings" class="tl-icon-sm"></i> Manage students</a>
     </div>
     <div class="stu-grid" id="stuGrid"></div>
   </div>
@@ -96,34 +60,34 @@
   <!-- CALENDAR -->
   <div class="card">
     <div class="navrow">
-      <button class="nav-btn" onclick="shiftMonth(-1)">‹</button>
+      <button class="nav-btn" onclick="shiftMonth(-1)" aria-label="Previous month"><i data-lucide="chevron-left" class="tl-icon-lg"></i></button>
       <div class="month-label" id="monthLabel"></div>
-      <button class="nav-btn" onclick="shiftMonth(1)">›</button>
+      <button class="nav-btn" onclick="shiftMonth(1)" aria-label="Next month"><i data-lucide="chevron-right" class="tl-icon-lg"></i></button>
     </div>
     <div class="dow"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
     <div class="cal" id="cal"></div>
     <div class="legend">
-      <div class="lg"><span class="sw" style="background:#dcfce7;border-color:#22c55e"></span> Lesson done</div>
-      <div class="lg"><span class="sw" style="background:#e0f2fe;border-color:#0ea5e9"></span> Scheduled</div>
-      <div class="lg"><span class="sw" style="background:#fee2e2;border-color:#ef4444"></span> Cancelled</div>
-      <div class="lg"><span class="sw" style="background:#faf9ff;border-color:#ece7fb"></span> No lesson</div>
-      <div class="lg"><span style="width:5px;height:5px;border-radius:99px;background:#7c3aed;display:inline-block"></span> Has note</div>
+      <div class="lg"><span class="sw" style="background:var(--tl-success-soft);border-color:var(--tl-success)"></span> Lesson done</div>
+      <div class="lg"><span class="sw" style="background:var(--tl-info-soft);border-color:var(--tl-info)"></span> Scheduled</div>
+      <div class="lg"><span class="sw" style="background:var(--tl-danger-soft);border-color:var(--tl-danger)"></span> Cancelled</div>
+      <div class="lg"><span class="sw" style="background:var(--tl-surface);border-color:var(--tl-border)"></span> No lesson</div>
+      <div class="lg"><span style="width:5px;height:5px;border-radius:99px;background:var(--tl-primary);display:inline-block"></span> Has note</div>
     </div>
-    <p style="color:#94a3b8;font-size:13px;margin-top:10px">Click any day to mark what happened and add a note.</p>
+    <p class="tl-caption" style="margin-top:10px">Click any day to mark what happened and add a note.</p>
   </div>
 
   <!-- STATS -->
   <div class="card">
-    <h3 style="font-size:15px;margin-bottom:12px" id="statsTitle">This month</h3>
+    <h3 style="margin-bottom:12px" id="statsTitle">This month</h3>
     <div class="stats">
-      <div class="stat" style="background:#f0fdf4;border-color:#bbf7d0"><div class="v" style="color:#16a34a" id="sDone">0</div><div class="l">Done</div></div>
-      <div class="stat" style="background:#eff6ff;border-color:#bfdbfe"><div class="v" style="color:#0284c7" id="sSched">0</div><div class="l">Scheduled</div></div>
-      <div class="stat" style="background:#fef2f2;border-color:#fecaca"><div class="v" style="color:#dc2626" id="sCanc">0</div><div class="l">Cancelled</div></div>
-      <div class="stat" style="background:#faf5ff;border-color:#e9d5ff"><div class="v" style="color:#7c3aed" id="sTotal">0</div><div class="l">Done all time</div></div>
+      <div class="stat" style="background:var(--tl-success-soft);border-color:var(--tl-success)"><div class="v" style="color:var(--tl-success-text)" id="sDone">0</div><div class="l">Done</div></div>
+      <div class="stat" style="background:var(--tl-info-soft);border-color:var(--tl-info)"><div class="v" style="color:var(--tl-info-text)" id="sSched">0</div><div class="l">Scheduled</div></div>
+      <div class="stat" style="background:var(--tl-danger-soft);border-color:var(--tl-danger)"><div class="v" style="color:var(--tl-danger-text)" id="sCanc">0</div><div class="l">Cancelled</div></div>
+      <div class="stat" style="background:var(--tl-primary-soft);border-color:var(--tl-primary)"><div class="v" style="color:var(--tl-primary)" id="sTotal">0</div><div class="l">Done all time</div></div>
     </div>
-    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn green" onclick="exportMonth()">Download month PDF</button>
-      <button class="btn cyan" onclick="exportAll()">Download full history PDF</button>
+    <div class="toolbar" style="margin-top:16px">
+      <button class="btn success" onclick="exportMonth()">Download month PDF</button>
+      <button class="btn info" onclick="exportAll()">Download full history PDF</button>
       <button class="btn gray" onclick="goToday()">Go to today</button>
     </div>
   </div>
@@ -135,27 +99,27 @@
     <h3 id="mTitle">Lesson</h3>
     <p class="sub" id="mSub"></p>
     <div class="opts">
-      <button class="btn green sm" onclick="setStatus('done')">✓ Lesson done</button>
-      <button class="btn cyan sm" onclick="setStatus('scheduled')">◷ Scheduled</button>
-      <button class="btn red sm" onclick="setStatus('cancelled')">✗ Cancelled</button>
+      <button class="btn success sm" onclick="setStatus('done')">✓ Lesson done</button>
+      <button class="btn info sm" onclick="setStatus('scheduled')">◷ Scheduled</button>
+      <button class="btn danger sm" onclick="setStatus('cancelled')">✗ Cancelled</button>
       <button class="btn gray sm" onclick="setStatus('')">Clear</button>
     </div>
     <!-- ===== LEARNING PROGRESS — contents covered in this lesson ===== -->
     <div id="lpBlock" style="margin:14px 0 4px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
-        <label style="font-size:13px;font-weight:700;color:#475569">Contents covered</label>
-        <span id="lpCount" style="font-size:11.5px;color:#94a3b8"></span>
+      <div class="row" style="margin-bottom:8px">
+        <label class="lbl" style="margin:0">Contents covered</label>
+        <span id="lpCount" class="tl-caption"></span>
       </div>
       <div id="lpSuggest"></div>
       <input class="inp" id="lpSearch" placeholder="Search vocabulary, grammar, speaking…" style="margin-bottom:8px">
-      <div id="lpList" style="max-height:190px;overflow-y:auto;border:1px solid #ece7fb;border-radius:10px;padding:6px"></div>
+      <div id="lpList" style="max-height:190px;overflow-y:auto;border:1px solid var(--tl-border);border-radius:var(--tl-radius-md);padding:6px"></div>
     </div>
 
-    <label style="font-size:13px;font-weight:700;color:#475569;display:block;margin-bottom:6px">Note (homework, absence reason...)</label>
+    <label class="lbl">Note (homework, absence reason...)</label>
     <input class="inp" id="mNote" placeholder="e.g. she asked for extra practice">
-    <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="btn purple" style="flex:1" onclick="saveNote()">Save</button>
+    <div class="actions">
       <button class="btn gray" onclick="closeModal()">Close</button>
+      <button class="btn primary" onclick="saveNote()">Save</button>
     </div>
   </div>
 </div>
@@ -244,7 +208,7 @@ function renderCal(){
     if(st==='done')done++;else if(st==='scheduled')sch++;else if(st==='cancelled')canc++;
     const isToday=k===todayISO();
     const mark=st==='done'?'✓':st==='cancelled'?'✗':st==='scheduled'?'◷':'';
-    const col=st==='done'?'#16a34a':st==='cancelled'?'#dc2626':st==='scheduled'?'#0284c7':'';
+    const col=st==='done'?'var(--tl-success-text)':st==='cancelled'?'var(--tl-danger-text)':st==='scheduled'?'var(--tl-info-text)':'';
     h+=`<div class="day ${st} ${isToday?'today':''}" onclick="openDay('${k}')" title="${r&&r.note?r.note.replace(/"/g,'&quot;'):''}">
           <div class="n">${d}</div>
           ${mark?`<div class="mark" style="color:${col}">${mark}</div>`:''}
@@ -292,19 +256,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
 /* ================================================================
    LEARNING PROGRESS — o que foi dado nesta aula
-   ----------------------------------------------------------------
-   O calendário não conhece nenhum módulo de conteúdo. Ele só lê o
-   registro compartilhado (TeacherLu.Content) e grava no histórico
-   do aluno (TeacherLu.Progress). Um módulo novo aparece aqui
-   sozinho, sem que este arquivo mude.
    ================================================================ */
 const LP_Content  = window.TeacherLu && window.TeacherLu.Content;
 const LP_Progress = window.TeacherLu && window.TeacherLu.Progress;
 let lpFilterText = '';
 
-/** id do aluno atual (o calendário trabalha por nome). */
 function lpStudentId(){ return student; }
-
 function lpEsc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function renderLessonProgress(){
@@ -322,11 +279,9 @@ function renderLessonProgress(){
   const sug = LP_Progress.suggestions(sid, 4)
     .filter(s => covered.indexOf(s.item.id) === -1);
   document.getElementById('lpSuggest').innerHTML = sug.length
-    ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">
-         <span style="font-size:11px;color:#94a3b8;align-self:center">Suggested:</span>
-         ${sug.map(s=>`<button type="button" onclick="lpMark('${s.item.id}')"
-            style="background:#f5f3ff;border:1px dashed #c4b5fd;color:#6d28d9;font-weight:600;
-                   font-size:12px;padding:5px 10px;border-radius:99px;cursor:pointer">
+    ? `<div class="lp-suggest-list">
+         <span class="lbl-inline">Suggested:</span>
+         ${sug.map(s=>`<button type="button" onclick="lpMark('${s.item.id}')">
             ${s.skill.icon} ${lpEsc(s.item.title)}</button>`).join('')}
        </div>`
     : '';
@@ -343,27 +298,20 @@ function renderLessonProgress(){
 
   document.getElementById('lpList').innerHTML = rows.length
     ? rows.slice(0,60).map(r=>`
-      <label style="display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;
-                    cursor:pointer;background:${r.on?'#f0fdf4':'transparent'}">
-        <input type="checkbox" ${r.on?'checked':''} onchange="lpMark('${r.it.id}')"
-               style="width:16px;height:16px;accent-color:#16a34a;cursor:pointer">
-        <span style="font-size:13px;color:${r.on?'#15803d':'#334155'};font-weight:${r.on?'600':'400'}">
-          ${r.sk.icon} ${lpEsc(r.it.title)}
-        </span>
-        ${r.it.level?`<span style="margin-left:auto;font-size:10px;font-weight:800;background:#ede9fe;
-           color:#6d28d9;border-radius:99px;padding:2px 7px">${lpEsc(r.it.level)}</span>`:''}
+      <label class="lp-list-item ${r.on?'on':''}">
+        <input type="checkbox" ${r.on?'checked':''} onchange="lpMark('${r.it.id}')">
+        <span style="font-size:13px;color:var(--tl-text)">${r.sk.icon} ${lpEsc(r.it.title)}</span>
+        ${r.it.level?`<span class="lvl-badge" style="margin-left:auto">${lpEsc(r.it.level)}</span>`:''}
       </label>`).join('')
-    : '<div style="color:#94a3b8;font-size:13px;padding:14px;text-align:center">No content matches.</div>';
+    : '<div class="empty">No content matches.</div>';
 }
 
-/** Marca/desmarca um conteúdo para a aula aberta — grava na hora. */
 function lpMark(itemId){
   const sid = lpStudentId();
   if(!sid || !selKey || !LP_Progress) return;
   const r = LP_Progress.toggle(sid, itemId, selKey);
   renderLessonProgress();
   renderCal();
-  // F-2: o re-render já reflete o disco; avisa se não persistiu.
   if(r && r.ok === false){
     alert('Could not save — the browser storage may be full. Nothing was changed.');
   }

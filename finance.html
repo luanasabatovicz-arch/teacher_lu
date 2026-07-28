@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sabatovicz — Finance</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
 <link rel="stylesheet" href="finance.css">
 </head>
 <body>
@@ -14,10 +16,10 @@
   <div class="topwrap">
     <div class="row">
       <div>
-        <h1 style="font-size:26px">Finance</h1>
+        <h1>Finance</h1>
         <p style="opacity:.9;font-size:14px">Income, expenses and monthly profit for my private lessons</p>
       </div>
-      <a href="index.html" class="menu-btn">← Menu</a>
+      <a href="index.html" class="menu-btn"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a>
     </div>
   </div>
 </div>
@@ -40,8 +42,8 @@
         <h3 class="section-title" style="margin:0">Overview — <span id="dashMonthLabel">—</span></h3>
         <div class="toolbar" style="margin:0">
           <input type="month" id="dashMonth" class="inp inp-sm" aria-label="Reference month">
-          <button class="btn gray sm no-print" id="btnExportPdf">⬇ PDF</button>
-          <button class="btn gray sm no-print" id="btnExportCsv">⬇ CSV</button>
+          <button class="btn gray sm no-print" id="btnExportPdf"><i data-lucide="file-down" class="tl-icon-sm"></i> PDF</button>
+          <button class="btn gray sm no-print" id="btnExportCsv"><i data-lucide="file-down" class="tl-icon-sm"></i> CSV</button>
         </div>
       </div>
 
@@ -131,7 +133,7 @@
     <div class="card">
       <div class="row" style="margin-bottom:14px">
         <h3 class="section-title" style="margin:0">Billing plans (<span id="stuCount">0</span>)</h3>
-        <button class="btn blue sm no-print" id="btnAddBilling">+ New billing plan</button>
+        <button class="btn blue sm no-print" id="btnAddBilling"><i data-lucide="plus" class="tl-icon-sm"></i> New billing plan</button>
       </div>
 
       <div class="toolbar no-print">
@@ -177,7 +179,7 @@
     <div class="card">
       <div class="row" style="margin-bottom:14px">
         <h3 class="section-title" style="margin:0">Income records (<span id="incCount">0</span>)</h3>
-        <button class="btn blue sm no-print" id="btnAddIncome">+ Add income</button>
+        <button class="btn blue sm no-print" id="btnAddIncome"><i data-lucide="plus" class="tl-icon-sm"></i> Add income</button>
       </div>
 
       <div class="toolbar no-print">
@@ -212,7 +214,7 @@
     <div class="card">
       <div class="row" style="margin-bottom:14px">
         <h3 class="section-title" style="margin:0">Expenses (<span id="expCount">0</span>)</h3>
-        <button class="btn blue sm no-print" id="btnAddExpense">+ Add expense</button>
+        <button class="btn blue sm no-print" id="btnAddExpense"><i data-lucide="plus" class="tl-icon-sm"></i> Add expense</button>
       </div>
 
       <div class="toolbar no-print">
@@ -249,16 +251,16 @@
       </div>
       <div class="chart-grid" style="margin-top:16px">
         <div>
-          <h3 style="font-size:14px;margin-bottom:10px">Income per month</h3>
+          <h3 class="section-title" style="margin-bottom:10px">Income per month</h3>
           <div class="chart-box"><canvas id="chartIncome"></canvas></div>
         </div>
         <div>
-          <h3 style="font-size:14px;margin-bottom:10px">Expenses by category</h3>
+          <h3 class="section-title" style="margin-bottom:10px">Expenses by category</h3>
           <div class="chart-box"><canvas id="chartCategory"></canvas></div>
         </div>
       </div>
       <div style="margin-top:26px">
-        <h3 style="font-size:14px;margin-bottom:10px">Monthly profit</h3>
+        <h3 class="section-title" style="margin-bottom:10px">Monthly profit</h3>
         <div class="chart-box"><canvas id="chartProfit"></canvas></div>
       </div>
     </div>

@@ -1,0 +1,14 @@
+/* ==========================================================================
+   Teacher Lu Design System — Theme Entry
+   Único arquivo que cada página HTML precisa linkar.
+   Ordem de import é importante: tokens → base → layout → components → patterns.
+   ==========================================================================
+   Uso em qualquer página:
+     <link rel="stylesheet" href="design-system/theme.css">
+   ========================================================================== */
+
+@import url('tokens.css');
+@import url('base.css');
+@import url('layout.css');
+@import url('components.css');
+@import url('patterns.css');

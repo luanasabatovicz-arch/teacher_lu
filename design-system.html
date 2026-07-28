@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Library — Teacher Lu Design System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-system/theme.css">
+  <script src="design-system/icons.js" defer></script>
+  <style>
+    /* ------ Utilitários locais só para esta página ------ */
+    .cl-shell { display: grid; grid-template-columns: 220px 1fr; gap: var(--tl-space-6); }
+    @media (max-width: 900px) { .cl-shell { grid-template-columns: 1fr; } }
+    .cl-nav {
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      background: var(--tl-surface);
+      border: 1px solid var(--tl-border);
+      border-radius: var(--tl-radius-lg);
+      padding: var(--tl-space-3);
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+    }
+    .cl-nav h4 {
+      font-size: var(--tl-fs-caption);
+      text-transform: uppercase;
+      letter-spacing: var(--tl-tracking-wider);
+      color: var(--tl-text-tertiary);
+      margin: var(--tl-space-3) 0 var(--tl-space-1);
+      padding: 0 var(--tl-space-2);
+    }
+    .cl-nav h4:first-child { margin-top: 0; }
+    .cl-nav a {
+      display: flex;
+      align-items: center;
+      gap: var(--tl-space-2);
+      padding: 6px var(--tl-space-2);
+      color: var(--tl-text-secondary);
+      font-size: var(--tl-fs-small);
+      border-radius: var(--tl-radius-sm);
+      text-decoration: none;
+      transition: all var(--tl-dur-fast) var(--tl-ease);
+    }
+    .cl-nav a:hover { background: var(--tl-primary-tint); color: var(--tl-primary); }
+    .cl-nav a i { color: var(--tl-text-tertiary); }
+    .cl-nav a:hover i { color: var(--tl-primary); }
+
+    .cl-content { min-width: 0; }
+    .cl-sec { margin-bottom: var(--tl-space-8); scroll-margin-top: 84px; }
+    .cl-sec > h2 {
+      color: var(--tl-primary);
+      margin-bottom: var(--tl-space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--tl-space-3);
+    }
+    .cl-sec > h2 i { color: var(--tl-secondary); }
+    .cl-sec > .lead {
+      color: var(--tl-text-secondary);
+      margin-bottom: var(--tl-space-5);
+      max-width: 680px;
+      font-size: var(--tl-fs-body);
+    }
+    .cl-example {
+      background: var(--tl-surface);
+      border: 1px solid var(--tl-border);
+      border-radius: var(--tl-radius-lg);
+      overflow: hidden;
+      margin-bottom: var(--tl-space-4);
+    }
+    .cl-example > .preview {
+      padding: var(--tl-space-5);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--tl-space-3);
+      align-items: center;
+      background: var(--tl-surface);
+      border-bottom: 1px solid var(--tl-border);
+    }
+    .cl-example > .preview.stacked { flex-direction: column; align-items: stretch; }
+    .cl-example > .code {
+      background: #08292E;
+      color: #B6E3DE;
+      font-family: var(--tl-font-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      padding: var(--tl-space-3) var(--tl-space-4);
+      overflow-x: auto;
+      white-space: pre;
+      margin: 0;
+    }
+    .cl-example > .code .k { color: #FFB0B0; }  /* keywords */
+    .cl-example > .code .s { color: #E7C88B; }  /* strings */
+    .cl-example > .code .c { color: #7D9994; font-style: italic; } /* comments */
+    .cl-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: var(--tl-tracking-wider);
+      color: var(--tl-text-tertiary);
+      padding: var(--tl-space-2) var(--tl-space-4);
+      border-bottom: 1px solid var(--tl-border);
+      background: var(--tl-surface-alt);
+      font-weight: var(--tl-fw-bold);
+    }
+
+    /* Swatches (paleta) */
+    .cl-swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: var(--tl-space-3);
+    }
+    .cl-swatch { display: flex; flex-direction: column; gap: var(--tl-space-1); }
+    .cl-swatch .chip {
+      height: 78px;
+      border-radius: var(--tl-radius-md);
+      border: 1px solid var(--tl-border);
+    }
+    .cl-swatch .name { font-weight: var(--tl-fw-semibold); font-size: var(--tl-fs-small); }
+    .cl-swatch .meta {
+      font-family: var(--tl-font-mono);
+      font-size: 11.5px;
+      color: var(--tl-text-tertiary);
+    }
+
+    /* Type samples */
+    .cl-type-sample {
+      padding: var(--tl-space-4) 0;
+      border-bottom: 1px dashed var(--tl-border);
+    }
+    .cl-type-sample:last-child { border-bottom: 0; }
+    .cl-type-sample .meta {
+      font-family: var(--tl-font-mono);
+      font-size: var(--tl-fs-caption);
+      color: var(--tl-text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* Spacing table */
+    .cl-space-row { display: flex; align-items: center; gap: var(--tl-space-3); padding: 6px 0; }
+    .cl-space-row .lbl { font-family: var(--tl-font-mono); font-size: 12.5px; color: var(--tl-primary); min-width: 140px; }
+    .cl-space-row .px { font-family: var(--tl-font-mono); font-size: 12.5px; color: var(--tl-text-secondary); min-width: 48px; text-align: right; }
+    .cl-space-row .bar { background: var(--tl-primary); height: 16px; border-radius: 3px; }
+
+    /* Radius samples */
+    .cl-radius-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--tl-space-3); }
+    .cl-radius-item { text-align: center; }
+    .cl-radius-item .box {
+      background: var(--tl-primary-tint);
+      border: 1.5px solid var(--tl-primary-soft);
+      height: 72px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--tl-primary);
+      font-family: var(--tl-font-mono);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    /* Shadow samples */
+    .cl-shadow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--tl-space-4); }
+    .cl-shadow-item {
+      background: var(--tl-surface);
+      border-radius: var(--tl-radius-md);
+      padding: var(--tl-space-4);
+      text-align: center;
+      font-family: var(--tl-font-mono);
+      font-size: 12px;
+      color: var(--tl-text-secondary);
+    }
+
+    /* Icon gallery */
+    .cl-icons {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: var(--tl-space-2);
+    }
+    .cl-icon-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: var(--tl-space-3);
+      border: 1px solid var(--tl-border);
+      border-radius: var(--tl-radius-md);
+      background: var(--tl-surface);
+      transition: all var(--tl-dur-fast) var(--tl-ease);
+      cursor: default;
+    }
+    .cl-icon-tile:hover { border-color: var(--tl-primary); background: var(--tl-primary-tint); }
+    .cl-icon-tile i { color: var(--tl-primary); width: 22px; height: 22px; }
+    .cl-icon-tile .n {
+      font-family: var(--tl-font-mono);
+      font-size: 11.5px;
+      color: var(--tl-text-secondary);
+      text-align: center;
+    }
+
+    /* Animation samples */
+    .cl-motion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--tl-space-3); }
+    .cl-motion-item {
+      background: var(--tl-surface-alt);
+      border: 1px solid var(--tl-border);
+      border-radius: var(--tl-radius-md);
+      padding: var(--tl-space-4);
+      text-align: center;
+    }
+    .cl-motion-dot {
+      display: inline-block;
+      width: 32px; height: 32px;
+      background: var(--tl-primary);
+      border-radius: var(--tl-radius-pill);
+      margin-bottom: var(--tl-space-2);
+    }
+    .cl-motion-item:hover .cl-motion-dot { animation: cl-bounce 1s var(--tl-ease) infinite; }
+    @keyframes cl-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Small badges under section titles */
+    .cl-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      background: var(--tl-secondary-soft);
+      color: var(--tl-secondary-hover);
+      font-size: 11px;
+      font-weight: var(--tl-fw-bold);
+      letter-spacing: var(--tl-tracking-wide);
+      text-transform: uppercase;
+      border-radius: var(--tl-radius-pill);
+    }
+
+    /* Hero */
+    .cl-hero {
+      background: linear-gradient(135deg, var(--tl-primary), #0F5561 60%, var(--tl-secondary));
+      color: var(--tl-text-inverse);
+      border-radius: var(--tl-radius-xl);
+      padding: var(--tl-space-7);
+      margin-bottom: var(--tl-space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--tl-space-5);
+      flex-wrap: wrap;
+    }
+    .cl-hero h1 { color: var(--tl-text-inverse); font-size: 40px; margin-bottom: var(--tl-space-2); }
+    .cl-hero p { color: rgba(255,255,255,.88); max-width: 560px; font-size: var(--tl-fs-body); }
+    .cl-hero .cl-hero-stats { display: flex; gap: var(--tl-space-6); flex-wrap: wrap; margin-top: var(--tl-space-4); }
+    .cl-hero .stat-n { font-size: 32px; font-weight: var(--tl-fw-bold); line-height: 1; }
+    .cl-hero .stat-l { font-size: 11px; text-transform: uppercase; letter-spacing: var(--tl-tracking-wider); opacity: .8; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1>Component Library</h1>
+        <p>Referência oficial de todos os componentes do Design System Teacher Lu v2.0</p>
+      </div>
+      <a href="index.html" class="menu-btn"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="cl-hero">
+    <div style="flex:1; min-width:280px;">
+      <h1>Teacher Lu Design System</h1>
+      <p>Uma única identidade visual para todo o ecossistema. Toda tela nova nasce a partir desta biblioteca. Nada é criado fora dela.</p>
+      <div class="cl-hero-stats">
+        <div><div class="stat-n">25</div><div class="stat-l">Categorias</div></div>
+        <div><div class="stat-n">103</div><div class="stat-l">Tokens</div></div>
+        <div><div class="stat-n">18/18</div><div class="stat-l">Páginas cobertas</div></div>
+        <div><div class="stat-n">Lucide</div><div class="stat-l">Ícones oficiais</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cl-shell">
+
+    <!-- NAV -->
+    <nav class="cl-nav" aria-label="Índice">
+      <h4>Fundação</h4>
+      <a href="#cores"><i data-lucide="palette" class="tl-icon-sm"></i> Cores</a>
+      <a href="#tipografia"><i data-lucide="type" class="tl-icon-sm"></i> Tipografia</a>
+      <a href="#espacamentos"><i data-lucide="ruler" class="tl-icon-sm"></i> Espaçamentos</a>
+      <a href="#raio"><i data-lucide="square-rounded" class="tl-icon-sm"></i> Border Radius</a>
+      <a href="#sombras"><i data-lucide="box" class="tl-icon-sm"></i> Shadows</a>
+      <a href="#animacoes"><i data-lucide="zap" class="tl-icon-sm"></i> Animações</a>
+      <a href="#icones"><i data-lucide="sparkles" class="tl-icon-sm"></i> Ícones (Lucide)</a>
+
+      <h4>Formulários</h4>
+      <a href="#botoes"><i data-lucide="mouse-pointer-click" class="tl-icon-sm"></i> Botões</a>
+      <a href="#inputs"><i data-lucide="text-cursor-input" class="tl-icon-sm"></i> Inputs</a>
+      <a href="#selects"><i data-lucide="list" class="tl-icon-sm"></i> Selects</a>
+      <a href="#checkboxes"><i data-lucide="check-square" class="tl-icon-sm"></i> Checkboxes</a>
+      <a href="#radios"><i data-lucide="circle-dot" class="tl-icon-sm"></i> Radio Buttons</a>
+
+      <h4>Conteúdo</h4>
+      <a href="#cards"><i data-lucide="square" class="tl-icon-sm"></i> Cards</a>
+      <a href="#badges"><i data-lucide="badge" class="tl-icon-sm"></i> Badges</a>
+      <a href="#tables"><i data-lucide="table" class="tl-icon-sm"></i> Tables</a>
+
+      <h4>Feedback</h4>
+      <a href="#toasts"><i data-lucide="message-square" class="tl-icon-sm"></i> Toasts</a>
+      <a href="#alerts"><i data-lucide="alert-circle" class="tl-icon-sm"></i> Alerts</a>
+      <a href="#progress"><i data-lucide="loader" class="tl-icon-sm"></i> Progress</a>
+      <a href="#loading"><i data-lucide="loader-2" class="tl-icon-sm"></i> Loading</a>
+      <a href="#skeleton"><i data-lucide="rectangle-horizontal" class="tl-icon-sm"></i> Skeletons</a>
+      <a href="#empty"><i data-lucide="inbox" class="tl-icon-sm"></i> Empty States</a>
+
+      <h4>Overlays</h4>
+      <a href="#modals"><i data-lucide="layout-panel-top" class="tl-icon-sm"></i> Modals</a>
+      <a href="#tabs"><i data-lucide="rows-2" class="tl-icon-sm"></i> Tabs</a>
+      <a href="#dropdowns"><i data-lucide="chevron-down" class="tl-icon-sm"></i> Dropdowns</a>
+      <a href="#tooltips"><i data-lucide="info" class="tl-icon-sm"></i> Tooltips</a>
+      <a href="#breadcrumbs"><i data-lucide="slash" class="tl-icon-sm"></i> Breadcrumbs</a>
+    </nav>
+
+    <!-- CONTENT -->
+    <main class="cl-content">
+
+      <!-- Alerta explicativo -->
+      <div class="alert info" style="margin-bottom: var(--tl-space-6)">
+        <i data-lucide="info" class="tl-icon"></i>
+        <div>
+          <b>Como usar esta biblioteca.</b> Todo componente novo criado na Teacher Lu Studio ou na Teacher Lu Practice
+          deve <b>primeiro ser adicionado aqui</b> antes de ser usado na aplicação. Copie o markup ao lado de cada exemplo — ele já
+          usa as variáveis oficiais do sistema.
+        </div>
+      </div>
+
+      <!-- ==================== CORES ==================== -->
+      <section id="cores" class="cl-sec">
+        <h2><i data-lucide="palette"></i> Cores</h2>
+        <p class="lead">A paleta é a fundação de todo o sistema. Nada usa hex diretamente — sempre via <code>var(--tl-*)</code>.</p>
+
+        <div class="cl-example">
+          <span class="cl-label">Marca</span>
+          <div class="preview stacked">
+            <div class="cl-swatches">
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-primary)"></div><div class="name">Primary — Deep Teal</div><div class="meta">#0B3B46 · --tl-primary</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-secondary)"></div><div class="name">Secondary — Turquoise</div><div class="meta">#16B1A9 · --tl-secondary</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-accent)"></div><div class="name">Accent — Coral</div><div class="meta">#FF6B6B · --tl-accent</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-primary-soft)"></div><div class="name">Primary soft</div><div class="meta">#E6EEF0 · --tl-primary-soft</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-secondary-soft)"></div><div class="name">Secondary soft</div><div class="meta">#E3F7F5 · --tl-secondary-soft</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-accent-soft)"></div><div class="name">Accent soft</div><div class="meta">#FFECEC · --tl-accent-soft</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Superfícies e texto</span>
+          <div class="preview stacked">
+            <div class="cl-swatches">
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-bg)"></div><div class="name">Background</div><div class="meta">#F8F9FA · --tl-bg</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-surface)"></div><div class="name">Surface</div><div class="meta">#FFFFFF · --tl-surface</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-surface-alt)"></div><div class="name">Surface alt</div><div class="meta">#F2F6F7 · --tl-surface-alt</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-text)"></div><div class="name">Text primary</div><div class="meta">#1F2937 · --tl-text</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-text-secondary)"></div><div class="name">Text secondary</div><div class="meta">#6B7280 · --tl-text-secondary</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-border)"></div><div class="name">Border</div><div class="meta">#E5E7EB · --tl-border</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Feedback</span>
+          <div class="preview stacked">
+            <div class="cl-swatches">
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-success)"></div><div class="name">Success</div><div class="meta">#22C55E · --tl-success</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-warning)"></div><div class="name">Warning</div><div class="meta">#F59E0B · --tl-warning</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-danger)"></div><div class="name">Danger</div><div class="meta">#EF4444 · --tl-danger</div></div>
+              <div class="cl-swatch"><div class="chip" style="background:var(--tl-info)"></div><div class="name">Info</div><div class="meta">#0EA5E9 · --tl-info</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TIPOGRAFIA ==================== -->
+      <section id="tipografia" class="cl-sec">
+        <h2><i data-lucide="type"></i> Tipografia</h2>
+        <p class="lead">Uma família (<b>Inter</b>), uma escala. Não misture serifadas nem tipografias de terceiros.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="cl-type-sample"><span class="tl-display">Display 40</span><div class="meta">.tl-display · --tl-fs-display · Inter 700</div></div>
+            <div class="cl-type-sample"><h1>Heading 1 · 32</h1><div class="meta">h1 · --tl-fs-h1 · Inter 700</div></div>
+            <div class="cl-type-sample"><h2>Heading 2 · 24</h2><div class="meta">h2 · --tl-fs-h2 · Inter 700</div></div>
+            <div class="cl-type-sample"><h3>Heading 3 · 20</h3><div class="meta">h3 · --tl-fs-h3 · Inter 700</div></div>
+            <div class="cl-type-sample"><h4>Heading 4 · 16</h4><div class="meta">h4 · --tl-fs-h4 · Inter 600</div></div>
+            <div class="cl-type-sample"><p>Body · 15. Este é o texto padrão do corpo.</p><div class="meta">p · --tl-fs-body · Inter 400</div></div>
+            <div class="cl-type-sample"><span class="tl-caption">Caption · 12</span><div class="meta">.tl-caption · --tl-fs-caption · Inter 400</div></div>
+            <div class="cl-type-sample"><span class="tl-eyebrow">Eyebrow · 11 uppercase</span><div class="meta">.tl-eyebrow · Inter 700 · 0.08em tracking</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ESPAÇAMENTOS ==================== -->
+      <section id="espacamentos" class="cl-sec">
+        <h2><i data-lucide="ruler"></i> Espaçamentos</h2>
+        <p class="lead">Escala oficial em 9 pontos. Não use valores fora desta escala.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="cl-space-row"><span class="lbl">--tl-space-1</span><span class="px">4px</span><span class="bar" style="width:4px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-2</span><span class="px">8px</span><span class="bar" style="width:8px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-3</span><span class="px">12px</span><span class="bar" style="width:12px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-4</span><span class="px">16px</span><span class="bar" style="width:16px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-5</span><span class="px">24px</span><span class="bar" style="width:24px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-6</span><span class="px">32px</span><span class="bar" style="width:32px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-7</span><span class="px">48px</span><span class="bar" style="width:48px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-8</span><span class="px">64px</span><span class="bar" style="width:64px"></span></div>
+            <div class="cl-space-row"><span class="lbl">--tl-space-9</span><span class="px">96px</span><span class="bar" style="width:96px"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== RAIO ==================== -->
+      <section id="raio" class="cl-sec">
+        <h2><i data-lucide="square-rounded"></i> Border Radius</h2>
+        <p class="lead">Nenhum elemento tem cantos vivos. A escala de raios aparece em uso na maior parte dos componentes.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="cl-radius-grid">
+              <div class="cl-radius-item"><div class="box" style="border-radius:var(--tl-radius-xs)">xs · 6px</div><span class="tl-caption">--tl-radius-xs</span></div>
+              <div class="cl-radius-item"><div class="box" style="border-radius:var(--tl-radius-sm)">sm · 8px</div><span class="tl-caption">--tl-radius-sm</span></div>
+              <div class="cl-radius-item"><div class="box" style="border-radius:var(--tl-radius-md)">md · 10px</div><span class="tl-caption">--tl-radius-md</span></div>
+              <div class="cl-radius-item"><div class="box" style="border-radius:var(--tl-radius-lg)">lg · 14px</div><span class="tl-caption">--tl-radius-lg</span></div>
+              <div class="cl-radius-item"><div class="box" style="border-radius:var(--tl-radius-xl)">xl · 18px</div><span class="tl-caption">--tl-radius-xl</span></div>
+              <div class="cl-radius-item"><div class="box" style="border-radius:var(--tl-radius-2xl)">2xl · 24px</div><span class="tl-caption">--tl-radius-2xl</span></div>
+              <div class="cl-radius-item"><div class="box" style="border-radius:var(--tl-radius-pill)">pill</div><span class="tl-caption">--tl-radius-pill</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SOMBRAS ==================== -->
+      <section id="sombras" class="cl-sec">
+        <h2><i data-lucide="box"></i> Shadows</h2>
+        <p class="lead">Sombras suaves em teal — nunca em preto puro. Cinco níveis, do mais discreto ao mais elevado.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="cl-shadow-grid">
+              <div class="cl-shadow-item" style="box-shadow:var(--tl-shadow-xs)">xs</div>
+              <div class="cl-shadow-item" style="box-shadow:var(--tl-shadow-sm)">sm</div>
+              <div class="cl-shadow-item" style="box-shadow:var(--tl-shadow-md)">md</div>
+              <div class="cl-shadow-item" style="box-shadow:var(--tl-shadow-lg)">lg</div>
+              <div class="cl-shadow-item" style="box-shadow:var(--tl-shadow-xl)">xl</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ANIMAÇÕES ==================== -->
+      <section id="animacoes" class="cl-sec">
+        <h2><i data-lucide="zap"></i> Animações</h2>
+        <p class="lead">Discretas, funcionais. Durações de 80ms a 320ms com <code>ease</code> nativo do sistema.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <p class="tl-caption" style="margin-bottom:var(--tl-space-3)">Passe o mouse em cada quadro para ver o movimento:</p>
+            <div class="cl-motion-grid">
+              <div class="cl-motion-item"><span class="cl-motion-dot"></span><div class="tl-caption">--tl-dur-instant · 80ms</div></div>
+              <div class="cl-motion-item"><span class="cl-motion-dot"></span><div class="tl-caption">--tl-dur-fast · 140ms</div></div>
+              <div class="cl-motion-item"><span class="cl-motion-dot"></span><div class="tl-caption">--tl-dur-base · 200ms</div></div>
+              <div class="cl-motion-item"><span class="cl-motion-dot"></span><div class="tl-caption">--tl-dur-slow · 320ms</div></div>
+            </div>
+            <p class="tl-caption" style="margin-top:var(--tl-space-4)">Easings: <code>--tl-ease</code> (padrão), <code>--tl-ease-out</code>, <code>--tl-ease-in-out</code></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ÍCONES LUCIDE ==================== -->
+      <section id="icones" class="cl-sec">
+        <h2><i data-lucide="sparkles"></i> Ícones · <span class="cl-tag">Lucide</span></h2>
+        <p class="lead">Biblioteca oficial: <b>Lucide</b>, carregada via <code>design-system/icons.js</code>. Tamanhos <code>xs·sm·md·lg·xl·2xl</code> disponíveis. Renderiza dinamicamente até em HTML gerado por outros scripts.</p>
+
+        <div class="cl-example">
+          <span class="cl-label">Uso básico</span>
+          <div class="preview">
+            <i data-lucide="download" class="tl-icon"></i>
+            <i data-lucide="upload" class="tl-icon"></i>
+            <i data-lucide="settings" class="tl-icon"></i>
+            <i data-lucide="pencil" class="tl-icon"></i>
+            <i data-lucide="trash-2" class="tl-icon"></i>
+            <i data-lucide="check" class="tl-icon"></i>
+            <i data-lucide="x" class="tl-icon"></i>
+            <i data-lucide="plus" class="tl-icon"></i>
+            <i data-lucide="refresh-cw" class="tl-icon"></i>
+            <i data-lucide="arrow-left" class="tl-icon"></i>
+            <i data-lucide="arrow-right" class="tl-icon"></i>
+            <i data-lucide="chevron-down" class="tl-icon"></i>
+          </div>
+          <pre class="code"><span class="c">&lt;!-- Adicionar uma vez no head da página --&gt;</span>
+<span class="k">&lt;script</span> src=<span class="s">"design-system/icons.js"</span> defer<span class="k">&gt;&lt;/script&gt;</span>
+
+<span class="c">&lt;!-- Usar em qualquer lugar --&gt;</span>
+<span class="k">&lt;i</span> data-lucide=<span class="s">"download"</span> class=<span class="s">"tl-icon"</span><span class="k">&gt;&lt;/i&gt;</span></pre>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Tamanhos</span>
+          <div class="preview">
+            <span title="xs"><i data-lucide="download" class="tl-icon tl-icon-xs"></i></span>
+            <span title="sm"><i data-lucide="download" class="tl-icon tl-icon-sm"></i></span>
+            <span title="md"><i data-lucide="download" class="tl-icon tl-icon-md"></i></span>
+            <span title="lg"><i data-lucide="download" class="tl-icon tl-icon-lg"></i></span>
+            <span title="xl"><i data-lucide="download" class="tl-icon tl-icon-xl"></i></span>
+            <span title="2xl"><i data-lucide="download" class="tl-icon tl-icon-2xl"></i></span>
+            <span class="tl-caption">xs · sm · md · lg · xl · 2xl</span>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Galeria — ícones já em uso na plataforma</span>
+          <div class="preview stacked">
+            <div class="cl-icons">
+              <div class="cl-icon-tile"><i data-lucide="arrow-left"></i><span class="n">arrow-left</span></div>
+              <div class="cl-icon-tile"><i data-lucide="arrow-right"></i><span class="n">arrow-right</span></div>
+              <div class="cl-icon-tile"><i data-lucide="chevron-left"></i><span class="n">chevron-left</span></div>
+              <div class="cl-icon-tile"><i data-lucide="chevron-right"></i><span class="n">chevron-right</span></div>
+              <div class="cl-icon-tile"><i data-lucide="chevron-down"></i><span class="n">chevron-down</span></div>
+              <div class="cl-icon-tile"><i data-lucide="download"></i><span class="n">download</span></div>
+              <div class="cl-icon-tile"><i data-lucide="upload"></i><span class="n">upload</span></div>
+              <div class="cl-icon-tile"><i data-lucide="file-down"></i><span class="n">file-down</span></div>
+              <div class="cl-icon-tile"><i data-lucide="plus"></i><span class="n">plus</span></div>
+              <div class="cl-icon-tile"><i data-lucide="pencil"></i><span class="n">pencil</span></div>
+              <div class="cl-icon-tile"><i data-lucide="trash-2"></i><span class="n">trash-2</span></div>
+              <div class="cl-icon-tile"><i data-lucide="refresh-cw"></i><span class="n">refresh-cw</span></div>
+              <div class="cl-icon-tile"><i data-lucide="settings"></i><span class="n">settings</span></div>
+              <div class="cl-icon-tile"><i data-lucide="check"></i><span class="n">check</span></div>
+              <div class="cl-icon-tile"><i data-lucide="x"></i><span class="n">x</span></div>
+              <div class="cl-icon-tile"><i data-lucide="play"></i><span class="n">play</span></div>
+              <div class="cl-icon-tile"><i data-lucide="pause"></i><span class="n">pause</span></div>
+              <div class="cl-icon-tile"><i data-lucide="volume-2"></i><span class="n">volume-2</span></div>
+              <div class="cl-icon-tile"><i data-lucide="calendar"></i><span class="n">calendar</span></div>
+              <div class="cl-icon-tile"><i data-lucide="clock"></i><span class="n">clock</span></div>
+              <div class="cl-icon-tile"><i data-lucide="user"></i><span class="n">user</span></div>
+              <div class="cl-icon-tile"><i data-lucide="users"></i><span class="n">users</span></div>
+              <div class="cl-icon-tile"><i data-lucide="book-open"></i><span class="n">book-open</span></div>
+              <div class="cl-icon-tile"><i data-lucide="graduation-cap"></i><span class="n">graduation-cap</span></div>
+              <div class="cl-icon-tile"><i data-lucide="dice-5"></i><span class="n">dice-5</span></div>
+              <div class="cl-icon-tile"><i data-lucide="info"></i><span class="n">info</span></div>
+              <div class="cl-icon-tile"><i data-lucide="alert-circle"></i><span class="n">alert-circle</span></div>
+              <div class="cl-icon-tile"><i data-lucide="alert-triangle"></i><span class="n">alert-triangle</span></div>
+              <div class="cl-icon-tile"><i data-lucide="check-circle"></i><span class="n">check-circle</span></div>
+              <div class="cl-icon-tile"><i data-lucide="x-circle"></i><span class="n">x-circle</span></div>
+              <div class="cl-icon-tile"><i data-lucide="search"></i><span class="n">search</span></div>
+              <div class="cl-icon-tile"><i data-lucide="external-link"></i><span class="n">external-link</span></div>
+            </div>
+            <p class="tl-caption" style="margin-top:var(--tl-space-4)">Biblioteca completa: <a href="https://lucide.dev/icons" target="_blank" rel="noopener">lucide.dev/icons</a> — mais de 1.400 ícones.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== BOTÕES ==================== -->
+      <section id="botoes" class="cl-sec">
+        <h2><i data-lucide="mouse-pointer-click"></i> Botões</h2>
+        <p class="lead">Sete variantes cobrem todo o produto. Classes legadas (<code>purple/pink/gray/green/red/cyan/blue/orange/amber</code>) mapeiam para as variantes oficiais.</p>
+
+        <div class="cl-example">
+          <span class="cl-label">Variantes</span>
+          <div class="preview">
+            <button class="btn primary"><i data-lucide="check" class="tl-icon-sm"></i> Primary</button>
+            <button class="btn secondary">Secondary</button>
+            <button class="btn ghost">Ghost</button>
+            <button class="btn accent">Accent</button>
+            <button class="btn info">Info</button>
+            <button class="btn success">Success</button>
+            <button class="btn danger"><i data-lucide="trash-2" class="tl-icon-sm"></i> Danger</button>
+            <button class="btn gray">Neutro</button>
+          </div>
+          <pre class="code"><span class="k">&lt;button</span> class=<span class="s">"btn primary"</span><span class="k">&gt;</span>
+  <span class="k">&lt;i</span> data-lucide=<span class="s">"check"</span> class=<span class="s">"tl-icon-sm"</span><span class="k">&gt;&lt;/i&gt;</span> Salvar
+<span class="k">&lt;/button&gt;</span></pre>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Tamanhos</span>
+          <div class="preview">
+            <button class="btn primary sm">Small</button>
+            <button class="btn primary">Default</button>
+            <button class="btn primary lg">Large</button>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Estados</span>
+          <div class="preview">
+            <button class="btn primary" disabled>Disabled</button>
+            <button class="btn primary loading">Loading</button>
+            <button class="btn primary">Focus (Tab)</button>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Ícone-botão</span>
+          <div class="preview">
+            <button class="icon-btn" data-tooltip="Editar"><i data-lucide="pencil"></i></button>
+            <button class="icon-btn del" data-tooltip="Excluir"><i data-lucide="trash-2"></i></button>
+            <button class="icon-btn sm"><i data-lucide="plus"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== INPUTS ==================== -->
+      <section id="inputs" class="cl-sec">
+        <h2><i data-lucide="text-cursor-input"></i> Inputs</h2>
+        <p class="lead">Texto, número, senha, e-mail — mesma classe <code>.inp</code>. Foco em turquoise, halo suave.</p>
+        <div class="cl-example">
+          <div class="preview stacked" style="max-width:520px">
+            <div>
+              <label class="lbl">Nome do aluno</label>
+              <input class="inp" placeholder="Ex: Isabela Ferreira">
+            </div>
+            <div>
+              <label class="lbl">E-mail</label>
+              <input class="inp" type="email" placeholder="isabela@exemplo.com">
+            </div>
+            <div>
+              <label class="lbl">Erro de validação</label>
+              <input class="inp error" value="Valor inválido">
+            </div>
+            <div>
+              <label class="lbl">Desabilitado</label>
+              <input class="inp" value="Somente leitura" disabled>
+            </div>
+            <div>
+              <label class="lbl">Textarea</label>
+              <textarea class="inp" placeholder="Observações..."></textarea>
+            </div>
+          </div>
+          <pre class="code"><span class="k">&lt;label</span> class=<span class="s">"lbl"</span><span class="k">&gt;</span>Nome<span class="k">&lt;/label&gt;</span>
+<span class="k">&lt;input</span> class=<span class="s">"inp"</span> placeholder=<span class="s">"Digite..."</span><span class="k">&gt;</span></pre>
+        </div>
+      </section>
+
+      <!-- ==================== SELECTS ==================== -->
+      <section id="selects" class="cl-sec">
+        <h2><i data-lucide="list"></i> Selects</h2>
+        <p class="lead">Herda o estilo do input. Adicione <code>select.inp</code>.</p>
+        <div class="cl-example">
+          <div class="preview stacked" style="max-width:360px">
+            <label class="lbl">Nível CEFR</label>
+            <select class="inp">
+              <option>A1 — Beginner</option>
+              <option>A2 — Elementary</option>
+              <option>B1 — Pre-intermediate</option>
+              <option>B2 — Upper-intermediate</option>
+              <option>C1 — Advanced</option>
+            </select>
+          </div>
+          <pre class="code"><span class="k">&lt;select</span> class=<span class="s">"inp"</span><span class="k">&gt;&lt;option&gt;</span>A1<span class="k">&lt;/option&gt;&lt;/select&gt;</span></pre>
+        </div>
+      </section>
+
+      <!-- ==================== CHECKBOXES ==================== -->
+      <section id="checkboxes" class="cl-sec">
+        <h2><i data-lucide="check-square"></i> Checkboxes</h2>
+        <p class="lead">Estilo custom via <code>.tl-check</code> — sem depender de aparência do sistema operacional.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <label class="tl-check"><input type="checkbox" checked> Aluno ativo</label>
+            <label class="tl-check"><input type="checkbox"> Enviar lembrete por e-mail</label>
+            <label class="tl-check"><input type="checkbox" disabled> Bloqueado (disabled)</label>
+          </div>
+          <pre class="code"><span class="k">&lt;label</span> class=<span class="s">"tl-check"</span><span class="k">&gt;</span>
+  <span class="k">&lt;input</span> type=<span class="s">"checkbox"</span> checked<span class="k">&gt;</span> Aluno ativo
+<span class="k">&lt;/label&gt;</span></pre>
+        </div>
+      </section>
+
+      <!-- ==================== RADIOS ==================== -->
+      <section id="radios" class="cl-sec">
+        <h2><i data-lucide="circle-dot"></i> Radio Buttons</h2>
+        <p class="lead">Mesmo padrão do checkbox, com <code>.tl-radio</code>.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <label class="tl-radio"><input type="radio" name="cl-freq" checked> Semanal</label>
+            <label class="tl-radio"><input type="radio" name="cl-freq"> Quinzenal</label>
+            <label class="tl-radio"><input type="radio" name="cl-freq"> Mensal</label>
+          </div>
+          <pre class="code"><span class="k">&lt;label</span> class=<span class="s">"tl-radio"</span><span class="k">&gt;</span>
+  <span class="k">&lt;input</span> type=<span class="s">"radio"</span> name=<span class="s">"freq"</span><span class="k">&gt;</span> Semanal
+<span class="k">&lt;/label&gt;</span></pre>
+        </div>
+      </section>
+
+      <!-- ==================== CARDS ==================== -->
+      <section id="cards" class="cl-sec">
+        <h2><i data-lucide="square"></i> Cards</h2>
+        <p class="lead">Um raio, uma sombra, uma cor. Todos os cards da plataforma seguem esta base.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="grid grid-3">
+              <div class="card">
+                <div class="bar"></div>
+                <span class="tl-eyebrow">Padrão</span>
+                <h3 style="margin:var(--tl-space-2) 0 var(--tl-space-3)">Card básico</h3>
+                <p class="tl-muted">Estrutura mínima. Bordinha secondary no topo é opcional.</p>
+              </div>
+              <div class="card card-hover">
+                <div class="bar accent"></div>
+                <span class="tl-eyebrow" style="color:var(--tl-accent)">Interativo</span>
+                <h3 style="margin:var(--tl-space-2) 0 var(--tl-space-3)">Card com hover</h3>
+                <p class="tl-muted">Adicione <code>.card-hover</code> ou use dentro de <code>&lt;a&gt;</code>.</p>
+              </div>
+              <div class="card">
+                <div class="card-hd">
+                  <h3>Com header</h3>
+                  <button class="btn ghost sm"><i data-lucide="settings" class="tl-icon-sm"></i></button>
+                </div>
+                <p class="tl-muted">Estrutura <code>.card-hd</code> alinha título + ação à direita.</p>
+                <div class="card-ft"><span class="tl-caption">Footer opcional</span></div>
+              </div>
+            </div>
+          </div>
+          <pre class="code"><span class="k">&lt;div</span> class=<span class="s">"card"</span><span class="k">&gt;</span>
+  <span class="k">&lt;div</span> class=<span class="s">"card-hd"</span><span class="k">&gt;&lt;h3&gt;</span>Título<span class="k">&lt;/h3&gt;&lt;/div&gt;</span>
+  <span class="k">&lt;p&gt;</span>Conteúdo<span class="k">&lt;/p&gt;</span>
+<span class="k">&lt;/div&gt;</span></pre>
+        </div>
+      </section>
+
+      <!-- ==================== BADGES ==================== -->
+      <section id="badges" class="cl-sec">
+        <h2><i data-lucide="badge"></i> Badges</h2>
+        <p class="lead">Marcadores curtos, 7 variantes. <code>.lvl-badge</code> é o clássico do nível CEFR.</p>
+        <div class="cl-example">
+          <div class="preview">
+            <span class="badge">Default</span>
+            <span class="badge primary">Primary</span>
+            <span class="badge accent">Accent</span>
+            <span class="badge success">Success</span>
+            <span class="badge warning">Warning</span>
+            <span class="badge danger">Danger</span>
+            <span class="badge info">Info</span>
+            <span class="badge neutral">Neutral</span>
+            <span class="lvl-badge">A2</span>
+          </div>
+          <pre class="code"><span class="k">&lt;span</span> class=<span class="s">"badge success"</span><span class="k">&gt;</span>Pago<span class="k">&lt;/span&gt;</span>
+<span class="k">&lt;span</span> class=<span class="s">"lvl-badge"</span><span class="k">&gt;</span>B1<span class="k">&lt;/span&gt;</span></pre>
+        </div>
+      </section>
+
+      <!-- ==================== TABLES ==================== -->
+      <section id="tables" class="cl-sec">
+        <h2><i data-lucide="table"></i> Tables</h2>
+        <p class="lead">Cabeçalho compacto em uppercase, corpo confortável, hover em linha.</p>
+        <div class="cl-example">
+          <div class="preview stacked" style="padding:0">
+            <table class="tl-table">
+              <thead><tr><th>Aluno</th><th>Nível</th><th>Última aula</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Isabela Ferreira</td><td><span class="lvl-badge">A2</span></td><td>21 jul 2026</td><td><span class="badge success">Em dia</span></td></tr>
+                <tr><td>Hendrik van Dijk</td><td><span class="lvl-badge">A1</span></td><td>18 jul 2026</td><td><span class="badge warning">Pendente</span></td></tr>
+                <tr><td>Maria Oliveira</td><td><span class="lvl-badge">B1</span></td><td>15 jul 2026</td><td><span class="badge danger">Atrasado</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TOASTS ==================== -->
+      <section id="toasts" class="cl-sec">
+        <h2><i data-lucide="message-square"></i> Toasts</h2>
+        <p class="lead">Duas formas: <b>top-right</b> (padrão do DS) e <b>bottom-center</b> (usado em builder/finance).</p>
+
+        <div class="cl-example">
+          <span class="cl-label">Top-right</span>
+          <div class="preview stacked">
+            <div class="toast" style="position:relative;top:auto;right:auto;transform:none"><b>Rascunho salvo.</b> Você pode fechar a aba sem perder o progresso.</div>
+            <div class="toast success" style="position:relative;top:auto;right:auto;transform:none"><b>Aluno cadastrado.</b> Isabela Ferreira já aparece no plano anual.</div>
+            <div class="toast warning" style="position:relative;top:auto;right:auto;transform:none"><b>Aula sem tempo definido.</b> A duração padrão será aplicada.</div>
+            <div class="toast danger" style="position:relative;top:auto;right:auto;transform:none"><b>Erro ao salvar.</b> Storage do navegador cheio.</div>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Bottom-center (legado)</span>
+          <div class="preview stacked">
+            <button class="btn primary" onclick="var t=this.nextElementSibling;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)">Mostrar toast</button>
+            <div class="toast-bc"><i data-lucide="check-circle" class="tl-icon-sm"></i> 5 conteúdos registrados no Learning Progress</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ALERTS ==================== -->
+      <section id="alerts" class="cl-sec">
+        <h2><i data-lucide="alert-circle"></i> Alerts</h2>
+        <p class="lead">Mensagens inline dentro da página, não flutuantes.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="alert info"><i data-lucide="info" class="tl-icon"></i><div><b>Backup automático.</b> Seus dados são salvos no navegador. Faça um backup manual pelo botão "Backup".</div></div>
+            <div class="alert success"><i data-lucide="check-circle" class="tl-icon"></i><div>Backup salvo com sucesso.</div></div>
+            <div class="alert warning"><i data-lucide="alert-triangle" class="tl-icon"></i><div>A aula da Isabela precisa ser reagendada.</div></div>
+            <div class="alert danger"><i data-lucide="x-circle" class="tl-icon"></i><div>Não foi possível salvar. Tente novamente.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== MODALS ==================== -->
+      <section id="modals" class="cl-sec">
+        <h2><i data-lucide="layout-panel-top"></i> Modals</h2>
+        <p class="lead">Overlay <code>.ov</code> + caixa <code>.modal</code>. Ações sempre alinhadas à direita.</p>
+        <div class="cl-example">
+          <div class="preview">
+            <button class="btn primary" onclick="document.getElementById('cl-modal').classList.add('show')"><i data-lucide="layout-panel-top" class="tl-icon-sm"></i> Abrir modal</button>
+          </div>
+          <pre class="code"><span class="k">&lt;div</span> class=<span class="s">"ov show"</span><span class="k">&gt;</span>
+  <span class="k">&lt;div</span> class=<span class="s">"modal"</span><span class="k">&gt;</span>
+    <span class="k">&lt;h3&gt;</span>Título<span class="k">&lt;/h3&gt;</span>
+    <span class="k">&lt;p</span> class=<span class="s">"sub"</span><span class="k">&gt;</span>Subtítulo<span class="k">&lt;/p&gt;</span>
+    ...
+    <span class="k">&lt;div</span> class=<span class="s">"actions"</span><span class="k">&gt;</span>
+      <span class="k">&lt;button</span> class=<span class="s">"btn gray"</span><span class="k">&gt;</span>Cancelar<span class="k">&lt;/button&gt;</span>
+      <span class="k">&lt;button</span> class=<span class="s">"btn primary"</span><span class="k">&gt;</span>Confirmar<span class="k">&lt;/button&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+<span class="k">&lt;/div&gt;</span></pre>
+        </div>
+      </section>
+
+      <!-- ==================== TABS ==================== -->
+      <section id="tabs" class="cl-sec">
+        <h2><i data-lucide="rows-2"></i> Tabs</h2>
+        <p class="lead">Aba ativa com sublinhado em primary.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="tabs">
+              <button class="tab active">Overview</button>
+              <button class="tab">Progress</button>
+              <button class="tab">Notes</button>
+              <button class="tab">Settings</button>
+            </div>
+            <div class="panel active"><p class="tl-muted">Conteúdo da aba <b>Overview</b>.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== DROPDOWNS ==================== -->
+      <section id="dropdowns" class="cl-sec">
+        <h2><i data-lucide="chevron-down"></i> Dropdowns</h2>
+        <p class="lead">Menu simples com <code>.tl-dropdown</code> — adicione <code>.open</code> para mostrar.</p>
+        <div class="cl-example">
+          <div class="preview" style="min-height:180px; align-items:flex-start">
+            <div class="tl-dropdown open" style="margin-right:var(--tl-space-6)">
+              <button class="btn secondary">Ações <i data-lucide="chevron-down" class="tl-icon-sm"></i></button>
+              <div class="tl-dropdown-menu">
+                <a class="tl-dropdown-item"><i data-lucide="pencil" class="tl-icon-sm"></i> Editar</a>
+                <a class="tl-dropdown-item"><i data-lucide="download" class="tl-icon-sm"></i> Exportar PDF</a>
+                <a class="tl-dropdown-item"><i data-lucide="upload" class="tl-icon-sm"></i> Importar</a>
+                <a class="tl-dropdown-item" style="color:var(--tl-danger)"><i data-lucide="trash-2" class="tl-icon-sm"></i> Remover</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TOOLTIPS ==================== -->
+      <section id="tooltips" class="cl-sec">
+        <h2><i data-lucide="info"></i> Tooltips</h2>
+        <p class="lead">Atributo <code>data-tooltip="..."</code> em qualquer elemento.</p>
+        <div class="cl-example">
+          <div class="preview">
+            <button class="btn primary" data-tooltip="Salva e sai da tela">Salvar</button>
+            <button class="btn secondary" data-tooltip="Descarta as alterações">Cancelar</button>
+            <button class="icon-btn" data-tooltip="Editar aluno"><i data-lucide="pencil"></i></button>
+            <button class="icon-btn del" data-tooltip="Excluir aluno"><i data-lucide="trash-2"></i></button>
+            <span class="tl-caption">passe o mouse para ver</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== BREADCRUMBS ==================== -->
+      <section id="breadcrumbs" class="cl-sec">
+        <h2><i data-lucide="slash"></i> Breadcrumbs</h2>
+        <p class="lead">Navegação hierárquica. O item atual não é link.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="breadcrumbs">
+              <a href="#"><i data-lucide="home" class="tl-icon-xs"></i> Home</a>
+              <span class="sep">/</span>
+              <a href="#">Students</a>
+              <span class="sep">/</span>
+              <span class="current">Isabela Ferreira</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PROGRESS ==================== -->
+      <section id="progress" class="cl-sec">
+        <h2><i data-lucide="loader"></i> Progress</h2>
+        <p class="lead">Barra fina — para progresso linear, não spinners.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="progress"><div class="bar" style="width:20%"></div></div>
+            <div class="progress"><div class="bar" style="width:55%"></div></div>
+            <div class="progress"><div class="bar" style="width:80%"></div></div>
+            <div class="progress"><div class="bar" style="width:100%; background:var(--tl-success)"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== LOADING ==================== -->
+      <section id="loading" class="cl-sec">
+        <h2><i data-lucide="loader-2"></i> Loading</h2>
+        <p class="lead">Três formas: spinner solto, botão em estado <code>.loading</code>, e card em <code>.card.loading</code>.</p>
+        <div class="cl-example">
+          <span class="cl-label">Spinner solto</span>
+          <div class="preview">
+            <span class="spinner"></span>
+            <span class="tl-caption">.spinner</span>
+          </div>
+        </div>
+        <div class="cl-example">
+          <span class="cl-label">Botão em loading</span>
+          <div class="preview">
+            <button class="btn primary loading">Salvando</button>
+            <button class="btn success loading">Enviando</button>
+          </div>
+        </div>
+        <div class="cl-example">
+          <span class="cl-label">Card em loading</span>
+          <div class="preview stacked">
+            <div class="card loading" style="margin:0">
+              <h3>Relatório mensal</h3>
+              <p>Este bloco fica levemente esmaecido enquanto o spinner central carrega.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SKELETONS ==================== -->
+      <section id="skeleton" class="cl-sec">
+        <h2><i data-lucide="rectangle-horizontal"></i> Skeletons</h2>
+        <p class="lead">Placeholder animado enquanto dados chegam. Preserva o layout final.</p>
+        <div class="cl-example">
+          <div class="preview stacked">
+            <div class="skeleton" style="width:60%; margin-bottom:8px"></div>
+            <div class="skeleton" style="width:90%; margin-bottom:8px"></div>
+            <div class="skeleton" style="width:45%; margin-bottom:16px"></div>
+            <div class="skeleton" style="width:75%; margin-bottom:8px"></div>
+            <div class="skeleton" style="width:85%"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== EMPTY STATES ==================== -->
+      <section id="empty" class="cl-sec">
+        <h2><i data-lucide="inbox"></i> Empty States</h2>
+        <p class="lead">Duas formas: <code>.empty</code> (simples, uma linha) e <code>.tl-empty</code> (rico, com CTA).</p>
+        <div class="cl-example">
+          <span class="cl-label">Simples</span>
+          <div class="preview stacked">
+            <div class="card" style="margin:0">
+              <div class="empty">Nenhum aluno cadastrado ainda.</div>
+            </div>
+          </div>
+        </div>
+        <div class="cl-example">
+          <span class="cl-label">Rico (com CTA)</span>
+          <div class="preview stacked">
+            <div class="card" style="margin:0">
+              <div class="tl-empty">
+                <i data-lucide="users" class="tl-icon-2xl" style="color:var(--tl-text-tertiary)"></i>
+                <h4 style="margin-top:var(--tl-space-3)">Nenhum aluno cadastrado</h4>
+                <p>Adicione o primeiro aluno para que o Annual Plan e o Lesson Calendar comecem a mostrar dados.</p>
+                <button class="btn primary"><i data-lucide="plus" class="tl-icon-sm"></i> Adicionar aluno</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Divider label -->
+      <div class="tl-divider-label">fim da biblioteca</div>
+
+      <!-- Guia final -->
+      <div class="alert success" style="margin-bottom:var(--tl-space-8)">
+        <i data-lucide="check-circle" class="tl-icon"></i>
+        <div>
+          <b>Design System oficialmente finalizado.</b> Toda tela nova — Studio ou Practice — nasce a partir daqui.
+          Regra de ouro: <b>se o componente não está aqui, ele ainda não existe.</b> Adicione primeiro à biblioteca,
+          depois use na aplicação.
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Demo Modal -->
+<div class="ov" id="cl-modal">
+  <div class="modal">
+    <h3>Editar aluno</h3>
+    <p class="sub">Atualize os dados e clique em salvar.</p>
+    <label class="lbl">Nome</label>
+    <input class="inp" value="Isabela Ferreira">
+    <label class="lbl">Nível</label>
+    <select class="inp"><option>A1</option><option selected>A2</option><option>B1</option></select>
+    <div class="actions">
+      <button class="btn gray" onclick="document.getElementById('cl-modal').classList.remove('show')">Cancelar</button>
+      <button class="btn primary" onclick="document.getElementById('cl-modal').classList.remove('show')"><i data-lucide="check" class="tl-icon-sm"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

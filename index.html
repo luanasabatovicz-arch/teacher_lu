@@ -4,368 +4,190 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Lu Platform</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
- <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Inter',sans-serif;
-}
-
-:root{
-    --navy:#121F39;
-    --blue:#166581;
-    --purple:#4E3768;
-    --deep:#321C3A;
-    --rose:#D86375;
-    --pink:#F31CB6;
-
-    --text:#24324A;
-    --text-light:#64748B;
-    --border:#E6E8F2;
-    --background:#F8FAFC;
-    --white:#FFFFFF;
-}
-
-body{
-    background:var(--background);
-    color:var(--text);
-    min-height:100vh;
-}
-
-h1,h2{
-    font-family:'Poppins',sans-serif;
-}
-
-.home-banner{
-    display:block;
-    width:100%;
-    height:auto;
-    border-radius:20px;
-    box-shadow:0 10px 28px rgba(18,31,57,.12);
-    margin-bottom:44px;
-}
-.wrap{
-    max-width:1200px;
-    margin:auto;
-    padding:50px 24px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:26px;
-}
-
-@media(max-width:900px){
-    .grid{
-        grid-template-columns:repeat(2,1fr);
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
+  <style>
+    /* Home-only tweaks: card apagado como link inteiro */
+    .home a.card { padding: 0; overflow: hidden; }
+    .home a.card .bar { height: 4px; margin: 0; border-radius: 0; }
+    .home a.card .inner { padding: var(--tl-space-5); display: flex; flex-direction: column; flex: 1; }
+    .home a.card .inner h2 {
+      margin: var(--tl-space-2) 0 var(--tl-space-3);
+      font-size: var(--tl-fs-h3);
     }
-}
-
-@media(max-width:650px){
-
-    .grid{
-        grid-template-columns:1fr;
+    .home a.card .inner p {
+      color: var(--tl-text-secondary);
+      line-height: var(--tl-lh-relaxed);
+      font-size: var(--tl-fs-small);
+      flex: 1;
+      margin-bottom: var(--tl-space-5);
     }
-
-    .home-banner{
-        border-radius:14px;
-        margin-bottom:32px;
-    }
-}
-
-.card{
-    background:white;
-    border:1px solid var(--border);
-    border-radius:20px;
-    overflow:hidden;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    transition:.25s;
-    box-shadow:0 10px 28px rgba(18,31,57,.08);
-}
-
-.card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 18px 38px rgba(18,31,57,.15);
-}
-
-.bar{
-    height:8px;
-    background:linear-gradient(90deg,var(--purple),var(--pink));
-}
-
-.b1{background:linear-gradient(90deg,var(--purple),var(--pink));}
-.b2{background:linear-gradient(90deg,var(--blue),var(--purple));}
-.b3{background:linear-gradient(90deg,var(--blue),var(--rose));}
-.b4{background:linear-gradient(90deg,var(--navy),var(--blue));}
-.b5{background:linear-gradient(90deg,var(--purple),var(--rose));}
-.b6{background:linear-gradient(90deg,var(--rose),var(--pink));}
-.b7{background:linear-gradient(90deg,var(--blue),var(--pink));}
-.b8{background:linear-gradient(90deg,var(--deep),var(--purple));}
-
-.inner{
-    padding:28px;
-    display:flex;
-    flex-direction:column;
-    flex:1;
-}
-
-.eyebrow{
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:.18em;
-    text-transform:uppercase;
-    color:var(--blue);
-}
-
-.e1,.e2,.e3,.e4,.e5,.e6,.e7,.e8{
-    color:var(--blue);
-}
-
-.card h2{
-    margin:10px 0 12px;
-    font-size:24px;
-    color:var(--navy);
-}
-
-.card p{
-    color:var(--text-light);
-    line-height:1.6;
-    font-size:14px;
-    flex:1;
-    margin-bottom:22px;
-}
-
-.cta{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:max-content;
-    padding:12px 20px;
-    border-radius:10px;
-    background:linear-gradient(135deg,var(--navy),var(--blue));
-    color:white;
-    font-weight:600;
-    font-size:14px;
-    transition:.2s;
-}
-
-.cta:hover{
-    filter:brightness(1.08);
-}
-
-.c1,.c2,.c3,.c4,.c5,.c6,.c7,.c8{
-    background:linear-gradient(135deg,var(--navy),var(--blue));
-    color:white;
-}
-
-footer{
-    margin-top:40px;
-    text-align:center;
-    padding:60px 25px;
-    color:var(--text-light);
-}
-
-footer h2{
-    color:var(--navy);
-    margin-bottom:8px;
-    font-size:28px;
-}
-
-footer .verse{
-    max-width:650px;
-    margin:30px auto 12px;
-    font-style:italic;
-    font-size:16px;
-    line-height:1.8;
-    color:var(--purple);
-}
-
-footer .reference{
-    font-weight:700;
-    color:var(--navy);
-    margin-bottom:28px;
-}
-
-footer .copyright{
-    font-size:13px;
-    color:#94A3B8;
-}
-</style>
+    .home .grid { grid-template-columns: repeat(3, 1fr); }
+    @media(max-width:900px){ .home .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width:650px){ .home .grid { grid-template-columns: 1fr; } }
+    .home .full { grid-column: 1 / -1; }
+  </style>
 </head>
-<body>
+<body class="home">
   <div class="wrap">
 
     <img class="home-banner" src="assets/banner-home.png" alt="Teacher Lu Platform">
 
     <div class="grid">
 
-      <a class="card" href="builder.html" style="grid-column:1/-1">
-        <div class="bar" style="background:linear-gradient(90deg,#121F39,#7c3aed,#db2777)"></div>
+      <a class="card card-hover full" href="builder.html">
+        <div class="bar primary"></div>
         <div class="inner">
-          <span class="eyebrow" style="color:#7c3aed">Start here</span>
+          <span class="tl-eyebrow">Start here</span>
           <h2>Build Today's Lesson</h2>
           <p>Pick a student and a duration, and the platform assembles the whole lesson — warm-up, grammar, structures, vocabulary, speaking, exercises and homework — from what this student has already studied, when the last lesson was and where they are on the yearly route. Every choice comes with the reason behind it.</p>
-          <span class="cta" style="background:linear-gradient(135deg,#121F39,#7c3aed)">Build the lesson →</span>
+          <span class="cta">Build the lesson →</span>
         </div>
       </a>
 
-      <a class="card" href="placement-test.html">
-        <div class="bar b6"></div>
+      <a class="card card-hover" href="placement-test.html">
+        <div class="bar accent"></div>
         <div class="inner">
-          <span class="eyebrow e6">Placement</span>
+          <span class="tl-eyebrow" style="color:var(--tl-accent)">Placement</span>
           <h2>Placement Test</h2>
           <p>A 30-question assessment that estimates the student's level (A1 to B2) with a result, interpretation and PDF export.</p>
-          <span class="cta c6">Take test →</span>
+          <span class="cta">Take test →</span>
         </div>
       </a>
 
-      <a class="card" href="lessons.html">
-        <div class="bar b1"></div>
+      <a class="card card-hover" href="lessons.html">
+        <div class="bar secondary"></div>
         <div class="inner">
-          <span class="eyebrow e1">Conversation</span>
+          <span class="tl-eyebrow">Conversation</span>
           <h2>Conversation Lessons</h2>
           <p>Ready-made themed lessons for adult beginners: conversation questions, vocabulary with phonetics and audio, and guided dialogues.</p>
-          <span class="cta c1">Open lessons →</span>
+          <span class="cta">Open lessons →</span>
         </div>
       </a>
 
-      <a class="card" href="speaking-games.html">
-        <div class="bar" style="background:linear-gradient(90deg,#7c3aed,#db2777)"></div>
+      <a class="card card-hover" href="speaking-games.html">
+        <div class="bar accent"></div>
         <div class="inner">
-          <span class="eyebrow" style="color:#7c3aed">Speaking</span>
-          <h2>🎮 Speaking Games</h2>
+          <span class="tl-eyebrow" style="color:var(--tl-accent)">Speaking</span>
+          <h2>Speaking Games</h2>
           <p>A library of quick, visual speaking games for A1–A2: complete the sentence, unscramble, quick questions, guess the word, categories, this or that, dice, spin and more. Click a game and the student starts talking right away.</p>
-          <span class="cta" style="background:linear-gradient(135deg,#7c3aed,#db2777)">Play →</span>
+          <span class="cta">Play →</span>
         </div>
       </a>
 
-      <a class="card" href="grammar.html">
-        <div class="bar b2"></div>
+      <a class="card card-hover" href="grammar.html">
+        <div class="bar primary"></div>
         <div class="inner">
-          <span class="eyebrow e2">Grammar</span>
+          <span class="tl-eyebrow">Grammar</span>
           <h2>Grammar Lessons</h2>
           <p>A bank of grammar points to open, explain and practice: structure, examples with audio, common mistakes and practice with answer keys.</p>
-          <span class="cta c2">Open grammar →</span>
+          <span class="cta">Open grammar →</span>
         </div>
       </a>
 
-      <a class="card" href="structures.html">
-        <div class="bar" style="background:linear-gradient(90deg,#0284c7,#4E3768)"></div>
+      <a class="card card-hover" href="structures.html">
+        <div class="bar secondary"></div>
         <div class="inner">
-          <span class="eyebrow" style="color:#0284c7">Structures</span>
+          <span class="tl-eyebrow">Structures</span>
           <h2>Language Structures</h2>
           <p>Twelve categories of structure — prepositions, articles, word order, questions, negation — each with explanation, examples, common mistakes, exercises and speaking practice.</p>
-          <span class="cta" style="background:linear-gradient(135deg,#0284c7,#4E3768)">Open structures →</span>
+          <span class="cta">Open structures →</span>
         </div>
       </a>
 
-      <a class="card" href="listening.html">
-        <div class="bar" style="background:linear-gradient(90deg,#166581,#0d9488)"></div>
+      <a class="card card-hover" href="listening.html">
+        <div class="bar secondary"></div>
         <div class="inner">
-          <span class="eyebrow" style="color:#0d9488">Listening</span>
-          <h2>🎧 Listening Lab</h2>
+          <span class="tl-eyebrow">Listening</span>
+          <h2>Listening Lab</h2>
           <p>Quick listening comprehension: pick any image of the theme, play a 30–45s audio, and work vocabulary, comprehension, complete, true/false and speaking follow-up on one screen.</p>
-          <span class="cta" style="background:linear-gradient(135deg,#166581,#0d9488)">Open listening →</span>
+          <span class="cta">Open listening →</span>
         </div>
       </a>
 
-      <a class="card" href="exercise-generator.html">
-        <div class="bar b3"></div>
+      <a class="card card-hover" href="exercise-generator.html">
+        <div class="bar primary"></div>
         <div class="inner">
-          <span class="eyebrow e3">Exercises</span>
+          <span class="tl-eyebrow">Exercises</span>
           <h2>Exercise Bank</h2>
           <p>Several topics with plenty of practice: multiple choice, fill in the blank, true or false and matching, with instant feedback.</p>
-          <span class="cta c3">Practice →</span>
+          <span class="cta">Practice →</span>
         </div>
       </a>
 
-      <a class="card" href="games.html">
-        <div class="bar b4"></div>
+      <a class="card card-hover" href="games.html">
+        <div class="bar accent"></div>
         <div class="inner">
-          <span class="eyebrow e4">Games</span>
+          <span class="tl-eyebrow" style="color:var(--tl-accent)">Games</span>
           <h2>Class Games</h2>
           <p>Eight games to liven up the lesson: Hangman, Categories, 20 Questions, Odd One Out, Category Sort, Spelling Bee, Guess the Emoji and Word Chains.</p>
-          <span class="cta c4">Play →</span>
+          <span class="cta">Play →</span>
         </div>
       </a>
 
-      <a class="card" href="hendrik.html">
-        <div class="bar b8"></div>
+      <a class="card card-hover" href="hendrik.html">
+        <div class="bar primary"></div>
         <div class="inner">
-          <span class="eyebrow e8">Dutch · Kids</span>
+          <span class="tl-eyebrow">Dutch · Kids</span>
           <h2>Hendrik — Dutch</h2>
           <p>A playful Dutch tab built for Hendrik (7): picture words with Dutch audio, tiny sentences, five games per lesson, an exercise book, stars and points.</p>
-          <span class="cta c8">Laten we spelen →</span>
+          <span class="cta">Laten we spelen →</span>
         </div>
       </a>
 
-      <a class="card" href="students.html">
-        <div class="bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899)"></div>
+      <a class="card card-hover" href="students.html">
+        <div class="bar secondary"></div>
         <div class="inner">
-          <span class="eyebrow" style="color:#8b5cf6">Students</span>
+          <span class="tl-eyebrow">Students</span>
           <h2>Students</h2>
           <p>Add, edit and remove your students — emoji, name and level. The Annual Plan and the Lesson Calendar read from this list automatically.</p>
-          <span class="cta" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">Manage students →</span>
+          <span class="cta">Manage students →</span>
         </div>
       </a>
 
-      <a class="card" href="schedule.html">
-        <div class="bar b7"></div>
+      <a class="card card-hover" href="schedule.html">
+        <div class="bar secondary"></div>
         <div class="inner">
-          <span class="eyebrow e7">Calendar</span>
+          <span class="tl-eyebrow">Calendar</span>
           <h2>Lesson Calendar</h2>
           <p>Month-by-month calendar for each student: mark lessons as done, scheduled or cancelled, add notes and export the history.</p>
-          <span class="cta c7">Open calendar →</span>
+          <span class="cta">Open calendar →</span>
         </div>
       </a>
 
-      <a class="card" href="finance.html">
-        <div class="bar" style="background:linear-gradient(90deg,#0d9488,#166581)"></div>
+      <a class="card card-hover" href="finance.html">
+        <div class="bar primary"></div>
         <div class="inner">
-          <span class="eyebrow" style="color:#0d9488">Finance</span>
+          <span class="tl-eyebrow">Finance</span>
           <h2>Finance</h2>
           <p>Money side of the lessons: monthly fee per student, who has paid, income and expenses, profit per month and export to CSV or PDF.</p>
-          <span class="cta" style="background:linear-gradient(135deg,#0d9488,#166581)">Open finance →</span>
+          <span class="cta">Open finance →</span>
         </div>
       </a>
 
-      <a class="card" href="annual-plan.html">
-        <div class="bar b5"></div>
+      <a class="card card-hover" href="annual-plan.html">
+        <div class="bar accent"></div>
         <div class="inner">
-          <span class="eyebrow e5">Planning</span>
+          <span class="tl-eyebrow" style="color:var(--tl-accent)">Planning</span>
           <h2>Curriculum Map</h2>
           <p>Annual plan for every registered student, with progression from beginner to pre-intermediate, progress tracking and individual export.</p>
-          <span class="cta c5">See plan →</span>
+          <span class="cta">See plan →</span>
         </div>
       </a>
 
     </div>
   </div>
 
-<footer>
-
+  <footer class="tl-footer">
     <h2>Teacher Lu Platform</h2>
-
     <p>My Complete Teaching Workspace</p>
-
     <p class="verse">
         "Commit to the Lord whatever you do,
         and He will establish your plans."
     </p>
-
-    <p class="reference">
-        — Proverbs 16:3
-    </p>
-
-    <p class="copyright">
-        © 2026 Teacher Lu Platform. All rights reserved.
-    </p>
-
-</footer>
+    <p class="reference">— Proverbs 16:3</p>
+    <p class="copyright">© 2026 Teacher Lu Platform. All rights reserved.</p>
+  </footer>
 </body>
 </html>

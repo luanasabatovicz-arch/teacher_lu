@@ -1,0 +1,159 @@
+/* ==========================================================================
+   Teacher Lu Design System — Layout
+   Topbar unificada, container, grid, responsividade.
+   ========================================================================== */
+
+/* ---------- Topbar oficial (única em todo o ecossistema) ---------- */
+/* Alias .top ↔ .topbar para páginas legadas (speaking-games, verificacao)
+   Deste modo o mesmo estilo se aplica sem mudar HTML. */
+.top,
+.topbar {
+  background: linear-gradient(120deg, var(--tl-primary) 0%, #0F5561 55%, var(--tl-secondary) 100%);
+  color: var(--tl-text-inverse);
+  padding: var(--tl-space-5) var(--tl-space-5);
+  position: sticky;
+  top: 0;
+  z-index: var(--tl-z-sticky);
+  box-shadow: var(--tl-shadow-md);
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.top h1,
+.topbar h1 {
+  color: var(--tl-text-inverse);
+  font-size: var(--tl-fs-h2);
+  font-weight: var(--tl-fw-bold);
+  line-height: var(--tl-lh-tight);
+}
+
+.top p,
+.topbar p {
+  color: rgba(255, 255, 255, .82);
+  font-size: var(--tl-fs-small);
+  line-height: var(--tl-lh-snug);
+  margin-top: 2px;
+}
+
+.top .in,
+.topwrap {
+  max-width: var(--tl-container);
+  margin: 0 auto;
+}
+
+/* Botão de voltar/menu dentro da topbar */
+.menu-btn {
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .35);
+  color: var(--tl-text-inverse);
+  font-family: var(--tl-font-sans);
+  font-weight: var(--tl-fw-semibold);
+  padding: var(--tl-space-2) var(--tl-space-4);
+  border-radius: var(--tl-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: var(--tl-fs-button);
+  transition: all var(--tl-dur-fast) var(--tl-ease);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tl-space-2);
+}
+.menu-btn:hover {
+  background: rgba(255, 255, 255, .24);
+  color: var(--tl-text-inverse);
+  border-color: rgba(255, 255, 255, .55);
+}
+
+/* ---------- Container principal ---------- */
+.wrap {
+  max-width: var(--tl-container);
+  margin: 0 auto;
+  padding: var(--tl-space-5) var(--tl-space-5) var(--tl-space-8);
+}
+
+.wrap-md { max-width: var(--tl-container-md); }
+.wrap-sm { max-width: var(--tl-container-sm); }
+
+/* ---------- Row / Flex helpers ---------- */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--tl-space-3);
+  flex-wrap: wrap;
+}
+
+.row-start { justify-content: flex-start; }
+.row-center { justify-content: center; }
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tl-space-4);
+}
+
+.stack-tight { gap: var(--tl-space-2); }
+.stack-loose { gap: var(--tl-space-5); }
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tl-space-2);
+  align-items: center;
+}
+
+/* ---------- Grid oficial ---------- */
+.grid {
+  display: grid;
+  gap: var(--tl-space-5);
+}
+
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 900px) {
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 650px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ---------- Divider ---------- */
+.divider {
+  height: 1px;
+  background: var(--tl-border);
+  margin: var(--tl-space-4) 0;
+  border: 0;
+}
+
+/* ---------- Footer ---------- */
+.tl-footer {
+  margin-top: var(--tl-space-7);
+  text-align: center;
+  padding: var(--tl-space-8) var(--tl-space-5);
+  color: var(--tl-text-secondary);
+  border-top: 1px solid var(--tl-border);
+  background: var(--tl-surface);
+}
+.tl-footer h2 {
+  color: var(--tl-primary);
+  margin-bottom: var(--tl-space-2);
+  font-size: var(--tl-fs-h2);
+}
+.tl-footer .verse {
+  max-width: 640px;
+  margin: var(--tl-space-5) auto var(--tl-space-3);
+  font-style: italic;
+  font-size: var(--tl-fs-body);
+  line-height: var(--tl-lh-relaxed);
+  color: var(--tl-primary);
+}
+.tl-footer .reference {
+  font-weight: var(--tl-fw-bold);
+  color: var(--tl-primary);
+  margin-bottom: var(--tl-space-5);
+}
+.tl-footer .copyright {
+  font-size: var(--tl-fs-caption);
+  color: var(--tl-text-tertiary);
+}

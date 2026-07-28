@@ -4,77 +4,261 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sabatovicz — Speaking Games</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
-h1,h2,h3,.big,.gname,.prompt{font-family:'Poppins',sans-serif}
-body{background:#faf9ff;color:#1e293b;min-height:100vh}
-/* ---------- topbar ---------- */
-.top{background:linear-gradient(120deg,#7c3aed,#db2777 55%,#f59e0b);color:#fff;padding:14px 18px;position:sticky;top:0;z-index:40;box-shadow:0 6px 22px rgba(124,58,237,.28)}
-.top .in{max-width:1000px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.top h1{font-size:22px;font-weight:900;display:flex;align-items:center;gap:8px}
-.menu-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.7);color:#fff;font-weight:700;padding:8px 14px;border-radius:10px;cursor:pointer;font-size:13px;text-decoration:none}
-.menu-btn:hover{background:rgba(255,255,255,.38)}
-.score{display:flex;align-items:center;gap:8px}
-.score .pts{background:#fff;color:#7c3aed;font-family:'Poppins';font-weight:900;font-size:18px;padding:5px 14px;border-radius:20px;min-width:56px;text-align:center}
-.score .rst{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.6);color:#fff;border-radius:20px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer}
-/* ---------- filtros ---------- */
-.wrap{max-width:1000px;margin:0 auto;padding:16px}
-.filters{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-.seg{display:flex;background:#ede9fe;border-radius:12px;padding:3px}
-.seg button{border:none;background:none;color:#5b21b6;font-weight:800;padding:7px 15px;border-radius:9px;cursor:pointer;font-size:13px}
-.seg button.on{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff}
-.themes{display:flex;gap:6px;flex-wrap:wrap}
-.th{border:2px solid #ece7fb;background:#fff;border-radius:20px;padding:5px 12px;cursor:pointer;font-weight:700;font-size:13px}
-.th.on{border-color:#7c3aed;background:#f3efff;color:#5b21b6}
-/* ---------- grade de jogos ---------- */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.gcard{border:none;border-radius:20px;padding:22px 18px;cursor:pointer;color:#fff;text-align:left;box-shadow:0 6px 18px rgba(0,0,0,.12);transition:transform .12s,box-shadow .12s;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
-.gcard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.18)}
-.gcard .em{font-size:44px;line-height:1}
-.gcard .gname{font-size:20px;font-weight:800;margin-top:10px}
-.gcard .gt{font-size:13px;opacity:.92;font-weight:600;margin-top:2px}
-/* ---------- tela de atividade ---------- */
-.stageWrap{display:none;max-width:1000px;margin:0 auto;padding:16px}
-.stagebar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;gap:8px;font-family:'Poppins';font-weight:800;font-size:16px;color:#fff;padding:8px 16px;border-radius:14px}
-.stage{border-radius:26px;padding:56px 30px;text-align:center;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;box-shadow:0 10px 34px rgba(124,58,237,.14);background:#fff;border:1px solid #ece7fb}
-.prompt{font-size:clamp(30px,5.4vw,54px);font-weight:800;line-height:1.25;color:#1e293b}
-.emojibig{font-size:clamp(70px,15vw,140px);line-height:1}
-.wordbig{font-size:clamp(34px,6vw,60px);font-weight:900;font-family:'Poppins';letter-spacing:.5px}
-.hintline{font-size:16px;color:#64748b;font-weight:600}
-.chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-.scrchip{background:#f3efff;color:#5b21b6;border:2px solid #ddd6fe;border-radius:14px;padding:12px 20px;font-size:clamp(20px,3.4vw,30px);font-weight:800;font-family:'Poppins'}
-.duo{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;width:100%}
-.duo button{flex:1;min-width:200px;border:none;border-radius:22px;padding:44px 20px;font-family:'Poppins';font-weight:900;font-size:clamp(26px,4.4vw,40px);color:#fff;cursor:pointer;transition:transform .1s}
-.duo button:active{transform:scale(.97)}
-.duoA{background:linear-gradient(135deg,#7c3aed,#a855f7)}
-.duoB{background:linear-gradient(135deg,#db2777,#f472b6)}
-.duo button.dim{opacity:.45;filter:grayscale(.3)}
-.reveal{font-size:clamp(24px,4vw,38px);font-weight:800;color:#16a34a;font-family:'Poppins'}
-.tf{display:flex;gap:16px}
-.tf .t{font-size:26px;font-weight:900;font-family:'Poppins';padding:14px 30px;border-radius:16px;border:3px solid}
-.tf .tt{color:#16a34a;border-color:#86efac;background:#f0fdf4}
-.tf .tf2{color:#dc2626;border-color:#fecaca;background:#fef2f2}
-/* dado */
-.die{width:132px;height:132px;border-radius:24px;background:#fff;border:3px solid #fecdd3;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;font-family:'Poppins';color:#e11d48;padding:12px;text-align:center;box-shadow:0 8px 20px rgba(225,29,72,.18);transition:transform .5s}
-.die.rolling{animation:shake .5s}
-@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg) scale(1.05)}50%{transform:rotate(10deg)}75%{transform:rotate(-6deg)}}
-/* roda */
-.wheelbox{position:relative;width:230px;height:230px}
-.wheel{width:230px;height:230px;border-radius:50%;border:8px solid #fff;box-shadow:0 8px 24px rgba(124,58,237,.25);transition:transform 2.6s cubic-bezier(.17,.67,.2,1)}
-.wpin{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:30px;z-index:2}
-/* botões de ação */
-.actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:18px}
-.act{border:none;border-radius:16px;padding:16px 26px;font-family:'Poppins';font-weight:800;font-size:17px;cursor:pointer}
-.next{background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff}
-.done{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
-.ghost{background:#fff;border:2px solid #ddd6fe;color:#6d28d9}
-.small{background:#f1edfd;color:#5b21b6;border:1px solid #ddd6fe;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:14px}
-.pop{animation:pop .4s}
-@keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-.flash{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;font-family:'Poppins';font-weight:800;padding:10px 22px;border-radius:20px;z-index:99;box-shadow:0 8px 20px rgba(22,163,74,.35);animation:up 1s forwards}
-@keyframes up{0%{opacity:0;transform:translate(-50%,10px)}20%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-10px)}}
+  /* Speaking Games — padrão de jogos, mesma paleta do DS */
+
+  /* Topbar do módulo (usa .top em vez de .topbar) */
+  .top {
+    background: linear-gradient(120deg, var(--tl-primary), #0F5561 55%, var(--tl-secondary));
+    color: var(--tl-text-inverse);
+    padding: 14px 18px;
+    position: sticky;
+    top: 0;
+    z-index: var(--tl-z-sticky);
+    box-shadow: var(--tl-shadow-md);
+  }
+  .top .in { max-width: var(--tl-container-md); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .top h1 { font-size: 22px; font-weight: var(--tl-fw-bold); display: flex; align-items: center; gap: 8px; color: var(--tl-text-inverse); }
+
+  .score { display: flex; align-items: center; gap: 8px; }
+  .score .pts {
+    background: var(--tl-surface);
+    color: var(--tl-primary);
+    font-weight: var(--tl-fw-bold);
+    font-size: 18px;
+    padding: 5px 14px;
+    border-radius: var(--tl-radius-pill);
+    min-width: 56px;
+    text-align: center;
+  }
+  .score .rst {
+    background: rgba(255, 255, 255, .18);
+    border: 1px solid rgba(255, 255, 255, .38);
+    color: var(--tl-text-inverse);
+    border-radius: var(--tl-radius-pill);
+    padding: 5px 10px;
+    font-size: var(--tl-fs-caption);
+    font-weight: var(--tl-fw-bold);
+    cursor: pointer;
+  }
+
+  /* Filtros */
+  .wrap { max-width: var(--tl-container-md); margin: 0 auto; padding: 16px; }
+  .filters { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .seg {
+    display: flex;
+    background: var(--tl-primary-soft);
+    border-radius: var(--tl-radius-md);
+    padding: 3px;
+  }
+  .seg button {
+    border: none;
+    background: none;
+    color: var(--tl-primary);
+    font-weight: var(--tl-fw-bold);
+    padding: 7px 15px;
+    border-radius: var(--tl-radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .seg button.on { background: var(--tl-primary); color: var(--tl-text-inverse); }
+
+  .themes { display: flex; gap: 6px; flex-wrap: wrap; }
+  .th {
+    border: 1.5px solid var(--tl-border);
+    background: var(--tl-surface);
+    border-radius: var(--tl-radius-pill);
+    padding: 5px 12px;
+    cursor: pointer;
+    font-weight: var(--tl-fw-semibold);
+    font-size: 13px;
+    color: var(--tl-text);
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+  }
+  .th.on { border-color: var(--tl-primary); background: var(--tl-primary-tint); color: var(--tl-primary); }
+
+  /* Grade de jogos */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .gcard {
+    border: none;
+    border-radius: var(--tl-radius-xl);
+    padding: 22px 18px;
+    cursor: pointer;
+    color: var(--tl-text-inverse);
+    text-align: left;
+    box-shadow: var(--tl-shadow-md);
+    transition: transform var(--tl-dur-fast) var(--tl-ease), box-shadow var(--tl-dur-fast) var(--tl-ease);
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--tl-primary), var(--tl-secondary));
+  }
+  .gcard:hover { transform: translateY(-4px); box-shadow: var(--tl-shadow-xl); }
+  .gcard .em { font-size: 44px; line-height: 1; }
+  .gcard .gname { font-size: 20px; font-weight: var(--tl-fw-bold); margin-top: 10px; }
+  .gcard .gt { font-size: 13px; opacity: .92; font-weight: var(--tl-fw-semibold); margin-top: 2px; }
+
+  /* Tela de atividade */
+  .stageWrap { display: none; max-width: var(--tl-container-md); margin: 0 auto; padding: 16px; }
+  .stagebar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: var(--tl-fw-bold);
+    font-size: 16px;
+    color: var(--tl-text-inverse);
+    padding: 8px 16px;
+    border-radius: var(--tl-radius-lg);
+    background: var(--tl-primary);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .stage {
+    border-radius: var(--tl-radius-2xl);
+    padding: 56px 30px;
+    text-align: center;
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    box-shadow: var(--tl-shadow-lg);
+    background: var(--tl-surface);
+    border: 1px solid var(--tl-border);
+  }
+
+  .prompt {
+    font-size: clamp(30px, 5.4vw, 54px);
+    font-weight: var(--tl-fw-bold);
+    line-height: var(--tl-lh-tight);
+    color: var(--tl-text);
+  }
+  .emojibig { font-size: clamp(70px, 15vw, 140px); line-height: 1; }
+  .wordbig { font-size: clamp(34px, 6vw, 60px); font-weight: var(--tl-fw-bold); letter-spacing: .5px; }
+  .hintline { font-size: 16px; color: var(--tl-text-secondary); font-weight: var(--tl-fw-semibold); }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .scrchip {
+    background: var(--tl-primary-tint);
+    color: var(--tl-primary);
+    border: 1.5px solid var(--tl-primary-soft);
+    border-radius: var(--tl-radius-lg);
+    padding: 12px 20px;
+    font-size: clamp(20px, 3.4vw, 30px);
+    font-weight: var(--tl-fw-bold);
+  }
+
+  .duo { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; width: 100%; }
+  .duo button {
+    flex: 1;
+    min-width: 200px;
+    border: none;
+    border-radius: 22px;
+    padding: 44px 20px;
+    font-weight: var(--tl-fw-bold);
+    font-size: clamp(26px, 4.4vw, 40px);
+    color: var(--tl-text-inverse);
+    cursor: pointer;
+    transition: transform var(--tl-dur-fast) var(--tl-ease);
+  }
+  .duo button:active { transform: scale(.97); }
+  .duoA { background: linear-gradient(135deg, var(--tl-primary), var(--tl-secondary)); }
+  .duoB { background: linear-gradient(135deg, var(--tl-accent), var(--tl-accent-hover)); }
+  .duo button.dim { opacity: .45; filter: grayscale(.3); }
+
+  .reveal { font-size: clamp(24px, 4vw, 38px); font-weight: var(--tl-fw-bold); color: var(--tl-success-text); }
+  .tf { display: flex; gap: 16px; }
+  .tf .t {
+    font-size: 26px;
+    font-weight: var(--tl-fw-bold);
+    padding: 14px 30px;
+    border-radius: var(--tl-radius-lg);
+    border: 3px solid;
+  }
+  .tf .tt { color: var(--tl-success-text); border-color: var(--tl-success); background: var(--tl-success-soft); }
+  .tf .tf2 { color: var(--tl-danger-text); border-color: var(--tl-danger); background: var(--tl-danger-soft); }
+
+  /* Dado */
+  .die {
+    width: 132px; height: 132px;
+    border-radius: var(--tl-radius-2xl);
+    background: var(--tl-surface);
+    border: 3px solid var(--tl-accent-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    font-weight: var(--tl-fw-bold);
+    color: var(--tl-accent-hover);
+    padding: 12px;
+    text-align: center;
+    box-shadow: var(--tl-shadow-md);
+    transition: transform .5s;
+  }
+  .die.rolling { animation: shake .5s; }
+  @keyframes shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-12deg) scale(1.05); } 50% { transform: rotate(10deg); } 75% { transform: rotate(-6deg); } }
+
+  /* Roda */
+  .wheelbox { position: relative; width: 230px; height: 230px; }
+  .wheel {
+    width: 230px; height: 230px;
+    border-radius: 50%;
+    border: 8px solid var(--tl-surface);
+    box-shadow: var(--tl-shadow-lg);
+    transition: transform 2.6s cubic-bezier(.17, .67, .2, 1);
+  }
+  .wpin { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); font-size: 30px; z-index: 2; }
+
+  /* Ações */
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
+  .act {
+    border: none;
+    border-radius: var(--tl-radius-lg);
+    padding: 16px 26px;
+    font-weight: var(--tl-fw-bold);
+    font-size: 17px;
+    cursor: pointer;
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+  }
+  .next { background: var(--tl-primary); color: var(--tl-text-inverse); }
+  .done { background: var(--tl-success); color: var(--tl-text-inverse); }
+  .ghost { background: var(--tl-surface); border: 1.5px solid var(--tl-border); color: var(--tl-primary); }
+
+  .small {
+    background: var(--tl-primary-tint);
+    color: var(--tl-primary);
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius-md);
+    padding: 10px 16px;
+    font-weight: var(--tl-fw-semibold);
+    cursor: pointer;
+    font-size: var(--tl-fs-small);
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+  }
+  .small:hover { background: var(--tl-primary); color: var(--tl-text-inverse); }
+
+  .pop { animation: pop .4s; }
+  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+
+  .flash {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--tl-success);
+    color: var(--tl-text-inverse);
+    font-weight: var(--tl-fw-bold);
+    padding: 10px 22px;
+    border-radius: var(--tl-radius-pill);
+    z-index: 99;
+    box-shadow: var(--tl-shadow-lg);
+    animation: up 1s forwards;
+  }
+  @keyframes up { 0% { opacity: 0; transform: translate(-50%, 10px); } 20% { opacity: 1; transform: translate(-50%, 0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -10px); } }
 </style>
 </head>
 <body>
@@ -82,7 +266,7 @@ body{background:#faf9ff;color:#1e293b;min-height:100vh}
   <h1>🎮 Speaking Games</h1>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="score"><span style="color:#fff;font-weight:700;font-size:13px">Points</span><span class="pts" id="pts">0</span><button class="rst" onclick="resetPoints()">reset</button></div>
-    <a class="menu-btn" href="index.html">← Menu</a>
+    <a class="menu-btn" href="index.html"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a>
   </div>
 </div></div>
 
@@ -102,15 +286,15 @@ body{background:#faf9ff;color:#1e293b;min-height:100vh}
 <!-- ATIVIDADE -->
 <div class="stageWrap" id="stageWrap">
   <div class="stagebar">
-    <button class="small" onclick="goHome()">← Games</button>
+    <button class="small" onclick="goHome()"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Games</button>
     <span class="badge" id="gBadge"></span>
     <span style="width:70px"></span>
   </div>
   <div class="stage" id="stage"></div>
   <div class="actions">
-    <button class="act next" onclick="nextItem()">▶ Next</button>
-    <button class="act done" onclick="addPoint()">✓ Got it &nbsp;+1</button>
-    <button class="act ghost" onclick="randomFrom()">🎲 Surprise</button>
+    <button class="act next" onclick="nextItem()"><i data-lucide="chevron-right" class="tl-icon-sm"></i> Next</button>
+    <button class="act done" onclick="addPoint()"><i data-lucide="check" class="tl-icon-sm"></i> Got it &nbsp;+1</button>
+    <button class="act ghost" onclick="randomFrom()"><i data-lucide="dice-5" class="tl-icon-sm"></i> Surprise</button>
   </div>
 </div>
 

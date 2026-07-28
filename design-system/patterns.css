@@ -1,0 +1,304 @@
+/* ==========================================================================
+   Teacher Lu Design System — Patterns
+   Composições reutilizáveis usadas por várias telas (calendário, KPIs,
+   lista de alunos, grid de emojis, splash de home).
+   ========================================================================== */
+
+/* ============================================================
+   Home banner (imagem grande no topo do menu principal)
+   ============================================================ */
+.home-banner {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--tl-radius-xl);
+  box-shadow: var(--tl-shadow-lg);
+  margin-bottom: var(--tl-space-6);
+}
+@media (max-width: 650px) {
+  .home-banner {
+    border-radius: var(--tl-radius-lg);
+    margin-bottom: var(--tl-space-5);
+  }
+}
+
+/* ============================================================
+   LISTA DE ALUNOS (students.html)
+   ============================================================ */
+.stu-list { display: grid; gap: var(--tl-space-3); }
+.stu-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tl-space-3);
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  padding: var(--tl-space-3) var(--tl-space-4);
+  background: var(--tl-surface);
+  transition: border-color var(--tl-dur-fast) var(--tl-ease),
+              box-shadow var(--tl-dur-fast) var(--tl-ease);
+}
+.stu-row:hover {
+  border-color: var(--tl-secondary);
+  box-shadow: var(--tl-shadow-sm);
+}
+.stu-emoji {
+  font-size: 30px;
+  width: 48px; height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tl-primary-tint);
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  flex-shrink: 0;
+}
+.stu-info { flex: 1; min-width: 0; }
+.stu-name {
+  font-weight: var(--tl-fw-semibold);
+  font-size: var(--tl-fs-h4);
+  color: var(--tl-text);
+}
+.stu-meta {
+  font-size: var(--tl-fs-caption);
+  color: var(--tl-text-secondary);
+  margin-top: 2px;
+  display: flex;
+  gap: var(--tl-space-2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Grid de seletor de alunos (schedule/calendar) */
+.stu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--tl-space-2);
+}
+@media (max-width: 700px) { .stu-grid { grid-template-columns: 1fr 1fr; } }
+.stu {
+  padding: var(--tl-space-3);
+  border-radius: var(--tl-radius-md);
+  font-weight: var(--tl-fw-semibold);
+  font-size: var(--tl-fs-small);
+  cursor: pointer;
+  background: var(--tl-surface-alt);
+  color: var(--tl-text);
+  border: 1px solid var(--tl-border);
+  transition: all var(--tl-dur-fast) var(--tl-ease);
+  text-align: left;
+}
+.stu:hover { border-color: var(--tl-secondary); }
+.stu.active {
+  background: var(--tl-primary);
+  color: var(--tl-text-inverse);
+  border-color: var(--tl-primary);
+}
+
+/* Grid de emojis (modal de add student) */
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: var(--tl-space-1);
+  margin-top: var(--tl-space-2);
+}
+.emo {
+  font-size: 22px;
+  padding: 7px 0;
+  text-align: center;
+  border: 1.5px solid transparent;
+  border-radius: var(--tl-radius-sm);
+  cursor: pointer;
+  background: var(--tl-surface-alt);
+  transition: all var(--tl-dur-fast) var(--tl-ease);
+}
+.emo:hover { border-color: var(--tl-secondary); }
+.emo.sel { border-color: var(--tl-primary); background: var(--tl-primary-tint); }
+
+/* ============================================================
+   CALENDÁRIO (schedule.html)
+   ============================================================ */
+.navrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--tl-space-3);
+  margin-bottom: var(--tl-space-4);
+}
+.nav-btn {
+  background: var(--tl-primary-tint);
+  color: var(--tl-primary);
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  width: 40px; height: 40px;
+  font-size: 20px;
+  font-weight: var(--tl-fw-bold);
+  cursor: pointer;
+  transition: all var(--tl-dur-fast) var(--tl-ease);
+  line-height: 1;
+}
+.nav-btn:hover {
+  background: var(--tl-primary);
+  color: var(--tl-text-inverse);
+  border-color: var(--tl-primary);
+}
+.month-label {
+  font-size: var(--tl-fs-h3);
+  font-weight: var(--tl-fw-bold);
+  color: var(--tl-primary);
+  letter-spacing: var(--tl-tracking-tight);
+}
+
+.dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--tl-space-1);
+  margin-bottom: var(--tl-space-1);
+}
+.dow div {
+  text-align: center;
+  font-size: 11px;
+  font-weight: var(--tl-fw-bold);
+  letter-spacing: var(--tl-tracking-wider);
+  text-transform: uppercase;
+  color: var(--tl-text-tertiary);
+  padding: 4px 0;
+}
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--tl-space-1);
+}
+.day {
+  aspect-ratio: 1;
+  border-radius: var(--tl-radius-sm);
+  border: 1px solid var(--tl-border);
+  background: var(--tl-surface);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--tl-dur-fast) var(--tl-ease);
+  padding: 2px;
+}
+.day:hover {
+  border-color: var(--tl-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--tl-shadow-sm);
+}
+.day.blank { background: transparent; border: none; cursor: default; }
+.day.blank:hover { transform: none; box-shadow: none; }
+.day .n {
+  font-weight: var(--tl-fw-semibold);
+  font-size: var(--tl-fs-small);
+  color: var(--tl-text);
+}
+.day.today {
+  border-color: var(--tl-warning);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, .22);
+}
+.day.done {
+  background: var(--tl-success-soft);
+  border-color: var(--tl-success);
+}
+.day.done .n { color: var(--tl-success-text); }
+.day.cancelled {
+  background: var(--tl-danger-soft);
+  border-color: var(--tl-danger);
+}
+.day.cancelled .n { color: var(--tl-danger-text); }
+.day.scheduled {
+  background: var(--tl-info-soft);
+  border-color: var(--tl-info);
+}
+.day.scheduled .n { color: var(--tl-info-text); }
+.mark { font-size: 12px; font-weight: var(--tl-fw-bold); line-height: 1; }
+.notedot {
+  position: absolute;
+  bottom: 4px;
+  width: 5px; height: 5px;
+  border-radius: var(--tl-radius-pill);
+  background: var(--tl-primary);
+}
+.legend {
+  display: flex;
+  gap: var(--tl-space-4);
+  flex-wrap: wrap;
+  margin-top: var(--tl-space-4);
+  font-size: var(--tl-fs-small);
+  color: var(--tl-text-secondary);
+}
+.lg { display: flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid; }
+
+/* ============================================================
+   STATS grid (schedule/finance)
+   ============================================================ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--tl-space-3);
+}
+@media (max-width: 700px) { .stats { grid-template-columns: 1fr 1fr; } }
+
+/* ============================================================
+   KPI (finance)
+   ============================================================ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--tl-space-4);
+}
+.kpi {
+  background: var(--tl-surface);
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  overflow: hidden;
+  box-shadow: var(--tl-shadow-xs);
+  display: flex;
+  flex-direction: column;
+}
+.kpi .bar {
+  height: 3px;
+  background: var(--tl-primary);
+  margin: 0;
+  border-radius: 0;
+}
+.kpi.pos .bar { background: var(--tl-secondary); }
+.kpi.neg .bar { background: var(--tl-accent); }
+.kpi.warn .bar { background: var(--tl-warning); }
+.kpi .kbody { padding: var(--tl-space-4); }
+.kpi .klabel {
+  font-size: 11px;
+  font-weight: var(--tl-fw-bold);
+  letter-spacing: var(--tl-tracking-wider);
+  text-transform: uppercase;
+  color: var(--tl-text-tertiary);
+  margin-bottom: var(--tl-space-2);
+}
+.kpi .kvalue {
+  font-size: var(--tl-fs-h2);
+  font-weight: var(--tl-fw-bold);
+  color: var(--tl-text);
+  line-height: var(--tl-lh-tight);
+}
+.kpi.pos .kvalue { color: var(--tl-success-text); }
+.kpi.neg .kvalue { color: var(--tl-danger-text); }
+.kpi .khint {
+  font-size: var(--tl-fs-caption);
+  color: var(--tl-text-secondary);
+  margin-top: 4px;
+}
+
+/* ============================================================
+   Overlay de opções em dois botões (schedule modal)
+   ============================================================ */
+.opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--tl-space-2);
+  margin-bottom: var(--tl-space-4);
+}
+
+.hide { display: none; }

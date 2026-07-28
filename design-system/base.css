@@ -1,0 +1,124 @@
+/* ==========================================================================
+   Teacher Lu Design System — Base
+   Reset, tipografia global, utilitários genéricos.
+   ========================================================================== */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--tl-font-sans);
+  font-size: var(--tl-fs-body);
+  font-weight: var(--tl-fw-regular);
+  line-height: var(--tl-lh-normal);
+  color: var(--tl-text);
+  background: var(--tl-bg);
+  min-height: 100vh;
+}
+
+/* ---------- Tipografia ---------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--tl-font-sans);
+  color: var(--tl-text);
+  line-height: var(--tl-lh-tight);
+  letter-spacing: var(--tl-tracking-tight);
+  font-weight: var(--tl-fw-bold);
+}
+
+h1 { font-size: var(--tl-fs-h1); }
+h2 { font-size: var(--tl-fs-h2); }
+h3 { font-size: var(--tl-fs-h3); }
+h4 { font-size: var(--tl-fs-h4); font-weight: var(--tl-fw-semibold); }
+
+.tl-display {
+  font-size: var(--tl-fs-display);
+  font-weight: var(--tl-fw-bold);
+  line-height: var(--tl-lh-tight);
+  letter-spacing: var(--tl-tracking-tight);
+}
+
+.tl-caption {
+  font-size: var(--tl-fs-caption);
+  color: var(--tl-text-secondary);
+  line-height: var(--tl-lh-snug);
+}
+
+.tl-eyebrow {
+  font-size: 11px;
+  font-weight: var(--tl-fw-bold);
+  letter-spacing: var(--tl-tracking-wider);
+  text-transform: uppercase;
+  color: var(--tl-secondary);
+}
+
+.tl-label {
+  font-size: var(--tl-fs-label);
+  font-weight: var(--tl-fw-semibold);
+  color: var(--tl-text-secondary);
+  display: block;
+  margin-bottom: var(--tl-space-2);
+}
+
+p {
+  line-height: var(--tl-lh-relaxed);
+  color: var(--tl-text);
+}
+
+.tl-muted { color: var(--tl-text-secondary); }
+.tl-subtle { color: var(--tl-text-tertiary); }
+
+a {
+  color: var(--tl-primary);
+  text-decoration: none;
+  transition: color var(--tl-dur-fast) var(--tl-ease);
+}
+a:hover { color: var(--tl-primary-hover); }
+
+/* Foco visível para acessibilidade */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--tl-shadow-focus);
+  border-radius: var(--tl-radius-sm);
+}
+
+/* ---------- Utilitários ---------- */
+.tl-hide { display: none !important; }
+.tl-sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* Scrollbar discreta */
+* { scrollbar-width: thin; scrollbar-color: var(--tl-border-strong) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--tl-border-strong);
+  border-radius: var(--tl-radius-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--tl-text-tertiary); background-clip: padding-box; }
+
+/* Seleção de texto */
+::selection {
+  background: var(--tl-secondary-soft);
+  color: var(--tl-primary);
+}
+
+/* Print básico */
+@media print {
+  body { background: #fff; }
+  .no-print { display: none !important; }
+}

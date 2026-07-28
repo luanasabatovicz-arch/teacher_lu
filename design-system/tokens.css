@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Teacher Lu Design System — Tokens
+   Fonte única de verdade para cores, tipografia, espaçamento, raios, sombras
+   e animações. Nenhum componente deve usar valores literais fora daqui.
+   Reutilizado pela Teacher Lu Studio e pela futura Teacher Lu Practice.
+   ========================================================================== */
+
+:root {
+  /* ---------- Cores — Marca ---------- */
+  --tl-primary:            #0B3B46;   /* Deep Teal    */
+  --tl-primary-hover:      #0E4B58;
+  --tl-primary-pressed:    #082D36;
+  --tl-primary-soft:       #E6EEF0;
+  --tl-primary-tint:       #F2F6F7;
+
+  --tl-secondary:          #16B1A9;   /* Turquoise    */
+  --tl-secondary-hover:    #12A099;
+  --tl-secondary-soft:     #E3F7F5;
+  --tl-secondary-tint:     #F1FBFA;
+
+  --tl-accent:             #FF6B6B;   /* Coral        */
+  --tl-accent-hover:       #F45A5A;
+  --tl-accent-soft:        #FFECEC;
+
+  /* ---------- Cores — Superfícies ---------- */
+  --tl-bg:                 #F8F9FA;   /* Background   */
+  --tl-surface:            #FFFFFF;   /* Surface      */
+  --tl-surface-alt:        #F2F6F7;   /* Surface alt  */
+  --tl-overlay:            rgba(11, 59, 70, .55);
+
+  /* ---------- Cores — Texto ---------- */
+  --tl-text:               #1F2937;   /* Primary text */
+  --tl-text-secondary:     #6B7280;
+  --tl-text-tertiary:      #9CA3AF;
+  --tl-text-inverse:       #FFFFFF;
+  --tl-text-on-primary:    #FFFFFF;
+
+  /* ---------- Cores — Bordas ---------- */
+  --tl-border:             #E5E7EB;
+  --tl-border-strong:      #D1D5DB;
+  --tl-border-subtle:      #F1F3F5;
+  --tl-border-focus:       #16B1A9;
+
+  /* ---------- Cores — Feedback ---------- */
+  --tl-success:            #22C55E;
+  --tl-success-soft:       #DCFCE7;
+  --tl-success-text:       #166534;
+
+  --tl-warning:            #F59E0B;
+  --tl-warning-soft:       #FEF3C7;
+  --tl-warning-text:       #92400E;
+
+  --tl-danger:             #EF4444;
+  --tl-danger-hover:       #DC2626;
+  --tl-danger-soft:        #FEE2E2;
+  --tl-danger-text:        #991B1B;
+
+  --tl-info:               #0EA5E9;
+  --tl-info-soft:          #E0F2FE;
+  --tl-info-text:          #075985;
+
+  /* ---------- Tipografia ---------- */
+  --tl-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --tl-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Escala tipográfica */
+  --tl-fs-display: 40px;
+  --tl-fs-h1:      32px;
+  --tl-fs-h2:      24px;
+  --tl-fs-h3:      20px;
+  --tl-fs-h4:      16px;
+  --tl-fs-body:    15px;
+  --tl-fs-small:   14px;
+  --tl-fs-caption: 12px;
+  --tl-fs-button:  14px;
+  --tl-fs-label:   13px;
+
+  --tl-lh-tight:   1.2;
+  --tl-lh-snug:    1.35;
+  --tl-lh-normal:  1.5;
+  --tl-lh-relaxed: 1.65;
+
+  --tl-fw-regular: 400;
+  --tl-fw-medium:  500;
+  --tl-fw-semibold:600;
+  --tl-fw-bold:    700;
+
+  --tl-tracking-tight:  -0.01em;
+  --tl-tracking-normal: 0;
+  --tl-tracking-wide:   0.04em;
+  --tl-tracking-wider:  0.08em;
+
+  /* ---------- Espaçamento (escala oficial) ---------- */
+  --tl-space-0:   0;
+  --tl-space-1:   4px;
+  --tl-space-2:   8px;
+  --tl-space-3:   12px;
+  --tl-space-4:   16px;
+  --tl-space-5:   24px;
+  --tl-space-6:   32px;
+  --tl-space-7:   48px;
+  --tl-space-8:   64px;
+  --tl-space-9:   96px;
+
+  /* ---------- Raio ---------- */
+  --tl-radius-xs:  6px;
+  --tl-radius-sm:  8px;
+  --tl-radius-md:  10px;
+  --tl-radius-lg:  14px;
+  --tl-radius-xl:  18px;
+  --tl-radius-2xl: 24px;
+  --tl-radius-pill:999px;
+
+  /* ---------- Sombras (suaves, discretas) ---------- */
+  --tl-shadow-xs: 0 1px 2px rgba(11, 59, 70, .04);
+  --tl-shadow-sm: 0 2px 6px rgba(11, 59, 70, .06);
+  --tl-shadow-md: 0 4px 14px rgba(11, 59, 70, .07);
+  --tl-shadow-lg: 0 10px 28px rgba(11, 59, 70, .09);
+  --tl-shadow-xl: 0 22px 46px rgba(11, 59, 70, .14);
+  --tl-shadow-focus: 0 0 0 3px rgba(22, 177, 169, .28);
+  --tl-shadow-focus-danger: 0 0 0 3px rgba(239, 68, 68, .28);
+
+  /* ---------- Bordas (largura) ---------- */
+  --tl-border-1: 1px;
+  --tl-border-2: 2px;
+
+  /* ---------- Animações ---------- */
+  --tl-ease:          cubic-bezier(.2, .8, .2, 1);
+  --tl-ease-out:      cubic-bezier(0, 0, .2, 1);
+  --tl-ease-in-out:   cubic-bezier(.4, 0, .2, 1);
+  --tl-dur-instant:   80ms;
+  --tl-dur-fast:      140ms;
+  --tl-dur-base:      200ms;
+  --tl-dur-slow:      320ms;
+
+  /* ---------- Layout ---------- */
+  --tl-container:     1200px;
+  --tl-container-md:  1000px;
+  --tl-container-sm:  900px;
+
+  /* ---------- Z-index ---------- */
+  --tl-z-sticky:  40;
+  --tl-z-dropdown:50;
+  --tl-z-modal:   60;
+  --tl-z-toast:   70;
+  --tl-z-tooltip: 80;
+}
