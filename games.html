@@ -224,7 +224,7 @@ function renderOdd(){
   const it=oCur;
   let opts=it.w.map((w,i)=>{let cls='opt';if(oAns!==null){if(i===it.odd)cls+=' right';else if(i===oAns)cls+=' wrong';}return `<button class="chip" style="font-size:16px;padding:12px 18px;${oAns!==null&&i===it.odd?'background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff':''}${oAns!==null&&i===oAns&&i!==it.odd?'background:#fee2e2;color:#991b1b':''}" onclick="oPick(${i})">${w}</button>`;}).join(' ');
   let fb=oAns!==null?`<div class="feedback ${oAns===it.odd?'ok':'no'}">${oAns===it.odd?'Correct! ':'No. '}<b>${it.w[it.odd]}</b> — ${it.reason}.</div>`:'';
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Odd One Out</h2><p class="desc teacher-only">The student says which word does not belong (and explains why in English) — then you click it.</p>
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Odd One Out</h2><p class="desc">The student says which word does not belong (and explains why in English) — then you click it.</p>
   <div style="text-align:center;margin:16px 0">${opts}</div>${fb}
   <div style="text-align:center;margin-top:14px"><button class="btn cyan" onclick="oNew()">Next</button></div>`;
 }
@@ -256,7 +256,7 @@ function renderSort(){
   }).join('');
   const done=Object.keys(sAns).length===t.items.length;
   let score='';if(done){let c=t.items.filter((it,i)=>sAns[i]===it[1]).length;score=`<div class="feedback info">Correct: <b>${c}/${t.items.length}</b></div>`;}
-  document.getElementById('gameArea').innerHTML=`<h2 class="title">Category Sort</h2><p class="desc"><b>${t.title}</b></p><p class="desc teacher-only">The student says the category for each word, and you click it.</p>${rows}${score}
+  document.getElementById('gameArea').innerHTML=`<h2 class="title">Category Sort</h2><p class="desc"><b>${t.title}</b></p><p class="desc">The student says the category for each word, and you click it.</p>${rows}${score}
   <div style="text-align:center;margin-top:16px"><button class="btn cyan" onclick="sNew()">Another set</button></div>`;
 }
 
@@ -333,6 +333,5 @@ function render(){
 }
 renderSelector();render();
 </script>
-<script src="engine/teacher-mode.js?v=4"></script>
 </body>
 </html>

@@ -92,7 +92,6 @@
 <div id="lessonBody" style="display:none"></div>
 <script src="engine/grammar-topics.js?v=4"></script>
 <script src="engine/grammar-engine.js?v=4"></script>
-<script src="engine/teacher-mode.js?v=4"></script>
 <script>
 /* stubs mínimos para o engine rodar fora do grammar.html */
 window.curStu='check';window.STUDENTS_DATA=[{id:'check',name:'Aluno',level:'A1',age:''}];
@@ -119,15 +118,7 @@ function paint(){
 document.getElementById('origin').innerHTML='URL desta verificação: <code>'+location.href+'</code>';
 
 Promise.resolve().then(function(){
-  /* 1) teacher-mode.js está sendo servido? */
-  return txt('engine/teacher-mode.js?v=4').then(function(t){
-    add(t.indexOf('teacher-mode')>=0||t.indexOf('slf_teacher_mode')>=0,
-      'teacher-mode.js está sendo servido',
-      'Baixado da versão publicada · '+t.length+' bytes');
-  }).catch(function(e){ add(false,'teacher-mode.js está sendo servido','Não encontrado no site publicado ('+e.message+')'); });
-})
-.then(function(){
-  /* 2) grammar.html referencia os scripts com ?v=4 */
+  /* 1) grammar.html referencia os scripts com ?v=4 */
   return txt('grammar.html').then(function(h){
     var m=h.match(/src="engine\/[a-z-]+\.js\?v=\d+"/g)||[];
     var semVersao=(h.match(/src="engine\/[a-z-]+\.js"/g)||[]).length;
@@ -136,7 +127,7 @@ Promise.resolve().then(function(){
   }).catch(function(e){ add(false,'grammar.html referencia os scripts versionados',e.message); });
 })
 .then(function(){
-  /* 3) grammar-engine.js publicado tem overviewPanel + randomização */
+  /* 2) grammar-engine.js publicado tem overviewPanel + randomização */
   return txt('engine/grammar-engine.js?v=4').then(function(t){
     var ov=t.indexOf('overviewPanel')>=0, rnd=t.indexOf('shuffleByType')>=0&&t.indexOf('prepMC')>=0;
     add(ov&&rnd,'grammar-engine.js publicado tem o painel e a randomização',
@@ -144,7 +135,7 @@ Promise.resolve().then(function(){
   }).catch(function(e){ add(false,'grammar-engine.js publicado tem o painel e a randomização',e.message); });
 })
 .then(function(){
-  /* 4) grammar-topics.js publicado expõe window.ENGINE_TOPICS */
+  /* 3) grammar-topics.js publicado expõe window.ENGINE_TOPICS */
   return txt('engine/grammar-topics.js?v=4').then(function(t){
     var w=t.indexOf('window.ENGINE_TOPICS=')>=0;
     add(w,'grammar-topics.js publicado expõe window.ENGINE_TOPICS',
@@ -152,7 +143,7 @@ Promise.resolve().then(function(){
   }).catch(function(e){ add(false,'grammar-topics.js publicado expõe window.ENGINE_TOPICS',e.message); });
 })
 .then(function(){
-  /* 5) engine carregado de verdade: ⚡ + conteúdo da aula */
+  /* 4) engine carregado de verdade: ⚡ + conteúdo da aula */
   try{
     var okTopics=!!window.ENGINE_TOPICS, n=okTopics?Object.keys(ENGINE_TOPICS).length:0;
     add(okTopics&&n>=18,'Engine carregado com os tópicos', n+' tópicos disponíveis');
@@ -173,9 +164,6 @@ Promise.resolve().then(function(){
     add(typeof window.GE==='object'&&typeof GE.goto==='function'&&typeof GE.toggleMap==='function',
       'Painel "Aula completa" disponível (navegação por etapas)',
       'GE.goto e GE.toggleMap presentes na versão publicada');
-
-    add(typeof window.isTeacherMode==='function','Modo Professor ativo (interfaces separadas)',
-      'Botão flutuante presente; orientações ocultas por padrão');
 
     /* randomização ao vivo: duas execuções devem gerar ordens diferentes */
     if(V&&window.GE&&typeof GE._sess==='function'){

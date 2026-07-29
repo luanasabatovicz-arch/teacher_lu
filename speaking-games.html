@@ -299,7 +299,6 @@
 </div>
 
 <script src="engine/speaking-games.js?v=4"></script>
-<script src="engine/teacher-mode.js?v=4"></script>
 <script>
 var SG=window.SPEAKING_GAMES;
 var level='all', theme='all', curGame=null, curItem=null, lastKey=null, isRandom=false;
@@ -364,7 +363,7 @@ function renderItem(g,it){
   }else if(t==='guess'){
     h='<div class="emojibig pop">'+(it.e||'❓')+'</div><div class="wordbig">'+esc(it.w).toUpperCase()+'</div>'+
       '<div class="hintline">Describe it in English — don’t say the word!</div>'+
-      '<div class="teacher-only" style="margin-top:6px;color:#94a3b8;font-size:14px">💡 '+(it.clues||[]).map(esc).join(' · ')+'</div>';
+      '<div class="" style="margin-top:6px;color:#94a3b8;font-size:14px">💡 '+(it.clues||[]).map(esc).join(' · ')+'</div>';
   }else if(t==='duo'){
     h='<div class="hintline">Choose one and say WHY:</div>'+
       '<div class="duo"><button class="duoA" onclick="dpick(this,1)">'+esc(it.a)+'</button>'+

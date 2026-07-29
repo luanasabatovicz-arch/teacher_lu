@@ -307,7 +307,7 @@ R.notice=function(){
 R.ccq=function(){
   const items=S.ccqReserveOn?(S.ccqMain||[]).concat(S.ccqReserve||[]):(S.ccqMain||T.ccqs.main);
   const sc=score('ccq');
-  let h='<p class="teacher-only text-slate-400 text-sm mb-2">Zero terminologia — só sentido. Respostas de 1–3 palavras.</p>';
+  let h='<p class="text-slate-400 text-sm mb-2">Zero terminologia — só sentido. Respostas de 1–3 palavras.</p>';
   h+='<div id="ge-ccq-score" class="text-sm font-bold mb-2" style="color:#7c3aed">'+sc.c+' ✓ de '+sc.n+' respondidas</div>';
   h+=items.map(function(c,i){
     const res=i>=5?'<span class="chip" style="margin:0 6px 0 0">reserva</span>':'';
@@ -352,7 +352,7 @@ R.watchout=function(){
   const kid=env.isKid();
   const list=kid?(S.watchoutItems||T.watchout).slice(0,2):(S.watchoutItems||T.watchout);
   let h='<p class="text-slate-500 text-sm mb-2">Erros comuns — fique atento a estes:</p>'+
-    '<p class="teacher-only text-slate-400 text-sm mb-2">Vacina de 90 segundos — antecipe os erros mais prováveis.'+(kid?' Encene a voz de um personagem errando!':'')+'</p>';
+    '<p class="text-slate-400 text-sm mb-2">Vacina de 90 segundos — antecipe os erros mais prováveis.'+(kid?' Encene a voz de um personagem errando!':'')+'</p>';
   h+=list.map(function(w,i){
     return '<div class="mistake text-sm"><span style="color:#dc2626">❌ '+P(w.bad)+'</span> → <span style="color:#16a34a;font-weight:700">✅ '+P(w.good)+'</span><span class="text-slate-400" style="margin-left:8px">('+P(w.why)+')</span>'+'</div>';
   }).join('');
@@ -365,7 +365,7 @@ R.practice=function(){
   const items=S.cuts.p8?(S.practice||T.practice).slice(0,8):(S.practice||T.practice);
   const sc=score('practice');
   let h='<p class="text-slate-500 text-sm mb-2">Responda em voz alta — depois confira.'+(kid?' Cada ✓ vale ponto! 🎯':'')+'</p>'+
-    '<p class="teacher-only text-slate-400 text-sm mb-2">100% oral: '+env.stuName()+' fala, você revela e marca. Progressão: reconhecer → manipular → usar de verdade.</p>';
+    '<p class="text-slate-400 text-sm mb-2">100% oral: '+env.stuName()+' fala, você revela e marca. Progressão: reconhecer → manipular → usar de verdade.</p>';
   h+='<div id="ge-pr-score" class="text-sm font-bold mb-2" style="color:#ec4899">'+sc.c+' ✓ / '+sc.n+' marcadas de '+items.length+'</div>';
   const stageOf=t=>((t==='fill'||t==='mc')?1:2);
   const stageName={1:'STAGE 1 · Simple — recognise & complete',2:'STAGE 2 · Intermediate — manipulate the form'};
@@ -436,7 +436,7 @@ R.makeit=function(){
   const n=S.cuts.m4?4:6;
   const sc=score('makeit');
   let h='<p class="text-slate-500 text-sm mb-2">Agora com a sua vida — complete do seu jeito:</p>'+
-    '<p class="teacher-only text-slate-400 text-sm mb-2">Reaja ao CONTEÚDO ("Really? Me too!") antes de corrigir. Meta: ≥4 com a forma correta (autocorreção conta).</p>';
+    '<p class="text-slate-400 text-sm mb-2">Reaja ao CONTEÚDO ("Really? Me too!") antes de corrigir. Meta: ≥4 com a forma correta (autocorreção conta).</p>';
   h+='<div class="text-sm font-bold mb-2" style="color:#06b6d4">'+sc.c+' ✓ de '+sc.n+'</div>';
   h+=(S.makeitItems||T.makeit).slice(0,n).map(function(m,i){
     return '<div class="ex-line"><span style="font-size:17px">'+(i+1)+'. '+P(m)+'</span>'+judgeBtns('makeit',i)+'</div>';
@@ -453,7 +453,7 @@ R.task=function(){
      '<p class="text-sm" style="color:#334155">🧑‍🎓 <b>'+env.stuName()+':</b> '+P(t.roles.student)+'</p>'+
      '<p class="text-sm" style="color:#334155">👩‍🏫 <b>You:</b> '+P(t.roles.teacher)+'</p></div>';
   h+='<div class="form-box"><div class="label" style="color:#f59e0b">⚡ Complication</div><p class="text-sm" style="color:#334155">'+P(t.complication)+'</p></div>';
-  h+='<p class="teacher-only text-slate-400 text-sm" style="margin-top:8px">Correção adiada: anote, não interrompa. '+env.stuName()+' fala ≥80% do bloco. Feche com 1 acerto celebrado + 2 erros como "try again".</p>';
+  h+='<p class="text-slate-400 text-sm" style="margin-top:8px">Correção adiada: anote, não interrompa. '+env.stuName()+' fala ≥80% do bloco. Feche com 1 acerto celebrado + 2 erros como "try again".</p>';
   if(!S.cuts.c4){
     h+='<div style="margin-top:10px"><button onclick="GE.tg(\'ge-c4\')" class="theme-btn text-xs font-bold py-2 px-4 rounded-lg">🚀 C4 — terminou com folga? (só com todos os portões passados + ≥8 min sobrando)</button>'+
        '<div id="ge-c4" class="answer" style="color:#7c3aed !important">'+P(t.c4)+'</div></div>';
@@ -465,7 +465,7 @@ R.exit=function(){
   const kid=env.isKid();
   const sc=score('exit');
   let h='<p class="text-slate-500 text-sm mb-2">Revisão final — mostre tudo o que você aprendeu!'+(kid?' 👾 Chefão final!':'')+'</p>';
-  h+='<p class="teacher-only text-slate-400 text-sm mb-2">Itens novos — evidência objetiva. Antes: "Quantas você acha que acerta?" (calibragem), depois compare.</p>';
+  h+='<p class="text-slate-400 text-sm mb-2">Itens novos — evidência objetiva. Antes: "Quantas você acha que acerta?" (calibragem), depois compare.</p>';
   h+=(S.exitItems||T.exit).map(function(it,i){
     return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
       '<span><span class="chip" style="margin:0 6px 0 0">'+it.tag+'</span>'+P(it.q)+'</span>'+
@@ -475,9 +475,9 @@ R.exit=function(){
   return bigCard(h)+teacherStrip('Correção por nível: em A1, aceite a forma-alvo correta mesmo com outros errinhos. Feche SEMPRE dizendo 1 coisa que '+env.stuName()+' consegue fazer hoje que não conseguia antes.');
 };
 
-/* ---------- faixa da professora (C2 — nunca na "tela do aluno") ---------- */
+/* ---------- faixa de apoio pedagógico (CCQs, follow-ups, notas) ---------- */
 function teacherStrip(html){
-  return '<div class="card teacher-only" style="padding:10px 14px;margin-top:-8px;margin-bottom:18px;border-left:4px solid #94a3b8 !important">'+
+  return '<div class="card" style="padding:10px 14px;margin-top:-8px;margin-bottom:18px;border-left:4px solid #94a3b8 !important">'+
     '<button onclick="GE.tg(\'ge-c2\')" class="text-xs font-bold" style="color:#64748b;background:none;border:none;cursor:pointer">👩‍🏫 Como conduzir ▾</button>'+
     '<div id="ge-c2" class="answer" style="color:#475569 !important;font-weight:400;font-size:13px;line-height:1.6">'+html+'</div></div>';
 }
@@ -488,7 +488,7 @@ function shell(){
   return '<div class="card" style="padding:14px 16px;margin-bottom:14px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
     '<div class="label" style="color:#7c3aed">Etapa '+(S.sec+1)+' de '+SECTIONS.length+'</div>'+
-    '<div class="teacher-only flexrow" style="gap:8px;align-items:center">'+
+    '<div class="flexrow" style="gap:8px;align-items:center">'+
       '<span id="ge-clock" class="text-sm font-bold" style="color:#7c3aed">0:00</span>'+
       '<span class="text-xs" style="color:#94a3b8">/ ~'+cur.time+' min</span>'+
       '<button onclick="GE.cut()" class="text-xs font-bold px-3 py-2 rounded-lg" style="background:#fef3c7;color:#92400e" title="Encurtar a aula">⏱ tempo apertado</button>'+

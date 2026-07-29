@@ -117,7 +117,7 @@ var QUESTIONS=[
 ];
 
 /* 4) Guess the Word — o aluno DESCREVE a palavra (sem dizer!) para o outro adivinhar.
-   clues = ajuda para a professora (fica no modo professor). */
+   clues = pistas de apoio (para consulta). */
 var GUESS=[
   {lvl:'A1',theme:'family',  w:'brother',  e:'👦', clues:['a boy in your family','not your sister','your parents’ son']},
   {lvl:'A1',theme:'family',  w:'baby',     e:'👶', clues:['very small','it cries','it can’t walk yet']},
