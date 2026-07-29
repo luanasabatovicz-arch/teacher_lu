@@ -304,6 +304,287 @@
 .hide { display: none; }
 
 /* ============================================================
+   REPORT PATTERNS
+   Padrões usados no Monthly Learning Report (report.html + PDF).
+   ============================================================ */
+
+/* Cover — capa do relatório */
+.rp-cover {
+  background: linear-gradient(135deg, var(--tl-primary), #0F5561 55%, var(--tl-secondary));
+  color: var(--tl-text-inverse);
+  border-radius: var(--tl-radius-xl);
+  padding: var(--tl-space-8) var(--tl-space-6);
+  text-align: center;
+  margin-bottom: var(--tl-space-5);
+}
+.rp-cover .brand {
+  font-size: 11px;
+  font-weight: var(--tl-fw-bold);
+  letter-spacing: var(--tl-tracking-wider);
+  text-transform: uppercase;
+  opacity: .85;
+  margin-bottom: var(--tl-space-3);
+}
+.rp-cover .avatar {
+  font-size: 72px;
+  line-height: 1;
+  margin-bottom: var(--tl-space-3);
+}
+.rp-cover h1 {
+  color: var(--tl-text-inverse);
+  font-size: var(--tl-fs-display);
+  margin-bottom: var(--tl-space-2);
+  letter-spacing: var(--tl-tracking-tight);
+}
+.rp-cover .month {
+  font-size: var(--tl-fs-h3);
+  opacity: .9;
+  margin-bottom: var(--tl-space-5);
+}
+.rp-cover .metrics {
+  display: flex;
+  justify-content: center;
+  gap: var(--tl-space-6);
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255, 255, 255, .2);
+  padding-top: var(--tl-space-5);
+}
+.rp-cover .metric .v {
+  font-size: var(--tl-fs-h1);
+  font-weight: var(--tl-fw-bold);
+  line-height: 1;
+}
+.rp-cover .metric .l {
+  font-size: var(--tl-fs-caption);
+  text-transform: uppercase;
+  letter-spacing: var(--tl-tracking-wider);
+  opacity: .8;
+  margin-top: 4px;
+}
+
+/* Section header padronizado */
+.rp-sec {
+  margin-bottom: var(--tl-space-6);
+  page-break-inside: avoid;
+}
+.rp-sec-h {
+  display: flex;
+  align-items: center;
+  gap: var(--tl-space-3);
+  margin-bottom: var(--tl-space-4);
+  padding-bottom: var(--tl-space-3);
+  border-bottom: 2px solid var(--tl-primary-soft);
+}
+.rp-sec-h .num {
+  width: 32px; height: 32px;
+  background: var(--tl-primary);
+  color: var(--tl-text-inverse);
+  border-radius: var(--tl-radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: var(--tl-fw-bold);
+  font-size: var(--tl-fs-body);
+  flex-shrink: 0;
+}
+.rp-sec-h h2 {
+  color: var(--tl-primary);
+  font-size: var(--tl-fs-h3);
+  margin: 0;
+}
+.rp-sec-lead {
+  color: var(--tl-text);
+  font-size: var(--tl-fs-body);
+  line-height: var(--tl-lh-relaxed);
+  margin-bottom: var(--tl-space-4);
+}
+
+/* Card interno de seção */
+.rp-card {
+  background: var(--tl-surface-alt);
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  padding: var(--tl-space-4) var(--tl-space-5);
+  margin-bottom: var(--tl-space-3);
+}
+.rp-card .rp-card-title {
+  font-weight: var(--tl-fw-semibold);
+  color: var(--tl-primary);
+  margin-bottom: var(--tl-space-2);
+}
+
+/* "Você consegue..." — lista com check verde */
+.rp-can-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--tl-space-2);
+}
+.rp-can-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tl-space-3);
+  padding: var(--tl-space-3) var(--tl-space-4);
+  background: var(--tl-success-soft);
+  border-left: 3px solid var(--tl-success);
+  border-radius: 0 var(--tl-radius-md) var(--tl-radius-md) 0;
+  color: var(--tl-success-text);
+  font-size: var(--tl-fs-body);
+  line-height: var(--tl-lh-normal);
+}
+.rp-can-list li::before {
+  content: "✓";
+  color: var(--tl-success);
+  font-weight: var(--tl-fw-bold);
+  flex-shrink: 0;
+}
+
+/* Content grouping por skill */
+.rp-skill-group {
+  margin-bottom: var(--tl-space-4);
+}
+.rp-skill-group h3 {
+  font-size: var(--tl-fs-h4);
+  color: var(--tl-primary);
+  margin-bottom: var(--tl-space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--tl-space-2);
+}
+.rp-skill-group ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tl-space-2);
+}
+.rp-skill-group li {
+  padding: 6px 12px;
+  background: var(--tl-primary-tint);
+  border: 1px solid var(--tl-primary-soft);
+  border-radius: var(--tl-radius-pill);
+  font-size: var(--tl-fs-small);
+  color: var(--tl-primary);
+  font-weight: var(--tl-fw-semibold);
+}
+
+/* Progress bar segmentada (Evolução) */
+.rp-progress-list { display: grid; gap: var(--tl-space-3); }
+.rp-progress-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 50px;
+  align-items: center;
+  gap: var(--tl-space-3);
+}
+.rp-progress-row .label {
+  font-weight: var(--tl-fw-semibold);
+  color: var(--tl-text);
+}
+.rp-progress-row .track {
+  background: var(--tl-primary-soft);
+  height: 10px;
+  border-radius: var(--tl-radius-pill);
+  overflow: hidden;
+}
+.rp-progress-row .fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--tl-primary), var(--tl-secondary));
+  border-radius: inherit;
+}
+.rp-progress-row .pct {
+  text-align: right;
+  font-family: var(--tl-font-mono);
+  font-size: var(--tl-fs-small);
+  color: var(--tl-text-secondary);
+  font-weight: var(--tl-fw-semibold);
+}
+
+/* Attendance grid */
+.rp-attendance {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--tl-space-3);
+}
+.rp-attendance .stat {
+  background: var(--tl-surface-alt);
+  border-radius: var(--tl-radius-md);
+  padding: var(--tl-space-4);
+  text-align: center;
+  border: 1px solid var(--tl-border);
+}
+.rp-attendance .stat .v {
+  font-size: var(--tl-fs-h2);
+  font-weight: var(--tl-fw-bold);
+  color: var(--tl-primary);
+  line-height: 1;
+}
+.rp-attendance .stat .l {
+  font-size: var(--tl-fs-caption);
+  text-transform: uppercase;
+  letter-spacing: var(--tl-tracking-wide);
+  color: var(--tl-text-secondary);
+  margin-top: 4px;
+  font-weight: var(--tl-fw-semibold);
+}
+
+/* Editable comments */
+.rp-editable {
+  background: var(--tl-warning-soft);
+  border: 1px dashed var(--tl-warning);
+  border-radius: var(--tl-radius-md);
+  padding: var(--tl-space-4);
+  margin-bottom: var(--tl-space-3);
+}
+.rp-editable .lbl {
+  font-size: var(--tl-fs-caption);
+  font-weight: var(--tl-fw-bold);
+  color: var(--tl-warning-text);
+  text-transform: uppercase;
+  letter-spacing: var(--tl-tracking-wide);
+  margin-bottom: var(--tl-space-2);
+}
+.rp-editable textarea {
+  width: 100%;
+  min-height: 96px;
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  padding: var(--tl-space-3);
+  font-family: var(--tl-font-sans);
+  font-size: var(--tl-fs-body);
+  line-height: var(--tl-lh-relaxed);
+  background: var(--tl-surface);
+  resize: vertical;
+}
+.rp-editable textarea:focus {
+  outline: none;
+  border-color: var(--tl-border-focus);
+  box-shadow: var(--tl-shadow-focus);
+}
+
+/* Print rules — o PDF sai limpo, sem toolbar/edit */
+@media print {
+  .no-print, .no-print * { display: none !important; }
+  .rp-editable {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: var(--tl-space-4);
+  }
+  .rp-editable .lbl { color: var(--tl-primary); }
+  .rp-editable textarea {
+    border: none;
+    background: transparent;
+    padding: 0;
+    resize: none;
+    min-height: 0;
+    height: auto;
+    box-shadow: none;
+    color: var(--tl-text);
+  }
+  .rp-sec { page-break-inside: avoid; }
+  .rp-cover { page-break-after: always; }
+}
+
+/* ============================================================
    DUAL-LESSON PATTERNS
    Padrões para alunos com duas aulas consecutivas.
    ============================================================ */

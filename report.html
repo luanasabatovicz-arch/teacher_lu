@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Learning Report — Teacher Lu Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-system/theme.css">
+<script src="design-system/icons.js" defer></script>
+<style>
+  /* Report-specific tweaks */
+  .toolbar-sticky {
+    position: sticky;
+    top: 84px;
+    z-index: 10;
+    background: var(--tl-surface);
+    padding: var(--tl-space-4);
+    border-bottom: 1px solid var(--tl-border);
+    margin-bottom: var(--tl-space-5);
+    display: flex;
+    gap: var(--tl-space-3);
+    flex-wrap: wrap;
+    align-items: end;
+    border-radius: var(--tl-radius-lg);
+    box-shadow: var(--tl-shadow-sm);
+  }
+  .toolbar-sticky .fld { display: flex; flex-direction: column; gap: 6px; }
+  .toolbar-sticky .actions {
+    margin-left: auto;
+    display: flex;
+    gap: var(--tl-space-2);
+  }
+  .empty-hint {
+    background: var(--tl-info-soft);
+    border-radius: var(--tl-radius-md);
+    padding: var(--tl-space-4);
+    color: var(--tl-info-text);
+    display: flex;
+    gap: var(--tl-space-3);
+    align-items: flex-start;
+    margin-bottom: var(--tl-space-4);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar no-print">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1>Monthly Learning Report</h1>
+        <p>Relatório mensal pedagógico — evolução, competências, próximos passos</p>
+      </div>
+      <a href="index.html" class="menu-btn"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap wrap-md">
+
+  <!-- Toolbar -->
+  <div class="toolbar-sticky no-print">
+    <div class="fld" style="min-width:200px">
+      <label class="lbl">Aluno</label>
+      <select id="fStudent" class="inp"></select>
+    </div>
+    <div class="fld" style="min-width:160px">
+      <label class="lbl">Mês</label>
+      <input id="fMonth" type="month" class="inp">
+    </div>
+    <div class="actions">
+      <button class="btn gray" onclick="regenerate()"><i data-lucide="refresh-cw" class="tl-icon-sm"></i> Atualizar preview</button>
+      <button class="btn primary" onclick="exportPDF()"><i data-lucide="file-down" class="tl-icon-sm"></i> Gerar PDF</button>
+    </div>
+  </div>
+
+  <div id="preview"></div>
+</div>
+
+<!-- Deps -->
+<script src="engine/grammar-topics.js?v=4"></script>
+<script src="engine/speaking-activities.js?v=4"></script>
+<script src="engine/structures-content.js?v=1"></script>
+<script src="engine/conversation-lessons.js?v=1"></script>
+<script src="engine/curriculum-map.js?v=1"></script>
+<script src="engine/competencies.js?v=1"></script>
+<script src="platform-students.js?v=1"></script>
+<script src="platform-content.js?v=1"></script>
+<script src="platform-progress.js?v=1"></script>
+<script src="platform-calendar.js?v=1"></script>
+<script src="platform-report-engine.js?v=1"></script>
+<script src="platform-print.js?v=1"></script>
+
+<script>
+/* =====================================================================
+   Estado
+   ===================================================================== */
+const Students = TeacherLu.Students;
+const RE = TeacherLu.ReportEngine;
+
+let currentStudent = null;
+let currentMonth = null;
+let currentModel = null;
+// Campos editáveis persistem em localStorage por (aluno, mês)
+function editableKey(sid, ym) { return 'report_edit|' + sid + '|' + ym; }
+function loadEditable(sid, ym) {
+  try { return JSON.parse(localStorage.getItem(editableKey(sid, ym)) || '{}'); }
+  catch (e) { return {}; }
+}
+function saveEditable(sid, ym, data) {
+  try { localStorage.setItem(editableKey(sid, ym), JSON.stringify(data)); } catch (e) {}
+}
+
+/* =====================================================================
+   Bootstrap
+   ===================================================================== */
+function boot() {
+  const students = Students.load();
+  const sel = document.getElementById('fStudent');
+  sel.innerHTML = students.map(s =>
+    `<option value="${s.id}">${s.emoji || '🙂'} ${escapeHtml(s.name)}</option>`
+  ).join('');
+  currentStudent = students[0]?.id || null;
+  // Default: mês atual
+  const d = new Date();
+  currentMonth = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  document.getElementById('fMonth').value = currentMonth;
+
+  sel.addEventListener('change', () => { currentStudent = sel.value; regenerate(); });
+  document.getElementById('fMonth').addEventListener('change', e => {
+    currentMonth = e.target.value;
+    regenerate();
+  });
+  regenerate();
+}
+
+function regenerate() {
+  if (!currentStudent || !currentMonth) return;
+  const overrides = { editable: loadEditable(currentStudent, currentMonth) };
+  currentModel = RE.buildModel(currentStudent, currentMonth, overrides);
+  render(currentModel);
+}
+
+/* =====================================================================
+   Render
+   ===================================================================== */
+function escapeHtml(t) {
+  return String(t == null ? '' : t)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function render(model) {
+  if (!model) {
+    document.getElementById('preview').innerHTML =
+      '<div class="empty-hint"><i data-lucide="info" class="tl-icon"></i><div>Selecione um aluno e um mês para começar.</div></div>';
+    return;
+  }
+  const s = model.student;
+  const sc = s.schedule;
+  const scheduleLabel = sc.mode === 'double' ? '2 aulas consecutivas' : 'aula única';
+  const scheduleTime = sc.startTime ? ' · ' + sc.startTime : '';
+
+  let h = '';
+
+  /* --------- Empty hint if no lessons --------- */
+  if (model.cover.totalSessions === 0) {
+    h += `<div class="empty-hint">
+      <i data-lucide="info" class="tl-icon"></i>
+      <div>
+        <b>Nenhuma aula registrada</b> para ${escapeHtml(s.name)} em ${model.period.monthLabel}.
+        O relatório continua sendo gerável — pode ser útil como plano do mês em branco.
+      </div>
+    </div>`;
+  }
+
+  /* --------- 1. Cover --------- */
+  h += `<div class="rp-cover">
+    <div class="brand">${escapeHtml(model.cover.brandName)}</div>
+    <div class="avatar">${s.emoji}</div>
+    <h1>${escapeHtml(s.name)}</h1>
+    <div class="month">${escapeHtml(model.period.monthLabel)}</div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="v">${model.cover.totalLessons}</div>
+        <div class="l">${model.cover.totalLessons === 1 ? 'Aula' : 'Aulas'}</div>
+      </div>
+      <div class="metric">
+        <div class="v">${model.cover.totalSessions}</div>
+        <div class="l">${model.cover.totalSessions === 1 ? 'Sessão' : 'Sessões'}</div>
+      </div>
+      <div class="metric">
+        <div class="v">${model.cover.totalHours}h</div>
+        <div class="l">Estudadas</div>
+      </div>
+      <div class="metric">
+        <div class="v">${s.level || '—'}</div>
+        <div class="l">Nível</div>
+      </div>
+    </div>
+  </div>`;
+
+  /* --------- 2. Resumo do mês --------- */
+  h += section(1, 'Resumo do mês', 'book-open',
+    `<p class="rp-sec-lead">${escapeHtml(model.summary)}</p>` +
+    (sc.startTime ? `<p class="tl-caption">Configuração de agenda: ${scheduleLabel}${scheduleTime}</p>` : ''));
+
+  /* --------- 3. Aulas realizadas --------- */
+  if (model.lessons.length) {
+    let rows = model.lessons.map(l => {
+      const stLabel = l.status === 'done' ? '<span class="badge success">✓ dada</span>' :
+                      l.status === 'scheduled' ? '<span class="badge info">◷ agendada</span>' :
+                      l.status === 'cancelled' ? '<span class="badge danger">✗ cancelada</span>' : '—';
+      return `<tr>
+        <td>${escapeHtml(l.date)}</td>
+        <td>${escapeHtml(l.dayOfWeek)}</td>
+        <td>${l.contents.length ? escapeHtml(l.contents.join(' · ')) : '<span class="tl-subtle">—</span>'}</td>
+        <td>${stLabel}</td>
+        <td>${escapeHtml(l.homework || '—')}</td>
+        <td>${escapeHtml(l.note || '—')}</td>
+      </tr>`;
+    }).join('');
+    h += section(2, 'Aulas realizadas', 'calendar',
+      `<div class="card" style="padding:0;overflow:hidden;margin:0">
+         <table class="tl-table">
+           <thead><tr><th>Data</th><th>Dia</th><th>Conteúdo</th><th>Status</th><th>Homework</th><th>Observações</th></tr></thead>
+           <tbody>${rows}</tbody>
+         </table>
+       </div>`);
+  }
+
+  /* --------- 4. Conteúdos estudados --------- */
+  const hasAny = Object.keys(model.contentsBySkill).some(k => model.contentsBySkill[k].length);
+  if (hasAny) {
+    const SKILLS = TeacherLu.Content.SKILLS;
+    let inner = '';
+    SKILLS.forEach(sk => {
+      const items = model.contentsBySkill[sk.id] || [];
+      if (!items.length) return;
+      inner += `<div class="rp-skill-group">
+        <h3>${sk.icon} ${escapeHtml(sk.label)}</h3>
+        <ul>${items.map(it => `<li>${escapeHtml(it.title)}</li>`).join('')}</ul>
+      </div>`;
+    });
+    h += section(3, 'Conteúdos estudados', 'library', inner);
+  }
+
+  /* --------- 5. O que você aprendeu (por conteúdo) --------- */
+  const compKeys = Object.keys(model.competencies);
+  if (compKeys.length) {
+    let inner = '';
+    compKeys.forEach(itemId => {
+      const it = TeacherLu.Content.byId(itemId);
+      const title = it ? it.title : itemId;
+      const phrases = model.competencies[itemId];
+      inner += `<div class="rp-card">
+        <div class="rp-card-title">${escapeHtml(title)}</div>
+        <p class="tl-caption" style="margin-bottom:8px">Você consegue:</p>
+        <ul class="rp-can-list">
+          ${phrases.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
+        </ul>
+      </div>`;
+    });
+    h += section(4, 'O que você aprendeu', 'award', inner);
+  }
+
+  /* --------- 6. Agora você consegue... (consolidado) --------- */
+  if (model.learnedThings.length) {
+    h += section(5, 'Agora você consegue…', 'check-circle',
+      `<ul class="rp-can-list">
+         ${model.learnedThings.map(x => `<li>${escapeHtml(x)}</li>`).join('')}
+       </ul>`);
+  }
+
+  /* --------- 7. Vocabulário --------- */
+  if (model.vocabulary.total) {
+    let inner = `<p class="rp-sec-lead">${model.vocabulary.total} ${model.vocabulary.total === 1 ? 'tema de vocabulário' : 'temas de vocabulário'} este mês:</p>`;
+    Object.keys(model.vocabulary.byCategory).forEach(cat => {
+      const words = model.vocabulary.byCategory[cat];
+      inner += `<div class="rp-skill-group">
+        <h3>${escapeHtml(cat)}</h3>
+        <ul>${words.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>
+      </div>`;
+    });
+    h += section(6, 'Vocabulário aprendido', 'book-marked', inner);
+  }
+
+  /* --------- 8. Estruturas gramaticais --------- */
+  if (model.structures.practiced.length) {
+    h += section(7, 'Estruturas gramaticais', 'braces',
+      `<p class="rp-sec-lead">Este mês você praticou:</p>
+       <ul class="rp-can-list">
+         ${model.structures.practiced.map(x => `<li>${escapeHtml(x)}</li>`).join('')}
+       </ul>`);
+  }
+
+  /* --------- 9. Speaking --------- */
+  if (model.speaking.count) {
+    let inner = `<p class="rp-sec-lead">${model.speaking.count} ${model.speaking.count === 1 ? 'atividade de speaking' : 'atividades de speaking'} este mês.</p>`;
+    if (model.speaking.themes.length) {
+      inner += `<p><b>Temas conversados:</b> ${model.speaking.themes.map(escapeHtml).join(' · ')}</p>`;
+    }
+    if (model.speaking.activities.length) {
+      inner += `<div class="rp-skill-group">
+        <h3>Atividades</h3>
+        <ul>${model.speaking.activities.map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul>
+      </div>`;
+    }
+    h += section(8, 'Speaking', 'mic', inner);
+  }
+
+  /* --------- 10. Homework --------- */
+  if (model.homework.length) {
+    let rows = model.homework.map(hw => {
+      const stLabel = hw.status === 'done' ? '<span class="badge success">✓ feito</span>' : '<span class="badge neutral">pendente</span>';
+      return `<tr><td>${escapeHtml(hw.date)}</td><td>${escapeHtml(hw.description)}</td><td>${escapeHtml(hw.source || '')}</td><td>${stLabel}</td></tr>`;
+    }).join('');
+    h += section(9, 'Homework', 'notebook',
+      `<div class="card" style="padding:0;overflow:hidden;margin:0">
+         <table class="tl-table">
+           <thead><tr><th>Data</th><th>Tarefa</th><th>Origem</th><th>Status</th></tr></thead>
+           <tbody>${rows}</tbody>
+         </table>
+       </div>`);
+  }
+
+  /* --------- 11. Frequência --------- */
+  const a = model.attendance;
+  h += section(10, 'Frequência', 'user-check',
+    `<div class="rp-attendance">
+       <div class="stat"><div class="v">${a.planned}</div><div class="l">Previstas</div></div>
+       <div class="stat"><div class="v">${a.done}</div><div class="l">Realizadas</div></div>
+       <div class="stat"><div class="v">${a.cancelled}</div><div class="l">Canceladas</div></div>
+       <div class="stat"><div class="v">${a.missed}</div><div class="l">Faltas</div></div>
+       <div class="stat"><div class="v">${a.sessionsDone}</div><div class="l">Sessões dadas</div></div>
+       <div class="stat"><div class="v">${a.pct}%</div><div class="l">Presença</div></div>
+     </div>`);
+
+  /* --------- 12. Comentários da Teacher --------- */
+  h += section(11, 'Comentários da Teacher', 'message-circle',
+    `<div class="rp-editable">
+       <div class="lbl">Este campo é editável antes de gerar o PDF</div>
+       <textarea id="editComments" placeholder="Observações pedagógicas sobre o desempenho no mês…">${escapeHtml(model.editable.teacherComments)}</textarea>
+     </div>`);
+
+  /* --------- 13. Recomendações --------- */
+  h += section(12, 'Recomendações', 'lightbulb',
+    (model.recommendations.length ?
+      `<ul class="rp-can-list" style="margin-bottom:var(--tl-space-4)">
+         ${model.recommendations.map(r => `<li>${escapeHtml(r)}</li>`).join('')}
+       </ul>` : '') +
+    `<div class="rp-editable">
+       <div class="lbl">Recomendações personalizadas (editável)</div>
+       <textarea id="editRecommendations" placeholder="Ex: continue revisando Present Simple. Pratique 5 min de speaking diariamente…">${escapeHtml(model.editable.recommendations)}</textarea>
+     </div>`);
+
+  /* --------- 14. Objetivos do próximo mês --------- */
+  h += section(13, 'Objetivos do próximo mês', 'target',
+    `<div class="rp-editable">
+       <div class="lbl">Editável</div>
+       <textarea id="editGoals" placeholder="Ex: consolidar Past Simple, começar Present Perfect, entrevistar em inglês…">${escapeHtml(model.editable.nextGoals)}</textarea>
+     </div>`);
+
+  /* --------- 15. Evolução (indicadores) --------- */
+  const pi = model.progressIndicators;
+  const rows = [
+    {k:'speaking',      l:'Speaking'},
+    {k:'listening',     l:'Listening'},
+    {k:'grammar',       l:'Grammar'},
+    {k:'vocabulary',    l:'Vocabulary'},
+    {k:'pronunciation', l:'Pronunciation'},
+    {k:'reading',       l:'Reading'},
+    {k:'writing',       l:'Writing'}
+  ];
+  h += section(14, 'Evolução', 'trending-up',
+    `<div class="rp-progress-list">
+       ${rows.map(r => `
+         <div class="rp-progress-row">
+           <div class="label">${r.l}</div>
+           <div class="track"><div class="fill" style="width:${pi[r.k]}%"></div></div>
+           <div class="pct">${pi[r.k]}%</div>
+         </div>`).join('')}
+     </div>
+     <p class="tl-caption" style="margin-top:var(--tl-space-3)">Cada barra reflete o percentual do currículo daquele skill já coberto até este mês (Learning Progress cumulativo).</p>`);
+
+  /* --------- 16. Próximos conteúdos --------- */
+  if (model.nextMonth.hasPlan) {
+    h += section(15, 'Próximos conteúdos', 'sparkles',
+      `<p class="rp-sec-lead">O que está planejado no Annual Plan para as próximas semanas:</p>
+       <div class="rp-skill-group">
+         <ul>${model.nextMonth.items.map(w => `<li>Semana ${w.week}: ${escapeHtml(w.theme)}</li>`).join('')}</ul>
+       </div>`);
+  }
+
+  document.getElementById('preview').innerHTML = h;
+
+  /* Save editable ao digitar */
+  ['editComments','editRecommendations','editGoals'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      const d = loadEditable(currentStudent, currentMonth);
+      d.teacherComments  = document.getElementById('editComments').value;
+      d.recommendations  = document.getElementById('editRecommendations').value;
+      d.nextGoals        = document.getElementById('editGoals').value;
+      saveEditable(currentStudent, currentMonth, d);
+    });
+  });
+}
+
+function section(n, title, icon, html) {
+  return `<section class="rp-sec">
+    <div class="rp-sec-h">
+      <div class="num">${n}</div>
+      <h2><i data-lucide="${icon}" class="tl-icon-lg" style="color:var(--tl-secondary)"></i> ${escapeHtml(title)}</h2>
+    </div>
+    ${html}
+  </section>`;
+}
+
+/* =====================================================================
+   Export PDF
+   ===================================================================== */
+function exportPDF() {
+  if (!currentModel) return;
+
+  // Sync editable
+  const d = loadEditable(currentStudent, currentMonth);
+  d.teacherComments  = document.getElementById('editComments')?.value || '';
+  d.recommendations  = document.getElementById('editRecommendations')?.value || '';
+  d.nextGoals        = document.getElementById('editGoals')?.value || '';
+  saveEditable(currentStudent, currentMonth, d);
+
+  // Rebuild com editable atualizado
+  const model = RE.buildModel(currentStudent, currentMonth, { editable: d });
+  currentModel = model;
+  render(model);
+
+  // O preview é EXATAMENTE o PDF — clona o conteúdo, mas usa print.js para melhor formatação
+  const html = document.getElementById('preview').innerHTML;
+  const title = 'Report-' + model.student.name + '-' + model.period.month;
+  TeacherLu.printDoc(html, title, buildPrintCSS());
+}
+
+function buildPrintCSS() {
+  // Estilos mínimos para o PDF — herda o design-system quando disponível via link,
+  // mas se estiver rodando isolado, esta CSS mantém o layout coerente.
+  return `
+    @page { size: A4; margin: 12mm 14mm; }
+    body { font-family: Inter, sans-serif; color: #1F2937; line-height: 1.5; }
+    h1, h2, h3 { color: #0B3B46; }
+    .rp-cover { background: linear-gradient(135deg,#0B3B46,#0F5561 55%,#16B1A9); color: #fff; border-radius: 24px; padding: 48px 32px; text-align: center; margin-bottom: 24px; page-break-after: always; }
+    .rp-cover h1 { color: #fff; font-size: 40px; margin: 8px 0 4px; }
+    .rp-cover .brand { text-transform: uppercase; font-size: 11px; letter-spacing: .1em; opacity: .8; margin-bottom: 12px; }
+    .rp-cover .avatar { font-size: 72px; margin-bottom: 12px; }
+    .rp-cover .month { font-size: 20px; opacity: .9; margin-bottom: 24px; }
+    .rp-cover .metrics { display: flex; justify-content: space-around; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.25); flex-wrap: wrap; gap: 20px; }
+    .rp-cover .metric .v { font-size: 28px; font-weight: 700; }
+    .rp-cover .metric .l { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .8; margin-top: 4px; }
+    .rp-sec { margin-bottom: 32px; page-break-inside: avoid; }
+    .rp-sec-h { border-bottom: 2px solid #E6EEF0; padding-bottom: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .rp-sec-h .num { width: 28px; height: 28px; background: #0B3B46; color: #fff; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+    .rp-sec-h h2 { font-size: 18px; margin: 0; }
+    .rp-sec-lead { margin-bottom: 12px; }
+    .rp-card { background: #F2F6F7; border: 1px solid #E5E7EB; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }
+    .rp-card-title { font-weight: 600; color: #0B3B46; margin-bottom: 4px; }
+    .rp-can-list { list-style: none; padding: 0; margin: 0; }
+    .rp-can-list li { display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; background: #DCFCE7; border-left: 3px solid #22C55E; color: #166534; margin-bottom: 4px; border-radius: 0 8px 8px 0; }
+    .rp-can-list li::before { content: "✓"; color: #22C55E; font-weight: 700; }
+    .rp-skill-group { margin-bottom: 12px; }
+    .rp-skill-group h3 { font-size: 14px; margin-bottom: 6px; }
+    .rp-skill-group ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+    .rp-skill-group li { padding: 4px 10px; background: #F2F6F7; border: 1px solid #E6EEF0; border-radius: 999px; font-size: 12px; color: #0B3B46; }
+    .rp-progress-list { display: grid; gap: 8px; }
+    .rp-progress-row { display: grid; grid-template-columns: 130px 1fr 40px; align-items: center; gap: 12px; }
+    .rp-progress-row .label { font-weight: 600; }
+    .rp-progress-row .track { background: #E6EEF0; height: 8px; border-radius: 999px; overflow: hidden; }
+    .rp-progress-row .fill { height: 100%; background: linear-gradient(90deg, #0B3B46, #16B1A9); }
+    .rp-progress-row .pct { text-align: right; font-family: monospace; font-size: 12px; color: #6B7280; }
+    .rp-attendance { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .rp-attendance .stat { background: #F2F6F7; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #E5E7EB; }
+    .rp-attendance .stat .v { font-size: 22px; font-weight: 700; color: #0B3B46; }
+    .rp-attendance .stat .l { font-size: 10px; text-transform: uppercase; color: #6B7280; margin-top: 4px; letter-spacing: .05em; }
+    .rp-editable { padding: 8px 0; margin-bottom: 12px; }
+    .rp-editable .lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #0B3B46; letter-spacing: .05em; margin-bottom: 6px; }
+    .rp-editable textarea { border: none; background: transparent; width: 100%; padding: 0; resize: none; font-family: inherit; font-size: 14px; color: #1F2937; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 8px 10px; font-size: 10px; text-transform: uppercase; color: #6B7280; border-bottom: 2px solid #E5E7EB; letter-spacing: .05em; }
+    td { padding: 8px 10px; border-bottom: 1px solid #E5E7EB; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .badge.success { background: #DCFCE7; color: #166534; }
+    .badge.info { background: #E0F2FE; color: #075985; }
+    .badge.danger { background: #FEE2E2; color: #991B1B; }
+    .badge.neutral { background: #F2F6F7; color: #6B7280; border: 1px solid #E5E7EB; }
+    .tl-caption { font-size: 12px; color: #6B7280; }
+    .tl-subtle { color: #9CA3AF; }
+    .no-print { display: none !important; }
+  `;
+}
+
+boot();
+</script>
+
+</body>
+</html>
