@@ -27,6 +27,13 @@
    The name is for display only: the teacher can rename a student at any
    time and nothing may break. See migrateScheduleKeys() below.
 
+   CONSECUTIVE-LESSON SCHEDULE
+   ---------------------------
+   Since v1.1.0 the student may carry an optional `schedule` object that
+   configures single- or double-consecutive-lesson mode. Full contract in
+   docs/CONSECUTIVE-LESSONS.md. Never read `student.schedule` directly —
+   always go through `Students.scheduleOf(x)` (which fills defaults).
+
    CONTRACT
    --------
    • Never throws.

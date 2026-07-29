@@ -302,3 +302,217 @@
 }
 
 .hide { display: none; }
+
+/* ============================================================
+   DUAL-LESSON PATTERNS
+   Padrões para alunos com duas aulas consecutivas.
+   ============================================================ */
+
+/* Time-range badge (usado em stu-row, day dashboard) */
+.time-range {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: var(--tl-primary-tint);
+  color: var(--tl-primary);
+  border: 1px solid var(--tl-primary-soft);
+  border-radius: var(--tl-radius-pill);
+  font-family: var(--tl-font-mono);
+  font-size: var(--tl-fs-caption);
+  font-weight: var(--tl-fw-semibold);
+  line-height: 1.4;
+}
+.time-range.double {
+  background: var(--tl-secondary-soft);
+  color: var(--tl-secondary-hover);
+  border-color: var(--tl-secondary);
+}
+
+/* "×2" pill que aparece no canto da célula do calendário quando o dia
+   é uma aula dupla. Discreto. */
+.day-x2 {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  background: var(--tl-secondary);
+  color: var(--tl-text-inverse);
+  font-size: 9px;
+  font-weight: var(--tl-fw-bold);
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 3px;
+  letter-spacing: .02em;
+}
+
+/* Célula do dia com duas aulas — dois "traços" sobrepostos para dar sensação
+   de continuidade sem parecer duas aulas separadas. */
+.day.dual::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 3px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to right,
+    var(--tl-secondary) 0 47%,
+    transparent 47% 53%,
+    var(--tl-secondary) 53% 100%);
+}
+
+/* ------------------------------------------------------------
+   Day-block card (Dashboard do dia)
+   Card unificado quando o dia tem duas aulas consecutivas.
+   ------------------------------------------------------------ */
+.day-block {
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-lg);
+  background: var(--tl-surface);
+  overflow: hidden;
+  transition: box-shadow var(--tl-dur-fast) var(--tl-ease),
+              border-color var(--tl-dur-fast) var(--tl-ease);
+}
+.day-block:hover {
+  box-shadow: var(--tl-shadow-md);
+  border-color: var(--tl-border-strong);
+}
+.day-block.dual { border-left: 4px solid var(--tl-secondary); }
+.day-block.today { box-shadow: 0 0 0 2px var(--tl-warning-soft); border-color: var(--tl-warning); }
+
+.day-block-head {
+  display: flex;
+  align-items: center;
+  gap: var(--tl-space-3);
+  padding: var(--tl-space-3) var(--tl-space-4);
+  cursor: pointer;
+  user-select: none;
+}
+.day-block-head .stu-emoji {
+  width: 40px; height: 40px;
+  font-size: 24px;
+}
+.day-block-head .info { flex: 1; min-width: 0; }
+.day-block-head .name {
+  font-weight: var(--tl-fw-semibold);
+  font-size: var(--tl-fs-h4);
+  color: var(--tl-text);
+  line-height: 1.2;
+}
+.day-block-head .meta {
+  display: flex;
+  align-items: center;
+  gap: var(--tl-space-2);
+  margin-top: 4px;
+  font-size: var(--tl-fs-caption);
+  color: var(--tl-text-secondary);
+}
+.day-block-head .caret {
+  color: var(--tl-text-tertiary);
+  transition: transform var(--tl-dur-fast) var(--tl-ease);
+}
+.day-block.open .day-block-head .caret { transform: rotate(180deg); }
+
+.day-block-body {
+  display: none;
+  padding: 0 var(--tl-space-4) var(--tl-space-4);
+  border-top: 1px solid var(--tl-border-subtle);
+}
+.day-block.open .day-block-body { display: block; }
+
+.day-block-sessions {
+  display: grid;
+  gap: var(--tl-space-2);
+  margin-top: var(--tl-space-3);
+}
+.day-block-session {
+  display: flex;
+  align-items: center;
+  gap: var(--tl-space-3);
+  padding: var(--tl-space-3);
+  background: var(--tl-surface-alt);
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  cursor: pointer;
+  transition: all var(--tl-dur-fast) var(--tl-ease);
+}
+.day-block-session:hover { border-color: var(--tl-secondary); }
+.day-block-session.done      { background: var(--tl-success-soft); border-color: var(--tl-success); }
+.day-block-session.scheduled { background: var(--tl-info-soft); border-color: var(--tl-info); }
+.day-block-session.cancelled { background: var(--tl-danger-soft); border-color: var(--tl-danger); }
+
+.day-block-session .idx {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--tl-primary);
+  color: var(--tl-text-inverse);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--tl-fs-caption);
+  font-weight: var(--tl-fw-bold);
+  flex-shrink: 0;
+}
+.day-block-session .time {
+  font-family: var(--tl-font-mono);
+  font-weight: var(--tl-fw-semibold);
+  color: var(--tl-text);
+  font-size: var(--tl-fs-small);
+}
+.day-block-session .st {
+  margin-left: auto;
+  font-size: var(--tl-fs-caption);
+  font-weight: var(--tl-fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tl-tracking-wide);
+}
+
+/* ------------------------------------------------------------
+   Session tabs (modal com Aula 1 / Aula 2 / Geral)
+   ------------------------------------------------------------ */
+.session-tabs {
+  display: flex;
+  gap: var(--tl-space-1);
+  background: var(--tl-surface-alt);
+  border: 1px solid var(--tl-border);
+  border-radius: var(--tl-radius-md);
+  padding: 3px;
+  margin-bottom: var(--tl-space-4);
+}
+.session-tab {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--tl-radius-sm);
+  color: var(--tl-text-secondary);
+  font-family: var(--tl-font-sans);
+  font-weight: var(--tl-fw-semibold);
+  font-size: var(--tl-fs-small);
+  cursor: pointer;
+  transition: all var(--tl-dur-fast) var(--tl-ease);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.session-tab:hover { color: var(--tl-primary); }
+.session-tab.active {
+  background: var(--tl-surface);
+  color: var(--tl-primary);
+  box-shadow: var(--tl-shadow-xs);
+}
+.session-tab .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--tl-border-strong);
+}
+.session-tab.has-status .dot { background: var(--tl-secondary); }
+.session-tab .status-done      .dot,
+.session-tab.status-done .dot      { background: var(--tl-success); }
+.session-tab .status-scheduled .dot,
+.session-tab.status-scheduled .dot { background: var(--tl-info); }
+.session-tab .status-cancelled .dot,
+.session-tab.status-cancelled .dot { background: var(--tl-danger); }
+
+.session-panel { display: none; }
+.session-panel.active { display: block; }

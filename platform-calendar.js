@@ -12,8 +12,20 @@
 
    This file is the only place in the platform that knows:
      • the storage key format   'sched|<student id>|<YYYY-MM-DD>'
-     • the record shape         { status: 'done'|'scheduled'|'cancelled', note }
+     • the record shape         { status, note, sessions? }
      • that records are keyed by student.id (migrated from name in v1.1)
+
+   CONSECUTIVE LESSONS
+   -------------------
+   Since v1.2.0 the record may carry an optional `sessions` array for
+   students with two consecutive lessons in the same evening. The
+   full contract, rollup rules and per-module semantics live in
+   docs/CONSECUTIVE-LESSONS.md — the CANONICAL reference.
+
+   `toLesson()` automatically normalises sessions and computes the
+   rollup status. `sessionsDoneOn(student, date)` is the correct helper
+   for anyone who needs to count SESSIONS (not days), e.g. per_lesson
+   billing.
 
    If schedule.html ever changes its storage, ONLY this file is touched.
    Consumers keep calling the same methods.
@@ -53,20 +65,60 @@
       if (parts.length < 3) return null;
       return { name: parts[1], date: parts[2] };
     },
-    /** Normalise a stored record into the public lesson shape. */
+    /**
+     * Normalise a stored record into the public lesson shape.
+     *
+     * Records may now carry a `sessions` array for students with two
+     * consecutive lessons. The rollup keeps working the same for consumers
+     * (Finance still counts one "lesson done" per calendar cell — see below).
+     *
+     *   Legacy record: { status, note }
+     *   New record:    { status, note, sessions: [{status,note,homework},
+     *                                              {status,note,homework}] }
+     *
+     * Rollup status precedence:
+     *   any 'done' → 'done'      (a done half counts as a done lesson)
+     *   any 'scheduled' && !done → 'scheduled'
+     *   any 'cancelled' && no other → 'cancelled'
+     *   else → ''
+     */
     toLesson: function (name, date, raw) {
       if (!raw) return null;
-      var status = raw.status || '';
-      // A record with a note but no status counts as a lesson that happened,
-      // which is how schedule.html itself treats it.
-      if (!status && raw.note) status = 'done';
-      if (!status) return null;
+
+      var sessions = Array.isArray(raw.sessions) ? raw.sessions : null;
+      var rollup = raw.status || '';
+
+      if (sessions && sessions.length) {
+        var hasDone = false, hasSched = false, hasCanc = false;
+        for (var i = 0; i < sessions.length; i++) {
+          var st = (sessions[i] || {}).status || '';
+          if (st === 'done') hasDone = true;
+          else if (st === 'scheduled') hasSched = true;
+          else if (st === 'cancelled') hasCanc = true;
+        }
+        if (hasDone) rollup = 'done';
+        else if (hasSched) rollup = 'scheduled';
+        else if (hasCanc) rollup = 'cancelled';
+      }
+
+      // A record with a note but no status counts as a lesson that happened.
+      if (!rollup && raw.note) rollup = 'done';
+      if (!rollup && !sessions) return null;
+      if (!rollup) return null;
+
       return {
         studentKey: name,          // student.id desde a migração
         studentName: name,         // mantido por compatibilidade
         date: date,
-        status: status,              // 'done' | 'scheduled' | 'cancelled'
-        note: raw.note || ''
+        status: rollup,            // 'done' | 'scheduled' | 'cancelled'
+        note: raw.note || '',
+        sessions: sessions ? sessions.map(function (s) {
+          return {
+            status: (s && s.status) || '',
+            note: (s && s.note) || '',
+            homework: (s && s.homework) || ''
+          };
+        }) : null
       };
     }
   };
@@ -129,7 +181,7 @@
 
   var Calendar = {
 
-    VERSION: '1.1.0',
+    VERSION: '1.2.0',
     SOURCE: 'schedule.html',
     STATUS: STATUS,
 
@@ -211,6 +263,25 @@
       return Calendar.lessons({
         student: student, from: fromISO, status: STATUS.DONE
       }).length;
+    },
+
+    /**
+     * How many lesson-sessions were done on a date for a student.
+     * Returns 0, 1 or 2 (for double-lesson students where both were done).
+     * Used by Finance to charge per actual half-lesson given.
+     */
+    sessionsDoneOn: function (student, date) {
+      var lessons = Calendar.lessons({ student: student, from: date, to: date });
+      if (!lessons.length) return 0;
+      var l = lessons[0];
+      if (l.sessions && l.sessions.length) {
+        var n = 0;
+        for (var i = 0; i < l.sessions.length; i++) {
+          if (l.sessions[i].status === 'done') n++;
+        }
+        return n;
+      }
+      return l.status === 'done' ? 1 : 0;
     },
 
     /** Every month that has data, newest first — handy for reports. */

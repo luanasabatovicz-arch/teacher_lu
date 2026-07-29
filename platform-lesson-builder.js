@@ -26,6 +26,14 @@
    -----
      var plan = TeacherLu.LessonBuilder.build('isa', 45);
      plan.blocks.forEach(b => console.log(b.label, b.title, b.why));
+
+   CONSECUTIVE LESSONS
+   -------------------
+   The Builder generates one plan per (student, date). For students with
+   two consecutive lessons, the plan covers the whole block. `context`
+   currently exposes `lessonsDone` (DAYS with a lesson done); a future
+   revision may add `sessionsDone` (SESSIONS actually held) — see
+   docs/CONSECUTIVE-LESSONS.md §7.3 and §12.
    ========================================================================== */
 
 (function (global) {

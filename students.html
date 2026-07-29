@@ -39,18 +39,71 @@
 
 <!-- MODAL -->
 <div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
+  <div class="modal" style="max-width:520px">
     <h3 id="mTitle">Add student</h3>
     <label class="lbl">Emoji</label>
     <div class="emoji-grid" id="emojiGrid"></div>
-    <label class="lbl">Name</label>
-    <input class="inp" id="fName" placeholder="e.g. Isa">
-    <label class="lbl">Level</label>
-    <select class="inp" id="fLevel">
-      <option>A1</option><option>A1+</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option>
-    </select>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:var(--tl-space-3)">
+      <div>
+        <label class="lbl">Name</label>
+        <input class="inp" id="fName" placeholder="e.g. Isa">
+      </div>
+      <div>
+        <label class="lbl">Level</label>
+        <select class="inp" id="fLevel">
+          <option>A1</option><option>A1+</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option>
+        </select>
+      </div>
+    </div>
     <label class="lbl">Age (optional)</label>
     <input class="inp" id="fAge" type="number" min="1" max="99" placeholder="e.g. 10">
+
+    <!-- ===== SCHEDULE ===== -->
+    <label class="lbl" style="margin-top:var(--tl-space-4)">Schedule</label>
+    <div class="session-tabs" role="tablist" aria-label="Schedule mode">
+      <button type="button" class="session-tab active" id="modeSingle" onclick="pickMode('single')">
+        <i data-lucide="clock" class="tl-icon-sm"></i> Aula única
+      </button>
+      <button type="button" class="session-tab" id="modeDouble" onclick="pickMode('double')">
+        <i data-lucide="clock-arrow-up" class="tl-icon-sm"></i> Duas aulas consecutivas
+      </button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--tl-space-3)">
+      <div>
+        <label class="lbl">Horário de início</label>
+        <input class="inp" id="fStart" type="time" step="600">
+      </div>
+      <div>
+        <label class="lbl">Duração de cada aula</label>
+        <select class="inp" id="fDuration">
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+          <option value="50" selected>50 min</option>
+          <option value="55">55 min</option>
+          <option value="60">60 min</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="fBreakWrap" style="display:none;margin-top:var(--tl-space-3)">
+      <label class="lbl">Intervalo entre as aulas</label>
+      <select class="inp" id="fBreak">
+        <option value="0">Sem intervalo</option>
+        <option value="5">5 min</option>
+        <option value="10" selected>10 min</option>
+        <option value="15">15 min</option>
+        <option value="20">20 min</option>
+      </select>
+    </div>
+
+    <div id="fRangePreview" class="alert info" style="margin-top:var(--tl-space-4);display:none">
+      <i data-lucide="clock" class="tl-icon"></i>
+      <div>
+        <b>Horário final:</b> <span id="fRangeText">—</span>
+      </div>
+    </div>
+
     <div class="actions">
       <button class="btn gray" onclick="closeModal()">Cancel</button>
       <button class="btn primary" onclick="saveStudent()">Save</button>
@@ -75,6 +128,7 @@ const EMOJIS=['🌟','🚀','⚽','🌸','🎨','🎸','🦄','🐱','🐶','�
 let students=loadStudents();
 let editId=null;
 let selEmoji=EMOJIS[0];
+let selMode='single';
 
 function render(){
   const list=document.getElementById('list');
@@ -82,17 +136,22 @@ function render(){
   if(!students.length){list.innerHTML='<div class="empty">No students yet. Click "+ Add student" to begin.</div>';return;}
   list.innerHTML=students.map(s=>{
     const pend=errCount(s.id);
+    const range=TeacherLu.Students.blockRange(s);
+    const dbl=TeacherLu.Students.isDouble(s);
     return `
     <div class="stu-row">
       <div class="stu-emoji">${s.emoji||'🙂'}</div>
       <div class="stu-info">
         <div class="stu-name">${esc(s.name)}</div>
-        <div class="stu-meta"><span class="lvl-badge">${esc(s.level||'A1')}</span>${s.age?`<span>${s.age} years old</span>`:''}
+        <div class="stu-meta">
+          <span class="lvl-badge">${esc(s.level||'A1')}</span>
+          ${s.age?`<span>${s.age} years old</span>`:''}
+          ${range?`<span class="time-range ${dbl?'double':''}"><i data-lucide="clock" class="tl-icon-xs"></i>${range}${dbl?' <span aria-label="two lessons">·×2</span>':''}</span>`:''}
           ${pend?`<button onclick="toggleQueue('${s.id}')" class="badge danger" style="cursor:pointer;border:0">📝 ${pend} to review ${openQ===s.id?'▴':'▾'}</button>`:''}
         </div>
       </div>
-      <button class="icon-btn" title="Edit" onclick="openModal('${s.id}')" aria-label="Edit"><i data-lucide="pencil" class="tl-icon-sm"></i</button>
-      <button class="icon-btn del" title="Remove" onclick="removeStudent('${s.id}')" aria-label="Remove"><i data-lucide="trash-2" class="tl-icon-sm"></i</button>
+      <button class="icon-btn" title="Edit" onclick="openModal('${s.id}')" aria-label="Edit"><i data-lucide="pencil" class="tl-icon-sm"></i></button>
+      <button class="icon-btn del" title="Remove" onclick="removeStudent('${s.id}')" aria-label="Remove"><i data-lucide="trash-2" class="tl-icon-sm"></i></button>
     </div>
     ${openQ===s.id?queuePanel(s.id):''}`;
   }).join('');
@@ -171,24 +230,79 @@ function openModal(id){
   selEmoji=s&&s.emoji?s.emoji:EMOJIS[0];
   if(s&&s.emoji&&!EMOJIS.includes(s.emoji))EMOJIS.unshift(s.emoji);
   renderEmojis();
+  // Schedule fields
+  const sc=TeacherLu.Students.scheduleOf(s||{});
+  selMode=sc.mode;
+  document.getElementById('fStart').value=sc.startTime||'';
+  document.getElementById('fDuration').value=String(sc.duration);
+  document.getElementById('fBreak').value=String(sc.breakMinutes);
+  paintMode();
+  updateRangePreview();
   document.getElementById('ov').classList.add('show');
   document.getElementById('fName').focus();
 }
 function closeModal(){document.getElementById('ov').classList.remove('show');editId=null;}
+
+function pickMode(m){selMode=(m==='double')?'double':'single';paintMode();updateRangePreview();}
+function paintMode(){
+  document.getElementById('modeSingle').classList.toggle('active',selMode==='single');
+  document.getElementById('modeDouble').classList.toggle('active',selMode==='double');
+  document.getElementById('fBreakWrap').style.display=selMode==='double'?'':'none';
+}
+function updateRangePreview(){
+  const start=document.getElementById('fStart').value;
+  const dur=+document.getElementById('fDuration').value||50;
+  const br=selMode==='double'?(+document.getElementById('fBreak').value||0):0;
+  const box=document.getElementById('fRangePreview');
+  const txt=document.getElementById('fRangeText');
+  if(!start){box.style.display='none';return;}
+  const fake={schedule:{mode:selMode,startTime:start,duration:dur,breakMinutes:br}};
+  const sess=TeacherLu.Students.sessionsOf(fake);
+  const range=TeacherLu.Students.blockRange(fake);
+  if(!range){box.style.display='none';return;}
+  const total=TeacherLu.Students.blockMinutes(fake);
+  box.style.display='';
+  if(selMode==='double'&&sess.length===2){
+    txt.innerHTML=`${sess[0].start}–${sess[0].end} · <span class="tl-caption">intervalo ${br} min</span> · ${sess[1].start}–${sess[1].end} <span class="tl-caption">(bloco total: ${total} min)</span>`;
+  }else{
+    txt.textContent=`${sess[0].start}–${sess[0].end} (${dur} min)`;
+  }
+}
+document.addEventListener('input',e=>{
+  if(!e.target)return;
+  if(e.target.id==='fStart'||e.target.id==='fDuration'||e.target.id==='fBreak')updateRangePreview();
+});
 
 function saveStudent(){
   const name=document.getElementById('fName').value.trim();
   if(!name){alert('Please enter a name.');return;}
   const level=document.getElementById('fLevel').value;
   const age=document.getElementById('fAge').value.trim();
+  const start=document.getElementById('fStart').value;
+  const dur=+document.getElementById('fDuration').value||50;
+  const br=selMode==='double'?(+document.getElementById('fBreak').value||0):0;
+  // Schedule só é gravado se houver conteúdo — mantém retrocompatibilidade
+  // (aluno sem schedule.mode continua sendo tratado como 'single' padrão).
+  const schedule=(start||selMode==='double')?{
+    mode:selMode,
+    startTime:start||'',
+    duration:dur,
+    breakMinutes:br
+  }:undefined;
   if(editId){
     const s=students.find(x=>x.id===editId);
-    if(s){s.name=name;s.level=level;s.age=age;s.emoji=selEmoji;}
+    if(s){
+      s.name=name;s.level=level;s.age=age;s.emoji=selEmoji;
+      if(schedule){s.schedule=schedule;}
+      else{delete s.schedule;}
+    }
   }else{
     if(students.some(x=>x.name.toLowerCase()===name.toLowerCase())){alert('A student with this name already exists.');return;}
     let id=slug(name),base=id,n=2;
     while(students.some(x=>x.id===id))id=base+'-'+(n++);
-    students.push({id,name,emoji:selEmoji,level,age});
+    const rec={id,name,emoji:selEmoji,level,age};
+    if(schedule)rec.schedule=schedule;
+    students.push(rec);
   }
   // F-2: só reporta sucesso se a gravação persistiu. Se falhar (storage cheio),
   // recarrega o estado salvo para não deixar a tela divergir do disco.

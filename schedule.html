@@ -32,6 +32,17 @@
   .lp-list-item input[type="checkbox"] {
     width:16px; height:16px; accent-color:var(--tl-secondary); cursor:pointer;
   }
+  /* Today card: banner de destaque para o dia */
+  .today-hero {
+    background: linear-gradient(120deg, var(--tl-primary), #0F5561 55%, var(--tl-secondary));
+    color: var(--tl-text-inverse);
+    border-radius: var(--tl-radius-lg);
+    padding: var(--tl-space-4) var(--tl-space-5);
+    margin-bottom: var(--tl-space-4);
+  }
+  .today-hero h2 { color: var(--tl-text-inverse); font-size: var(--tl-fs-h3); margin-bottom: 4px; }
+  .today-hero p { color: rgba(255,255,255,.85); font-size: var(--tl-fs-small); margin: 0; }
+  .today-empty { padding: var(--tl-space-5); text-align:center; color:var(--tl-text-tertiary); font-size: var(--tl-fs-small); }
 </style>
 </head>
 <body>
@@ -48,6 +59,18 @@
 </div>
 
 <div class="wrap wrap-md">
+
+  <!-- ===== DASHBOARD DO DIA ===== -->
+  <div class="card">
+    <div class="today-hero">
+      <h2 id="todayTitle">Hoje</h2>
+      <p id="todayDate"></p>
+    </div>
+    <div id="todayBlocks">
+      <div class="today-empty">Nenhum aluno com horário definido para hoje.</div>
+    </div>
+  </div>
+
   <!-- STUDENTS -->
   <div class="card">
     <div class="card-hd">
@@ -72,8 +95,9 @@
       <div class="lg"><span class="sw" style="background:var(--tl-danger-soft);border-color:var(--tl-danger)"></span> Cancelled</div>
       <div class="lg"><span class="sw" style="background:var(--tl-surface);border-color:var(--tl-border)"></span> No lesson</div>
       <div class="lg"><span style="width:5px;height:5px;border-radius:99px;background:var(--tl-primary);display:inline-block"></span> Has note</div>
+      <div class="lg"><span style="width:14px;height:6px;border-radius:2px;background:linear-gradient(to right,var(--tl-secondary) 0 47%,transparent 47% 53%,var(--tl-secondary) 53% 100%);display:inline-block"></span> Aula dupla</div>
     </div>
-    <p class="tl-caption" style="margin-top:10px">Click any day to mark what happened and add a note.</p>
+    <p class="tl-caption" style="margin-top:10px">Click any day to mark what happened and add a note. Alunos com duas aulas consecutivas mostram o traço duplo no rodapé da célula.</p>
   </div>
 
   <!-- STATS -->
@@ -95,16 +119,32 @@
 
 <!-- DAY MODAL -->
 <div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
+  <div class="modal" style="max-width:520px">
     <h3 id="mTitle">Lesson</h3>
     <p class="sub" id="mSub"></p>
-    <div class="opts">
-      <button class="btn success sm" onclick="setStatus('done')">✓ Lesson done</button>
-      <button class="btn info sm" onclick="setStatus('scheduled')">◷ Scheduled</button>
-      <button class="btn danger sm" onclick="setStatus('cancelled')">✗ Cancelled</button>
+
+    <!-- SESSION TABS (only visible when student has double lessons) -->
+    <div class="session-tabs" id="sessTabs" role="tablist" style="display:none">
+      <button type="button" class="session-tab" data-tab="0" onclick="pickSession(0)">
+        <span class="dot"></span> <span id="sTab0">Aula 1</span>
+      </button>
+      <button type="button" class="session-tab" data-tab="1" onclick="pickSession(1)">
+        <span class="dot"></span> <span id="sTab1">Aula 2</span>
+      </button>
+      <button type="button" class="session-tab" data-tab="block" onclick="pickSession('block')">
+        <i data-lucide="notebook" class="tl-icon-sm"></i> Bloco
+      </button>
+    </div>
+
+    <!-- Status buttons -->
+    <div class="opts" id="statusOpts">
+      <button class="btn success sm" onclick="setStatus('done')"><i data-lucide="check" class="tl-icon-sm"></i> Lesson done</button>
+      <button class="btn info sm" onclick="setStatus('scheduled')"><i data-lucide="clock" class="tl-icon-sm"></i> Scheduled</button>
+      <button class="btn danger sm" onclick="setStatus('cancelled')"><i data-lucide="x" class="tl-icon-sm"></i> Cancelled</button>
       <button class="btn gray sm" onclick="setStatus('')">Clear</button>
     </div>
-    <!-- ===== LEARNING PROGRESS — contents covered in this lesson ===== -->
+
+    <!-- ===== LEARNING PROGRESS ===== -->
     <div id="lpBlock" style="margin:14px 0 4px">
       <div class="row" style="margin-bottom:8px">
         <label class="lbl" style="margin:0">Contents covered</label>
@@ -115,11 +155,18 @@
       <div id="lpList" style="max-height:190px;overflow-y:auto;border:1px solid var(--tl-border);border-radius:var(--tl-radius-md);padding:6px"></div>
     </div>
 
-    <label class="lbl">Note (homework, absence reason...)</label>
+    <label class="lbl" id="mNoteLabel">Note (homework, absence reason...)</label>
     <input class="inp" id="mNote" placeholder="e.g. she asked for extra practice">
+
+    <!-- Homework — só aparece quando é sessão individual -->
+    <div id="mHwWrap" style="margin-top:var(--tl-space-3)">
+      <label class="lbl">Homework</label>
+      <input class="inp" id="mHw" placeholder="e.g. read page 24, prepare 3 questions">
+    </div>
+
     <div class="actions">
       <button class="btn gray" onclick="closeModal()">Close</button>
-      <button class="btn primary" onclick="saveNote()">Save</button>
+      <button class="btn primary" onclick="saveNote()"><i data-lucide="check" class="tl-icon-sm"></i> Save</button>
     </div>
   </div>
 </div>
@@ -135,33 +182,35 @@
 
 <script src="platform-print.js?v=1"></script>
 <script>
-/* ---------- shared student store (managed in students.html) ---------- */
-/* ---------- student store — fonte única: platform-students.js ----------
-   O bloco DEFAULT_STUDENTS/loadStudents que existia aqui foi centralizado.
-   Estes aliases mantêm o restante desta página inalterado. -------------- */
+/* ---------- store ---------- */
 const STU_KEY = TeacherLu.Students.KEY;
 const DEFAULT_STUDENTS = TeacherLu.Students.DEFAULTS;
 function loadStudents(){ return TeacherLu.Students.load(); }
 const STUDENTS_DATA=loadStudents();
-const STUDENTS=STUDENTS_DATA.map(s=>s.id);   // identidade = id (nome é só exibição)
+const STUDENTS=STUDENTS_DATA.map(s=>s.id);
 
-/* Nome de exibição a partir do id — o nome nunca indexa nada. */
 function displayName(id){ return TeacherLu.Students.nameOf(id); }
+function studentOf(id){ return STUDENTS_DATA.find(s=>s.id===id); }
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-let student=STUDENTS[0];   // id do aluno selecionado
-let view=new Date(2026,6,1);   // July 2026
+const WEEKDAY_PT=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+let student=STUDENTS[0];
+let view=new Date(2026,6,1);
 let selKey=null;
+let selTab=0; // 0 = aula 1 / 1 = aula 2 / 'block' = observação geral
 
 /* ---------- storage ---------- */
-/* Chave SEMPRE por student.id — renomear um aluno não pode perder histórico.
-   Registros antigos por nome são convertidos por
-   TeacherLu.Students.migrateScheduleKeys() ao carregar platform-students.js. */
 function keyFor(studentId,d){return 'sched|'+studentId+'|'+d;}
 function getRec(s,d){try{const v=localStorage.getItem(keyFor(s,d));return v?JSON.parse(v):null;}catch(e){return null;}}
 function setRec(s,d,rec){
   try{
-    if(!rec||(!rec.status&&!rec.note))localStorage.removeItem(keyFor(s,d));
-    else localStorage.setItem(keyFor(s,d),JSON.stringify(rec));
+    // Vazio de verdade se: sem status/note no rollup E (sem sessões OU todas sessões vazias)
+    const sessionsEmpty = !rec || !rec.sessions || rec.sessions.every(x=>!x.status&&!x.note&&!x.homework);
+    const rollupEmpty = !rec || (!rec.status && !rec.note);
+    if(rollupEmpty && sessionsEmpty){
+      localStorage.removeItem(keyFor(s,d));
+    } else {
+      localStorage.setItem(keyFor(s,d),JSON.stringify(rec));
+    }
   }catch(e){alert('Could not save. Check your browser storage settings.');}
 }
 function allRecs(s){
@@ -185,15 +234,120 @@ function todayISO(){const t=new Date();return iso(t.getFullYear(),t.getMonth(),t
 function pretty(d){const[y,m,dd]=d.split('-');return dd+' '+MONTHS[+m-1]+' '+y;}
 function dowName(d){const dt=new Date(d+'T12:00:00');return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dt.getDay()];}
 
+/* Rollup: um registro com sessões tem status derivado de suas sessões */
+function rollupStatus(rec){
+  if(!rec) return '';
+  if(rec.sessions && rec.sessions.length){
+    if(rec.sessions.some(s=>s.status==='done')) return 'done';
+    if(rec.sessions.some(s=>s.status==='scheduled')) return 'scheduled';
+    if(rec.sessions.some(s=>s.status==='cancelled')) return 'cancelled';
+    return '';
+  }
+  return rec.status||'';
+}
+function hasNote(rec){
+  if(!rec) return false;
+  if(rec.note) return true;
+  if(rec.sessions) return rec.sessions.some(s=>s.note||s.homework);
+  return false;
+}
+
+/* ---------- Dashboard do dia ---------- */
+function renderTodayDashboard(){
+  const today=todayISO();
+  const dt=new Date(today+'T12:00:00');
+  const dow=WEEKDAY_PT[dt.getDay()];
+  const [y,m,d]=today.split('-');
+  document.getElementById('todayDate').textContent =
+    `${dow}, ${parseInt(d)} de ${MONTHS[+m-1].toLowerCase()} de ${y}`;
+
+  // Todos os alunos com startTime definido — mostrados independentemente do registro
+  const withTime = STUDENTS_DATA
+    .filter(s=>{const sc=TeacherLu.Students.scheduleOf(s);return !!sc.startTime;})
+    .map(s=>{
+      const sc=TeacherLu.Students.scheduleOf(s);
+      const sess=TeacherLu.Students.sessionsOf(s);
+      const range=TeacherLu.Students.blockRange(s);
+      const rec=getRec(s.id,today)||{};
+      const isDouble=sc.mode==='double';
+      return {s,sc,sess,range,rec,isDouble};
+    })
+    .sort((a,b)=>{
+      const at=a.sess[0]?.startMin??9999;
+      const bt=b.sess[0]?.startMin??9999;
+      return at-bt;
+    });
+
+  const container = document.getElementById('todayBlocks');
+  if(!withTime.length){
+    container.innerHTML =
+      '<div class="today-empty">Nenhum aluno com horário definido para hoje. ' +
+      '<a href="students.html" style="color:var(--tl-primary);font-weight:600">Definir horário →</a></div>';
+    return;
+  }
+  document.getElementById('todayTitle').textContent =
+    `Hoje · ${withTime.length} aluno${withTime.length>1?'s':''}`;
+
+  container.innerHTML = withTime.map(({s,sc,sess,range,rec,isDouble})=>{
+    const rollupSt = rollupStatus(rec);
+    const stChip = rollupSt==='done'?'<span class="badge success">✓ done</span>':
+                   rollupSt==='scheduled'?'<span class="badge info">◷ scheduled</span>':
+                   rollupSt==='cancelled'?'<span class="badge danger">✗ cancelled</span>':
+                   '<span class="badge neutral">—</span>';
+    const sessionRows = isDouble ? sess.map((se,i)=>{
+      const ss = (rec.sessions&&rec.sessions[i])||{};
+      const st = ss.status||'';
+      const stTxt = st==='done'?'✓ Done':st==='scheduled'?'Scheduled':st==='cancelled'?'✗ Cancelled':'—';
+      return `<div class="day-block-session ${st}" onclick="openDaySession('${today}','${s.id}',${i})">
+                <span class="idx">${i+1}</span>
+                <div>
+                  <div class="time">${se.start}–${se.end}</div>
+                  ${ss.note?`<div class="tl-caption" style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(ss.note)}</div>`:''}
+                </div>
+                <span class="st">${stTxt}</span>
+              </div>`;
+    }).join('') : '';
+    const open = isDouble ? '' : ''; // padrão fechado
+    return `<div class="day-block ${isDouble?'dual':''} ${open}" id="db-${s.id}">
+      <div class="day-block-head" onclick="${isDouble?`toggleTodayBlock('${s.id}')`:`openDaySession('${today}','${s.id}',0)`}">
+        <div class="stu-emoji">${s.emoji||'🙂'}</div>
+        <div class="info">
+          <div class="name">${esc(s.name)}</div>
+          <div class="meta">
+            <span class="time-range ${isDouble?'double':''}"><i data-lucide="clock" class="tl-icon-xs"></i>${range||'—'}</span>
+            ${isDouble?'<span class="tl-caption" style="color:var(--tl-secondary-hover);font-weight:600">2 aulas consecutivas</span>':''}
+            ${stChip}
+          </div>
+        </div>
+        ${isDouble?'<i data-lucide="chevron-down" class="tl-icon caret"></i>':'<i data-lucide="arrow-right" class="tl-icon tl-icon-sm" style="color:var(--tl-text-tertiary)"></i>'}
+      </div>
+      ${isDouble?`<div class="day-block-body"><div class="day-block-sessions">${sessionRows}</div></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleTodayBlock(id){
+  const el=document.getElementById('db-'+id);
+  if(el) el.classList.toggle('open');
+}
+function esc(t){return String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 /* ---------- render ---------- */
 function renderStudents(){
-  document.getElementById('stuGrid').innerHTML=STUDENTS_DATA.map((s,i)=>
-    `<button class="stu ${s.id===student?'active':''}" onclick="pickStudent(${i})">${s.emoji?s.emoji+' ':''}${s.name}</button>`).join('');
+  document.getElementById('stuGrid').innerHTML=STUDENTS_DATA.map((s,i)=>{
+    const dbl=TeacherLu.Students.isDouble(s);
+    const range=TeacherLu.Students.blockRange(s);
+    return `<button class="stu ${s.id===student?'active':''}" onclick="pickStudent(${i})">
+      ${s.emoji?s.emoji+' ':''}${s.name}
+      ${range?`<div class="tl-caption" style="margin-top:2px;font-weight:500${s.id===student?';color:rgba(255,255,255,.85)':''}">${range}${dbl?' · 2×':''}</div>`:''}
+    </button>`;
+  }).join('');
 }
 function pickStudent(i){student=STUDENTS_DATA[i].id;renderStudents();renderCal();}
 
 function renderCal(){
   const y=view.getFullYear(),m=view.getMonth();
+  const isDouble = TeacherLu.Students.isDouble(student);
   document.getElementById('monthLabel').textContent=MONTHS[m]+' '+y;
   document.getElementById('statsTitle').textContent=displayName(student)+' — '+MONTHS[m]+' '+y;
   const first=new Date(y,m,1).getDay();
@@ -204,58 +358,186 @@ function renderCal(){
   for(let d=1;d<=days;d++){
     const k=iso(y,m,d);
     const r=getRec(student,k);
-    const st=r&&r.status?r.status:'';
+    const st=rollupStatus(r);
     if(st==='done')done++;else if(st==='scheduled')sch++;else if(st==='cancelled')canc++;
     const isToday=k===todayISO();
     const mark=st==='done'?'✓':st==='cancelled'?'✗':st==='scheduled'?'◷':'';
     const col=st==='done'?'var(--tl-success-text)':st==='cancelled'?'var(--tl-danger-text)':st==='scheduled'?'var(--tl-info-text)':'';
-    h+=`<div class="day ${st} ${isToday?'today':''}" onclick="openDay('${k}')" title="${r&&r.note?r.note.replace(/"/g,'&quot;'):''}">
+    const noteText = r?.note || (r?.sessions||[]).map(s=>s.note).filter(Boolean).join(' · ');
+    h+=`<div class="day ${st} ${isToday?'today':''} ${isDouble?'dual':''}" onclick="openDay('${k}')" title="${noteText.replace(/"/g,'&quot;')}">
           <div class="n">${d}</div>
           ${mark?`<div class="mark" style="color:${col}">${mark}</div>`:''}
-          ${r&&r.note?'<div class="notedot"></div>':''}
+          ${hasNote(r)?'<div class="notedot"></div>':''}
+          ${isDouble?'<span class="day-x2">×2</span>':''}
         </div>`;
   }
   document.getElementById('cal').innerHTML=h;
   document.getElementById('sDone').textContent=done;
   document.getElementById('sSched').textContent=sch;
   document.getElementById('sCanc').textContent=canc;
-  document.getElementById('sTotal').textContent=allRecs(student).filter(r=>r.status==='done').length;
+  document.getElementById('sTotal').textContent=allRecs(student).filter(r=>rollupStatus(r)==='done').length;
 }
 
 function shiftMonth(n){view=new Date(view.getFullYear(),view.getMonth()+n,1);renderCal();}
 function goToday(){const t=new Date();view=new Date(t.getFullYear(),t.getMonth(),1);renderCal();}
 
 /* ---------- modal ---------- */
-function openDay(k){
-  selKey=k;
-  const r=getRec(student,k)||{};
-  document.getElementById('mTitle').textContent=displayName(student);
-  document.getElementById('mSub').textContent=dowName(k)+', '+pretty(k);
-  document.getElementById('mNote').value=r.note||'';
+function openDay(k){ openDaySession(k, student, 0); }
+function openDaySession(date, studentId, tabIndex){
+  selKey = date;
+  // Switch selected student if opened from dashboard
+  if(studentId !== student){
+    student = studentId;
+    renderStudents();
+    renderCal();
+  }
+  const s = studentOf(student);
+  const sc = TeacherLu.Students.scheduleOf(s);
+  const sess = TeacherLu.Students.sessionsOf(s);
+  const isDouble = sc.mode === 'double';
+
+  const rec = getRec(student, date) || {};
+  document.getElementById('mTitle').textContent = displayName(student);
+  const timeInfo = isDouble && sess.length===2
+    ? ` · ${sess[0].start}–${sess[1].end} (2 aulas)`
+    : sess.length===1 ? ` · ${sess[0].start}–${sess[0].end}` : '';
+  document.getElementById('mSub').textContent = dowName(date)+', '+pretty(date)+timeInfo;
+
+  // Sync tabs visibility
+  const tabsEl = document.getElementById('sessTabs');
+  if(isDouble){
+    tabsEl.style.display = '';
+    document.getElementById('sTab0').textContent = 'Aula 1' + (sess[0]? ` · ${sess[0].start}`:'');
+    document.getElementById('sTab1').textContent = 'Aula 2' + (sess[1]? ` · ${sess[1].start}`:'');
+    updateTabDots(rec);
+    selTab = (tabIndex === 'block' ? 'block' : Math.max(0, Math.min(1, tabIndex||0)));
+  } else {
+    tabsEl.style.display = 'none';
+    selTab = 0;
+  }
+  paintTabs();
+  paintFieldsFromTab(rec, sess, isDouble);
+
   document.getElementById('ov').classList.add('show');
   renderLessonProgress();
 }
+function updateTabDots(rec){
+  const s0 = (rec.sessions&&rec.sessions[0])?.status || '';
+  const s1 = (rec.sessions&&rec.sessions[1])?.status || '';
+  const t0 = document.querySelector('.session-tab[data-tab="0"]');
+  const t1 = document.querySelector('.session-tab[data-tab="1"]');
+  ['status-done','status-scheduled','status-cancelled','has-status'].forEach(c=>{
+    t0.classList.remove(c); t1.classList.remove(c);
+  });
+  if(s0){ t0.classList.add('status-'+s0,'has-status'); }
+  if(s1){ t1.classList.add('status-'+s1,'has-status'); }
+}
+function pickSession(idx){
+  const s = studentOf(student);
+  const isDouble = TeacherLu.Students.isDouble(s);
+  if(!isDouble) return;
+  const rec = getRec(student, selKey) || {};
+  const sess = TeacherLu.Students.sessionsOf(s);
+  // Salva o que estava na aba atual antes de trocar
+  persistCurrentTab(rec, isDouble);
+  selTab = idx;
+  paintTabs();
+  paintFieldsFromTab(rec, sess, isDouble);
+}
+function paintTabs(){
+  document.querySelectorAll('.session-tab').forEach(t=>{
+    t.classList.toggle('active', String(t.dataset.tab)===String(selTab));
+  });
+}
+function paintFieldsFromTab(rec, sess, isDouble){
+  const hwWrap = document.getElementById('mHwWrap');
+  const noteLbl = document.getElementById('mNoteLabel');
+  const noteInp = document.getElementById('mNote');
+  const hwInp = document.getElementById('mHw');
+  const opts = document.getElementById('statusOpts');
+
+  if(!isDouble){
+    noteLbl.textContent = 'Note (homework, absence reason...)';
+    noteInp.value = rec.note || '';
+    hwWrap.style.display = 'none';
+    opts.style.display = '';
+    return;
+  }
+  if(selTab === 'block'){
+    noteLbl.textContent = 'Observação geral do bloco';
+    noteInp.value = rec.note || '';
+    hwWrap.style.display = 'none';
+    opts.style.display = 'none'; // Bloco não tem status próprio
+    return;
+  }
+  const idx = +selTab;
+  const s = (rec.sessions && rec.sessions[idx]) || {};
+  noteLbl.textContent = `Nota da Aula ${idx+1}` + (sess[idx]? ` · ${sess[idx].start}–${sess[idx].end}`:'');
+  noteInp.value = s.note || '';
+  hwInp.value = s.homework || '';
+  hwWrap.style.display = '';
+  opts.style.display = '';
+}
+function persistCurrentTab(rec, isDouble){
+  if(!isDouble) return;
+  if(selTab === 'block'){
+    rec.note = document.getElementById('mNote').value.trim();
+    return;
+  }
+  rec.sessions = rec.sessions || [{},{}];
+  const idx = +selTab;
+  rec.sessions[idx] = rec.sessions[idx] || {};
+  rec.sessions[idx].note = document.getElementById('mNote').value.trim();
+  rec.sessions[idx].homework = document.getElementById('mHw').value.trim();
+}
+
 function closeModal(){document.getElementById('ov').classList.remove('show');selKey=null;}
+
 function setStatus(st){
   if(!selKey)return;
-  const r=getRec(student,selKey)||{};
-  r.status=st;
-  r.note=document.getElementById('mNote').value.trim();
-  setRec(student,selKey,r);
-  renderCal();closeModal();
+  const s = studentOf(student);
+  const isDouble = TeacherLu.Students.isDouble(s);
+  const rec = getRec(student,selKey) || {};
+  if(isDouble && selTab !== 'block'){
+    // aplica só à sessão ativa
+    rec.sessions = rec.sessions || [{},{}];
+    const idx = +selTab;
+    rec.sessions[idx] = rec.sessions[idx] || {};
+    rec.sessions[idx].status = st;
+    rec.sessions[idx].note = document.getElementById('mNote').value.trim();
+    rec.sessions[idx].homework = document.getElementById('mHw').value.trim();
+    // rollup: mantém compatibilidade — status field reflete o melhor status
+    rec.status = rollupStatus(rec);
+  } else {
+    rec.status = st;
+    rec.note = document.getElementById('mNote').value.trim();
+  }
+  setRec(student,selKey,rec);
+  renderCal();
+  renderTodayDashboard();
+  closeModal();
 }
 function saveNote(){
   if(!selKey)return;
-  const r=getRec(student,selKey)||{};
-  r.note=document.getElementById('mNote').value.trim();
-  if(!r.status&&r.note)r.status='done';
-  setRec(student,selKey,r);
-  renderCal();closeModal();
+  const s = studentOf(student);
+  const isDouble = TeacherLu.Students.isDouble(s);
+  const rec = getRec(student,selKey) || {};
+  if(isDouble){
+    persistCurrentTab(rec, isDouble);
+    rec.status = rollupStatus(rec);
+  } else {
+    rec.note = document.getElementById('mNote').value.trim();
+    if(!rec.status && rec.note) rec.status = 'done';
+  }
+  setRec(student,selKey,rec);
+  renderCal();
+  renderTodayDashboard();
+  closeModal();
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
 /* ================================================================
-   LEARNING PROGRESS — o que foi dado nesta aula
+   LEARNING PROGRESS
    ================================================================ */
 const LP_Content  = window.TeacherLu && window.TeacherLu.Content;
 const LP_Progress = window.TeacherLu && window.TeacherLu.Progress;
@@ -275,7 +557,6 @@ function renderLessonProgress(){
   document.getElementById('lpCount').textContent =
     covered.length ? covered.length + ' marked' : 'nothing marked yet';
 
-  // Sugestões: próximos conteúdos ainda não estudados por este aluno.
   const sug = LP_Progress.suggestions(sid, 4)
     .filter(s => covered.indexOf(s.item.id) === -1);
   document.getElementById('lpSuggest').innerHTML = sug.length
@@ -286,7 +567,6 @@ function renderLessonProgress(){
        </div>`
     : '';
 
-  // Lista completa: marcados primeiro, depois o resto.
   const rows = [];
   LP_Content.SKILLS.forEach(sk => {
     LP_Content.items(sk.id).forEach(it => {
@@ -329,15 +609,19 @@ function label(s){return s==='done'?'Lesson done':s==='cancelled'?'Cancelled':s=
 function rowsToTable(rows){
   if(!rows.length)return '<p>No lessons recorded.</p>';
   return `<table><thead><tr><th>Date</th><th>Day</th><th>Status</th><th>Note</th></tr></thead><tbody>`+
-    rows.map(r=>`<tr><td>${pretty(r.date)}</td><td>${dowName(r.date)}</td><td>${label(r.status)}</td><td>${r.note||''}</td></tr>`).join('')+
+    rows.map(r=>{
+      const st = rollupStatus(r);
+      const note = r.note || (r.sessions||[]).map((se,i)=>se.note?`Aula ${i+1}: ${se.note}`:'').filter(Boolean).join(' · ');
+      return `<tr><td>${pretty(r.date)}</td><td>${dowName(r.date)}</td><td>${label(st)}</td><td>${note}</td></tr>`;
+    }).join('')+
     `</tbody></table>`;
 }
 function exportMonth(){
   const y=view.getFullYear(),m=view.getMonth();
   const pre=iso(y,m,1).slice(0,7);
   const rows=allRecs(student).filter(r=>r.date.startsWith(pre));
-  const done=rows.filter(r=>r.status==='done').length;
-  const canc=rows.filter(r=>r.status==='cancelled').length;
+  const done=rows.filter(r=>rollupStatus(r)==='done').length;
+  const canc=rows.filter(r=>rollupStatus(r)==='cancelled').length;
   const html=`<h1>Lesson Calendar — ${displayName(student)}</h1>
     <p><b>Month:</b> ${MONTHS[m]} ${y}</p>
     <p><b>Lessons done:</b> ${done} · <b>Cancelled:</b> ${canc}</p>
@@ -346,7 +630,7 @@ function exportMonth(){
 }
 function exportAll(){
   const rows=allRecs(student);
-  const done=rows.filter(r=>r.status==='done').length;
+  const done=rows.filter(r=>rollupStatus(r)==='done').length;
   const html=`<h1>Lesson History — ${displayName(student)}</h1>
     <p><b>Total lessons done:</b> ${done}</p>
     ${rowsToTable(rows)}`;
@@ -354,7 +638,10 @@ function exportAll(){
 }
 function printDoc(html,title){ TeacherLu.printDoc(html, title, TeacherLu.PRINT_CSS.CALENDAR); }
 
-renderStudents();renderCal();
+/* ---------- boot ---------- */
+renderStudents();
+renderCal();
+renderTodayDashboard();
 </script>
 </body>
 </html>

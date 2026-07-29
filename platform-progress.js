@@ -34,6 +34,15 @@
    • Idempotent: recording the same item for the same lesson date twice does
      not inflate the counters.
    • Knows nothing about any specific module.
+
+   CONSECUTIVE LESSONS — DESIGN DECISION
+   -------------------------------------
+   Progress is indexed by DAY, not by SESSION. If a student takes two
+   consecutive lessons on the same evening, contents covered in both
+   sessions are consolidated under the same date. This is deliberate:
+   Progress answers "when did this student study X?" — the answer is
+   a date, not a session number. Full rationale in
+   docs/CONSECUTIVE-LESSONS.md §7.2 (design decision D2).
    ========================================================================== */
 
 (function (global) {

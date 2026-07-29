@@ -321,6 +321,9 @@
       <a href="#dropdowns"><i data-lucide="chevron-down" class="tl-icon-sm"></i> Dropdowns</a>
       <a href="#tooltips"><i data-lucide="info" class="tl-icon-sm"></i> Tooltips</a>
       <a href="#breadcrumbs"><i data-lucide="slash" class="tl-icon-sm"></i> Breadcrumbs</a>
+
+      <h4>Studio</h4>
+      <a href="#dual"><i data-lucide="clock-arrow-up" class="tl-icon-sm"></i> Aulas duplas</a>
     </nav>
 
     <!-- CONTENT -->
@@ -973,6 +976,98 @@
                 <button class="btn primary"><i data-lucide="plus" class="tl-icon-sm"></i> Adicionar aluno</button>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== DUAL LESSONS ==================== -->
+      <section id="dual" class="cl-sec">
+        <h2><i data-lucide="clock-arrow-up"></i> Aulas duplas · <span class="cl-tag">Studio</span></h2>
+        <p class="lead">Padrão específico para alunos com duas aulas consecutivas. Retrocompatível — alunos com aula única não veem estes componentes.</p>
+
+        <div class="cl-example">
+          <span class="cl-label">Time-range badge</span>
+          <div class="preview">
+            <span class="time-range"><i data-lucide="clock" class="tl-icon-xs"></i>19:00–19:50</span>
+            <span class="time-range double"><i data-lucide="clock" class="tl-icon-xs"></i>19:00–20:50 <span>·×2</span></span>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Day-block dashboard (aula única)</span>
+          <div class="preview stacked">
+            <div class="day-block">
+              <div class="day-block-head">
+                <div class="stu-emoji">🎨</div>
+                <div class="info">
+                  <div class="name">Lais</div>
+                  <div class="meta">
+                    <span class="time-range"><i data-lucide="clock" class="tl-icon-xs"></i>18:00–18:50</span>
+                    <span class="badge info">◷ scheduled</span>
+                  </div>
+                </div>
+                <i data-lucide="arrow-right" class="tl-icon tl-icon-sm" style="color:var(--tl-text-tertiary)"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Day-block dashboard (2 aulas consecutivas — expandido)</span>
+          <div class="preview stacked">
+            <div class="day-block dual open">
+              <div class="day-block-head">
+                <div class="stu-emoji">🌸</div>
+                <div class="info">
+                  <div class="name">Maria Silva</div>
+                  <div class="meta">
+                    <span class="time-range double"><i data-lucide="clock" class="tl-icon-xs"></i>19:00–20:50</span>
+                    <span class="tl-caption" style="color:var(--tl-secondary-hover);font-weight:600">2 aulas consecutivas</span>
+                    <span class="badge success">✓ done</span>
+                  </div>
+                </div>
+                <i data-lucide="chevron-down" class="tl-icon caret"></i>
+              </div>
+              <div class="day-block-body">
+                <div class="day-block-sessions">
+                  <div class="day-block-session done">
+                    <span class="idx">1</span>
+                    <div><div class="time">19:00–19:50</div><div class="tl-caption">completou os exercícios do capítulo 3</div></div>
+                    <span class="st">✓ Done</span>
+                  </div>
+                  <div class="day-block-session scheduled">
+                    <span class="idx">2</span>
+                    <div><div class="time">20:00–20:50</div></div>
+                    <span class="st">Scheduled</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Session tabs (modal do dia · Aula 1 / Aula 2 / Bloco)</span>
+          <div class="preview stacked">
+            <div class="session-tabs">
+              <button class="session-tab active status-done"><span class="dot"></span> Aula 1 · 19:00</button>
+              <button class="session-tab status-scheduled"><span class="dot"></span> Aula 2 · 20:00</button>
+              <button class="session-tab"><i data-lucide="notebook" class="tl-icon-sm"></i> Bloco</button>
+            </div>
+            <p class="tl-caption">A bolinha à esquerda de cada aba reflete o status (verde=done, azul=scheduled, coral=cancelled). A aba "Bloco" é para observação geral que vale para as duas aulas.</p>
+          </div>
+        </div>
+
+        <div class="cl-example">
+          <span class="cl-label">Célula do calendário · aluno dual</span>
+          <div class="preview" style="background:var(--tl-surface-alt); padding: var(--tl-space-5)">
+            <div style="display:grid;grid-template-columns:repeat(4, 60px);gap:6px">
+              <div class="day dual"><div class="n">14</div><span class="day-x2">×2</span></div>
+              <div class="day dual scheduled"><div class="n">15</div><div class="mark" style="color:var(--tl-info-text)">◷</div><span class="day-x2">×2</span></div>
+              <div class="day dual done"><div class="n">16</div><div class="mark" style="color:var(--tl-success-text)">✓</div><span class="day-x2">×2</span></div>
+              <div class="day dual today"><div class="n">17</div><span class="day-x2">×2</span></div>
+            </div>
+            <p class="tl-caption" style="margin-left:var(--tl-space-4);flex:1">O traço duplo no rodapé + o pill "×2" identificam alunos com 2 aulas.</p>
           </div>
         </div>
       </section>
