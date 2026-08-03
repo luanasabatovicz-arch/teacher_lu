@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu Practice — Home</title>
+
+  <!-- ========= SHARED LAYER ========= -->
+  <!-- Fonte oficial do ecossistema Teacher Lu -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Design System oficial · ZERO duplicação -->
+  <link rel="stylesheet" href="../design-system/theme.css">
+  <script src="../design-system/icons.js" defer></script>
+
+  <!-- Content Registry + engines de conteúdo (compartilhados) -->
+  <script src="../engine/grammar-topics.js?v=4"></script>
+  <script src="../engine/speaking-activities.js?v=4"></script>
+  <script src="../engine/structures-content.js?v=1"></script>
+  <script src="../engine/conversation-lessons.js?v=1"></script>
+  <script src="../engine/listening-content.js?v=1"></script>
+  <script src="../engine/games-content.js?v=4"></script>
+  <script src="../engine/speaking-games.js?v=4"></script>
+  <script src="../engine/curriculum-map.js?v=1"></script>
+  <script src="../engine/competencies.js?v=1"></script>
+
+  <!-- Platform services (compartilhados) -->
+  <script src="../platform-students.js?v=1"></script>
+  <script src="../platform-content.js?v=1"></script>
+  <script src="../platform-progress.js?v=1"></script>
+  <script src="../platform-calendar.js?v=1"></script>
+  <script src="../platform-lesson-builder.js?v=1"></script>
+  <script src="../platform-report-engine.js?v=1"></script>
+  <script src="../platform-print.js?v=1"></script>
+
+  <!-- Practice-specific (mínimo — só bootstrap + nav) -->
+  <script src="practice-bootstrap.js?v=1"></script>
+  <script src="practice-nav.js?v=1"></script>
+
+  <style>
+    /* Estilos exclusivos desta tela — só o mínimo, tudo via tokens do DS */
+    .stage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, .16);
+      color: var(--tl-text-inverse);
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: var(--tl-radius-pill);
+      font-size: var(--tl-fs-caption);
+      font-weight: var(--tl-fw-semibold);
+      letter-spacing: var(--tl-tracking-wide);
+      text-transform: uppercase;
+      margin-top: var(--tl-space-2);
+    }
+    .hero {
+      background: linear-gradient(135deg, var(--tl-primary), #0F5561 60%, var(--tl-secondary));
+      color: var(--tl-text-inverse);
+      border-radius: var(--tl-radius-xl);
+      padding: var(--tl-space-7) var(--tl-space-6);
+      margin-bottom: var(--tl-space-6);
+      text-align: center;
+    }
+    .hero h1 { color: var(--tl-text-inverse); font-size: var(--tl-fs-display); margin-bottom: var(--tl-space-2); }
+    .hero p  { color: rgba(255, 255, 255, .88); max-width: 640px; margin: 0 auto; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--tl-space-3);
+    }
+    .status-card {
+      background: var(--tl-surface);
+      border: 1px solid var(--tl-border);
+      border-radius: var(--tl-radius-lg);
+      padding: var(--tl-space-4);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--tl-space-3);
+      transition: box-shadow var(--tl-dur-fast) var(--tl-ease);
+    }
+    .status-card:hover { box-shadow: var(--tl-shadow-sm); }
+    .status-card .icon {
+      width: 40px; height: 40px;
+      border-radius: var(--tl-radius-md);
+      background: var(--tl-primary-tint);
+      color: var(--tl-primary);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .status-card.ok .icon    { background: var(--tl-success-soft); color: var(--tl-success-text); }
+    .status-card.fail .icon  { background: var(--tl-danger-soft);  color: var(--tl-danger-text); }
+    .status-card .body { flex: 1; min-width: 0; }
+    .status-card .label {
+      font-weight: var(--tl-fw-semibold);
+      color: var(--tl-text);
+      margin-bottom: 2px;
+      display: flex; align-items: center; gap: var(--tl-space-2);
+    }
+    .status-card .detail {
+      font-size: var(--tl-fs-small);
+      color: var(--tl-text-secondary);
+      line-height: var(--tl-lh-normal);
+    }
+    .status-card .st-badge {
+      font-size: var(--tl-fs-caption);
+      font-weight: var(--tl-fw-bold);
+      padding: 2px 8px;
+      border-radius: var(--tl-radius-pill);
+      text-transform: uppercase;
+      letter-spacing: var(--tl-tracking-wide);
+    }
+    .status-card.ok   .st-badge { background: var(--tl-success-soft); color: var(--tl-success-text); }
+    .status-card.fail .st-badge { background: var(--tl-danger-soft);  color: var(--tl-danger-text); }
+
+    .summary-row {
+      display: flex;
+      gap: var(--tl-space-6);
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: var(--tl-surface-alt);
+      border: 1px solid var(--tl-border);
+      border-radius: var(--tl-radius-lg);
+      padding: var(--tl-space-5);
+      margin-bottom: var(--tl-space-5);
+    }
+    .summary-row .m .v {
+      font-size: var(--tl-fs-h1);
+      font-weight: var(--tl-fw-bold);
+      color: var(--tl-primary);
+      line-height: 1;
+    }
+    .summary-row .m.ok .v   { color: var(--tl-success); }
+    .summary-row .m.fail .v { color: var(--tl-danger); }
+    .summary-row .m .l {
+      font-size: var(--tl-fs-caption);
+      text-transform: uppercase;
+      letter-spacing: var(--tl-tracking-wide);
+      color: var(--tl-text-secondary);
+      font-weight: var(--tl-fw-semibold);
+      margin-top: 4px;
+    }
+
+    .modules-empty {
+      background: var(--tl-info-soft);
+      color: var(--tl-info-text);
+      border-radius: var(--tl-radius-md);
+      padding: var(--tl-space-4);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--tl-space-3);
+      font-size: var(--tl-fs-small);
+      line-height: var(--tl-lh-relaxed);
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topwrap">
+    <div class="row">
+      <div>
+        <h1>Teacher Lu Practice</h1>
+        <p>Painel de infraestrutura · Fase 1 — Bootstrap</p>
+      </div>
+      <a href="../index.html" class="menu-btn">
+        <i data-lucide="arrow-left" class="tl-icon-sm"></i> Voltar ao Studio
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap wrap-md">
+
+  <!-- ========= HERO ========= -->
+  <div class="hero">
+    <span class="stage-badge">
+      <i data-lucide="rocket" class="tl-icon-xs"></i>
+      Fase 1 · Bootstrap
+    </span>
+    <h1>Bem-vinda à Practice</h1>
+    <p>
+      Esta é a infraestrutura inicial da Teacher Lu Practice — nascida a partir do
+      ecossistema da Studio, sem duplicar nenhuma linha. Os cards abaixo mostram o
+      estado dos módulos compartilhados carregados neste browser.
+    </p>
+  </div>
+
+  <!-- ========= SUMMARY ========= -->
+  <section class="cl-sec">
+    <h2 style="margin-bottom:var(--tl-space-3)">
+      <i data-lucide="activity" class="tl-icon-lg" style="color:var(--tl-secondary)"></i>
+      Status geral
+    </h2>
+    <div id="summary" class="summary-row">
+      <div class="m"><div class="v" id="mTotal">—</div><div class="l">Módulos verificados</div></div>
+      <div class="m ok"><div class="v" id="mPassing">—</div><div class="l">Carregados</div></div>
+      <div class="m fail"><div class="v" id="mFailing">—</div><div class="l">Ausentes</div></div>
+      <div class="m"><div class="v" id="mReady">—</div><div class="l">Ready</div></div>
+    </div>
+    <p class="tl-caption" style="text-align:center">
+      "Ready" indica que os módulos essenciais para a Fase 1 estão presentes.
+      Não confunda com pronto para uso pedagógico — atividades só chegam na Fase 3.
+    </p>
+  </section>
+
+  <!-- ========= HEALTH CHECKS ========= -->
+  <section class="cl-sec" style="margin-top:var(--tl-space-6)">
+    <h2 style="margin-bottom:var(--tl-space-3)">
+      <i data-lucide="check-circle-2" class="tl-icon-lg" style="color:var(--tl-secondary)"></i>
+      Módulos compartilhados
+    </h2>
+    <p class="tl-muted" style="margin-bottom:var(--tl-space-4)">
+      Cada card confirma que um pilar do ecossistema Teacher Lu está disponível
+      para a Practice — sem que ela tenha uma versão paralela.
+    </p>
+    <div id="checks" class="status-grid"></div>
+  </section>
+
+  <!-- ========= NAV ========= -->
+  <section class="cl-sec" style="margin-top:var(--tl-space-6)">
+    <h2 style="margin-bottom:var(--tl-space-3)">
+      <i data-lucide="compass" class="tl-icon-lg" style="color:var(--tl-secondary)"></i>
+      Navegação
+    </h2>
+    <div id="nav" class="status-grid"></div>
+  </section>
+
+  <!-- ========= FUTURE MODULES ========= -->
+  <section class="cl-sec" style="margin-top:var(--tl-space-6)">
+    <h2 style="margin-bottom:var(--tl-space-3)">
+      <i data-lucide="layers" class="tl-icon-lg" style="color:var(--tl-secondary)"></i>
+      Módulos da Practice
+    </h2>
+    <div id="modules">
+      <div class="modules-empty">
+        <i data-lucide="info" class="tl-icon"></i>
+        <div>
+          <b>Nenhum módulo pedagógico registrado ainda.</b> Esta é a Fase 1 — infraestrutura pura.
+          Módulos futuros (flashcards, ditados, streaks, etc.) vão aparecer aqui
+          quando forem registrados via
+          <code style="background:rgba(0,0,0,.06);padding:2px 6px;border-radius:4px">TeacherLu.Practice.registerModule(...)</code>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="tl-footer" style="margin-top:var(--tl-space-8)">
+    <h2>Teacher Lu Practice</h2>
+    <p>Nascida do ecossistema da Studio · versão <span id="verEl">—</span></p>
+    <p class="copyright" style="margin-top:var(--tl-space-3)">
+      Ecossistema Teacher Lu · Design System v2.0
+    </p>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   RENDERIZAÇÃO DO DASHBOARD
+   Consome exclusivamente a API pública de TeacherLu.Practice.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var P = window.TeacherLu && window.TeacherLu.Practice;
+  if (!P) {
+    document.getElementById('checks').innerHTML =
+      '<div class="alert danger"><i data-lucide="alert-circle" class="tl-icon"></i>' +
+      '<div><b>practice-bootstrap.js não carregou.</b> Verifique o import.</div></div>';
+    return;
+  }
+
+  document.getElementById('verEl').textContent = P.VERSION + ' · ' + P.STAGE;
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderChecks() {
+    var report = P.healthCheck();
+    document.getElementById('mTotal').textContent = report.total;
+    document.getElementById('mPassing').textContent = report.passing;
+    document.getElementById('mFailing').textContent = report.failing;
+    document.getElementById('mReady').textContent = P.isReady() ? 'YES' : 'NO';
+
+    document.getElementById('checks').innerHTML = report.results.map(function (r) {
+      return '<div class="status-card ' + (r.ok ? 'ok' : 'fail') + '">' +
+        '<div class="icon"><i data-lucide="' + esc(r.icon) + '"></i></div>' +
+        '<div class="body">' +
+          '<div class="label">' + esc(r.label) +
+            ' <span class="st-badge">' + (r.ok ? 'OK' : 'ausente') + '</span></div>' +
+          '<div class="detail">' + esc(r.detail) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderNav() {
+    var items = (P.Nav && P.Nav.items()) || [];
+    document.getElementById('nav').innerHTML = items.map(function (r) {
+      return '<a class="status-card" href="' + esc(r.href) + '" style="text-decoration:none">' +
+        '<div class="icon"><i data-lucide="' + esc(r.icon) + '"></i></div>' +
+        '<div class="body">' +
+          '<div class="label">' + esc(r.label) +
+            ' <span class="st-badge" style="background:var(--tl-primary-tint);color:var(--tl-primary)">' + esc(r.group) + '</span></div>' +
+          '<div class="detail">' + esc(r.description) + '</div>' +
+        '</div>' +
+      '</a>';
+    }).join('');
+  }
+
+  function renderModules() {
+    var mods = P.modules || [];
+    if (!mods.length) return;  // mantém a mensagem "nenhum módulo"
+    document.getElementById('modules').innerHTML =
+      '<div class="status-grid">' + mods.map(function (m) {
+        return '<a class="status-card" href="' + esc(m.route || '#') + '" style="text-decoration:none">' +
+          '<div class="icon"><i data-lucide="' + esc(m.icon || 'square') + '"></i></div>' +
+          '<div class="body">' +
+            '<div class="label">' + esc(m.label || m.id) + '</div>' +
+            '<div class="detail">' + esc(m.description || '') + '</div>' +
+          '</div>' +
+        '</a>';
+      }).join('') + '</div>';
+  }
+
+  renderChecks();
+  renderNav();
+  renderModules();
+})();
+</script>
+
+</body>
+</html>
