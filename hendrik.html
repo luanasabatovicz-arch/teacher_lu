@@ -108,8 +108,9 @@
   .tab.active { background: var(--tl-primary); color: var(--tl-text-inverse); border-color: transparent; }
   .tab.ok { border-color: var(--tl-success); color: var(--tl-success-text); }
 
-  /* Painel */
+  /* Painel — override do .panel do DS (que é display:none como tab-panel) */
   .panel {
+    display: block;
     background: var(--tl-surface);
     border: 3px solid var(--tl-secondary-soft);
     border-radius: var(--tl-radius-2xl);

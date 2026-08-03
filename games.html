@@ -221,6 +221,7 @@ function oNew(){
 }
 function oPick(i){oAns=i;render();}
 function renderOdd(){
+  if(!oCur){oNew();return;}
   const it=oCur;
   let opts=it.w.map((w,i)=>{let cls='opt';if(oAns!==null){if(i===it.odd)cls+=' right';else if(i===oAns)cls+=' wrong';}return `<button class="chip" style="font-size:16px;padding:12px 18px;${oAns!==null&&i===it.odd?'background:linear-gradient(135deg,#22c55e,#4ade80);color:#fff':''}${oAns!==null&&i===oAns&&i!==it.odd?'background:#fee2e2;color:#991b1b':''}" onclick="oPick(${i})">${w}</button>`;}).join(' ');
   let fb=oAns!==null?`<div class="feedback ${oAns===it.odd?'ok':'no'}">${oAns===it.odd?'Correct! ':'No. '}<b>${it.w[it.odd]}</b> — ${it.reason}.</div>`:'';
