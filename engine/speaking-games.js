@@ -255,33 +255,64 @@ var GAMES=[
 /* ============================================================
    API
    ============================================================ */
-function rnd(n){ return Math.floor(Math.random()*n); }
 function filt(bank, level, theme){
   return (bank||[]).filter(function(it){
     return (level==='all'||!it.lvl||it.lvl===level) && (theme==='all'||!it.theme||it.theme===theme);
   });
 }
-function pick(arr, lastQ){
-  if(!arr.length) return null;
-  if(arr.length===1) return arr[0];
-  var it, guard=0;
-  do{ it=arr[rnd(arr.length)]; guard++; }while(lastQ!=null && JSON.stringify(it)===lastQ && guard<12);
-  return it;
-}
 function game(id){ for(var i=0;i<GAMES.length;i++) if(GAMES[i].id===id) return GAMES[i]; return null; }
 
-/* draw: retorna {gameId, item} respeitando level/theme; evita repetir o último */
+/* ============================================================
+   SORTEIO — "saco embaralhado" por chave (mesmo algoritmo do Class Games).
+   Nunca repete até esgotar; ao esgotar, reembaralha sem repetir a última
+   do ciclo anterior. Cada combinação (jogo × level × theme) tem seu bag
+   independente, então trocar filtro não polui o histórico do filtro anterior.
+   ============================================================ */
+var bags={};
+function shuffleIdx(n){ var a=[],i,j,t; for(i=0;i<n;i++)a.push(i); for(i=n-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function nextFromBag(key, arr){
+  if(!arr||!arr.length) return null;
+  if(arr.length===1) return arr[0];
+  var b=bags[key];
+  if(!b || b.n!==arr.length || b.i>=b.order.length){
+    var order=shuffleIdx(arr.length);
+    if(b && order[0]===b.last){ var s=1+Math.floor(Math.random()*(order.length-1)); var t=order[0];order[0]=order[s];order[s]=t; }
+    b={order:order,i:0,n:arr.length,last:(b?b.last:-1)};
+    bags[key]=b;
+  }
+  var idx=b.order[b.i++];
+  b.last=idx;
+  return arr[idx];
+}
+function resetBag(key){ delete bags[key]; }
+
+/* draw: retorna {gameId, item} respeitando level/theme; usa shuffle bag
+   independente por combinação (jogo, level, theme). */
 function draw(id, opts){
   opts=opts||{};
   var level=opts.level||'all', theme=opts.theme||'all';
   var g=game(id); if(!g) return null;
-  if(id==='dice'){ return {gameId:id, item:pick(DICE, opts.last)}; }
-  if(id==='spin'){ return {gameId:id, item:pick(WHEELS, opts.last)}; }
-  var pool=filt(g.bank, level, theme);
-  if(!pool.length) pool=filt(g.bank, 'all', theme);      // afrouxa nível
-  if(!pool.length) pool=filt(g.bank, level, 'all');      // afrouxa tema
-  if(!pool.length) pool=g.bank||[];
-  return {gameId:id, item:pick(pool, opts.last)};
+  if(id==='dice'){ return {gameId:id, item:nextFromBag('sg:dice', DICE)}; }
+  if(id==='spin'){ return {gameId:id, item:nextFromBag('sg:spin', WHEELS)}; }
+  /* Afrouxa filtros quando o cruzamento level+theme retorna um pool
+     minúsculo (≤2 itens). Sem esse afrouxamento a professora fica presa
+     alternando entre 1 ou 2 frases dentro do mesmo jogo. Só afrouxa se
+     o afrouxamento REALMENTE traz variedade — nunca reduz pool. */
+  var pool=filt(g.bank, level, theme), keyLvl=level, keyThm=theme;
+  if(pool.length<3){
+    var r1=filt(g.bank, 'all', theme);                   // afrouxa nível
+    if(r1.length>pool.length){ pool=r1; keyLvl='all'; }
+  }
+  if(pool.length<3){
+    var r2=filt(g.bank, keyLvl, 'all');                  // afrouxa tema
+    if(r2.length>pool.length){ pool=r2; keyThm='all'; }
+  }
+  if(pool.length<3){
+    var full=g.bank||[];                                 // último recurso: banco inteiro
+    if(full.length>pool.length){ pool=full; keyLvl='all'; keyThm='all'; }
+  }
+  var bagKey='sg:'+id+'|'+keyLvl+'|'+keyThm;
+  return {gameId:id, item:nextFromBag(bagKey, pool)};
 }
 
 /* random: sorteia um jogo elegível e tira um item dele */
