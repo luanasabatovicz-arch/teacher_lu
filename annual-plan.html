@@ -29,7 +29,7 @@
       color: var(--tl-text-inverse) !important;
       font-family: var(--tl-font-sans) !important;
       border-radius: var(--tl-radius-md);
-      padding: 8px 16px;
+      padding: var(--tl-space-2) var(--tl-space-4);
       font-weight: var(--tl-fw-semibold);
     }
     [onclick="goHome()"]:hover { background: rgba(255,255,255,.24) !important; }
@@ -55,7 +55,7 @@
     .gradient-coral   { background: linear-gradient(135deg, var(--tl-accent), var(--tl-accent-hover)) !important; color: var(--tl-text-inverse) !important; }
     .gradient-emerald { background: linear-gradient(135deg, var(--tl-secondary), var(--tl-success)) !important; color: var(--tl-text-inverse) !important; }
     .gradient-indigo  { background: linear-gradient(135deg, var(--tl-primary), var(--tl-secondary)) !important; color: var(--tl-text-inverse) !important; }
-    .gradient-amber   { background: linear-gradient(135deg, var(--tl-warning), #FBBF24) !important; color: var(--tl-warning-text) !important; }
+    .gradient-amber   { background: linear-gradient(135deg, var(--tl-warning), #F59E0B) !important; color: var(--tl-warning-text) !important; }
     .gradient-pink    { background: linear-gradient(135deg, var(--tl-accent), var(--tl-accent-hover)) !important; color: var(--tl-text-inverse) !important; }
 
     /* Cards */
@@ -302,7 +302,7 @@
         <div class="flex justify-between items-center mb-4">
           <div>
             <h1 class="text-3xl font-bold">Sabatovicz - Annual Plan</h1>
-            <p class="text-[#B7AE9C]">52 Weeks | <span id="studentCount">0</span> Students | Strategic Progression</p>
+            <p class="text-[#6B7280]">52 Weeks | <span id="studentCount">0</span> Students | Strategic Progression</p>
           </div>
           <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50">
             <i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu
@@ -317,7 +317,7 @@
       <div class="mb-6">
         <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
           <label class="text-white text-sm font-bold block">Select student:</label>
-          <a href="students.html" style="font-size:13px;font-weight:700;color:#7c3aed"><i data-lucide="settings" class="tl-icon-sm"></i> Manage students</a>
+          <a href="students.html" style="font-size:13px;font-weight:700;color:#0B3B46"><i data-lucide="settings" class="tl-icon-sm"></i> Manage students</a>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="studentBtns"></div>
       </div>
@@ -476,10 +476,10 @@
       const tot = {A1:0,'A1+':0,A2:0};
       curriculum.forEach(i => tot[i.level]++);
       document.getElementById('lvlTrack').innerHTML = ['A1','A1+','A2'].map((k,idx) => {
-        const colors = ['#7c3aed','#db2777','#f59e0b'];
+        const colors = ['#0B3B46','#FF6B6B','#F59E0B'];
         const w = (tot[k] / total) * 100;
         const fill = tot[k] ? (lv[k] / tot[k]) * 100 : 0;
-        return `<div class="lvl-seg" style="width:${w}%;background:#ede9fe">
+        return `<div class="lvl-seg" style="width:${w}%;background:#E6EEF0">
                   <div style="height:100%;width:${fill}%;background:${colors[idx]}"></div>
                 </div>`;
       }).join('');
@@ -510,10 +510,10 @@
         const active = next && next.week >= s.from && next.week <= s.to;
         return `<div class="stage-box ${active ? 'active' : ''}">
           <div class="stage-name" style="color:${s.color}">${s.name}</div>
-          <div style="font-size:12px;color:#64748b;margin-top:2px">Weeks ${s.from}-${s.to} · ${s.level}</div>
-          <div style="font-size:13px;color:#475569;margin-top:6px;line-height:1.4">${s.goal}</div>
+          <div style="font-size:12px;color:#6B7280;margin-top:2px">Weeks ${s.from}-${s.to} · ${s.level}</div>
+          <div style="font-size:13px;color:#1F2937;margin-top:6px;line-height:1.4">${s.goal}</div>
           <div class="mini-bar"><div class="mini-fill" style="width:${pc}%;background:${s.color}"></div></div>
-          <div style="font-size:12px;color:#64748b;margin-top:5px;font-weight:600">${d}/${items.length} · ${pc}%</div>
+          <div style="font-size:12px;color:#6B7280;margin-top:5px;font-weight:600">${d}/${items.length} · ${pc}%</div>
         </div>`;
       }).join('');
     }
@@ -522,7 +522,7 @@
 
     function jumpTo(week) {
       const el = document.getElementById('week-' + week);
-      if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.style.transition='box-shadow .3s'; el.style.boxShadow='0 0 0 3px #f59e0b'; setTimeout(()=>el.style.boxShadow='',1400); }
+      if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.style.transition='box-shadow .3s'; el.style.boxShadow='0 0 0 3px #F59E0B'; setTimeout(()=>el.style.boxShadow='',1400); }
     }
 
     let progress = {};
@@ -603,7 +603,7 @@
       
       let html = `
         <div style="font-family: Arial; color: #333;">
-          <h1 style="text-align: center; border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 30px;">
+          <h1 style="text-align: center; border-bottom: 3px solid #0B3B46; padding-bottom: 15px; margin-bottom: 30px;">
             TEACHER LU - ANNUAL PLAN
           </h1>
           <p style="text-align: center; font-size: 18px; margin-bottom: 10px;"><strong>Student:</strong> ${studentName(currentStudent).toUpperCase()}</p>

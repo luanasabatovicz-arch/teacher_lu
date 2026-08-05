@@ -239,17 +239,17 @@ var PICTURE=[
    t = tipo de render que a interface conhece.
    ============================================================ */
 var GAMES=[
-  {id:'complete',  name:'Complete the Sentence', emoji:'✍️', tag:'Finish it your way', c1:'#7c3aed',c2:'#a855f7', t:'prompt',   bank:COMPLETE},
-  {id:'questions', name:'Quick Questions',       emoji:'💬', tag:'Answer fast',        c1:'#db2777',c2:'#f472b6', t:'prompt',   bank:QUESTIONS},
-  {id:'unscramble',name:'Unscramble',            emoji:'🔤', tag:'Say it in order',    c1:'#0ea5a5',c2:'#22d3ee', t:'scramble', bank:UNSCRAMBLE},
-  {id:'guess',     name:'Guess the Word',        emoji:'🕵️', tag:'Describe it!',       c1:'#f59e0b',c2:'#fbbf24', t:'guess',    bank:GUESS},
-  {id:'categories',name:'Categories',            emoji:'📋', tag:'Name them all',      c1:'#16a34a',c2:'#4ade80', t:'prompt',   bank:CATEGORIES},
-  {id:'thisorthat',name:'This or That',          emoji:'⚖️', tag:'Pick & say why',     c1:'#6366f1',c2:'#818cf8', t:'duo',      bank:THISORTHAT},
-  {id:'dice',      name:'Speaking Dice',         emoji:'🎲', tag:'Roll & speak',       c1:'#e11d48',c2:'#fb7185', t:'dice',     bank:DICE},
-  {id:'spin',      name:'Spin and Speak',        emoji:'🎡', tag:'Spin the wheel',     c1:'#7c3aed',c2:'#db2777', t:'wheel',    bank:WHEELS},
-  {id:'truefalse', name:'True or False',         emoji:'✅', tag:'True? Correct it!',  c1:'#0284c7',c2:'#38bdf8', t:'truefalse',bank:TRUEFALSE},
-  {id:'picture',   name:'Picture Talk',          emoji:'🖼️', tag:'Describe the scene', c1:'#ea580c',c2:'#fb923c', t:'picture',  bank:PICTURE},
-  {id:'random',    name:'Random Challenge',      emoji:'🎁', tag:'Surprise me!',       c1:'#4f46e5',c2:'#db2777', t:'random',   bank:null}
+  {id:'complete',  name:'Complete the Sentence', emoji:'✍️', tag:'Finish it your way', c1:'#0B3B46',c2:'#0E4B58', t:'prompt',   bank:COMPLETE},
+  {id:'questions', name:'Quick Questions',       emoji:'💬', tag:'Answer fast',        c1:'#FF6B6B',c2:'#F45A5A', t:'prompt',   bank:QUESTIONS},
+  {id:'unscramble',name:'Unscramble',            emoji:'🔤', tag:'Say it in order',    c1:'#16B1A9',c2:'#12A099', t:'scramble', bank:UNSCRAMBLE},
+  {id:'guess',     name:'Guess the Word',        emoji:'🕵️', tag:'Describe it!',       c1:'#F59E0B',c2:'#0B3B46', t:'guess',    bank:GUESS},
+  {id:'categories',name:'Categories',            emoji:'📋', tag:'Name them all',      c1:'#22C55E',c2:'#16B1A9', t:'prompt',   bank:CATEGORIES},
+  {id:'thisorthat',name:'This or That',          emoji:'⚖️', tag:'Pick & say why',     c1:'#0B3B46',c2:'#16B1A9', t:'duo',      bank:THISORTHAT},
+  {id:'dice',      name:'Speaking Dice',         emoji:'🎲', tag:'Roll & speak',       c1:'#FF6B6B',c2:'#0B3B46', t:'dice',     bank:DICE},
+  {id:'spin',      name:'Spin and Speak',        emoji:'🎡', tag:'Spin the wheel',     c1:'#0B3B46',c2:'#FF6B6B', t:'wheel',    bank:WHEELS},
+  {id:'truefalse', name:'True or False',         emoji:'✅', tag:'True? Correct it!',  c1:'#16B1A9',c2:'#0B3B46', t:'truefalse',bank:TRUEFALSE},
+  {id:'picture',   name:'Picture Talk',          emoji:'🖼️', tag:'Describe the scene', c1:'#F59E0B',c2:'#FF6B6B', t:'picture',  bank:PICTURE},
+  {id:'random',    name:'Random Challenge',      emoji:'🎁', tag:'Surprise me!',       c1:'#0B3B46',c2:'#16B1A9', t:'random',   bank:null}
 ];
 
 /* ============================================================

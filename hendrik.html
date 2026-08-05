@@ -20,7 +20,7 @@
   .topbar {
     background: linear-gradient(120deg, var(--tl-primary), #0F5561 55%, var(--tl-secondary));
     color: var(--tl-text-inverse);
-    padding: 16px 20px;
+    padding: var(--tl-space-5) var(--tl-space-5);
     position: sticky;
     top: 0;
     z-index: var(--tl-z-sticky);
@@ -72,7 +72,7 @@
     transition: width .5s;
   }
 
-  .wrap { max-width: var(--tl-container-sm); margin: 0 auto; padding: 22px 20px 70px; }
+  .wrap { max-width: var(--tl-container-sm); margin: 0 auto; padding: var(--tl-space-5) var(--tl-space-5) var(--tl-space-8); }
 
   /* Cards de lição — mantém o efeito 3D "chunky" para criança */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
@@ -157,25 +157,11 @@
   .opt .oe { font-size: 44px; display: block; line-height: 1.1; }
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-  /* Botões — 3D chunky preservado, cores do DS */
-  .btn {
-    border: none;
-    border-radius: var(--tl-radius-pill);
-    font-family: 'Baloo 2';
-    font-weight: 800;
-    cursor: pointer;
-    padding: 13px 26px;
-    font-size: 18px;
-    color: var(--tl-text-inverse);
-    transition: transform var(--tl-dur-fast) var(--tl-ease);
-    box-shadow: 0 5px 0 rgba(11, 59, 70, .35);
-  }
-  .btn:hover { transform: translateY(-2px); }
-  .btn.orange, .btn.warning { background: var(--tl-warning); box-shadow: 0 5px 0 #B45309; color: var(--tl-warning-text); }
-  .btn.green, .btn.success  { background: var(--tl-success); box-shadow: 0 5px 0 #15803D; }
-  .btn.purple, .btn.primary { background: var(--tl-primary); box-shadow: 0 5px 0 var(--tl-primary-pressed); }
-  .btn.gray                 { background: var(--tl-surface-alt); color: var(--tl-text-secondary); box-shadow: 0 5px 0 var(--tl-border-strong); }
-  .btn.big { font-size: 22px; padding: 16px 34px; }
+  /* Botões — alinhados ao Design System (mesmo padding/radius/shadow das demais páginas) */
+  .btn.orange, .btn.warning { background: var(--tl-warning); color: var(--tl-warning-text); border-color: var(--tl-warning); }
+  .btn.green, .btn.success  { background: var(--tl-success); color: var(--tl-text-inverse); border-color: var(--tl-success); }
+  .btn.purple, .btn.primary { background: var(--tl-primary); color: var(--tl-text-inverse); border-color: var(--tl-primary); }
+  .btn.gray                 { background: var(--tl-surface-alt); color: var(--tl-text-secondary); border-color: var(--tl-border); }
 
   /* Say row */
   .say-row {
@@ -324,8 +310,8 @@
 <div class="wrap">
   <!-- HOME -->
   <div id="home">
-    <h2 style="font-size:30px;color:#4a3b7a;margin-bottom:4px">Kies een les! 🚀</h2>
-    <p style="color:#a08a6f;font-weight:700;margin-bottom:16px">Klik op een plaatje en speel!</p>
+    <h2 style="font-size:var(--tl-fs-h1);color:var(--tl-primary);margin-bottom:var(--tl-space-1)">Kies een les! 🚀</h2>
+    <p style="color:#6B7280;font-weight:700;margin-bottom:16px">Klik op een plaatje en speel!</p>
     <div class="grid" id="lessonGrid"></div>
     <div class="center" style="margin-top:24px">
       <button class="btn purple big" onclick="openEx()">📝 Oefenboek</button>
@@ -338,8 +324,8 @@
   <!-- EXERCISES -->
   <div id="exView" class="hide">
     <button class="btn gray" style="margin-bottom:14px" onclick="goHome()"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Terug</button>
-    <h2 style="font-size:30px;color:#4a3b7a;margin-bottom:4px">📝 Oefenboek</h2>
-    <p style="color:#a08a6f;font-weight:700;margin-bottom:14px">Kies een thema en doe de oefeningen!</p>
+    <h2 style="font-size:var(--tl-fs-h1);color:var(--tl-primary);margin-bottom:var(--tl-space-1)">📝 Oefenboek</h2>
+    <p style="color:#6B7280;font-weight:700;margin-bottom:14px">Kies een thema en doe de oefeningen!</p>
     <div class="tabs" id="exTabs"></div>
     <div id="exScore"></div>
     <div id="exBody"></div>
@@ -354,7 +340,7 @@
   <!-- LESSON -->
   <div id="lesson" class="hide">
     <button class="btn gray" style="margin-bottom:14px" onclick="goHome()"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Terug</button>
-    <h2 id="lTitle" style="font-size:30px;color:#4a3b7a;margin-bottom:12px"></h2>
+    <h2 id="lTitle" style="font-size:var(--tl-fs-h1);color:var(--tl-primary);margin-bottom:var(--tl-space-3)"></h2>
     <div class="tabs" id="tabs"></div>
     <div class="panel" id="panel"></div>
   </div>
@@ -506,7 +492,7 @@ function renderEx(){
     }
     if(q.t==='fill'){
       inner=`<input class="ex-inp" id="ef-${i}" placeholder="..." oninput="exAns[${i}]=this.value">
-             <div id="eh-${i}" style="text-align:center;font-weight:800;color:#2f9e44;margin-top:6px"></div>`;
+             <div id="eh-${i}" style="text-align:center;font-weight:800;color:#22C55E;margin-top:6px"></div>`;
     }
     if(q.t==='tf'){
       inner=`<div class="tf-row">
@@ -571,8 +557,8 @@ function checkEx(){
         const el=document.getElementById('ms-'+i+'-'+pi);
         const mk=document.getElementById('mm-'+i+'-'+pi);
         const v=exAns[i+'-'+pi];
-        if(v===p.nlw){el.classList.add('ok');mk.textContent='✓';mk.style.color='#40c057';correct++;}
-        else{el.classList.add('no');mk.textContent='✗';mk.style.color='#fa5252';}
+        if(v===p.nlw){el.classList.add('ok');mk.textContent='✓';mk.style.color='#22C55E';correct++;}
+        else{el.classList.add('no');mk.textContent='✗';mk.style.color='#EF4444';}
       });
     }
   });
@@ -599,12 +585,12 @@ function exportEx(){
     }
     n++;
     if(q.t==='mc'||q.t==='mce')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e?q.e:''}<br>${q.opts.map(o=>o===q.correct?'<b>'+o+' ✔</b>':o).join(' · ')}</p>`;
-    if(q.t==='fill')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e} &nbsp; <b style="color:#2f9e44">${q.correct}</b></p>`;
+    if(q.t==='fill')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e} &nbsp; <b style="color:#22C55E">${q.correct}</b></p>`;
     if(q.t==='tf')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> &nbsp; <b>${q.correct?'JA':'NEE'}</b> (${q.right})</p>`;
   });
   var w=window.open('','_blank');
   if(!w){alert('Sta pop-ups toe om de PDF te maken.');return;}
-  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Hendrik-'+L.name+'</title><style>body{font-family:Arial;padding:28px;color:#111;line-height:1.7;}h1{border-bottom:3px solid #ff8a3d;padding-bottom:10px;}</style></head><body>'+h+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Hendrik-'+L.name+'</title><style>body{font-family:Arial;padding:28px;color:#111;line-height:1.7;}h1{border-bottom:3px solid #F59E0B;padding-bottom:10px;}</style></head><body>'+h+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},250);};<\/scr'+'ipt></body></html>');
   w.document.close();
 }
 
@@ -764,7 +750,7 @@ function gSentence(){
   const q=qOrder[qi];
   const wrong=shuffle(curLesson.words.filter(x=>x.w!==q.w)).slice(0,2);
   const opts=shuffle([q,...wrong]);
-  const sent=curLesson.frame.replace('___','<span style="color:#ff4d9d">_____</span>');
+  const sent=curLesson.frame.replace('___','<span style="color:#FF6B6B">_____</span>');
   document.getElementById('panel').innerHTML=`
     <div class="prog">${qi+1} / ${qOrder.length}</div>
     <p class="prompt">Maak de zin af! 💬</p>
@@ -790,7 +776,7 @@ function gSay(){
   const said=(P.lessons[curLesson.id].said||[]);
   document.getElementById('panel').innerHTML=`
     <p class="prompt">Zeg het hardop! 🗣️</p>
-    <p class="center" style="color:#a08a6f;font-weight:700;margin-bottom:12px">Klik op 🔊, luister en zeg het na. De juf klikt op ✓ als je het zegt!</p>
+    <p class="center" style="color:#6B7280;font-weight:700;margin-bottom:12px">Klik op 🔊, luister en zeg het na. De juf klikt op ✓ als je het zegt!</p>
     ${curLesson.say.map((s,i)=>`
       <div class="say-row ${said.includes(i)?'ok':''}" id="sr-${i}">
         <span class="e">${curLesson.icon}</span>

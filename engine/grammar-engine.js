@@ -8,16 +8,16 @@
 
 /* ---------- constantes da arquitetura (invariantes) ---------- */
 const SECTIONS=[
-  {id:'goal',    n:'1', t:'Goal',          time:0.5, color:'#7c3aed'},
-  {id:'warmup',  n:'2', t:'Warm-up',       time:4,   color:'#22c55e'},
-  {id:'notice',  n:'3', t:'Notice',        time:5,   color:'#10b981'},
-  {id:'ccq',     n:'4', t:'CCQs',          time:4,   color:'#f59e0b'},
-  {id:'rule',    n:'5', t:'Rule',          time:3,   color:'#3b82f6'},
-  {id:'watchout',n:'6', t:'Watch out',     time:1.5, color:'#ef4444'},
-  {id:'practice',n:'7', t:'Practice',      time:12,  color:'#ec4899'},
-  {id:'makeit',  n:'8', t:'Make it yours', time:6,   color:'#06b6d4'},
-  {id:'task',    n:'9', t:'Task',          time:10,  color:'#a855f7'},
-  {id:'exit',    n:'10',t:'Exit ticket',   time:5,   color:'#7c3aed'}
+  {id:'goal',    n:'1', t:'Goal',          time:0.5, color:'#0B3B46'},
+  {id:'warmup',  n:'2', t:'Warm-up',       time:4,   color:'#22C55E'},
+  {id:'notice',  n:'3', t:'Notice',        time:5,   color:'#22C55E'},
+  {id:'ccq',     n:'4', t:'CCQs',          time:4,   color:'#F59E0B'},
+  {id:'rule',    n:'5', t:'Rule',          time:3,   color:'#0EA5E9'},
+  {id:'watchout',n:'6', t:'Watch out',     time:1.5, color:'#EF4444'},
+  {id:'practice',n:'7', t:'Practice',      time:12,  color:'#FF6B6B'},
+  {id:'makeit',  n:'8', t:'Make it yours', time:6,   color:'#16B1A9'},
+  {id:'task',    n:'9', t:'Task',          time:10,  color:'#0B3B46'},
+  {id:'exit',    n:'10',t:'Exit ticket',   time:5,   color:'#0B3B46'}
 ];
 const GATE_CCQ=4;        // 4/5
 const GATE_PRACTICE=10;  // 10/12 (≥80%)
@@ -139,8 +139,8 @@ function bigCard(inner,extra){
 }
 function judgeBtns(sec,i){
   return '<span style="display:flex;gap:6px;flex-shrink:0">'+
-    '<button onclick="GE.judge(\''+sec+'\','+i+',true)" id="ge-y-'+sec+'-'+i+'" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓</button>'+
-    '<button onclick="GE.judge(\''+sec+'\','+i+',false)" id="ge-n-'+sec+'-'+i+'" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗</button></span>';
+    '<button onclick="GE.judge(\''+sec+'\','+i+',true)" id="ge-y-'+sec+'-'+i+'" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓</button>'+
+    '<button onclick="GE.judge(\''+sec+'\','+i+',false)" id="ge-n-'+sec+'-'+i+'" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗</button></span>';
 }
 function ansBlock(id,a,extraHtml){
   if(!a)return extraHtml||'';
@@ -156,15 +156,15 @@ function score(sec){
 /* ---------- visual por família ---------- */
 function visual(type){
   const line='<div style="position:relative;height:70px;margin:10px 0">'+
-    '<div style="position:absolute;top:34px;left:0;right:0;height:4px;background:#e2ddf5;border-radius:2px"></div>'+
-    '<div style="position:absolute;top:22px;left:50%;width:2px;height:28px;background:#7c3aed"></div>'+
-    '<div style="position:absolute;top:52px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:#7c3aed">NOW</div>';
+    '<div style="position:absolute;top:34px;left:0;right:0;height:4px;background:#E5E7EB;border-radius:2px"></div>'+
+    '<div style="position:absolute;top:22px;left:50%;width:2px;height:28px;background:#0B3B46"></div>'+
+    '<div style="position:absolute;top:52px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:#0B3B46">NOW</div>';
   const dot=(l,c,lab,ly)=>'<div style="position:absolute;top:28px;left:'+l+'%;width:16px;height:16px;border-radius:50%;background:'+c+'"></div>'+
     (lab?'<div style="position:absolute;top:'+(ly||6)+'px;left:'+l+'%;transform:translateX(-40%);font-size:11px;font-weight:700;color:'+c+'">'+lab+'</div>':'');
-  if(type==='now')            return line+dot(50,'#16a34a','is / am / are')+'</div>';
-  if(type==='routine'){       let d='';[10,24,38,52,66,80].forEach(x=>d+=dot(x,'#16a34a'));return line+d+'<div style="position:absolute;top:6px;left:38%;font-size:11px;font-weight:700;color:#16a34a">every day · always ↻</div></div>';}
-  if(type==='now-progress')   return line+'<div style="position:absolute;top:26px;left:38%;width:24%;height:20px;border-radius:12px;background:linear-gradient(90deg,#34d39955,#16a34a);"></div><div style="position:absolute;top:6px;left:42%;font-size:11px;font-weight:700;color:#16a34a">happening now →</div></div>';
-  if(type==='past-point')     return line+dot(20,'#dc2626','yesterday ✔ finished')+'</div>';
+  if(type==='now')            return line+dot(50,'#22C55E','is / am / are')+'</div>';
+  if(type==='routine'){       let d='';[10,24,38,52,66,80].forEach(x=>d+=dot(x,'#22C55E'));return line+d+'<div style="position:absolute;top:6px;left:38%;font-size:11px;font-weight:700;color:#22C55E">every day · always ↻</div></div>';}
+  if(type==='now-progress')   return line+'<div style="position:absolute;top:26px;left:38%;width:24%;height:20px;border-radius:12px;background:linear-gradient(90deg,#22C55E44,#22C55E);"></div><div style="position:absolute;top:6px;left:42%;font-size:11px;font-weight:700;color:#22C55E">happening now →</div></div>';
+  if(type==='past-point')     return line+dot(20,'#DC2626','yesterday ✔ finished')+'</div>';
   if(type==='table')          return '';
   return '';
 }
@@ -177,20 +177,20 @@ function examplesBlock(){
   if(!E)return '';
   const line=x=>{const plain=P(x).replace(/<[^>]*>/g,'');return '<div class="ex-line"><span>'+P(x)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';};
   const grp=(label,color,arr)=> (arr&&arr.length)?'<div class="form-box"><div class="label" style="color:'+color+'">'+label+'</div>'+arr.map(line).join('')+'</div>':'';
-  let h='<div class="label" style="color:#7c3aed;margin:14px 0 4px;font-size:12px;font-weight:800;border-top:1px solid #ece7fb;padding-top:10px">📚 Many examples — study these BEFORE practising (read aloud)</div>';
+  let h='<div class="label" style="color:#0B3B46;margin:14px 0 4px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:10px">📚 Many examples — study these BEFORE practising (read aloud)</div>';
   // exemplos agrupados por USO (opcional: E.byUse = [{use, ex:[...]}])
   if(E.byUse&&E.byUse.length){
-    h+='<p class="text-slate-400 text-sm mb-1" style="color:#64748b">First, by meaning — see the SAME verb doing different jobs:</p>';
-    E.byUse.forEach(function(g){ h+='<div class="form-box"><div class="label" style="color:#0ea5a5">'+P(g.use)+'</div>'+g.ex.map(line).join('')+'</div>'; });
-    h+='<p class="text-slate-400 text-sm mb-1 mt-2" style="color:#64748b">Now, by form — affirmative, negative, question:</p>';
+    h+='<p class="text-slate-400 text-sm mb-1" style="color:#6B7280">First, by meaning — see the SAME verb doing different jobs:</p>';
+    E.byUse.forEach(function(g){ h+='<div class="form-box"><div class="label" style="color:#16B1A9">'+P(g.use)+'</div>'+g.ex.map(line).join('')+'</div>'; });
+    h+='<p class="text-slate-400 text-sm mb-1 mt-2" style="color:#6B7280">Now, by form — affirmative, negative, question:</p>';
   }
-  h+=grp('Affirmative','#16a34a',E.aff);
-  h+=grp('Negative','#dc2626',E.neg);
-  h+=grp('Question','#3b82f6',E.q);
-  h+=grp('In real life (everyday situations)','#7c3aed',E.context);
+  h+=grp('Affirmative','#22C55E',E.aff);
+  h+=grp('Negative','#DC2626',E.neg);
+  h+=grp('Question','#0EA5E9',E.q);
+  h+=grp('In real life (everyday situations)','#0B3B46',E.context);
   if(E.contrast&&E.contrast.length){
-    h+='<div class="form-box"><div class="label" style="color:#f59e0b">Correct vs incorrect</div>'+
-      E.contrast.map(c=>'<div class="mistake text-sm"><span style="color:#dc2626">❌ '+P(c.bad)+'</span> → <span style="color:#16a34a;font-weight:700">✅ '+P(c.good)+'</span>'+(c.why?'<span class="text-slate-400" style="margin-left:8px">('+P(c.why)+')</span>':'')+'</div>').join('')+'</div>';
+    h+='<div class="form-box"><div class="label" style="color:#F59E0B">Correct vs incorrect</div>'+
+      E.contrast.map(c=>'<div class="mistake text-sm"><span style="color:#DC2626">❌ '+P(c.bad)+'</span> → <span style="color:#22C55E;font-weight:700">✅ '+P(c.good)+'</span>'+(c.why?'<span class="text-slate-400" style="margin-left:8px">('+P(c.why)+')</span>':'')+'</div>').join('')+'</div>';
   }
   return h;
 }
@@ -237,21 +237,21 @@ function overviewPanel(){
   const cards=SECTIONS.map(function(s,i){
     const done=i<S.maxSec, cur=i===S.sec;
     const icon=cur?'▶':(done?'✓':'○');
-    const bg=cur?'linear-gradient(135deg,#7c3aed,#db2777)':(done?'#f0fdf4':'#faf8ff');
-    const col=cur?'#fff':'#334155';
-    return '<button onclick="GE.goto('+i+')" style="text-align:left;border:1px solid '+(cur?'#7c3aed':'#ece7fb')+';background:'+bg+';color:'+col+';border-radius:10px;padding:8px 10px;cursor:pointer;min-width:150px;flex:1 1 150px">'+
+    const bg=cur?'linear-gradient(135deg,#0B3B46,#FF6B6B)':(done?'#DCFCE7':'#F2F6F7');
+    const col=cur?'#fff':'#1F2937';
+    return '<button onclick="GE.goto('+i+')" style="text-align:left;border:1px solid '+(cur?'#0B3B46':'#E5E7EB')+';background:'+bg+';color:'+col+';border-radius:10px;padding:8px 10px;cursor:pointer;min-width:150px;flex:1 1 150px">'+
       '<div style="font-size:11px;font-weight:800;opacity:.85">'+icon+' '+s.n+' · '+s.t+'</div>'+
       '<div style="font-size:11.5px;margin-top:2px;line-height:1.3">'+sectionDesc(s.id)+'</div></button>';
   }).join('');
-  return '<div class="card" style="padding:14px 16px;margin-bottom:14px;border-left:5px solid #7c3aed !important">'+
+  return '<div class="card" style="padding:14px 16px;margin-bottom:14px;border-left:5px solid #0B3B46 !important">'+
     '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">'+
-      '<div style="flex:1;min-width:220px"><div class="label" style="color:#7c3aed">📘 Aula completa · '+P(T.name)+' · '+SECTIONS.length+' etapas</div>'+
-      '<p style="font-weight:700;color:#1e293b;margin-top:3px;font-size:15px">🎯 By the end, '+env.stuName()+' can '+goal+'</p></div>'+
+      '<div style="flex:1;min-width:220px"><div class="label" style="color:#0B3B46">📘 Aula completa · '+P(T.name)+' · '+SECTIONS.length+' etapas</div>'+
+      '<p style="font-weight:700;color:#1F2937;margin-top:3px;font-size:15px">🎯 By the end, '+env.stuName()+' can '+goal+'</p></div>'+
       '<button onclick="GE.toggleMap()" class="theme-btn text-xs font-bold" style="padding:6px 12px;border-radius:8px;white-space:nowrap">'+(open?'▾ ocultar mapa':'▸ ver a aula toda')+'</button>'+
     '</div>'+
     '<div style="margin-top:8px">'+chips+'</div>'+
     (open?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+cards+'</div>'+
-      '<p style="margin-top:8px;font-size:12px;color:#94a3b8">Clique em qualquer etapa para ir até ela — a aula avança passo a passo, mas a estrutura completa fica sempre à vista.</p>':'')+
+      '<p style="margin-top:8px;font-size:12px;color:#9CA3AF">Clique em qualquer etapa para ir até ela — a aula avança passo a passo, mas a estrutura completa fica sempre à vista.</p>':'')+
     '</div>';
 }
 
@@ -264,7 +264,7 @@ R.goal=function(){
   return bigCard(
     '<div style="text-align:center;padding:18px 6px">'+
     '<div class="chip" style="margin-bottom:10px">'+ (kid?'🎯 Today\'s mission':'🎯 Today\'s goal') +'</div>'+
-    '<p style="font-size:22px;font-weight:700;line-height:1.5;color:#1e293b">By the end of this lesson, <span style="color:#7c3aed">'+env.stuName()+'</span> can '+P(g)+'.</p>'+
+    '<p style="font-size:22px;font-weight:700;line-height:1.5;color:#1F2937">By the end of this lesson, <span style="color:#0B3B46">'+env.stuName()+'</span> can '+P(g)+'.</p>'+
     (T.goal.teaser?'<p class="text-slate-400" style="margin-top:8px;font-size:14px">'+P(T.goal.teaser)+'</p>':'')+
     '</div>');
 };
@@ -308,7 +308,7 @@ R.ccq=function(){
   const items=S.ccqReserveOn?(S.ccqMain||[]).concat(S.ccqReserve||[]):(S.ccqMain||T.ccqs.main);
   const sc=score('ccq');
   let h='<p class="text-slate-400 text-sm mb-2">Zero terminologia — só sentido. Respostas de 1–3 palavras.</p>';
-  h+='<div id="ge-ccq-score" class="text-sm font-bold mb-2" style="color:#7c3aed">'+sc.c+' ✓ de '+sc.n+' respondidas</div>';
+  h+='<div id="ge-ccq-score" class="text-sm font-bold mb-2" style="color:#0B3B46">'+sc.c+' ✓ de '+sc.n+' respondidas</div>';
   h+=items.map(function(c,i){
     const res=i>=5?'<span class="chip" style="margin:0 6px 0 0">reserva</span>':'';
     return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
@@ -329,21 +329,21 @@ R.rule=function(){
        '<button onclick="GE.revealRule()" class="theme-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Confirmar a descoberta</button></div>';
     return bigCard(h);
   }
-  h+='<p style="font-size:16px;line-height:1.7;color:#334155"><b style="color:#16a34a">Exatamente o que você percebeu:</b> '+P(txt)+'</p>';
+  h+='<p style="font-size:16px;line-height:1.7;color:#1F2937"><b style="color:#22C55E">Exatamente o que você percebeu:</b> '+P(txt)+'</p>';
   // explicação estruturada — vários pontos, cada um com seus exemplos (opcional: T.explain)
   if(T.explain&&T.explain.length){
     h+='<div style="margin-top:10px">'+T.explain.map(function(c){
-      return '<div class="form-box"><div class="label" style="color:#7c3aed">'+P(c.title)+'</div>'+
-        '<p class="text-sm" style="color:#334155;margin-bottom:'+(c.ex?'6px':'0')+'">'+P(c.text)+'</p>'+
+      return '<div class="form-box"><div class="label" style="color:#0B3B46">'+P(c.title)+'</div>'+
+        '<p class="text-sm" style="color:#1F2937;margin-bottom:'+(c.ex?'6px':'0')+'">'+P(c.text)+'</p>'+
         (c.ex?c.ex.map(function(e){var plain=P(e).replace(/<[^>]*>/g,'');return '<div class="ex-line"><span>'+P(e)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';}).join(''):'')+
         '</div>';
     }).join('')+'</div>';
   }
   h+=visual(T.slots.visual);
-  h+='<div class="form-box"><div class="label" style="color:#16a34a">When YES</div>'+T.slots.use.yes.map(u=>'<span class="chip">'+P(u)+'</span>').join('')+'</div>';
-  h+='<div class="form-box"><div class="label" style="color:#dc2626">When NO</div>'+T.slots.use.no.map(u=>'<span class="chip" style="color:#dc2626 !important">'+P(u)+'</span>').join('')+'</div>';
-  h+='<div class="form-box"><div class="label" style="color:#db2777">🔊 Pronunciation</div><p class="text-sm" style="color:#334155">'+P(T.rule.pron)+'</p></div>';
-  if(!kid&&T.rule.pt)h+='<div class="form-box"><div class="label" style="color:#7c3aed">🇧🇷 Contraste com o português</div><p class="text-sm" style="color:#334155">'+P(T.rule.pt)+'</p></div>';
+  h+='<div class="form-box"><div class="label" style="color:#22C55E">When YES</div>'+T.slots.use.yes.map(u=>'<span class="chip">'+P(u)+'</span>').join('')+'</div>';
+  h+='<div class="form-box"><div class="label" style="color:#DC2626">When NO</div>'+T.slots.use.no.map(u=>'<span class="chip" style="color:#DC2626 !important">'+P(u)+'</span>').join('')+'</div>';
+  h+='<div class="form-box"><div class="label" style="color:#FF6B6B">🔊 Pronunciation</div><p class="text-sm" style="color:#1F2937">'+P(T.rule.pron)+'</p></div>';
+  if(!kid&&T.rule.pt)h+='<div class="form-box"><div class="label" style="color:#0B3B46">🇧🇷 Contraste com o português</div><p class="text-sm" style="color:#1F2937">'+P(T.rule.pt)+'</p></div>';
   h+=examplesBlock();
   return bigCard(h)+teacherStrip('Se perguntar "por quê?" além da regra: '+P(T.rule.why||'explique com UM exemplo a mais, não com teoria')+'. Leia os exemplos em voz alta ANTES de praticar. Encerra quando '+env.stuName()+' reformular a regra em 1 frase própria.');
 };
@@ -354,7 +354,7 @@ R.watchout=function(){
   let h='<p class="text-slate-500 text-sm mb-2">Erros comuns — fique atento a estes:</p>'+
     '<p class="text-slate-400 text-sm mb-2">Vacina de 90 segundos — antecipe os erros mais prováveis.'+(kid?' Encene a voz de um personagem errando!':'')+'</p>';
   h+=list.map(function(w,i){
-    return '<div class="mistake text-sm"><span style="color:#dc2626">❌ '+P(w.bad)+'</span> → <span style="color:#16a34a;font-weight:700">✅ '+P(w.good)+'</span><span class="text-slate-400" style="margin-left:8px">('+P(w.why)+')</span>'+'</div>';
+    return '<div class="mistake text-sm"><span style="color:#DC2626">❌ '+P(w.bad)+'</span> → <span style="color:#22C55E;font-weight:700">✅ '+P(w.good)+'</span><span class="text-slate-400" style="margin-left:8px">('+P(w.why)+')</span>'+'</div>';
   }).join('');
   h+='<div class="chip" style="margin-top:8px">😏 "Qual desses EU vou tentar te fazer errar hoje?"</div>';
   return bigCard(h);
@@ -366,28 +366,28 @@ R.practice=function(){
   const sc=score('practice');
   let h='<p class="text-slate-500 text-sm mb-2">Responda em voz alta — depois confira.'+(kid?' Cada ✓ vale ponto! 🎯':'')+'</p>'+
     '<p class="text-slate-400 text-sm mb-2">100% oral: '+env.stuName()+' fala, você revela e marca. Progressão: reconhecer → manipular → usar de verdade.</p>';
-  h+='<div id="ge-pr-score" class="text-sm font-bold mb-2" style="color:#ec4899">'+sc.c+' ✓ / '+sc.n+' marcadas de '+items.length+'</div>';
+  h+='<div id="ge-pr-score" class="text-sm font-bold mb-2" style="color:#FF6B6B">'+sc.c+' ✓ / '+sc.n+' marcadas de '+items.length+'</div>';
   const stageOf=t=>((t==='fill'||t==='mc')?1:2);
   const stageName={1:'STAGE 1 · Simple — recognise & complete',2:'STAGE 2 · Intermediate — manipulate the form'};
   let lastType='',lastStage=0;
   h+=items.map(function(p,i){
     let head='';
     const st=stageOf(p.t);
-    if(st!==lastStage){lastStage=st;head+='<div class="label" style="color:#7c3aed;margin:16px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #ece7fb;padding-top:8px">'+stageName[st]+'</div>';}
-    if(p.t!==lastType){lastType=p.t;head+='<div class="label" style="color:#ec4899;margin:10px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase">'+PRACTICE_TYPES[p.t]+'</div>';}
+    if(st!==lastStage){lastStage=st;head+='<div class="label" style="color:#0B3B46;margin:16px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:8px">'+stageName[st]+'</div>';}
+    if(p.t!==lastType){lastType=p.t;head+='<div class="label" style="color:#FF6B6B;margin:10px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase">'+PRACTICE_TYPES[p.t]+'</div>';}
     return head+prItem('practice',p,i);
   }).join('');
   h+='<div id="ge-pr-verdict" style="margin-top:10px"></div>';
   // C3 — só dos tipos falhados, 1 degrau mais fácil, máx. 1x por aula
   if(S.c3On){
-    h+='<div class="label" style="color:#a855f7;margin:16px 0 4px;font-weight:800">Segunda chance — vamos de novo, um degrau mais fácil</div>';
+    h+='<div class="label" style="color:#0B3B46;margin:16px 0 4px;font-weight:800">Segunda chance — vamos de novo, um degrau mais fácil</div>';
     h+=S.c3Items.map(function(p,i){return prItem('c3',p,i);}).join('');
     h+='<div id="ge-c3-verdict" style="margin-top:10px"></div>';
   }
   // STAGE 3 — prática livre (opcional: T.practiceMore): perguntas contextualizadas + mini-diálogos.
   // Não é portão (é consolidação); os erros ainda entram na fila (G4).
   if(S.practiceMore&&S.practiceMore.length){
-    h+='<div class="label" style="color:#06b6d4;margin:18px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #ece7fb;padding-top:8px">STAGE 3 · Free — use it for real (contexto & diálogo, sem portão)</div>';
+    h+='<div class="label" style="color:#16B1A9;margin:18px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:8px">STAGE 3 · Free — use it for real (contexto & diálogo, sem portão)</div>';
     h+=S.practiceMore.map(function(p,i){return prItem('free',p,i);}).join('');
   }
   return bigCard(h)+teacherStrip('G10 — correção com dignidade: 1º "try again" → 2º hint → só então a resposta, e explique o PORQUÊ (a caixa laranja traz por quê + regra + novo exemplo). Plano de tempo: ~1 min/item; a prática livre (Stage 3) alonga até '+env.stuName()+' demonstrar domínio.');
@@ -399,7 +399,7 @@ function prItem(sec,p,i){
   }else if(p.t==='us'){
     q='Put in order: <b>'+P(p.q)+'</b>';
   }else if(p.t==='ec'){
-    q='Find the mistake: <span style="color:#dc2626">“'+P(p.q)+'”</span>';
+    q='Find the mistake: <span style="color:#DC2626">“'+P(p.q)+'”</span>';
   }else if(p.t==='tr'){
     q=P(p.q);
   }else if(p.t==='cq'){                       // pergunta contextualizada (fala livre guiada)
@@ -409,15 +409,15 @@ function prItem(sec,p,i){
   }else{ q=P(p.q); }
   const aid='ge-a-'+sec+'-'+i, hid='ge-h-'+sec+'-'+i;
   const hintBtn=p.hint?'<button onclick="GE.tg(\''+hid+'\')" class="text-xs bg-slate-700 text-white px-3 py-1 rounded">💡 hint</button>':'';
-  const hintDiv=p.hint?'<div id="'+hid+'" class="answer" style="color:#d97706 !important">💡 '+P(p.hint)+'</div>':'';
+  const hintDiv=p.hint?'<div id="'+hid+'" class="answer" style="color:#F59E0B !important">💡 '+P(p.hint)+'</div>':'';
   // feedback rico de erro (opcional): por quê + regra + novo exemplo
   let fb='';
   if(p.why||p.ruleRef||p.ex){
-    fb='<div style="margin-top:6px;padding:8px 10px;border-radius:8px;background:#fff7ed;border:1px solid #fed7aa">'+
-      '<div class="text-xs" style="color:#9a3412;font-weight:700;margin-bottom:2px">Entenda o erro:</div>'+
-      (p.why?'<div class="text-xs" style="color:#b45309">❌ <b>Why the wrong answer is wrong:</b> '+P(p.why)+'</div>':'')+
-      (p.ruleRef?'<div class="text-xs" style="color:#7c3aed">📐 <b>Rule:</b> '+P(p.ruleRef)+'</div>':'')+
-      (p.ex?'<div class="text-xs" style="color:#16a34a">➕ <b>Another example:</b> '+P(p.ex)+'</div>':'')+
+    fb='<div style="margin-top:6px;padding:8px 10px;border-radius:8px;background:#F2F6F7;border:1px solid #F59E0B">'+
+      '<div class="text-xs" style="color:#92400E;font-weight:700;margin-bottom:2px">Entenda o erro:</div>'+
+      (p.why?'<div class="text-xs" style="color:#92400E">❌ <b>Why the wrong answer is wrong:</b> '+P(p.why)+'</div>':'')+
+      (p.ruleRef?'<div class="text-xs" style="color:#0B3B46">📐 <b>Rule:</b> '+P(p.ruleRef)+'</div>':'')+
+      (p.ex?'<div class="text-xs" style="color:#22C55E">➕ <b>Another example:</b> '+P(p.ex)+'</div>':'')+
       '</div>';
   }
   return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">'+
@@ -427,7 +427,7 @@ function prItem(sec,p,i){
     judgeBtns(sec,i)+'</span></div>'+
     hintDiv+
     '<div id="'+aid+'" class="answer">✓ '+P(p.a)+
-      (p.fu?'<div class="text-xs" style="color:#7c3aed;margin-top:4px">↳ follow-up: '+P(p.fu)+'</div>':'')+
+      (p.fu?'<div class="text-xs" style="color:#0B3B46;margin-top:4px">↳ follow-up: '+P(p.fu)+'</div>':'')+
       fb+
     '</div></div>';
 }
@@ -437,7 +437,7 @@ R.makeit=function(){
   const sc=score('makeit');
   let h='<p class="text-slate-500 text-sm mb-2">Agora com a sua vida — complete do seu jeito:</p>'+
     '<p class="text-slate-400 text-sm mb-2">Reaja ao CONTEÚDO ("Really? Me too!") antes de corrigir. Meta: ≥4 com a forma correta (autocorreção conta).</p>';
-  h+='<div class="text-sm font-bold mb-2" style="color:#06b6d4">'+sc.c+' ✓ de '+sc.n+'</div>';
+  h+='<div class="text-sm font-bold mb-2" style="color:#16B1A9">'+sc.c+' ✓ de '+sc.n+'</div>';
   h+=(S.makeitItems||T.makeit).slice(0,n).map(function(m,i){
     return '<div class="ex-line"><span style="font-size:17px">'+(i+1)+'. '+P(m)+'</span>'+judgeBtns('makeit',i)+'</div>';
   }).join('');
@@ -448,15 +448,15 @@ R.task=function(){
   const kid=env.isKid();
   const t=T.task;
   let h='<div class="chip" style="margin-bottom:8px">🎬 '+P(t.title)+'</div>';
-  h+='<p style="font-size:18px;font-weight:700;color:#1e293b;line-height:1.6">'+P(kid&&t.kid?t.kid:t.mission)+'</p>';
-  h+='<div class="form-box" style="margin-top:10px"><div class="label" style="color:#a855f7">Roles</div>'+
-     '<p class="text-sm" style="color:#334155">🧑‍🎓 <b>'+env.stuName()+':</b> '+P(t.roles.student)+'</p>'+
-     '<p class="text-sm" style="color:#334155">👩‍🏫 <b>You:</b> '+P(t.roles.teacher)+'</p></div>';
-  h+='<div class="form-box"><div class="label" style="color:#f59e0b">⚡ Complication</div><p class="text-sm" style="color:#334155">'+P(t.complication)+'</p></div>';
+  h+='<p style="font-size:18px;font-weight:700;color:#1F2937;line-height:1.6">'+P(kid&&t.kid?t.kid:t.mission)+'</p>';
+  h+='<div class="form-box" style="margin-top:10px"><div class="label" style="color:#0B3B46">Roles</div>'+
+     '<p class="text-sm" style="color:#1F2937">🧑‍🎓 <b>'+env.stuName()+':</b> '+P(t.roles.student)+'</p>'+
+     '<p class="text-sm" style="color:#1F2937">👩‍🏫 <b>You:</b> '+P(t.roles.teacher)+'</p></div>';
+  h+='<div class="form-box"><div class="label" style="color:#F59E0B">⚡ Complication</div><p class="text-sm" style="color:#1F2937">'+P(t.complication)+'</p></div>';
   h+='<p class="text-slate-400 text-sm" style="margin-top:8px">Correção adiada: anote, não interrompa. '+env.stuName()+' fala ≥80% do bloco. Feche com 1 acerto celebrado + 2 erros como "try again".</p>';
   if(!S.cuts.c4){
     h+='<div style="margin-top:10px"><button onclick="GE.tg(\'ge-c4\')" class="theme-btn text-xs font-bold py-2 px-4 rounded-lg">🚀 C4 — terminou com folga? (só com todos os portões passados + ≥8 min sobrando)</button>'+
-       '<div id="ge-c4" class="answer" style="color:#7c3aed !important">'+P(t.c4)+'</div></div>';
+       '<div id="ge-c4" class="answer" style="color:#0B3B46 !important">'+P(t.c4)+'</div></div>';
   }
   return bigCard(h)+teacherStrip('Complicações injetáveis se ficar fácil:<br>⚡ '+P(t.extras[0])+'<br>⚡ '+P(t.extras[1])+'<br>Se travar, socorro por palavra/imagem (nunca frase pronta): '+t.rescue.map(r=>'<span class="chip">'+P(r)+'</span>').join(' '));
 };
@@ -477,9 +477,9 @@ R.exit=function(){
 
 /* ---------- faixa de apoio pedagógico (CCQs, follow-ups, notas) ---------- */
 function teacherStrip(html){
-  return '<div class="card" style="padding:10px 14px;margin-top:-8px;margin-bottom:18px;border-left:4px solid #94a3b8 !important">'+
-    '<button onclick="GE.tg(\'ge-c2\')" class="text-xs font-bold" style="color:#64748b;background:none;border:none;cursor:pointer">👩‍🏫 Como conduzir ▾</button>'+
-    '<div id="ge-c2" class="answer" style="color:#475569 !important;font-weight:400;font-size:13px;line-height:1.6">'+html+'</div></div>';
+  return '<div class="card" style="padding:10px 14px;margin-top:-8px;margin-bottom:18px;border-left:4px solid #9CA3AF !important">'+
+    '<button onclick="GE.tg(\'ge-c2\')" class="text-xs font-bold" style="color:#6B7280;background:none;border:none;cursor:pointer">👩‍🏫 Como conduzir ▾</button>'+
+    '<div id="ge-c2" class="answer" style="color:#1F2937 !important;font-weight:400;font-size:13px;line-height:1.6">'+html+'</div></div>';
 }
 
 /* ---------- shell: progresso + timer + navegação ---------- */
@@ -487,17 +487,17 @@ function shell(){
   const cur=SECTIONS[S.sec];
   return '<div class="card" style="padding:14px 16px;margin-bottom:14px">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
-    '<div class="label" style="color:#7c3aed">Etapa '+(S.sec+1)+' de '+SECTIONS.length+'</div>'+
+    '<div class="label" style="color:#0B3B46">Etapa '+(S.sec+1)+' de '+SECTIONS.length+'</div>'+
     '<div class="flexrow" style="gap:8px;align-items:center">'+
-      '<span id="ge-clock" class="text-sm font-bold" style="color:#7c3aed">0:00</span>'+
-      '<span class="text-xs" style="color:#94a3b8">/ ~'+cur.time+' min</span>'+
-      '<button onclick="GE.cut()" class="text-xs font-bold px-3 py-2 rounded-lg" style="background:#fef3c7;color:#92400e" title="Encurtar a aula">⏱ tempo apertado</button>'+
+      '<span id="ge-clock" class="text-sm font-bold" style="color:#0B3B46">0:00</span>'+
+      '<span class="text-xs" style="color:#9CA3AF">/ ~'+cur.time+' min</span>'+
+      '<button onclick="GE.cut()" class="text-xs font-bold px-3 py-2 rounded-lg" style="background:#FEF3C7;color:#92400E" title="Encurtar a aula">⏱ tempo apertado</button>'+
     '</div></div>'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">'+
     '<h3 class="text-lg font-bold" style="color:'+cur.color+'">'+cur.n+' · '+cur.t+'</h3>'+
     '<div style="display:flex;gap:8px">'+
       (S.sec>0?'<button onclick="GE.back()" class="theme-btn text-sm font-bold py-2 px-4 rounded-lg">← Back</button>':'')+
-      '<button onclick="GE.next()" id="ge-next" class="text-sm font-bold py-2 px-5 rounded-lg" style="background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff">'+(S.sec===SECTIONS.length-1?'Finish class ✔':'Next →')+'</button>'+
+      '<button onclick="GE.next()" id="ge-next" class="text-sm font-bold py-2 px-5 rounded-lg" style="background:linear-gradient(135deg,#0B3B46,#FF6B6B);color:#fff">'+(S.sec===SECTIONS.length-1?'Finish class ✔':'Next →')+'</button>'+
     '</div></div>'+
     '<div id="ge-gatemsg" style="margin-top:6px"></div></div>';
 }
@@ -579,10 +579,10 @@ function finishScreen(){
   const misses=[];
   (S.exitItems||T.exit).forEach(function(it,i){ if(S.judged.exit[i]===false)misses.push({q:P(it.q),a:it.a?P(it.a):''}); });
   (S.cuts.p8?(S.practice||T.practice).slice(0,8):(S.practice||T.practice)).forEach(function(p,i){ if(S.judged.practice[i]===false)misses.push({q:P(p.q),a:P(p.a)}); });
-  let h='<div class="stage" style="border-left-color:'+(pass?'#16a34a':'#f59e0b')+';text-align:center;padding:30px">';
-  h+=pass?'<h3 class="text-2xl font-bold" style="color:#16a34a">🏆 '+ex.c+'/6 — semana concluída!</h3>'
-        :'<h3 class="text-2xl font-bold" style="color:#b45309">↩ '+ex.c+'/6 — a semana NÃO avança</h3><p class="text-slate-400 text-sm">O que falhou volta na próxima aula (já está na fila).</p>';
-  h+='<p style="margin-top:10px;color:#334155">Diga a '+env.stuName()+' <b>uma coisa que ele(a) faz hoje que não fazia antes</b>.</p>';
+  let h='<div class="stage" style="border-left-color:'+(pass?'#22C55E':'#F59E0B')+';text-align:center;padding:30px">';
+  h+=pass?'<h3 class="text-2xl font-bold" style="color:#22C55E">🏆 '+ex.c+'/6 — semana concluída!</h3>'
+        :'<h3 class="text-2xl font-bold" style="color:#92400E">↩ '+ex.c+'/6 — a semana NÃO avança</h3><p class="text-slate-400 text-sm">O que falhou volta na próxima aula (já está na fila).</p>';
+  h+='<p style="margin-top:10px;color:#1F2937">Diga a '+env.stuName()+' <b>uma coisa que ele(a) faz hoje que não fazia antes</b>.</p>';
   if(misses.length)h+='<p class="text-slate-400 text-sm" style="margin-top:6px">'+misses.length+' ponto(s) para revisar na próxima aula.</p>';
   h+='<div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">';
   if(misses.length)h+='<button onclick="GE.homework()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">📄 Dever de casa (PDF dos ✗ de hoje)</button>';
@@ -602,7 +602,7 @@ function render(){
     const el=document.getElementById('ge-clock');if(!el){clearInterval(S.clockTimer);return;}
     const s=Math.floor((Date.now()-S.secStart)/1000);
     el.textContent=Math.floor(s/60)+':'+('0'+s%60).slice(-2);
-    if(s>SECTIONS[S.sec].time*60)el.style.color='#dc2626';
+    if(s>SECTIONS[S.sec].time*60)el.style.color='#DC2626';
   },1000);
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -617,7 +617,7 @@ window.GE={
         S=Object.assign(freshState(),v.S,{clockTimer:null,secStart:Date.now()});
         render();
         const el=document.getElementById('ge-gatemsg');
-        if(el)el.innerHTML='<div class="mistake" style="background:#fef3c7 !important;border-color:#fcd34d !important;color:#92400e !important;font-weight:600;font-size:13px">⏸ Aula recuperada de onde parou. <button onclick="GE.restartFresh()" style="margin-left:8px;background:#fff;border:1px solid #fcd34d;border-radius:8px;padding:3px 10px;cursor:pointer;font-weight:700;color:#92400e">↺ Recomeçar do zero</button></div>';
+        if(el)el.innerHTML='<div class="mistake" style="background:#FEF3C7 !important;border-color:#F59E0B !important;color:#92400E !important;font-weight:600;font-size:13px">⏸ Aula recuperada de onde parou. <button onclick="GE.restartFresh()" style="margin-left:8px;background:#fff;border:1px solid #F59E0B;border-radius:8px;padding:3px 10px;cursor:pointer;font-weight:700;color:#92400E">↺ Recomeçar do zero</button></div>';
         return;
       }
     }catch(e){}
@@ -667,7 +667,7 @@ window.GE={
     if(S.cutIdx>=CUTS.length)return;
     const c=CUTS[S.cutIdx];S.cuts[c.k]=true;S.cutIdx++;
     const el=document.getElementById('ge-gatemsg');
-    if(el)el.innerHTML='<div class="mistake" style="background:#fef3c7 !important;border-color:#fcd34d !important;color:#92400e !important;font-weight:600;font-size:13px">✂ '+c.msg+'</div>';
+    if(el)el.innerHTML='<div class="mistake" style="background:#FEF3C7 !important;border-color:#F59E0B !important;color:#92400E !important;font-weight:600;font-size:13px">✂ '+c.msg+'</div>';
     if(['p8','m4','w1'].indexOf(c.k)>=0)render();
     saveLive();
   },
@@ -679,11 +679,11 @@ window.GE={
   },
   homework:function(){
     if(!S._misses||!S._misses.length)return;
-    let h='<h1 style="border-bottom:3px solid #7c3aed;padding-bottom:10px">Homework — '+env.stuName()+' · '+T.name+'</h1>'+
+    let h='<h1 style="border-bottom:3px solid #0B3B46;padding-bottom:10px">Homework — '+env.stuName()+' · '+T.name+'</h1>'+
       '<p>Practice these — we\'ll check them next class:</p>'+
       S._misses.map(function(m,i){return '<p style="margin-left:14px">'+(i+1)+'. '+m.q.replace(/<[^>]*>/g,'')+'</p>';}).join('')+
       '<p style="color:#888;margin-top:18px">Answers on the last line — no peeking! 😉</p><hr>'+
-      '<p style="font-size:11px;color:#aaa">'+S._misses.map(function(m,i){return (i+1)+') '+String(m.a).replace(/<[^>]*>/g,'');}).join(' · ')+'</p>';
+      '<p style="font-size:11px;color:#9CA3AF">'+S._misses.map(function(m,i){return (i+1)+') '+String(m.a).replace(/<[^>]*>/g,'');}).join(' · ')+'</p>';
     if(typeof window.printDoc==='function')window.printDoc(h,'Homework — '+env.stuName());
   },
   restart:function(){S.finished=false;S.sec=0;render();},

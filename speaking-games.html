@@ -14,7 +14,7 @@
   .top {
     background: linear-gradient(120deg, var(--tl-primary), #0F5561 55%, var(--tl-secondary));
     color: var(--tl-text-inverse);
-    padding: 14px 18px;
+    padding: var(--tl-space-5) var(--tl-space-5);
     position: sticky;
     top: 0;
     z-index: var(--tl-z-sticky);
@@ -46,8 +46,8 @@
   }
 
   /* Filtros */
-  .wrap { max-width: var(--tl-container-md); margin: 0 auto; padding: 16px; }
-  .filters { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .wrap { max-width: var(--tl-container-md); margin: 0 auto; padding: var(--tl-space-5) var(--tl-space-5) var(--tl-space-8); }
+  .filters { display: flex; gap: var(--tl-space-3); flex-wrap: wrap; align-items: center; margin-bottom: var(--tl-space-4); }
   .seg {
     display: flex;
     background: var(--tl-primary-soft);
@@ -105,14 +105,15 @@
   /* Tela de atividade */
   .stageWrap { display: none; max-width: var(--tl-container-md); margin: 0 auto; padding: 16px; }
   .stagebar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .badge {
+  /* #gBadge é um header visual do jogo (não um badge do DS) — mantém tokens DS */
+  #gBadge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--tl-space-2);
     font-weight: var(--tl-fw-bold);
-    font-size: 16px;
+    font-size: var(--tl-fs-h4);
     color: var(--tl-text-inverse);
-    padding: 8px 16px;
+    padding: var(--tl-space-2) var(--tl-space-4);
     border-radius: var(--tl-radius-lg);
     background: var(--tl-primary);
     text-transform: none;
@@ -363,7 +364,7 @@ function renderItem(g,it){
   }else if(t==='guess'){
     h='<div class="emojibig pop">'+(it.e||'❓')+'</div><div class="wordbig">'+esc(it.w).toUpperCase()+'</div>'+
       '<div class="hintline">Describe it in English — don’t say the word!</div>'+
-      '<div class="" style="margin-top:6px;color:#94a3b8;font-size:14px">💡 '+(it.clues||[]).map(esc).join(' · ')+'</div>';
+      '<div class="" style="margin-top:6px;color:var(--tl-text-tertiary);font-size:14px">💡 '+(it.clues||[]).map(esc).join(' · ')+'</div>';
   }else if(t==='duo'){
     h='<div class="hintline">Choose one and say WHY:</div>'+
       '<div class="duo"><button class="duoA" onclick="dpick(this,1)">'+esc(it.a)+'</button>'+
@@ -402,7 +403,7 @@ function rollDie(){
 
 /* roda */
 function wheelHTML(it){
-  var seg=it.seg, n=seg.length, cols=['#7c3aed','#db2777','#f59e0b','#16a34a','#0ea5a5','#e11d48','#6366f1','#ea580c'];
+  var seg=it.seg, n=seg.length, cols=['#0B3B46','#FF6B6B','#16B1A9','#22C55E','#F59E0B','#0E4B58','#12A099','#F45A5A'];
   var stops=[], step=360/n;
   for(var i=0;i<n;i++){ stops.push(cols[i%cols.length]+' '+(i*step)+'deg '+((i+1)*step)+'deg'); }
   window._wheel=it;

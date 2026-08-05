@@ -19,7 +19,7 @@
     .gradient-coral   { background: linear-gradient(135deg, var(--tl-accent), var(--tl-accent-hover)) !important; color: var(--tl-text-inverse) !important; }
     .gradient-emerald { background: linear-gradient(135deg, var(--tl-secondary), var(--tl-success)) !important; color: var(--tl-text-inverse) !important; }
     .gradient-indigo  { background: linear-gradient(135deg, var(--tl-primary), var(--tl-secondary)) !important; color: var(--tl-text-inverse) !important; }
-    .gradient-amber   { background: linear-gradient(135deg, var(--tl-warning), #FBBF24) !important; color: var(--tl-warning-text) !important; }
+    .gradient-amber   { background: linear-gradient(135deg, var(--tl-warning), #F59E0B) !important; color: var(--tl-warning-text) !important; }
 
     /* Cards */
     .card {
@@ -51,10 +51,10 @@
     }
     .tool-button:hover { transform: scale(1.05); }
     /* Cores das ferramentas externas: preservadas por serem marcas registradas */
-    .wordwall  { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    .kahoot    { background: linear-gradient(135deg, #FFD800 0%, #FF8C00 100%); color: #111 !important; }
-    .baamboozle{ background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%); }
-    .testeng   { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+    .wordwall  { background: linear-gradient(135deg, #0B3B46 0%, #16B1A9 100%); }
+    .kahoot    { background: linear-gradient(135deg, var(--tl-warning) 0%, var(--tl-accent) 100%); color: #111 !important; }
+    .baamboozle{ background: linear-gradient(135deg, var(--tl-secondary) 0%, var(--tl-secondary-hover) 100%); }
+    .testeng   { background: linear-gradient(135deg, var(--tl-danger) 0%, var(--tl-danger-hover) 100%); }
 
     /* Header do módulo (usa gradient-indigo do DS) */
     .bg-indigo-900   { background: var(--tl-primary-hover) !important; }
@@ -374,7 +374,7 @@ ${content}
         const content = getStageContent(stage, currentTheme);
         html += `
           <div style="page-break-inside: avoid; margin-bottom: 30px;">
-            <h2 style="border-left: 4px solid #667eea; padding-left: 15px; margin: 20px 0 10px 0;">STAGE ${stage.id}: ${stage.name}</h2>
+            <h2 style="border-left: 4px solid #0B3B46; padding-left: 15px; margin: 20px 0 10px 0;">STAGE ${stage.id}: ${stage.name}</h2>
             <p style="color: #666; margin: 5px 0;"><strong>⏱️ Tempo:</strong> ${stage.time} minutos</p>
             <p style="color: #666; margin: 5px 0 20px 0;"><strong>🎯 Objetivo:</strong> ${stage.objective}</p>
             <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; white-space: pre-wrap; line-height: 1.6; font-size: 13px;">

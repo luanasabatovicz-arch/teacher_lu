@@ -239,7 +239,7 @@
     .topbar, .filters, .reveal, .btn, .no-print { display: none !important; }
     .transcript { display: block !important; }
     .ans { display: inline !important; }
-    .card { box-shadow: none; border-color: #ddd; }
+    .card { box-shadow: none; border-color: var(--tl-border); }
   }
 </style>
 </head>
@@ -478,7 +478,7 @@ function answerTF(btn, correct){
   const isTrue = btn.textContent === 'True';
   btn.classList.add(isTrue ? 'on-t' : 'on-f');
   wrap.querySelector('.mark').textContent = correct ? '✓' : '✗';
-  wrap.querySelector('.mark').style.color = correct ? '#16a34a' : '#dc2626';
+  wrap.querySelector('.mark').style.color = correct ? '#22C55E' : '#DC2626';
 }
 
 /* ---------- eventos dos filtros ---------- */

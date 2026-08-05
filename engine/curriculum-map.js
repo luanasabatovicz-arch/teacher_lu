@@ -67,8 +67,8 @@ window.CURRICULUM_WEEKS = [
     ];
 
 window.CURRICULUM_STAGES = [
-      {name:'Foundation', from:1,  to:13, color:'#7c3aed', level:'A1',  goal:'Talk about yourself, your family and your routine'},
-      {name:'Expansion',  from:14, to:26, color:'#db2777', level:'A1+', goal:'Tell stories in the past and describe people and places'},
-      {name:'Projection', from:27, to:39, color:'#f59e0b', level:'A2',  goal:'Talk about plans, the future and past experiences'},
-      {name:'Autonomy',   from:40, to:52, color:'#22c55e', level:'A2',  goal:'Hold longer conversations with more independence'}
+      {name:'Foundation', from:1,  to:13, color:'#0B3B46', level:'A1',  goal:'Talk about yourself, your family and your routine'},
+      {name:'Expansion',  from:14, to:26, color:'#FF6B6B', level:'A1+', goal:'Tell stories in the past and describe people and places'},
+      {name:'Projection', from:27, to:39, color:'#F59E0B', level:'A2',  goal:'Talk about plans, the future and past experiences'},
+      {name:'Autonomy',   from:40, to:52, color:'#22C55E', level:'A2',  goal:'Hold longer conversations with more independence'}
     ];

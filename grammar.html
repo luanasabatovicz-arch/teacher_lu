@@ -31,7 +31,7 @@
     color: var(--tl-text-inverse) !important;
     font-family: var(--tl-font-sans) !important;
     border-radius: var(--tl-radius-md);
-    padding: 8px 16px;
+    padding: var(--tl-space-2) var(--tl-space-4);
     font-weight: var(--tl-fw-semibold);
     transition: all var(--tl-dur-fast) var(--tl-ease);
   }
@@ -58,7 +58,7 @@
   .gradient-coral    { background: linear-gradient(135deg, var(--tl-accent) 0%, var(--tl-accent-hover) 100%) !important; color: var(--tl-text-inverse) !important; }
   .gradient-emerald  { background: linear-gradient(135deg, var(--tl-secondary) 0%, var(--tl-success) 100%) !important; color: var(--tl-text-inverse) !important; }
   .gradient-indigo   { background: linear-gradient(135deg, var(--tl-primary) 0%, var(--tl-secondary) 100%) !important; color: var(--tl-text-inverse) !important; }
-  .gradient-amber    { background: linear-gradient(135deg, var(--tl-warning) 0%, #FBBF24 100%) !important; color: var(--tl-warning-text) !important; }
+  .gradient-amber    { background: linear-gradient(135deg, var(--tl-warning) 0%, #F59E0B 100%) !important; color: var(--tl-warning-text) !important; }
   .gradient-pink     { background: linear-gradient(135deg, var(--tl-accent) 0%, var(--tl-accent-hover) 100%) !important; color: var(--tl-text-inverse) !important; }
 
   /* Cards e stages */
@@ -212,7 +212,7 @@
       <div class="flex justify-between items-center mb-4">
         <div>
           <h1 class="text-2xl md:text-3xl font-bold">Grammar Lessons</h1>
-          <p class="text-[#B7AE9C] text-sm font-semibold">Essential grammar · Open, explain and practice</p>
+          <p class="text-[#6B7280] text-sm font-semibold">Essential grammar · Open, explain and practice</p>
         </div>
         <button onclick="goHome()" class=" font-bold py-2 px-4 rounded-lg hover:bg-gray-800 text-sm"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</button>
       </div>
@@ -571,9 +571,9 @@ function renderLesson(){
   const engine=t.eid&&window.ENGINE_TOPICS&&ENGINE_TOPICS[t.eid];
   document.getElementById('lessonTitle').innerHTML=`
     <div class="flex items-center gap-3 mb-1">
-      <span class="text-xs bg-[#B08F4C] text-[#181510] px-2 py-1 rounded font-bold">GRAMMAR</span>
+      <span class="text-xs bg-[#0B3B46] text-[#FFFFFF] px-2 py-1 rounded font-bold">GRAMMAR</span>
       <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${t.level}</span>
-      ${engine?'<span class="text-xs px-2 py-1 rounded font-bold" style="background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff">⚡ Grammar Engine v1</span>':''}
+      ${engine?'<span class="text-xs px-2 py-1 rounded font-bold" style="background:linear-gradient(135deg,#0B3B46,#FF6B6B);color:#fff">⚡ Grammar Engine v1</span>':''}
     </div>
     <h2 class="text-2xl md:text-3xl font-bold text-white">${t.name}</h2>`;
 
@@ -586,7 +586,7 @@ function renderLesson(){
   wuJudge={};
   wuItems=getQueue().slice(0,4);
   if(wuItems.length){
-    h+=stageBlock('#22c55e','0 · Warm-up — '+stuName()+'’s review queue',
+    h+=stageBlock('#22C55E','0 · Warm-up — '+stuName()+'’s review queue',
       `<p class="text-slate-400 text-sm mb-2">Ask these aloud first — things ${stuName()} missed before. A ✓ clears the item from the queue.</p>`+
       wuItems.map((it,i)=>`
         <div class="ex-line" style="display:block">
@@ -594,8 +594,8 @@ function renderLesson(){
             <span><span class="chip" style="margin:0 6px 0 0">${it.topic||'review'}</span>${it.q}</span>
             <span style="display:flex;gap:6px;flex-shrink:0">
               ${it.a?`<button onclick="toggleAnswer('wua-${i}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">answer</button>`:''}
-              <button onclick="judgeWU(${i},true)" id="wuy-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓</button>
-              <button onclick="judgeWU(${i},false)" id="wun-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗</button>
+              <button onclick="judgeWU(${i},true)" id="wuy-${i}" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓</button>
+              <button onclick="judgeWU(${i},false)" id="wun-${i}" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗</button>
             </span>
           </div>
           ${it.a?`<div id="wua-${i}" class="answer">✓ ${it.a}</div>`:''}
@@ -603,7 +603,7 @@ function renderLesson(){
   }
 
   // 1 NOTICE — the student discovers the pattern BEFORE seeing the rule (Grammar Engine §3)
-  h+=stageBlock('#10b981','1 · Notice the pattern (listen & discover)',
+  h+=stageBlock('#22C55E','1 · Notice the pattern (listen & discover)',
     t.examples.map(e=>`<div class="ex-line"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/'/g,"\\'")}')">►</button></div>`).join('')+
     `<div style="margin-top:12px">
        <span class="chip">🔍 What repeats in every sentence?</span>
@@ -616,26 +616,26 @@ function renderLesson(){
         <button onclick="revealRule()" class="theme-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule — after the student says it</button>
       </div>
       <div id="ruleWrap" class="hide-rule">`;
-  h+=stageBlock('#f59e0b','2 · When to use',`<p class="text-slate-300">${t.use}</p>`);
-  h+=stageBlock('#3b82f6','Structure',
-    `<div class="form-box"><div class="label" style="color:#34d399">Affirmative</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#f87171">Negative</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#60a5fa">Question</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
+  h+=stageBlock('#F59E0B','2 · When to use',`<p class="text-slate-300">${t.use}</p>`);
+  h+=stageBlock('#0EA5E9','Structure',
+    `<div class="form-box"><div class="label" style="color:#22C55E">Affirmative</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
+     <div class="form-box"><div class="label" style="color:#EF4444">Negative</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
+     <div class="form-box"><div class="label" style="color:#0EA5E9">Question</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
   if(t.list){
-    h+=stageBlock('#a855f7','Common irregular verbs',
+    h+=stageBlock('#0B3B46','Common irregular verbs',
       `<div class="grid grid-cols-2 md:grid-cols-3 gap-2">${t.list.map(v=>`<div class="form-box" style="margin:0;padding:10px"><span class="text-white font-semibold text-sm">${v}</span></div>`).join('')}</div>`);
   }
-  h+=stageBlock('#eab308','Signal words',
+  h+=stageBlock('#F59E0B','Signal words',
     `<div>${t.signals.map(s=>`<span class="chip">${s}</span>`).join('')}</div>`);
   h+=`</div>`;
 
   // 5 ERROS COMUNS
-  h+=stageBlock('#ef4444','Common mistakes',
+  h+=stageBlock('#EF4444','Common mistakes',
     t.mistakes.map(m=>`<div class="mistake text-slate-200 text-sm">${m}</div>`).join(''));
 
   // 3 PRACTICE — student says it, teacher reveals and marks (evidence gate ≥80%)
   prJudge={};
-  h+=stageBlock('#ec4899','3 · Practice — student says it, you check it',
+  h+=stageBlock('#FF6B6B','3 · Practice — student says it, you check it',
     `<div id="prScore" class="text-slate-300 text-sm font-bold mb-2">0 / ${t.practice.length} checked · gate: ≥80%</div>`+
     t.practice.map((p,idx)=>{
       const id=`ans-${current}-${idx}`;
@@ -647,33 +647,33 @@ function renderLesson(){
             <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">show answer</button>
           </span>
         </div>
-        <div id="hint-${idx}" class="answer" style="color:#d97706 !important">💡 It starts with “${(p.a||'?').trim().charAt(0)}…” — try again!</div>
+        <div id="hint-${idx}" class="answer" style="color:#F59E0B !important">💡 It starts with “${(p.a||'?').trim().charAt(0)}…” — try again!</div>
         <div id="${id}" class="answer">✓ ${p.a}
           <span style="margin-left:8px">
-            <button onclick="judgePr(${idx},true)" id="pry-${idx}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓ got it</button>
-            <button onclick="judgePr(${idx},false)" id="prn-${idx}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗ missed</button>
+            <button onclick="judgePr(${idx},true)" id="pry-${idx}" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓ got it</button>
+            <button onclick="judgePr(${idx},false)" id="prn-${idx}" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗ missed</button>
           </span>
-          <div class="text-xs" style="color:#7c3aed;margin-top:5px">↳ follow-up: ${FOLLOWUPS[idx%FOLLOWUPS.length]}</div>
+          <div class="text-xs" style="color:#0B3B46;margin-top:5px">↳ follow-up: ${FOLLOWUPS[idx%FOLLOWUPS.length]}</div>
         </div>
       </div>`;
     }).join('')+`<div id="prVerdict" style="margin-top:10px"></div>`);
 
   // 4 FALE AGORA
-  h+=stageBlock('#06b6d4','4 · Speak now (use the tense)',
+  h+=stageBlock('#16B1A9','4 · Speak now (use the tense)',
     t.speaking.map(q=>`<div class="ex-line"><span>${q}</span></div>`).join(''));
 
   // 5 EXIT TICKET — auto-built evidence gate (Grammar Engine §10)
   etJudge={};
   const et=buildExit(t);
-  h+=stageBlock('#7c3aed','5 · Exit Ticket — ≥80% (5/6) completes the week',
+  h+=stageBlock('#0B3B46','5 · Exit Ticket — ≥80% (5/6) completes the week',
     et.map((it,i)=>`
       <div class="ex-line" style="display:block">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
           <span><span class="chip" style="margin:0 6px 0 0">${it.tag}</span>${it.q}</span>
           <span style="display:flex;gap:6px;flex-shrink:0">
             ${it.a?`<button onclick="toggleAnswer('eta-${i}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">answer</button>`:''}
-            <button onclick="judgeET(${i},true)" id="ety-${i}" class="text-xs px-3 py-1 rounded" style="background:#dcfce7;color:#166534;font-weight:700;border:1px solid #86efac">✓</button>
-            <button onclick="judgeET(${i},false)" id="etn-${i}" class="text-xs px-3 py-1 rounded" style="background:#fee2e2;color:#991b1b;font-weight:700;border:1px solid #fecaca">✗</button>
+            <button onclick="judgeET(${i},true)" id="ety-${i}" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓</button>
+            <button onclick="judgeET(${i},false)" id="etn-${i}" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗</button>
           </span>
         </div>
         ${it.a?`<div id="eta-${i}" class="answer">✓ ${it.a}</div>`:''}
@@ -710,7 +710,7 @@ function judgeWU(i,ok){
   if(n===wuItems.length){
     const left=getQueue().length;
     document.getElementById('wuVerdict').innerHTML=
-      `<div class="mistake" style="background:#f0fdf4 !important;border-color:#bbf7d0 !important;color:#166534 !important;font-weight:700">${c}/${n} recovered · ${left} item${left===1?'':'s'} still in ${stuName()}'s queue. Now let's discover something new ↓</div>`;
+      `<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">${c}/${n} recovered · ${left} item${left===1?'':'s'} still in ${stuName()}'s queue. Now let's discover something new ↓</div>`;
   }
 }
 
@@ -740,7 +740,7 @@ function judgePr(i,ok){
   if(n===t.practice.length){
     const pct=Math.round(c/n*100);
     document.getElementById('prVerdict').innerHTML=pct>=80
-      ?`<div class="mistake" style="background:#f0fdf4 !important;border-color:#bbf7d0 !important;color:#166534 !important;font-weight:700">✅ ${pct}% — gate passed. Go to Speak now.</div>`
+      ?`<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">✅ ${pct}% — gate passed. Go to Speak now.</div>`
       :`<div class="mistake" style="font-weight:700">⚠ ${pct}% — below the gate. Revisit the rule together, then retry the missed ones (misses saved to ${stuName()}'s review queue).</div>`;
   }
 }
@@ -755,7 +755,7 @@ function judgeET(i,ok){
   const n=Object.keys(etJudge).length,c=Object.values(etJudge).filter(Boolean).length;
   if(n===6){
     document.getElementById('etVerdict').innerHTML=c>=5
-      ?`<div class="mistake" style="background:#f0fdf4 !important;border-color:#bbf7d0 !important;color:#166534 !important;font-weight:700">🏆 ${c}/6 — week complete! Mark it in the Annual Plan and tell ${stuName()} one thing they can do now that they couldn't before.</div>`
+      ?`<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">🏆 ${c}/6 — week complete! Mark it in the Annual Plan and tell ${stuName()} one thing they can do now that they couldn't before.</div>`
       :`<div class="mistake" style="font-weight:700">↩ ${c}/6 — below 80%. This topic returns next class (misses saved to ${stuName()}'s review queue). Don't advance the week.</div>`;
   }
 }
@@ -775,7 +775,7 @@ function pickStu(id){curStu=id;localStorage.setItem('sabatovicz_current_student'
 function renderStuBar(){
   const el=document.getElementById('stuBar');if(!el)return;
   el.innerHTML=`<span class="text-slate-300 text-sm font-bold" style="margin-right:8px">Class with:</span>`+
-    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn text-xs font-bold py-2 px-3 rounded-lg" style="margin:2px;${s.id===curStu?'background:linear-gradient(135deg,#7c3aed,#db2777) !important;color:#fff !important':''}">${s.emoji||''} ${s.name}</button>`).join('');
+    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn text-xs font-bold py-2 px-3 rounded-lg" style="margin:2px;${s.id===curStu?'background:linear-gradient(135deg,#0B3B46,#FF6B6B) !important;color:#fff !important':''}">${s.emoji||''} ${s.name}</button>`).join('');
 }
 function logError(kind,q,a){
   if(!curStu)return;
@@ -795,19 +795,19 @@ function exportLesson(){
   const pa=document.getElementById('printArea');
   const strip=s=>s.replace(/<b>/g,'').replace(/<\/b>/g,'');
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #f59e0b;padding-bottom:12px">Grammar — ${t.name}</h1>
+    <h1 style="text-align:center;border-bottom:3px solid #F59E0B;padding-bottom:12px">Grammar — ${t.name}</h1>
     <p style="text-align:center;color:#666">Level ${t.level}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">When to use</h2><p>${t.use}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Structure</h2>
+    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">When to use</h2><p>${t.use}</p>
+    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Structure</h2>
     <p><b>Affirmative:</b></p>${t.form.aff.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
     <p><b>Negative:</b></p>${t.form.neg.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
     <p><b>Question:</b></p>${t.form.q.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}`;
-  if(t.list){h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Irregular verbs</h2><p>${t.list.join(' · ')}</p>`;}
-  h+=`<h2 style="border-left:4px solid #f59e0b;padding-left:10px">Examples</h2>${t.examples.map(e=>`<p style="margin-left:15px">• ${e}</p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Signal words</h2><p>${t.signals.join(' · ')}</p>
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Common mistakes</h2>${t.mistakes.map(m=>`<p style="margin-left:15px">${strip(m)}</p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Practice (with answer key)</h2>${t.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${p.q} &nbsp; <b style="color:#059669">(${p.a})</b></p>`).join('')}
-    <h2 style="border-left:4px solid #f59e0b;padding-left:10px">Speak now</h2>${t.speaking.map(q=>`<p style="margin-left:15px">• ${q}</p>`).join('')}
+  if(t.list){h+=`<h2 style="border-left:4px solid #F59E0B;padding-left:10px">Irregular verbs</h2><p>${t.list.join(' · ')}</p>`;}
+  h+=`<h2 style="border-left:4px solid #F59E0B;padding-left:10px">Examples</h2>${t.examples.map(e=>`<p style="margin-left:15px">• ${e}</p>`).join('')}
+    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Signal words</h2><p>${t.signals.join(' · ')}</p>
+    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Common mistakes</h2>${t.mistakes.map(m=>`<p style="margin-left:15px">${strip(m)}</p>`).join('')}
+    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Practice (with answer key)</h2>${t.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${p.q} &nbsp; <b style="color:#22C55E">(${p.a})</b></p>`).join('')}
+    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Speak now</h2>${t.speaking.map(q=>`<p style="margin-left:15px">• ${q}</p>`).join('')}
     </div>`;
   pa.innerHTML=h;
   printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
@@ -816,9 +816,9 @@ function exportLesson(){
 function exportEngineLesson(T){
   const nm=stuName();
   const cl=s=>String(s==null?'':s).replace(/\{name\}/g,nm).replace(/<[^>]*>/g,'');
-  const h2=t=>`<h2 style="border-left:4px solid #7c3aed;padding-left:10px">${t}</h2>`;
+  const h2=t=>`<h2 style="border-left:4px solid #0B3B46;padding-left:10px">${t}</h2>`;
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #7c3aed;padding-bottom:12px">Grammar — ${cl(T.name)}</h1>
+    <h1 style="text-align:center;border-bottom:3px solid #0B3B46;padding-bottom:12px">Grammar — ${cl(T.name)}</h1>
     <p style="text-align:center;color:#666">Level ${T.level} · ${nm}</p>
     ${h2('Goal')}<p>By the end of this lesson, ${nm} can ${cl(T.goal.can)}.</p>
     ${h2('Rule')}<p>${cl(T.rule.text)}</p>
@@ -830,10 +830,10 @@ function exportEngineLesson(T){
     ${T.watchout.map(w=>`<p style="margin-left:15px">✗ ${cl(w.bad)} → ✓ ${cl(w.good)} <span style="color:#888">(${cl(w.why)})</span></p>`).join('')}
     ${h2('Examples (Notice)')}${T.notice.examples.map(e=>`<p style="margin-left:15px">• ${cl(e)}</p>`).join('')}
     ${h2('Practice (with answer key)')}
-    ${T.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${cl(p.q)}${p.opts?' ['+p.opts.map(cl).join(' / ')+']':''} &nbsp;<b style="color:#059669">(${cl(p.a)})</b></p>`).join('')}
+    ${T.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${cl(p.q)}${p.opts?' ['+p.opts.map(cl).join(' / ')+']':''} &nbsp;<b style="color:#22C55E">(${cl(p.a)})</b></p>`).join('')}
     ${h2('Make it yours')}${T.makeit.map(m=>`<p style="margin-left:15px">• ${cl(m)}</p>`).join('')}
     ${h2('Task — '+cl(T.task.title))}<p>${cl(T.task.mission)}</p>
-    ${h2('Exit Ticket')}${T.exit.map((e,i)=>`<p style="margin-left:15px">${i+1}. [${cl(e.tag)}] ${cl(e.q)}${e.a?` &nbsp;<b style="color:#059669">(${cl(e.a)})</b>`:''}</p>`).join('')}
+    ${h2('Exit Ticket')}${T.exit.map((e,i)=>`<p style="margin-left:15px">${i+1}. [${cl(e.tag)}] ${cl(e.q)}${e.a?` &nbsp;<b style="color:#22C55E">(${cl(e.a)})</b>`:''}</p>`).join('')}
     </div>`;
   printDoc(h,'Sabatovicz — '+cl(T.name));
 }

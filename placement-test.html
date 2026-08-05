@@ -154,10 +154,10 @@ function pick(i,j){
 }
 
 function levelFor(c){
-  if(c<=7) return {code:'A1',name:'Beginner',color:'#f59e0b',desc:'You are just starting out. You can use very simple phrases about yourself. Begin with the Conversation Lessons (weeks 1-4) and the grammar of Verb to be and Present Simple.'};
-  if(c<=14) return {code:'A2',name:'Elementary',color:'#22c55e',desc:'You can already communicate in everyday situations. Work on the past (Past Simple), the future (Going to / Will) and frequency. Conversation Lessons weeks 5-8 and past-tense grammar.'};
-  if(c<=21) return {code:'B1',name:'Pre-intermediate',color:'#06b6d4',desc:'You can talk about many topics and tell stories. Focus on Present Perfect, conditionals and modals. Ideal for freer conversation and varied themes.'};
-  return {code:'B2',name:'Upper-intermediate',color:'#7c3aed',desc:'You communicate fluently and naturally. Work on more complex structures, advanced vocabulary and nuance. Lessons focused on thematic conversation and refinement.'};
+  if(c<=7) return {code:'A1',name:'Beginner',color:'#F59E0B',desc:'You are just starting out. You can use very simple phrases about yourself. Begin with the Conversation Lessons (weeks 1-4) and the grammar of Verb to be and Present Simple.'};
+  if(c<=14) return {code:'A2',name:'Elementary',color:'#22C55E',desc:'You can already communicate in everyday situations. Work on the past (Past Simple), the future (Going to / Will) and frequency. Conversation Lessons weeks 5-8 and past-tense grammar.'};
+  if(c<=21) return {code:'B1',name:'Pre-intermediate',color:'#16B1A9',desc:'You can talk about many topics and tell stories. Focus on Present Perfect, conditionals and modals. Ideal for freer conversation and varied themes.'};
+  return {code:'B2',name:'Upper-intermediate',color:'#0B3B46',desc:'You communicate fluently and naturally. Work on more complex structures, advanced vocabulary and nuance. Lessons focused on thematic conversation and refinement.'};
 }
 
 function finish(){
@@ -178,9 +178,9 @@ function finish(){
       <div class="score">Score: ${correct} of 30</div>
     </div>
     <div class="card">
-      <h3 style="margin-bottom:8px;color:#7c3aed">Interpretation</h3>
-      <p style="color:#475569">${lv.desc}</p>
-      <p style="color:#475569;margin-top:10px"><b>Performance by level:</b> A1 ${bands.A1.c}/${bands.A1.t} · A2 ${bands.A2.c}/${bands.A2.t} · B1 ${bands.B1.c}/${bands.B1.t}</p>
+      <h3 style="margin-bottom:8px;color:#0B3B46">Interpretation</h3>
+      <p style="color:#1F2937">${lv.desc}</p>
+      <p style="color:#1F2937;margin-top:10px"><b>Performance by level:</b> A1 ${bands.A1.c}/${bands.A1.t} · A2 ${bands.A2.c}/${bands.A2.t} · B1 ${bands.B1.c}/${bands.B1.t}</p>
       <div style="text-align:center;margin-top:18px">
         <button class="btn green" onclick="exportPDF(${correct})">Download PDF</button>
         <button class="btn gray" onclick="location.reload()">Retake</button>
@@ -196,13 +196,13 @@ function exportPDF(correct){
   const bands={A1:{t:0,c:0},A2:{t:0,c:0},B1:{t:0,c:0}};
   QUESTIONS.forEach((it,i)=>{bands[it.band].t++;if(answers[i]===it.c)bands[it.band].c++;});
   const date=new Date().toLocaleDateString('pt-BR');
-  let key=QUESTIONS.map((it,i)=>{const ok=answers[i]===it.c;const chosen=answers[i]!==undefined?String.fromCharCode(65+answers[i]):'—';return `<tr><td>${i+1}</td><td>${it.q}</td><td>${chosen}</td><td><b>${String.fromCharCode(65+it.c)}</b></td><td style="color:${ok?'#16a34a':'#dc2626'}">${ok?'✓':'✗'}</td></tr>`;}).join('');
+  let key=QUESTIONS.map((it,i)=>{const ok=answers[i]===it.c;const chosen=answers[i]!==undefined?String.fromCharCode(65+answers[i]):'—';return `<tr><td>${i+1}</td><td>${it.q}</td><td>${chosen}</td><td><b>${String.fromCharCode(65+it.c)}</b></td><td style="color:${ok?'#22C55E':'#DC2626'}">${ok?'✓':'✗'}</td></tr>`;}).join('');
   const html=`
-    <h1 style="text-align:center;border-bottom:3px solid #7c3aed;padding-bottom:12px">Placement Test — Sabatovicz</h1>
+    <h1 style="text-align:center;border-bottom:3px solid #0B3B46;padding-bottom:12px">Placement Test — Sabatovicz</h1>
     <p><b>Student:</b> ${name} &nbsp;&nbsp; <b>Date:</b> ${date}</p>
-    <div style="text-align:center;border:3px solid #7c3aed;border-radius:12px;padding:20px;margin:18px 0">
-      <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#7c3aed">Estimated level</div>
-      <div style="font-size:52px;font-weight:bold;color:#7c3aed">${lv.code}</div>
+    <div style="text-align:center;border:3px solid #0B3B46;border-radius:12px;padding:20px;margin:18px 0">
+      <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#0B3B46">Estimated level</div>
+      <div style="font-size:52px;font-weight:bold;color:#0B3B46">${lv.code}</div>
       <div style="font-size:20px">${lv.name}</div>
       <div style="font-size:18px;margin-top:6px">Score: <b>${correct}/30</b></div>
     </div>
