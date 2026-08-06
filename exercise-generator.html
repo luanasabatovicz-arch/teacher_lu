@@ -342,9 +342,9 @@ const bank = {
     {type:"multiple_choice",question:"We ___ dinner at 8 PM.",options:["have","has","having","to have"],correct:0},
     {type:"fill_blank",question:"I ___ up at 6 o'clock.",hint:"wake up",correct:"wake"},
     {type:"fill_blank",question:"She ___ (go) to work at 8.",hint:"he/she + s",correct:"goes"},
-    {type:"fill_blank",question:"I ___ (have) breakfast at 7.",hint:"I + verb",correct:"have"},
+    {type:"fill_blank",question:"I ___ breakfast at 7.",hint:"I + verb",correct:"have"},
     {type:"fill_blank",question:"He ___ (brush) his teeth.",hint:"he/she + es",correct:"brushes"},
-    {type:"fill_blank",question:"They ___ (sleep) eight hours.",hint:"they + verb",correct:"sleep"},
+    {type:"fill_blank",question:"They ___ eight hours.",hint:"they + verb",correct:"sleep"},
     {type:"true_false",statements:[
       {text:"We usually have breakfast in the morning.",answer:true},
       {text:"'He go to work' is correct.",answer:false},
@@ -366,11 +366,11 @@ const bank = {
     {type:"multiple_choice",question:"She is ___ late (rarely).",options:["rarely","always","often","usually"],correct:0},
     {type:"multiple_choice",question:"Correct: 'I ___ go to the gym.'",options:["always","go always","am always go","go to always"],correct:0},
     {type:"multiple_choice",question:"'Once a week' means ___.",options:["one time every week","every day","never","always"],correct:0},
-    {type:"fill_blank",question:"I ___ eat breakfast (100%).",hint:"always",correct:"always"},
-    {type:"fill_blank",question:"He ___ smokes (0%).",hint:"never",correct:"never"},
-    {type:"fill_blank",question:"They ___ travel (sometimes).",hint:"sometimes",correct:"sometimes"},
-    {type:"fill_blank",question:"She is ___ happy (usually).",hint:"usually",correct:"usually"},
-    {type:"fill_blank",question:"We go to church ___ a week (once).",hint:"once",correct:"once"},
+    {type:"fill_blank",question:"I ___ eat breakfast.",hint:"always",correct:"always"},
+    {type:"fill_blank",question:"He ___ smokes.",hint:"never",correct:"never"},
+    {type:"fill_blank",question:"They ___ travel.",hint:"sometimes",correct:"sometimes"},
+    {type:"fill_blank",question:"She is ___ happy.",hint:"usually",correct:"usually"},
+    {type:"fill_blank",question:"We go to church ___ a week.",hint:"once",correct:"once"},
     {type:"true_false",statements:[
       {text:"'Always' means 100% of the time.",answer:true},
       {text:"Frequency adverbs go after the main verb.",answer:false},
@@ -446,7 +446,7 @@ const bank = {
     {type:"multiple_choice",question:"'How ___ apples do you want?'",options:["much","many","any","lot"],correct:1},
     {type:"fill_blank",question:"I drink ___ in the morning.",hint:"a hot drink",correct:"coffee"},
     {type:"fill_blank",question:"An ___ a day keeps the doctor away.",hint:"a fruit",correct:"apple"},
-    {type:"fill_blank",question:"I have ___ (eggs) for breakfast.",hint:"plural",correct:"eggs"},
+    {type:"fill_blank",question:"I have ___ for breakfast.",hint:"plural",correct:"eggs"},
     {type:"fill_blank",question:"'How ___ water do you drink?'",hint:"uncountable",correct:"much"},
     {type:"fill_blank",question:"Chicken and beef are types of ___.",hint:"meat",correct:"meat"},
     {type:"true_false",statements:[
@@ -496,7 +496,7 @@ const bank = {
     {type:"multiple_choice",question:"How much ___ those glasses?",options:["is","are","do","much"],correct:1},
     {type:"multiple_choice",question:"Something that costs a lot is ___.",options:["cheap","expensive","free","small"],correct:1},
     {type:"multiple_choice",question:"Money taken off the price is a ___.",options:["bill","receipt","discount","tip"],correct:2},
-    {type:"fill_blank",question:"___ car over there is new. (far, singular)",hint:"that/this",correct:"that"},
+    {type:"fill_blank",question:"___ car over there is new.",hint:"that/this",correct:"that"},
     {type:"fill_blank",question:"How ___ is this shirt?",hint:"asking price",correct:"much"},
     {type:"fill_blank",question:"The paper proving you paid is the ___.",hint:"keep it",correct:"receipt"},
     {type:"fill_blank",question:"It costs little money. It's ___.",hint:"opposite of expensive",correct:"cheap"},
@@ -548,8 +548,8 @@ const bank = {
     {type:"multiple_choice",question:"The cinema is ___ the square. (facing it)",options:["next","opposite","between","on"],correct:1},
     {type:"multiple_choice",question:"My house is ___ the school and the bank.",options:["next","opposite","between","near of"],correct:2},
     {type:"multiple_choice",question:"To change direction: '___ left at the corner.'",options:["Go","Turn","Cross","Take"],correct:1},
-    {type:"fill_blank",question:"___ a park near here? (question)",hint:"Is there / Are there",correct:"is there"},
-    {type:"fill_blank",question:"The pharmacy is ___ to the bank. (at the side)",hint:"preposition",correct:"next"},
+    {type:"fill_blank",question:"___ a park near here?",hint:"Is there / Are there",correct:"is there"},
+    {type:"fill_blank",question:"The pharmacy is ___ to the bank.",hint:"preposition",correct:"next"},
     {type:"fill_blank",question:"The city centre is also called ___.",hint:"one word",correct:"downtown"},
     {type:"fill_blank",question:"You wait for the bus at the bus ___.",hint:"place",correct:"stop"},
     {type:"fill_blank",question:"The area where you live is your ___.",hint:"place",correct:"neighbourhood"},
@@ -634,6 +634,41 @@ function updateScore(ok){
 
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
+/* ---------------------------------------------------------------------------
+   Sanitização do enunciado de fill_blank para tela compartilhada com o aluno
+   ---------------------------------------------------------------------------
+   Alguns itens do banco carregam a resposta (ou o hint) entre parênteses no
+   próprio enunciado — legado da versão em que a professora usava o texto para
+   se lembrar da resposta durante a aula presencial. Ex.:
+      "She is ___ happy (usually)."   answer:"usually"
+      "We go to church ___ a week (once)."  answer:"once"
+   Na aula online (tela compartilhada), esse parêntese ENTREGA a resposta
+   antes do clique em "Show answer". Removemos apenas o parêntese final
+   quando seu conteúdo corresponde exatamente à resposta ou ao hint
+   (case-insensitive, ignorando espaços). Nenhum outro parêntese é tocado —
+   parênteses semânticos como "(paint)" em "She enjoys ___ (paint)."
+   permanecem, porque são a base verbal que o aluno precisa transformar.
+   Nunca modificamos o dado original: só a string visível é sanitizada.
+   ---------------------------------------------------------------------------*/
+function sanitizeFillBlankQuestion(ex){
+  if(!ex || typeof ex.question!=='string') return ex ? ex.question : '';
+  const norm = s => String(s==null?'':s).trim().toLowerCase();
+  const answer = norm(ex.correct);
+  const hint   = norm(ex.hint);
+  // captura APENAS o último parêntese antes de eventual ponto/interrogação
+  //   final (ou fim de string). Aceita parênteses simples, sem aninhados.
+  return ex.question.replace(
+    /\s*\(([^()]+)\)\s*([.!?…]?)\s*$/,
+    (match, inner, punct) => {
+      const key = norm(inner);
+      if(key && (key===answer || key===hint)){
+        return punct || '';        // remove o parêntese, mantém a pontuação
+      }
+      return match;                // não bate: preserva
+    }
+  );
+}
+
 function renderThemeButtons(){
   const c=document.getElementById('themeButtons');
   c.innerHTML=Object.keys(bank).map(k=>`<button class="theme-btn ${k===currentKey?'active':''}" onclick="loadTopic('${k}')">${bank[k].label}</button>`).join('');
@@ -672,10 +707,12 @@ function renderExercises(){
     }
     if(ex.type==='fill_blank'){
       num++;
-      // Nota: ex.hint é preservado no dado (pode ser útil em outros contextos),
-      // mas NÃO é exibido na tela — o hint entregava a resposta ao aluno na aula ao vivo.
+      // ex.hint preservado no dado; nunca exibido na tela.
+      // ex.question passa por sanitizeFillBlankQuestion() para remover parênteses
+      //   finais que entregariam a resposta (ver comentário da função acima).
+      const safeQ = sanitizeFillBlankQuestion(ex);
       card.innerHTML=`<p class="tag">Complete the sentence</p>
-        <p class="text-white q-big font-semibold mb-3">${num}. ${ex.question}</p>
+        <p class="text-white q-big font-semibold mb-3">${num}. ${safeQ}</p>
         <div id="fb-${ei}"><button class="reveal-btn" onclick="reveal(${ei})">👁 Show answer</button></div>`;
     }
     if(ex.type==='true_false'){
