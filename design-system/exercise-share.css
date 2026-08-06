@@ -1,0 +1,35 @@
+/* ==========================================================================
+   Teacher Lu Design System — Exercise (share-safe)
+   --------------------------------------------------------------------------
+   As telas de exercício são compartilhadas com o aluno via videoconferência.
+   Este arquivo é PROPOSITADAMENTE MÍNIMO e defensivo:
+     · nunca esconde conteúdo de outros módulos;
+     · nunca usa !important sobre classes compartilhadas;
+     · apenas reafirma o padrão "resposta escondida por padrão" já em uso
+       nas páginas (grammar.html, lessons.html, builder.html, listening.html,
+       structures.html) e fornece uma utilidade opt-in para conteúdo que a
+       professora precisa segregar do que o aluno vê.
+   Nenhuma mecânica, dado ou rota é alterada por este arquivo.
+   ========================================================================== */
+
+/* ---- 1. Defesa em profundidade: respostas escondidas por padrão -------
+   As páginas já definem `.answer { display: none }` e `.ans { display: none }`
+   nos seus <style> locais (que carregam DEPOIS deste arquivo e vencem por
+   ordem/especificidade). Repetimos aqui apenas como salvaguarda para
+   qualquer página nova que herde o design-system sem redefinir a regra.
+   Sem !important — a página local sempre pode sobrescrever se precisar.
+*/
+.answer      { display: none; }
+.answer.show { display: block; }
+.ans         { display: none; }
+.ans.show    { display: inline; }
+
+/* ---- 2. Utilidade opt-in para conteúdo exclusivo da professora ---------
+   Elementos marcados com esta classe NÃO aparecem na tela compartilhada
+   nem no PDF impresso. Só é aplicada onde o autor deliberadamente marca
+   um elemento — nunca captura conteúdo alheio. */
+.tl-teacher-only { display: none !important; }
+
+@media print {
+  .tl-teacher-only { display: none !important; }
+}

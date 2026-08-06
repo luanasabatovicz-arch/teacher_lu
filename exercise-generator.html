@@ -666,19 +666,20 @@ function renderExercises(){
     card.className='card ex-card';
     if(ex.type==='multiple_choice'){
       num++;
-      card.innerHTML=`<p class="tag">Multiple choice · student says the letter</p>
+      card.innerHTML=`<p class="tag">Choose the correct answer</p>
         <p class="text-white q-big font-semibold mb-3">${num}. ${ex.question}</p>
         <div>${ex.options.map((o,oi)=>`<button class="opt" id="opt-${ei}-${oi}" onclick="pick(${ei},${oi})"><span class="letter">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div>`;
     }
     if(ex.type==='fill_blank'){
       num++;
-      card.innerHTML=`<p class="tag">Fill in the blank · student says the word</p>
-        <p class="text-white q-big font-semibold mb-2">${num}. ${ex.question}</p>
-        <p class="text-slate-400 text-sm mb-3 italic">Hint: ${ex.hint}</p>
+      // Nota: ex.hint é preservado no dado (pode ser útil em outros contextos),
+      // mas NÃO é exibido na tela — o hint entregava a resposta ao aluno na aula ao vivo.
+      card.innerHTML=`<p class="tag">Complete the sentence</p>
+        <p class="text-white q-big font-semibold mb-3">${num}. ${ex.question}</p>
         <div id="fb-${ei}"><button class="reveal-btn" onclick="reveal(${ei})">👁 Show answer</button></div>`;
     }
     if(ex.type==='true_false'){
-      card.innerHTML=`<p class="tag">True or False · student says true or false</p>
+      card.innerHTML=`<p class="tag">True or False</p>
         <div class="space-y-3 mt-2">${ex.statements.map((s,si)=>`
           <div>
             <p class="text-white q-big mb-2">${si+1}. ${s.text}</p>
@@ -689,7 +690,7 @@ function renderExercises(){
           </div>`).join('')}</div>`;
     }
     if(ex.type==='matching'){
-      card.innerHTML=`<p class="tag">Matching · student says the letter for each word</p>
+      card.innerHTML=`<p class="tag">Match the pairs</p>
         <p class="text-white q-big font-semibold mb-3">${ex.question}</p>
         <div class="legend">${ex._opts.map((r,ri)=>`<p><b>${String.fromCharCode(65+ri)}</b>${r}</p>`).join('')}</div>
         <div class="space-y-2">${ex.pairs.map((p,pi)=>`
@@ -745,7 +746,7 @@ function pickMatch(ei,pi,ri){
   updateScore(ri===correctIdx);
 }
 
-// Fill in the blank: student says the word aloud → teacher reveals → marks right/wrong.
+// Fill in the blank: professora clica "Show answer" para revelar (aluno responde antes).
 function reveal(ei){
   const box=document.getElementById(`fb-${ei}`);
   box.innerHTML=`<p class="answer-big">${exercises[ei].correct}</p>

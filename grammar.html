@@ -587,7 +587,7 @@ function renderLesson(){
   wuItems=getQueue().slice(0,4);
   if(wuItems.length){
     h+=stageBlock('#22C55E','0 · Warm-up — '+stuName()+'’s review queue',
-      `<p class="text-slate-400 text-sm mb-2">Ask these aloud first — things ${stuName()} missed before. A ✓ clears the item from the queue.</p>`+
+      `<p class="text-slate-400 text-sm mb-2">Review — items from ${stuName()}'s queue.</p>`+
       wuItems.map((it,i)=>`
         <div class="ex-line" style="display:block">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
@@ -611,9 +611,9 @@ function renderLesson(){
        <span class="chip">🗣️ Say the rule in YOUR words</span>
      </div>`);
 
-  // 2 RULE — hidden until the student has said their version (teacher reveals with 1 click)
+  // 2 RULE — só é revelada quando a professora clica (o aluno tenta descobrir antes).
   h+=`<div id="ruleReveal" style="text-align:center;margin:4px 0 14px">
-        <button onclick="revealRule()" class="theme-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule — after the student says it</button>
+        <button onclick="revealRule()" class="theme-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule</button>
       </div>
       <div id="ruleWrap" class="hide-rule">`;
   h+=stageBlock('#F59E0B','2 · When to use',`<p class="text-slate-300">${t.use}</p>`);
@@ -633,9 +633,12 @@ function renderLesson(){
   h+=stageBlock('#EF4444','Common mistakes',
     t.mistakes.map(m=>`<div class="mistake text-slate-200 text-sm">${m}</div>`).join(''));
 
-  // 3 PRACTICE — student says it, teacher reveals and marks (evidence gate ≥80%)
+  // 3 PRACTICE — a resposta só aparece quando a professora clica em "show answer".
+  //   IMPORTANTE: o botão "💡 hint" foi removido intencionalmente — na aula ao vivo,
+  //   ele começava com a primeira letra da resposta (revelava tudo antes da tentativa).
+  //   Os dados (grammar-topics.js) continuam preservados; só a renderização mudou.
   prJudge={};
-  h+=stageBlock('#FF6B6B','3 · Practice — student says it, you check it',
+  h+=stageBlock('#FF6B6B','3 · Practice',
     `<div id="prScore" class="text-slate-300 text-sm font-bold mb-2">0 / ${t.practice.length} checked · gate: ≥80%</div>`+
     t.practice.map((p,idx)=>{
       const id=`ans-${current}-${idx}`;
@@ -643,11 +646,9 @@ function renderLesson(){
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
           <span>${idx+1}. ${p.q}</span>
           <span style="display:flex;gap:6px;flex-shrink:0">
-            <button onclick="toggleAnswer('hint-${idx}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">💡 hint</button>
             <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">show answer</button>
           </span>
         </div>
-        <div id="hint-${idx}" class="answer" style="color:#F59E0B !important">💡 It starts with “${(p.a||'?').trim().charAt(0)}…” — try again!</div>
         <div id="${id}" class="answer">✓ ${p.a}
           <span style="margin-left:8px">
             <button onclick="judgePr(${idx},true)" id="pry-${idx}" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓ got it</button>

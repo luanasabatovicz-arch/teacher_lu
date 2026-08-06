@@ -333,7 +333,7 @@ function renderLesson(){
   // 7 SPEAKING (star)
   h += stageBlock('#16B1A9','7 · Speaking / Activate','12 min · time to SPEAK',
     `<div class="flex justify-between items-center mb-3 flex-wrap gap-2">
-       <p class="text-slate-400 text-sm">Ask the student the questions. Let them speak freely.</p>
+       <p class="text-slate-400 text-sm">Answer the questions.</p>
        <button onclick="randomQuestion()" class="gradient-amber text-white font-bold py-2 px-4 rounded-lg text-sm">Random question</button>
      </div>
      <div id="speakingList">${l.speaking.map(q=>`<div class="q-item">${q}</div>`).join('')}</div>
@@ -620,12 +620,11 @@ function renderEnriched(l){
   h+=stageBlock('#22C55E','2 · Discover the pattern','5 min · '+stuName()+' finds the rule BEFORE you explain it',
     cp.discover.examples.map(e=>`<div class="q-item" style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/<[^>]*>/g,'').replace(/'/g,"\\'")}')">►</button></div>`).join('')+
     `<div class="mt-3"><span class="chip">🔍 ${cp.discover.qs.form}</span><span class="chip">💭 ${cp.discover.qs.meaning}</span><span class="chip">🗣️ Say the rule in YOUR words</span></div>
-     <div class="mt-3 p-3 rounded-lg" style="background:var(--tl-primary-tint);border:1px solid var(--tl-border)">
-       <p class="text-slate-400 text-xs font-bold mb-1">Escada de dicas (só se travar, uma por vez):</p>
-       <p class="text-slate-500 text-sm">1️⃣ ${cp.discover.hints[0]}<br>2️⃣ ${cp.discover.hints[1]}<br>3️⃣ ${cp.discover.hints[2]}</p>
-     </div>
+     <!-- cp.discover.hints permanece no dado (útil ao motor / futuro material impresso),
+          mas NÃO é renderizado: a tela é compartilhada com o aluno e qualquer nota
+          exclusiva da professora estaria visível para ele. -->
      <div class="text-center mt-4" id="cpRuleReveal">
-       <button onclick="document.getElementById('cpRuleBox').style.display='block';this.style.display='none'" class="week-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule — after ${stuName()} says it</button>
+       <button onclick="document.getElementById('cpRuleBox').style.display='block';this.style.display='none'" class="week-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule</button>
      </div>
      <div id="cpRuleBox" style="display:none;margin-top:12px">
        <div class="p-4 rounded-lg" style="background:var(--tl-surface);border:1px solid var(--tl-border);border-left:5px solid var(--tl-warning)">
@@ -642,7 +641,7 @@ function renderEnriched(l){
     `</div><p class="text-slate-400 text-sm mt-3">👉 After each word: "Now make a sentence about YOU with it."</p>`);
 
   // 4 CONTROLLED PRACTICE — oral, ✓/✗ na fila de erros, com follow-up (G3/G4/G8)
-  h+=stageBlock('#FF6B6B','4 · Practice — say it, then check it','8 min · '+stuName()+' says it aloud, you reveal & mark',
+  h+=stageBlock('#FF6B6B','4 · Practice','8 min',
     `<div id="cpScore" class="text-slate-300 text-sm font-bold mb-2">0 / ${l.practice.length} checked · gate: ≥80%</div>`+
     l.practice.map((p,i)=>{
       const id=`cpa-${l.week}-${i}`;

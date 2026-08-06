@@ -276,7 +276,7 @@ R.warmup=function(){
   const q=S.wuItems;
   let h='';
   if(q.length){
-    h+='<p class="text-slate-400 text-sm mb-2">Retrieval — coisas que '+env.stuName()+' errou antes. Pergunte num <b>formato novo</b> (nunca o original). ✓ limpa o item da fila.</p>';
+    h+='<p class="text-slate-400 text-sm mb-2">Review — items you missed before.</p>';
     h+=q.map(function(it,i){
       return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
         '<span><span class="chip" style="margin:0 6px 0 0">'+(it.topic||'review')+'</span>'+it.q+'</span>'+
@@ -284,7 +284,7 @@ R.warmup=function(){
     }).join('');
   }else{
     const n=S.cuts.w1?1:3;
-    h+='<p class="text-slate-400 text-sm mb-2">Sem pendências na fila — crie a lacuna: '+env.stuName()+' vai tentar responder e <b>sentir a falta</b> do tópico de hoje.</p>';
+    h+='<p class="text-slate-400 text-sm mb-2">Warm-up — try these first.</p>';
     h+=T.warmup.gap.slice(0,n).map(function(g,i){
       return '<div class="ex-line"><span>'+P(g)+'</span>'+judgeBtns('warmup',i)+'</div>';
     }).join('');
@@ -307,7 +307,7 @@ R.notice=function(){
 R.ccq=function(){
   const items=S.ccqReserveOn?(S.ccqMain||[]).concat(S.ccqReserve||[]):(S.ccqMain||T.ccqs.main);
   const sc=score('ccq');
-  let h='<p class="text-slate-400 text-sm mb-2">Zero terminologia — só sentido. Respostas de 1–3 palavras.</p>';
+  let h='<p class="text-slate-400 text-sm mb-2">Answer in 1–3 words.</p>';
   h+='<div id="ge-ccq-score" class="text-sm font-bold mb-2" style="color:#0B3B46">'+sc.c+' ✓ de '+sc.n+' respondidas</div>';
   h+=items.map(function(c,i){
     const res=i>=5?'<span class="chip" style="margin:0 6px 0 0">reserva</span>':'';
@@ -352,7 +352,7 @@ R.watchout=function(){
   const kid=env.isKid();
   const list=kid?(S.watchoutItems||T.watchout).slice(0,2):(S.watchoutItems||T.watchout);
   let h='<p class="text-slate-500 text-sm mb-2">Erros comuns — fique atento a estes:</p>'+
-    '<p class="text-slate-400 text-sm mb-2">Vacina de 90 segundos — antecipe os erros mais prováveis.'+(kid?' Encene a voz de um personagem errando!':'')+'</p>';
+    '<p class="text-slate-400 text-sm mb-2">'+(kid?'Spot the mistake — act out the wrong version!':'Spot the mistake in each pair.')+'</p>';
   h+=list.map(function(w,i){
     return '<div class="mistake text-sm"><span style="color:#DC2626">❌ '+P(w.bad)+'</span> → <span style="color:#22C55E;font-weight:700">✅ '+P(w.good)+'</span><span class="text-slate-400" style="margin-left:8px">('+P(w.why)+')</span>'+'</div>';
   }).join('');
@@ -365,7 +365,7 @@ R.practice=function(){
   const items=S.cuts.p8?(S.practice||T.practice).slice(0,8):(S.practice||T.practice);
   const sc=score('practice');
   let h='<p class="text-slate-500 text-sm mb-2">Responda em voz alta — depois confira.'+(kid?' Cada ✓ vale ponto! 🎯':'')+'</p>'+
-    '<p class="text-slate-400 text-sm mb-2">100% oral: '+env.stuName()+' fala, você revela e marca. Progressão: reconhecer → manipular → usar de verdade.</p>';
+    '<p class="text-slate-400 text-sm mb-2">Answer aloud — recognise, then transform, then use it for real.</p>';
   h+='<div id="ge-pr-score" class="text-sm font-bold mb-2" style="color:#FF6B6B">'+sc.c+' ✓ / '+sc.n+' marcadas de '+items.length+'</div>';
   const stageOf=t=>((t==='fill'||t==='mc')?1:2);
   const stageName={1:'STAGE 1 · Simple — recognise & complete',2:'STAGE 2 · Intermediate — manipulate the form'};
@@ -387,7 +387,7 @@ R.practice=function(){
   // STAGE 3 — prática livre (opcional: T.practiceMore): perguntas contextualizadas + mini-diálogos.
   // Não é portão (é consolidação); os erros ainda entram na fila (G4).
   if(S.practiceMore&&S.practiceMore.length){
-    h+='<div class="label" style="color:#16B1A9;margin:18px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:8px">STAGE 3 · Free — use it for real (contexto & diálogo, sem portão)</div>';
+    h+='<div class="label" style="color:#16B1A9;margin:18px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:8px">STAGE 3 · Free — use it for real</div>';
     h+=S.practiceMore.map(function(p,i){return prItem('free',p,i);}).join('');
   }
   return bigCard(h)+teacherStrip('G10 — correção com dignidade: 1º "try again" → 2º hint → só então a resposta, e explique o PORQUÊ (a caixa laranja traz por quê + regra + novo exemplo). Plano de tempo: ~1 min/item; a prática livre (Stage 3) alonga até '+env.stuName()+' demonstrar domínio.');
@@ -407,9 +407,12 @@ function prItem(sec,p,i){
   }else if(p.t==='md'){                       // mini-diálogo
     q='<span class="chip" style="margin:0 6px 0 0">🎭 mini-dialogue</span>'+(p.lines?'<div style="margin-top:6px">'+p.lines.map(function(l){return '<div style="padding:2px 0">'+P(l)+'</div>';}).join('')+'</div>':P(p.q));
   }else{ q=P(p.q); }
-  const aid='ge-a-'+sec+'-'+i, hid='ge-h-'+sec+'-'+i;
-  const hintBtn=p.hint?'<button onclick="GE.tg(\''+hid+'\')" class="text-xs bg-slate-700 text-white px-3 py-1 rounded">💡 hint</button>':'';
-  const hintDiv=p.hint?'<div id="'+hid+'" class="answer" style="color:#F59E0B !important">💡 '+P(p.hint)+'</div>':'';
+  const aid='ge-a-'+sec+'-'+i;
+  // 💡 hint removido da UI do exercício: na aula compartilhada, o hint
+  //   entregava a resposta ao aluno. O dado p.hint continua preservado
+  //   (usado pela auditoria em §7); nenhuma variação recolhida é renderizada.
+  const hintBtn='';
+  const hintDiv='';
   // feedback rico de erro (opcional): por quê + regra + novo exemplo
   let fb='';
   if(p.why||p.ruleRef||p.ex){
@@ -436,7 +439,7 @@ R.makeit=function(){
   const n=S.cuts.m4?4:6;
   const sc=score('makeit');
   let h='<p class="text-slate-500 text-sm mb-2">Agora com a sua vida — complete do seu jeito:</p>'+
-    '<p class="text-slate-400 text-sm mb-2">Reaja ao CONTEÚDO ("Really? Me too!") antes de corrigir. Meta: ≥4 com a forma correta (autocorreção conta).</p>';
+    '<p class="text-slate-400 text-sm mb-2">Aim for 4 or more with the correct form.</p>';
   h+='<div class="text-sm font-bold mb-2" style="color:#16B1A9">'+sc.c+' ✓ de '+sc.n+'</div>';
   h+=(S.makeitItems||T.makeit).slice(0,n).map(function(m,i){
     return '<div class="ex-line"><span style="font-size:17px">'+(i+1)+'. '+P(m)+'</span>'+judgeBtns('makeit',i)+'</div>';
@@ -450,12 +453,13 @@ R.task=function(){
   let h='<div class="chip" style="margin-bottom:8px">🎬 '+P(t.title)+'</div>';
   h+='<p style="font-size:18px;font-weight:700;color:#1F2937;line-height:1.6">'+P(kid&&t.kid?t.kid:t.mission)+'</p>';
   h+='<div class="form-box" style="margin-top:10px"><div class="label" style="color:#0B3B46">Roles</div>'+
-     '<p class="text-sm" style="color:#1F2937">🧑‍🎓 <b>'+env.stuName()+':</b> '+P(t.roles.student)+'</p>'+
-     '<p class="text-sm" style="color:#1F2937">👩‍🏫 <b>You:</b> '+P(t.roles.teacher)+'</p></div>';
+     '<p class="text-sm" style="color:#1F2937"><b>Partner A:</b> '+P(t.roles.student)+'</p>'+
+     '<p class="text-sm" style="color:#1F2937"><b>Partner B:</b> '+P(t.roles.teacher)+'</p></div>';
   h+='<div class="form-box"><div class="label" style="color:#F59E0B">⚡ Complication</div><p class="text-sm" style="color:#1F2937">'+P(t.complication)+'</p></div>';
-  h+='<p class="text-slate-400 text-sm" style="margin-top:8px">Correção adiada: anote, não interrompa. '+env.stuName()+' fala ≥80% do bloco. Feche com 1 acerto celebrado + 2 erros como "try again".</p>';
+  // Nota pedagógica ("Correção adiada: anote…") removida da UI: era orientação
+  //   exclusiva da professora, exposta na tela compartilhada com o aluno.
   if(!S.cuts.c4){
-    h+='<div style="margin-top:10px"><button onclick="GE.tg(\'ge-c4\')" class="theme-btn text-xs font-bold py-2 px-4 rounded-lg">🚀 C4 — terminou com folga? (só com todos os portões passados + ≥8 min sobrando)</button>'+
+    h+='<div style="margin-top:10px"><button onclick="GE.tg(\'ge-c4\')" class="theme-btn text-xs font-bold py-2 px-4 rounded-lg">🚀 Extra challenge</button>'+
        '<div id="ge-c4" class="answer" style="color:#0B3B46 !important">'+P(t.c4)+'</div></div>';
   }
   return bigCard(h)+teacherStrip('Complicações injetáveis se ficar fácil:<br>⚡ '+P(t.extras[0])+'<br>⚡ '+P(t.extras[1])+'<br>Se travar, socorro por palavra/imagem (nunca frase pronta): '+t.rescue.map(r=>'<span class="chip">'+P(r)+'</span>').join(' '));
@@ -465,7 +469,7 @@ R.exit=function(){
   const kid=env.isKid();
   const sc=score('exit');
   let h='<p class="text-slate-500 text-sm mb-2">Revisão final — mostre tudo o que você aprendeu!'+(kid?' 👾 Chefão final!':'')+'</p>';
-  h+='<p class="text-slate-400 text-sm mb-2">Itens novos — evidência objetiva. Antes: "Quantas você acha que acerta?" (calibragem), depois compare.</p>';
+  h+='<p class="text-slate-400 text-sm mb-2">New items — how many will you get right?</p>';
   h+=(S.exitItems||T.exit).map(function(it,i){
     return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
       '<span><span class="chip" style="margin:0 6px 0 0">'+it.tag+'</span>'+P(it.q)+'</span>'+
@@ -475,11 +479,16 @@ R.exit=function(){
   return bigCard(h)+teacherStrip('Correção por nível: em A1, aceite a forma-alvo correta mesmo com outros errinhos. Feche SEMPRE dizendo 1 coisa que '+env.stuName()+' consegue fazer hoje que não conseguia antes.');
 };
 
-/* ---------- faixa de apoio pedagógico (CCQs, follow-ups, notas) ---------- */
+/* ---------- faixa de apoio pedagógico (CCQs, follow-ups, notas) ----------
+   A tela do runtime é compartilhada com o aluno. Qualquer nota exclusiva da
+   professora — inclusive recolhida — fica visível para ele, então esta
+   faixa NÃO é renderizada. As chamadas a teacherStrip(...) continuam nos
+   renderizadores (documentam a intenção pedagógica e mantêm os textos
+   disponíveis para consumo futuro fora da tela ao vivo, ex.: PDF do plano),
+   mas devolvem string vazia. Não criar botão de revelar aqui. */
 function teacherStrip(html){
-  return '<div class="card" style="padding:10px 14px;margin-top:-8px;margin-bottom:18px;border-left:4px solid #9CA3AF !important">'+
-    '<button onclick="GE.tg(\'ge-c2\')" class="text-xs font-bold" style="color:#6B7280;background:none;border:none;cursor:pointer">👩‍🏫 Como conduzir ▾</button>'+
-    '<div id="ge-c2" class="answer" style="color:#1F2937 !important;font-weight:400;font-size:13px;line-height:1.6">'+html+'</div></div>';
+  void html;                          // dado preservado, não renderizado
+  return '';
 }
 
 /* ---------- shell: progresso + timer + navegação ---------- */
@@ -513,7 +522,7 @@ function gateCheck(){
     if(!S.ccqReserveOn){S.ccqReserveOn=true;render();return 'Vamos reforçar: 3 perguntas extras, mais concretas.';}
     if(!S.noticeRetry){S.noticeRetry=true;S.ccqReserveOn=false;S.judged.ccq={};S.sec=2;render();return 'Vamos voltar aos exemplos e descobrir de novo.';}
     S.conceptGap=true;
-    return 'Este tópico está acima do nível agora. Encerre com algo que '+env.stuName()+' já domina (clique em Next para prosseguir). ';
+    return 'Tópico acima do nível atual — siga em Next para encerrar com algo que '+env.stuName()+' já domina.';
   }
   if(id==='practice'){
     const full=(S.practice||T.practice).length;

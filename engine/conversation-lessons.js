@@ -307,7 +307,7 @@ window.CONV_LESSONS = [
 {
   week:9, theme:"Food & Drinks — What I Eat", level:"A2", grammar:"Countable & uncountable (some/any, much/many)",
   warmup:["Hello! How are you today?","What did you have for breakfast?","Are you hungry now?"],
-  review:["Ask the student: What do you like doing in your free time? (weeks 6-8 review)","Quick check: I like cook___ / She is play___ tennis now."],
+  review:["What do you like doing in your free time?","I like cook___ / She is play___ tennis now."],
   leadin:{text:"Food is the easiest topic in the world. Everyone eats, everyone has an opinion.",q:"What is your favourite food?"},
   vocab:[
     {en:"breakfast",ipa:"/ˈbrekfəst/",pt:"the first meal of the day"},

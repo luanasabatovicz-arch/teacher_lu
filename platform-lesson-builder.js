@@ -484,7 +484,7 @@
               b.content = { review: rHost.topic.review };
             } else {
               b.title = 'Recap out loud';
-              b.why = 'Ask the student to say three things they learned today.';
+              b.why = 'Recap out loud makes the day\'s content stick — three things learned today.';
             }
             break;
         }
