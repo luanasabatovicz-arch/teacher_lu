@@ -82,6 +82,29 @@
     margin-bottom: 18px;
   }
 
+  /* CORREÇÃO DE CONTRASTE
+     ---------------------------------------------------------------
+     .stage passou a ter fundo claro (--tl-surface), mas o render
+     ainda herda classes Tailwind do tema dark antigo (text-white,
+     text-slate-300/400/500/600/700). Isso deixava headings de
+     seção e explicações praticamente invisíveis sobre o fundo
+     branco. Reancoramos essas classes ao Design System.
+     Blocos com fundo escuro dentro de .stage recebem a classe
+     .dark-box, que reverte para texto claro (--tl-text-inverse). */
+  .text-white         { color: var(--tl-text) !important; }
+  .text-slate-300     { color: var(--tl-text-secondary) !important; }
+  .text-slate-400     { color: var(--tl-text-secondary) !important; }
+  .text-slate-500     { color: var(--tl-text-secondary) !important; }
+  .text-slate-600     { color: var(--tl-text) !important; }
+  .text-slate-700     { color: var(--tl-text) !important; }
+
+  .dark-box                          { color: var(--tl-text-inverse); }
+  .dark-box .text-white              { color: var(--tl-text-inverse) !important; }
+  .dark-box .text-slate-300          { color: rgba(255,255,255,.82) !important; }
+  .dark-box .text-slate-400          { color: rgba(255,255,255,.75) !important; }
+  .dark-box .text-slate-500          { color: rgba(255,255,255,.72) !important; }
+  .dark-box .text-indigo-200         { color: var(--tl-secondary-tint) !important; }
+
   /* Cards de conteúdo */
   .q-item, .form-box, .ex-line, .vocab-card {
     background: var(--tl-surface-alt) !important;
@@ -337,7 +360,7 @@ function renderLesson(){
        <button onclick="randomQuestion()" class="gradient-amber text-white font-bold py-2 px-4 rounded-lg text-sm">Random question</button>
      </div>
      <div id="speakingList">${l.speaking.map(q=>`<div class="q-item">${q}</div>`).join('')}</div>
-     <div class="mt-5 p-4 rounded-xl" style="background:linear-gradient(135deg,var(--tl-primary) 0%,var(--tl-primary-hover) 100%);border:1px solid var(--tl-secondary)">
+     <div class="mt-5 p-4 rounded-xl dark-box" style="background:linear-gradient(135deg,var(--tl-primary) 0%,var(--tl-primary-hover) 100%);border:1px solid var(--tl-secondary)">
        <p class="text-indigo-200 font-bold mb-2" style="color:var(--tl-secondary-tint)">${l.roleplay.title}</p>
        <p class="text-slate-300 text-sm mb-3">${l.roleplay.scenario}</p>
        ${l.roleplay.lines.map(line=>`<p class="text-white text-sm mb-1">${line}</p>`).join('')}
@@ -528,7 +551,7 @@ function judgeCpEv(i,ok){
   const n=Object.keys(cpEv).length,c=Object.values(cpEv).filter(Boolean).length;
   if(n===3){
     document.getElementById('evVerdict').innerHTML=
-      `<div class="mistake" style="background:var(--tl-primary-tint) !important;border-color:var(--tl-border) !important;color:var(--tl-primary) !important;font-weight:700">${c}/3 signs of real conversation. Now build the lesson summary below ↓</div>`;
+      `<div class="mistake" style="background:var(--tl-primary-tint) !important;border-color:var(--tl-border) !important;color:var(--tl-primary) !important;font-weight:700">${c}/3</div>`;
   }
 }
 /* vocabulário-alvo destacado e rastreado durante a conversa */
@@ -630,7 +653,10 @@ function renderEnriched(l){
        <div class="p-4 rounded-lg" style="background:var(--tl-surface);border:1px solid var(--tl-border);border-left:5px solid var(--tl-warning)">
          <p class="text-slate-300">${l.grammar.exp}</p>
          <div class="mt-2 space-y-1">${l.grammar.ex.map(e=>`<div class="q-item" style="margin:4px 0">${e}</div>`).join('')}</div>
-         <div class="mt-3 p-3 rounded-lg" style="background:var(--tl-accent-soft);border:1px solid var(--tl-border)"><span class="text-xs font-bold" style="color:var(--tl-primary)">🇧🇷 Dica para brasileiros:</span> <span class="text-slate-600 text-sm">${cp.brTip}</span></div>
+         <!-- cp.brTip permanece no dado; NÃO é renderizado.
+              Motivo: tela compartilhada, regra absoluta contra "Dica:" e pistas
+              gramaticais. A observação contrastiva PT↔EN, quando pertinente,
+              é dada verbalmente pela professora. -->
        </div>
      </div>`);
 
@@ -681,15 +707,11 @@ function renderEnriched(l){
        </div>
      </div>
      <div class="mt-4 p-4 rounded-xl" style="background:#F2F6F7;border:1px solid #E6EEF0">
-       <p class="font-bold text-sm" style="color:#0B3B46">🔑 Target words — tap each one when ${stuName()} uses it in conversation (<b><span id="vUsed">0</span>/${l.vocab.length}</b> recycled):</p>
+       <p class="font-bold text-sm" style="color:#0B3B46">🔑 Target words (<b><span id="vUsed">0</span>/${l.vocab.length}</b>):</p>
        <div class="mt-2">${l.vocab.map((v,i)=>`<span id="vchip-${i}" class="chip" style="cursor:pointer" onclick="markVocab(${i})">${v.en}</span>`).join('')}</div>
      </div>
-     <div class="mt-4 p-4 rounded-xl" style="background:linear-gradient(135deg,#F2F6F7,#F2F6F7);border:1px solid #E6EEF0">
-       <p class="font-bold" style="color:#0B3B46">🎭 Your turn to provoke (conversation is two-way — you talk ~20%):</p>
-       <p class="text-slate-600 text-sm mt-1">"${cp.teacherOpinion}"</p>
-     </div>
-     <div class="mt-3"><span class="text-slate-500 text-xs font-bold">Palavras para reagir na conversa:</span><br>${cp.reactions.map(r=>`<span class="chip">${r}</span>`).join('')}</div>
-     <div class="mt-4 p-4 rounded-xl" style="background:linear-gradient(135deg,#0B3B46 0%,#0E4B58 100%);border:1px solid #0B3B46">
+     <div class="mt-3"><span class="text-slate-500 text-xs font-bold">Useful words to react in the conversation:</span><br>${cp.reactions.map(r=>`<span class="chip">${r}</span>`).join('')}</div>
+     <div class="mt-4 p-4 rounded-xl dark-box" style="background:linear-gradient(135deg,#0B3B46 0%,#0E4B58 100%);border:1px solid #0B3B46">
        <p class="text-indigo-200 font-bold mb-2">${l.roleplay.title}</p>
        <p class="text-slate-300 text-sm mb-3">${l.roleplay.scenario}</p>
        ${l.roleplay.lines.map(line=>`<p class="text-white text-sm mb-1">${line}</p>`).join('')}

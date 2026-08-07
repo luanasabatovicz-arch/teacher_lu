@@ -72,9 +72,9 @@ window.CONV_LESSONS = [
   grammar:{exp:"Negative: put NOT after the verb to be → I'm not, he isn't, they aren't. Question: invert → Are you...? Is he...? Short answer: Yes, I am / No, I'm not.",
     ex:["I'm not a doctor.","She isn't Brazilian.","Are you a teacher? — Yes, I am.","Is he a student? — No, he isn't."]},
   practice:[
-    {q:"___ you a teacher? (question)",a:"Are"},
+    {q:"___ you a teacher?",a:"Are"},
     {q:"He ___ (not) from the USA.",a:"isn't / is not"},
-    {q:"___ she a nurse? (question)",a:"Is"},
+    {q:"___ she a nurse?",a:"Is"},
     {q:"I ___ (not) tired today.",a:"am not / 'm not"}
   ],
   speaking:[
@@ -147,10 +147,10 @@ window.CONV_LESSONS = [
   grammar:{exp:"Simple Present = routine and habit. I/you/we/they + verb. He/she/it + verb with <b>-s</b>. Times: at 7 o'clock, at 8 AM.",
     ex:["I wake up at 7 o'clock.","She goes to work at 8 AM.","He has lunch at noon.","We go to bed late."]},
   practice:[
-    {q:"I ___ (wake up) at 6.",a:"wake up"},
+    {q:"I ___ at 6.",a:"wake up"},
     {q:"She ___ (go) to work by car.",a:"goes"},
     {q:"He ___ (have) breakfast at 8.",a:"has"},
-    {q:"They ___ (sleep) 8 hours.",a:"sleep"}
+    {q:"They ___ 8 hours.",a:"sleep"}
   ],
   speaking:[
     "What time do you wake up?",
@@ -182,10 +182,10 @@ window.CONV_LESSONS = [
   grammar:{exp:"The adverb goes <b>before</b> the main verb, but <b>after</b> the verb to be. Expressions like \"every day / once a week\" go at the end of the sentence.",
     ex:["I always drink coffee.","She usually works from home.","He is never late.","We travel twice a year."]},
   practice:[
-    {q:"I ___ eat breakfast (100%).",a:"always"},
+    {q:"I ___ eat breakfast.",a:"always"},
     {q:"She is ___ tired (raramente).",a:"rarely"},
-    {q:"They ___ go out (sometimes).",a:"sometimes"},
-    {q:"He ___ smokes (0%).",a:"never"}
+    {q:"They ___ go out.",a:"sometimes"},
+    {q:"He ___ smokes.",a:"never"}
   ],
   speaking:[
     "How often do you exercise?",
@@ -324,10 +324,10 @@ window.CONV_LESSONS = [
   grammar:{exp:"Countable nouns can be counted (one apple, two apples). Uncountable nouns cannot (rice, water, milk). Use <b>some</b> in positives, <b>any</b> in negatives and questions. Use <b>many</b> with countable and <b>much</b> with uncountable.",
     ex:["I eat some fruit every day.","There isn't any milk in the fridge.","How many eggs do you want?","How much coffee do you drink?"]},
   practice:[
-    {q:"I don't have ___ money. (some/any)",a:"any"},
+    {q:"I don't have ___ money.",a:"any"},
     {q:"How ___ apples do you eat?",a:"many"},
     {q:"How ___ water do you drink?",a:"much"},
-    {q:"Would you like ___ tea? (offer)",a:"some"},
+    {q:"Would you like ___ tea?",a:"some"},
     {q:"There are ___ vegetables in the soup.",a:"some"}
   ],
   speaking:[
@@ -367,7 +367,7 @@ window.CONV_LESSONS = [
     {q:"I ___ like a salad, please.",a:"would / 'd"},
     {q:"___ you like some water?",a:"Would"},
     {q:"I'd like ___ book a table.",a:"to"},
-    {q:"___ I have the menu, please? (polite)",a:"Could / Can"},
+    {q:"___ I have the menu, please?",a:"Could / Can"},
     {q:"We'd like ___ order now. ",a:"to"}
   ],
   speaking:[
@@ -404,9 +404,9 @@ window.CONV_LESSONS = [
   grammar:{exp:"<b>This</b> (singular, near) · <b>These</b> (plural, near) · <b>That</b> (singular, far) · <b>Those</b> (plural, far). To ask prices: <b>How much is</b> + singular / <b>How much are</b> + plural.",
     ex:["This shirt is nice. (here)","These shoes are expensive. (here)","That bag is cheap. (over there)","How much are those glasses?"]},
   practice:[
-    {q:"___ shirt here is nice. (singular, near)",a:"This"},
-    {q:"___ shoes here are expensive. (plural, near)",a:"These"},
-    {q:"___ car over there is new. (singular, far)",a:"That"},
+    {q:"___ shirt here is nice.",a:"This"},
+    {q:"___ shoes here are expensive.",a:"These"},
+    {q:"___ car over there is new.",a:"That"},
     {q:"How much ___ this bag?",a:"is"},
     {q:"How much ___ those trousers?",a:"are"}
   ],
@@ -444,7 +444,7 @@ window.CONV_LESSONS = [
   grammar:{exp:"Use <b>present simple</b> for what you usually wear: I wear a suit to work. Use <b>present continuous</b> for what you are wearing now: I am wearing jeans.",
     ex:["I usually wear jeans. (habit)","Today I'm wearing a dress. (now)","She wears black every day.","Look! He's wearing your jacket!"]},
   practice:[
-    {q:"I usually ___ (wear) jeans.",a:"wear"},
+    {q:"I usually ___ jeans.",a:"wear"},
     {q:"Right now I ___ (wear) a shirt.",a:"am wearing"},
     {q:"She ___ (wear) a uniform at work every day.",a:"wears"},
     {q:"What ___ you ___ (wear) today?",a:"are / wearing"},

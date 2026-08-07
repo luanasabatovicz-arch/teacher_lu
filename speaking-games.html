@@ -334,7 +334,18 @@ function setTheme(t){ theme=t; renderThemes(); }
 /* ---------- abrir jogo ---------- */
 function goHome(){ el('stageWrap').style.display='none'; el('home').style.display='block'; }
 function openGame(id){ isRandom=(id==='random'); curGame=id; lastKey=null; el('home').style.display='none'; el('stageWrap').style.display='block'; drawAndRender(); }
-function randomFrom(){ isRandom=true; drawAndRender(); }
+/* Surprise = tiro único aleatório.
+   NÃO flipa isRandom: o Next deve voltar a puxar do jogo escolhido
+   (senão o clique em Surprise "contaminava" o jogo até voltar à Home). */
+function randomFrom(){
+  var d = SG.random({level:level,theme:theme,last:lastKey});
+  if(!d||!d.item){ el('stage').innerHTML='<div class="hintline">No activities for this level/theme. Try another filter.</div>'; return; }
+  curItem=d.item; lastKey=JSON.stringify(d.item);
+  var g=gameMeta(d.gameId);
+  el('gBadge').style.background='linear-gradient(135deg,'+g.c1+','+g.c2+')';
+  el('gBadge').innerHTML=g.emoji+' '+g.name+' &nbsp;<span style="opacity:.8;font-size:12px">· surprise</span>';
+  el('stage').innerHTML=renderItem(g,d.item);
+}
 
 function gameMeta(id){ for(var i=0;i<SG.games.length;i++) if(SG.games[i].id===id) return SG.games[i]; return null; }
 
@@ -362,9 +373,10 @@ function renderItem(g,it){
       '<div class="chips">'+words.map(function(w){return '<span class="scrchip">'+esc(w)+'</span>';}).join('')+'</div>'+
       '<button class="small" onclick="reveal(this,\''+esc(it.a).replace(/"/g,'')+'\')">Show answer</button>';
   }else if(t==='guess'){
+    // it.clues permanece no dado (usado por material impresso da professora),
+    //   mas NÃO é renderizado. Regra absoluta: nenhuma pista visível ao aluno.
     h='<div class="emojibig pop">'+(it.e||'❓')+'</div><div class="wordbig">'+esc(it.w).toUpperCase()+'</div>'+
-      '<div class="hintline">Describe it in English — don’t say the word!</div>'+
-      '<div class="" style="margin-top:6px;color:var(--tl-text-tertiary);font-size:14px">💡 '+(it.clues||[]).map(esc).join(' · ')+'</div>';
+      '<div class="hintline">Describe it in English — don’t say the word!</div>';
   }else if(t==='duo'){
     h='<div class="hintline">Choose one and say WHY:</div>'+
       '<div class="duo"><button class="duoA" onclick="dpick(this,1)">'+esc(it.a)+'</button>'+

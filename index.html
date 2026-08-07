@@ -6,27 +6,110 @@
   <title>Teacher Lu Platform</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="design-system/theme.css">
-<script src="design-system/icons.js" defer></script>
+  <script src="design-system/icons.js" defer></script>
   <style>
-    /* Home-only tweaks: card apagado como link inteiro */
-    .home a.card { padding: 0; overflow: hidden; }
-    .home a.card .bar { height: 4px; margin: 0; border-radius: 0; }
-    .home a.card .inner { padding: var(--tl-space-5); display: flex; flex-direction: column; flex: 1; }
-    .home a.card .inner h2 {
-      margin: var(--tl-space-2) 0 var(--tl-space-3);
-      font-size: var(--tl-fs-h3);
+    /* HOME — layout de leitura rápida em aula.
+       Reutiliza integralmente o Design System (tokens.css, components.css,
+       layout.css). Nenhuma cor, sombra ou espaçamento fora do DS. */
+
+    body.home { background: var(--tl-bg); }
+
+    .home .wrap { max-width: var(--tl-container-lg); margin: 0 auto; padding: var(--tl-space-6) var(--tl-space-5) var(--tl-space-8); }
+    .home-banner { display: block; width: 100%; height: auto; border-radius: var(--tl-radius-lg); margin-bottom: var(--tl-space-8); }
+
+    /* Cabeçalho de seção — hierarquia sem barulho visual */
+    .home .section        { margin-top: var(--tl-space-8); }
+    .home .section:first-of-type { margin-top: 0; }
+    .home .section-head   { display: flex; align-items: baseline; gap: var(--tl-space-3); margin-bottom: var(--tl-space-4); padding-bottom: var(--tl-space-2); border-bottom: 1px solid var(--tl-border); }
+    .home .section-head h2 { font-size: var(--tl-fs-h4); font-weight: var(--tl-fw-bold); color: var(--tl-text); letter-spacing: var(--tl-tracking-wide); text-transform: uppercase; }
+    .home .section-head .hint { font-size: var(--tl-fs-caption); color: var(--tl-text-tertiary); }
+
+    /* HERO — Today's Lesson */
+    .home .hero {
+      display: flex; flex-direction: column; gap: var(--tl-space-3);
+      background: linear-gradient(135deg, var(--tl-primary) 0%, #0F5561 55%, var(--tl-secondary) 100%);
+      color: var(--tl-text-inverse);
+      border-radius: var(--tl-radius-xl);
+      padding: var(--tl-space-7);
+      box-shadow: var(--tl-shadow-md);
+      text-decoration: none;
+      transition: transform var(--tl-dur-fast) var(--tl-ease), box-shadow var(--tl-dur-fast) var(--tl-ease);
     }
-    .home a.card .inner p {
-      color: var(--tl-text-secondary);
-      line-height: var(--tl-lh-relaxed);
-      font-size: var(--tl-fs-small);
-      flex: 1;
-      margin-bottom: var(--tl-space-5);
+    .home .hero:hover { transform: translateY(-2px); box-shadow: var(--tl-shadow-lg); }
+    .home .hero .eyebrow { font-size: var(--tl-fs-caption); font-weight: var(--tl-fw-bold); letter-spacing: var(--tl-tracking-wide); text-transform: uppercase; opacity: .85; }
+    .home .hero h1 { font-size: var(--tl-fs-h1); font-weight: var(--tl-fw-bold); line-height: var(--tl-lh-tight); color: var(--tl-text-inverse); }
+    .home .hero p  { font-size: var(--tl-fs-body); line-height: var(--tl-lh-relaxed); color: rgba(255,255,255,.88); max-width: 62ch; }
+    .home .hero .cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      align-self: flex-start;
+      margin-top: var(--tl-space-3);
+      background: var(--tl-surface); color: var(--tl-primary);
+      font-weight: var(--tl-fw-bold); font-size: var(--tl-fs-small);
+      padding: 10px 18px; border-radius: var(--tl-radius-pill);
     }
-    .home .grid { grid-template-columns: repeat(3, 1fr); }
-    @media(max-width:900px){ .home .grid { grid-template-columns: repeat(2, 1fr); } }
-    @media(max-width:650px){ .home .grid { grid-template-columns: 1fr; } }
-    .home .full { grid-column: 1 / -1; }
+
+    /* Grid dos módulos de aula (Lesson Tools) — cards compactos */
+    .home .grid-primary   { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--tl-space-4); }
+    .home .grid-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--tl-space-3); }
+    .home .grid-quiet     { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--tl-space-3); }
+    .home .grid-dutch     { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--tl-space-4); }
+
+    @media(max-width:1100px){
+      .home .grid-primary   { grid-template-columns: repeat(2, 1fr); }
+      .home .grid-secondary { grid-template-columns: repeat(2, 1fr); }
+      .home .grid-quiet     { grid-template-columns: repeat(2, 1fr); }
+      .home .grid-dutch     { grid-template-columns: 1fr; }
+    }
+    @media(max-width:650px){
+      .home .grid-primary, .home .grid-secondary, .home .grid-quiet { grid-template-columns: 1fr; }
+    }
+
+    /* Card compacto padrão da Home */
+    .home a.tool {
+      display: flex; flex-direction: column; gap: 4px;
+      text-decoration: none;
+      background: var(--tl-surface);
+      border: 1px solid var(--tl-border);
+      border-radius: var(--tl-radius-lg);
+      padding: var(--tl-space-4) var(--tl-space-5);
+      box-shadow: var(--tl-shadow-xs);
+      transition: transform var(--tl-dur-fast) var(--tl-ease), box-shadow var(--tl-dur-fast) var(--tl-ease), border-color var(--tl-dur-fast) var(--tl-ease);
+      color: var(--tl-text);
+      min-height: 118px;
+      position: relative;
+    }
+    .home a.tool:hover { transform: translateY(-2px); box-shadow: var(--tl-shadow-md); border-color: var(--tl-primary-soft); }
+    .home a.tool .eyebrow { font-size: var(--tl-fs-caption); font-weight: var(--tl-fw-bold); letter-spacing: var(--tl-tracking-wide); text-transform: uppercase; color: var(--tl-primary); }
+    .home a.tool h3       { font-size: var(--tl-fs-h5); font-weight: var(--tl-fw-bold); color: var(--tl-text); line-height: var(--tl-lh-tight); }
+    .home a.tool p        { font-size: var(--tl-fs-small); color: var(--tl-text-secondary); line-height: var(--tl-lh-snug); flex: 1; }
+    .home a.tool .go      { font-size: var(--tl-fs-caption); font-weight: var(--tl-fw-bold); color: var(--tl-primary); margin-top: var(--tl-space-2); }
+
+    /* Variação "quiet" para Other Tools — pisca menos */
+    .home a.tool.quiet {
+      background: var(--tl-surface-alt);
+      min-height: 96px;
+      padding: var(--tl-space-3) var(--tl-space-4);
+    }
+    .home a.tool.quiet h3       { font-size: var(--tl-fs-body); }
+    .home a.tool.quiet .eyebrow { color: var(--tl-text-tertiary); }
+    .home a.tool.quiet p        { display: none; }
+    .home a.tool.quiet .go      { color: var(--tl-text-secondary); }
+
+    /* Accent color por seção — barrinha à esquerda dos cards */
+    .home a.tool.accent-primary   { border-left: 3px solid var(--tl-primary); }
+    .home a.tool.accent-secondary { border-left: 3px solid var(--tl-secondary); }
+    .home a.tool.accent-accent    { border-left: 3px solid var(--tl-accent); }
+    .home a.tool.accent-accent .eyebrow { color: var(--tl-accent); }
+
+    /* Card do Hendrik (Dutch) — permanece distinto */
+    .home a.tool.dutch {
+      background: linear-gradient(135deg, var(--tl-accent) 0%, var(--tl-accent-hover) 100%);
+      color: var(--tl-text-inverse);
+      border: none;
+    }
+    .home a.tool.dutch .eyebrow { color: rgba(255,255,255,.9); }
+    .home a.tool.dutch h3, .home a.tool.dutch .go { color: var(--tl-text-inverse); }
+    .home a.tool.dutch p { color: rgba(255,255,255,.85); }
   </style>
 </head>
 <body class="home">
@@ -34,169 +117,124 @@
 
     <img class="home-banner" src="assets/banner-home.png" alt="Teacher Lu Platform">
 
-    <div class="grid">
-
-      <a class="card card-hover full" href="builder.html">
-        <div class="bar primary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Start here</span>
-          <h2>Build Today's Lesson</h2>
-          <p>Pick a student and a duration, and the platform assembles the whole lesson — warm-up, grammar, structures, vocabulary, speaking, exercises and homework — from what this student has already studied, when the last lesson was and where they are on the yearly route. Every choice comes with the reason behind it.</p>
-          <span class="cta">Build the lesson →</span>
-        </div>
+    <!-- 1 · TODAY'S LESSON — o CTA principal da Studio -->
+    <section class="section">
+      <a class="hero" href="builder.html">
+        <span class="eyebrow">Today's Lesson</span>
+        <h1>Build Today's Lesson</h1>
+        <p>Pick a student, pick a duration, start the class.</p>
+        <span class="cta">Build the lesson →</span>
       </a>
+    </section>
 
-      <a class="card card-hover" href="placement-test.html">
-        <div class="bar accent"></div>
-        <div class="inner">
-          <span class="tl-eyebrow" style="color:var(--tl-accent)">Placement</span>
-          <h2>Placement Test</h2>
-          <p>A 30-question assessment that estimates the student's level (A1 to B2) with a result, interpretation and PDF export.</p>
-          <span class="cta">Take test →</span>
-        </div>
-      </a>
+    <!-- 2 · LESSON TOOLS — ferramentas usadas durante a aula -->
+    <section class="section">
+      <div class="section-head">
+        <h2>Lesson Tools</h2>
+        <span class="hint">open during class</span>
+      </div>
+      <div class="grid-primary">
 
-      <a class="card card-hover" href="lessons.html">
-        <div class="bar secondary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Conversation</span>
-          <h2>Conversation Lessons</h2>
-          <p>Ready-made themed lessons for adult beginners: conversation questions, vocabulary with phonetics and audio, and guided dialogues.</p>
-          <span class="cta">Open lessons →</span>
-        </div>
-      </a>
+        <a class="tool accent-secondary" href="lessons.html">
+          <span class="eyebrow">Conversation</span>
+          <h3>Conversation Lessons</h3>
+          <p>Themed lessons: questions, vocab and dialogues.</p>
+          <span class="go">Open →</span>
+        </a>
 
-      <a class="card card-hover" href="speaking-games.html">
-        <div class="bar accent"></div>
-        <div class="inner">
-          <span class="tl-eyebrow" style="color:var(--tl-accent)">Speaking</span>
-          <h2>Speaking Games</h2>
-          <p>A library of quick, visual speaking games for A1–A2: complete the sentence, unscramble, quick questions, guess the word, categories, this or that, dice, spin and more. Click a game and the student starts talking right away.</p>
-          <span class="cta">Play →</span>
-        </div>
-      </a>
+        <a class="tool accent-primary" href="grammar.html">
+          <span class="eyebrow">Grammar</span>
+          <h3>Grammar Lessons</h3>
+          <p>Explanation, examples, mistakes and practice.</p>
+          <span class="go">Open →</span>
+        </a>
 
-      <a class="card card-hover" href="grammar.html">
-        <div class="bar primary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Grammar</span>
-          <h2>Grammar Lessons</h2>
-          <p>A bank of grammar points to open, explain and practice: structure, examples with audio, common mistakes and practice with answer keys.</p>
-          <span class="cta">Open grammar →</span>
-        </div>
-      </a>
+        <a class="tool accent-secondary" href="structures.html">
+          <span class="eyebrow">Structures</span>
+          <h3>Language Structures</h3>
+          <p>Prepositions, articles, word order, questions.</p>
+          <span class="go">Open →</span>
+        </a>
 
-      <a class="card card-hover" href="structures.html">
-        <div class="bar secondary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Structures</span>
-          <h2>Language Structures</h2>
-          <p>Twelve categories of structure — prepositions, articles, word order, questions, negation — each with explanation, examples, common mistakes, exercises and speaking practice.</p>
-          <span class="cta">Open structures →</span>
-        </div>
-      </a>
+        <a class="tool accent-secondary" href="listening.html">
+          <span class="eyebrow">Listening</span>
+          <h3>Listening Lab</h3>
+          <p>30–45s audio + comprehension in one screen.</p>
+          <span class="go">Open →</span>
+        </a>
 
-      <a class="card card-hover" href="listening.html">
-        <div class="bar secondary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Listening</span>
-          <h2>Listening Lab</h2>
-          <p>Quick listening comprehension: pick any image of the theme, play a 30–45s audio, and work vocabulary, comprehension, complete, true/false and speaking follow-up on one screen.</p>
-          <span class="cta">Open listening →</span>
-        </div>
-      </a>
+        <a class="tool accent-accent" href="speaking-games.html">
+          <span class="eyebrow">Speaking</span>
+          <h3>Speaking Games</h3>
+          <p>Quick visual games — the student talks right away.</p>
+          <span class="go">Play →</span>
+        </a>
 
-      <a class="card card-hover" href="exercise-generator.html">
-        <div class="bar primary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Exercises</span>
-          <h2>Exercise Bank</h2>
-          <p>Several topics with plenty of practice: multiple choice, fill in the blank, true or false and matching, with instant feedback.</p>
-          <span class="cta">Practice →</span>
-        </div>
-      </a>
+        <a class="tool accent-accent" href="games.html">
+          <span class="eyebrow">Games</span>
+          <h3>Class Games</h3>
+          <p>Eight games to liven up the lesson.</p>
+          <span class="go">Play →</span>
+        </a>
 
-      <a class="card card-hover" href="games.html">
-        <div class="bar accent"></div>
-        <div class="inner">
-          <span class="tl-eyebrow" style="color:var(--tl-accent)">Games</span>
-          <h2>Class Games</h2>
-          <p>Eight games to liven up the lesson: Hangman, Categories, 20 Questions, Odd One Out, Category Sort, Spelling Bee, Guess the Emoji and Word Chains.</p>
-          <span class="cta">Play →</span>
-        </div>
-      </a>
+        <a class="tool accent-primary" href="exercise-generator.html">
+          <span class="eyebrow">Exercises</span>
+          <h3>Exercise Bank</h3>
+          <p>Multiple choice, fill in the blank, true/false, matching.</p>
+          <span class="go">Practice →</span>
+        </a>
 
-      <a class="card card-hover" href="hendrik.html">
-        <div class="bar primary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Dutch · Kids</span>
-          <h2>Hendrik — Dutch</h2>
-          <p>A playful Dutch tab built for Hendrik (7): picture words with Dutch audio, tiny sentences, five games per lesson, an exercise book, stars and points.</p>
-          <span class="cta">Laten we spelen →</span>
-        </div>
-      </a>
+      </div>
+    </section>
 
-      <a class="card card-hover" href="students.html">
-        <div class="bar secondary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Students</span>
-          <h2>Students</h2>
-          <p>Add, edit and remove your students — emoji, name and level. The Annual Plan and the Lesson Calendar read from this list automatically.</p>
-          <span class="cta">Manage students →</span>
-        </div>
-      </a>
+    <!-- 3 · STUDENTS & PLANNING — preparação e acompanhamento -->
+    <section class="section">
+      <div class="section-head">
+        <h2>Students &amp; Planning</h2>
+        <span class="hint">before &amp; after class</span>
+      </div>
+      <div class="grid-secondary">
 
-      <a class="card card-hover" href="schedule.html">
-        <div class="bar secondary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Calendar</span>
-          <h2>Lesson Calendar</h2>
-          <p>Month-by-month calendar for each student: mark lessons as done, scheduled or cancelled, add notes and export the history.</p>
-          <span class="cta">Open calendar →</span>
-        </div>
-      </a>
+        <a class="tool accent-secondary" href="students.html">
+          <span class="eyebrow">Students</span>
+          <h3>Students</h3>
+          <p>Add, edit and organise your students.</p>
+          <span class="go">Manage →</span>
+        </a>
 
-      <a class="card card-hover" href="finance.html">
-        <div class="bar primary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Finance</span>
-          <h2>Finance</h2>
-          <p>Money side of the lessons: monthly fee per student, who has paid, income and expenses, profit per month and export to CSV or PDF.</p>
-          <span class="cta">Open finance →</span>
-        </div>
-      </a>
+        <a class="tool accent-secondary" href="schedule.html">
+          <span class="eyebrow">Calendar</span>
+          <h3>Lesson Calendar</h3>
+          <p>Mark lessons done, scheduled or cancelled.</p>
+          <span class="go">Open →</span>
+        </a>
 
-      <a class="card card-hover" href="annual-plan.html">
-        <div class="bar accent"></div>
-        <div class="inner">
-          <span class="tl-eyebrow" style="color:var(--tl-accent)">Planning</span>
-          <h2>Curriculum Map</h2>
-          <p>Annual plan for every registered student, with progression from beginner to pre-intermediate, progress tracking and individual export.</p>
-          <span class="cta">See plan →</span>
-        </div>
-      </a>
+        <a class="tool accent-primary" href="report.html">
+          <span class="eyebrow">Report</span>
+          <h3>Monthly Learning Report</h3>
+          <p>Monthly pedagogical report — PDF export.</p>
+          <span class="go">Generate →</span>
+        </a>
 
-      <a class="card card-hover" href="report.html">
-        <div class="bar primary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Report</span>
-          <h2>Monthly Learning Report</h2>
-          <p>Relatório mensal pedagógico do aluno: aulas feitas, conteúdos estudados, competências adquiridas, evolução por skill, homework, frequência e próximos objetivos — pronto para exportar em PDF.</p>
-          <span class="cta">Generate report →</span>
-        </div>
-      </a>
+      </div>
+    </section>
 
-      <a class="card card-hover" href="practice/index.html">
-        <div class="bar secondary"></div>
-        <div class="inner">
-          <span class="tl-eyebrow">Ecossistema · Fase 1</span>
-          <h2>Teacher Lu Practice</h2>
-          <p>Nova plataforma-irmã da Studio, nascida do mesmo Design System, dos mesmos engines e dos mesmos serviços. Em Fase 1 de bootstrap: painel de infraestrutura mostrando que todos os módulos compartilhados estão carregados. Módulos pedagógicos chegam nas próximas fases.</p>
-          <span class="cta">Open Practice →</span>
-        </div>
-      </a>
+    <!-- 4 · DUTCH — módulo especial, isolado do fluxo de inglês -->
+    <section class="section">
+      <div class="section-head">
+        <h2>Dutch</h2>
+        <span class="hint">separate module</span>
+      </div>
+      <div class="grid-dutch">
+        <a class="tool dutch" href="hendrik.html">
+          <span class="eyebrow">Dutch · Kids</span>
+          <h3>Hendrik — Dutch</h3>
+          <p>Picture words, tiny sentences, five games per lesson.</p>
+          <span class="go">Laten we spelen →</span>
+        </a>
+      </div>
+    </section>
 
-    </div>
   </div>
 
   <footer class="tl-footer">

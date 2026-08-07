@@ -756,8 +756,8 @@ function judgeET(i,ok){
   const n=Object.keys(etJudge).length,c=Object.values(etJudge).filter(Boolean).length;
   if(n===6){
     document.getElementById('etVerdict').innerHTML=c>=5
-      ?`<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">🏆 ${c}/6 — week complete! Mark it in the Annual Plan and tell ${stuName()} one thing they can do now that they couldn't before.</div>`
-      :`<div class="mistake" style="font-weight:700">↩ ${c}/6 — below 80%. This topic returns next class (misses saved to ${stuName()}'s review queue). Don't advance the week.</div>`;
+      ?`<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">🏆 ${c}/6 — great job!</div>`
+      :`<div class="mistake" style="font-weight:700">↩ ${c}/6 — let's review this topic again.</div>`;
   }
 }
 

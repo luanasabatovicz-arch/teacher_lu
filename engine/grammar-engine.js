@@ -290,7 +290,7 @@ R.warmup=function(){
     }).join('');
   }
   if(env.isKid()&&T.warmup.kidGame)h+='<div class="chip" style="margin-top:8px">🎲 Kids: '+P(T.warmup.kidGame)+'</div>';
-  return bigCard(h)+teacherStrip('Se travar na 1ª pergunta, reformule mais simples: “'+P(T.warmup.hint||'ask with gestures, one word at a time')+'”. Encerrar após 3 respostas OU 4 min — o que vier primeiro.');
+  return bigCard(h);
 };
 
 R.notice=function(){
@@ -301,7 +301,7 @@ R.notice=function(){
     return '<div class="ex-line"><span style="font-size:17px">'+P(e)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';
   }).join('');
   h+='<div style="margin-top:12px"><span class="chip">🔍 '+P(T.notice.qs.form)+'</span><span class="chip">🕐 '+P(T.notice.qs.meaning)+'</span><span class="chip">🗣️ Say the rule in YOUR words</span></div>';
-  return bigCard(h)+teacherStrip('Escada de hints (se não achar o padrão em 2 tentativas):<br>1️⃣ '+P(T.notice.hints[0])+'<br>2️⃣ '+P(T.notice.hints[1])+'<br>3️⃣ '+P(T.notice.hints[2])+'<br>Encerra quando ele(a) verbalizar o padrão (mesmo em português).');
+  return bigCard(h);
 };
 
 R.ccq=function(){
@@ -316,7 +316,7 @@ R.ccq=function(){
       '<span style="display:flex;gap:6px;align-items:center">'+ansBlock('ge-ccqa-'+i,c.a)+judgeBtns('ccq',i)+'</span></div></div>';
   }).join('');
   h+='<div id="ge-ccq-verdict" style="margin-top:10px"></div>';
-  return bigCard(h)+teacherStrip('Falhou o portão → 3 reservas aparecem sozinhas. Falhou de novo → volta ao Notice com exemplos novos. Falhou a 3ª → o tópico está acima do nível: registre e encerre produzindo o que '+env.stuName()+' JÁ sabe — nunca empurre.');
+  return bigCard(h);
 };
 
 R.rule=function(){
@@ -345,7 +345,7 @@ R.rule=function(){
   h+='<div class="form-box"><div class="label" style="color:#FF6B6B">🔊 Pronunciation</div><p class="text-sm" style="color:#1F2937">'+P(T.rule.pron)+'</p></div>';
   if(!kid&&T.rule.pt)h+='<div class="form-box"><div class="label" style="color:#0B3B46">🇧🇷 Contraste com o português</div><p class="text-sm" style="color:#1F2937">'+P(T.rule.pt)+'</p></div>';
   h+=examplesBlock();
-  return bigCard(h)+teacherStrip('Se perguntar "por quê?" além da regra: '+P(T.rule.why||'explique com UM exemplo a mais, não com teoria')+'. Leia os exemplos em voz alta ANTES de praticar. Encerra quando '+env.stuName()+' reformular a regra em 1 frase própria.');
+  return bigCard(h);
 };
 
 R.watchout=function(){
@@ -390,7 +390,7 @@ R.practice=function(){
     h+='<div class="label" style="color:#16B1A9;margin:18px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:8px">STAGE 3 · Free — use it for real</div>';
     h+=S.practiceMore.map(function(p,i){return prItem('free',p,i);}).join('');
   }
-  return bigCard(h)+teacherStrip('G10 — correção com dignidade: 1º "try again" → 2º hint → só então a resposta, e explique o PORQUÊ (a caixa laranja traz por quê + regra + novo exemplo). Plano de tempo: ~1 min/item; a prática livre (Stage 3) alonga até '+env.stuName()+' demonstrar domínio.');
+  return bigCard(h);
 };
 function prItem(sec,p,i){
   let q='';
@@ -444,7 +444,7 @@ R.makeit=function(){
   h+=(S.makeitItems||T.makeit).slice(0,n).map(function(m,i){
     return '<div class="ex-line"><span style="font-size:17px">'+(i+1)+'. '+P(m)+'</span>'+judgeBtns('makeit',i)+'</div>';
   }).join('');
-  return bigCard(h)+teacherStrip('Resposta monossilábica → expanda: "Why? Give me one more." · "And on weekends?" · Um dos stems pode virar pergunta sobre VOCÊ — deixe '+env.stuName()+' perguntar.');
+  return bigCard(h);
 };
 
 R.task=function(){
@@ -462,7 +462,7 @@ R.task=function(){
     h+='<div style="margin-top:10px"><button onclick="GE.tg(\'ge-c4\')" class="theme-btn text-xs font-bold py-2 px-4 rounded-lg">🚀 Extra challenge</button>'+
        '<div id="ge-c4" class="answer" style="color:#0B3B46 !important">'+P(t.c4)+'</div></div>';
   }
-  return bigCard(h)+teacherStrip('Complicações injetáveis se ficar fácil:<br>⚡ '+P(t.extras[0])+'<br>⚡ '+P(t.extras[1])+'<br>Se travar, socorro por palavra/imagem (nunca frase pronta): '+t.rescue.map(r=>'<span class="chip">'+P(r)+'</span>').join(' '));
+  return bigCard(h);
 };
 
 R.exit=function(){
@@ -476,20 +476,8 @@ R.exit=function(){
       '<span style="display:flex;gap:6px;align-items:center">'+ansBlock('ge-eta-'+i,it.a)+judgeBtns('exit',i)+'</span></div></div>';
   }).join('');
   h+='<div id="ge-exit-verdict" style="margin-top:10px"></div>';
-  return bigCard(h)+teacherStrip('Correção por nível: em A1, aceite a forma-alvo correta mesmo com outros errinhos. Feche SEMPRE dizendo 1 coisa que '+env.stuName()+' consegue fazer hoje que não conseguia antes.');
+  return bigCard(h);
 };
-
-/* ---------- faixa de apoio pedagógico (CCQs, follow-ups, notas) ----------
-   A tela do runtime é compartilhada com o aluno. Qualquer nota exclusiva da
-   professora — inclusive recolhida — fica visível para ele, então esta
-   faixa NÃO é renderizada. As chamadas a teacherStrip(...) continuam nos
-   renderizadores (documentam a intenção pedagógica e mantêm os textos
-   disponíveis para consumo futuro fora da tela ao vivo, ex.: PDF do plano),
-   mas devolvem string vazia. Não criar botão de revelar aqui. */
-function teacherStrip(html){
-  void html;                          // dado preservado, não renderizado
-  return '';
-}
 
 /* ---------- shell: progresso + timer + navegação ---------- */
 function shell(){

@@ -255,6 +255,7 @@ var GAMES=[
 /* ============================================================
    API
    ============================================================ */
+function rnd(n){ return Math.floor(Math.random()*n); }
 function filt(bank, level, theme){
   return (bank||[]).filter(function(it){
     return (level==='all'||!it.lvl||it.lvl===level) && (theme==='all'||!it.theme||it.theme===theme);
