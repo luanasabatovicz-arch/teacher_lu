@@ -205,6 +205,41 @@
   .mletter:disabled { cursor: default; }
   .mletter.dim { opacity: .4; }
 
+  /* Reading passage — sticky, always visible while doing exercises.
+     Presentational only: the topic simply exposes a `passage` field. */
+  .reading-passage {
+    position: sticky;
+    top: 96px;                        /* clears the fixed topbar */
+    z-index: 20;
+    background: var(--tl-surface);
+    border: 1px solid var(--tl-border);
+    border-left: 4px solid var(--tl-accent);
+    border-radius: var(--tl-radius-md);
+    padding: 18px 22px;
+    margin-bottom: 18px;
+    box-shadow: var(--tl-shadow-sm);
+  }
+  .reading-passage .rp-tag {
+    font-size: 11px;
+    font-weight: var(--tl-fw-bold);
+    letter-spacing: var(--tl-tracking-wide);
+    text-transform: uppercase;
+    color: var(--tl-accent);
+    margin-bottom: 4px;
+  }
+  .reading-passage h3 {
+    font-size: var(--tl-fs-h4);
+    font-weight: var(--tl-fw-bold);
+    color: var(--tl-text);
+    margin-bottom: 8px;
+  }
+  .reading-passage p.rp-body {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--tl-text);
+    white-space: pre-wrap;
+  }
+
   /* Compatibilidade */
   .chip { background: var(--tl-primary-soft) !important; color: var(--tl-primary) !important; border: 1px solid transparent !important; padding: 6px 12px; border-radius: var(--tl-radius-pill); font-size: 13px; font-weight: var(--tl-fw-semibold); }
   .bg-slate-700, .bg-slate-800, .bg-slate-900 { background: var(--tl-surface-alt) !important; }
@@ -251,6 +286,7 @@
   </div>
 </div>
 
+<script src="platform-content.js?v=1"></script>
 <script src="platform-print.js?v=1"></script>
 <script>
 // ================= EXERCISE BANK =================
@@ -617,7 +653,46 @@ const bank = {
       {left:"passport",right:"travel document"},{left:"suitcase",right:"bag for clothes"},{left:"airplane",right:"flies in the sky"},
       {left:"hotel",right:"place to sleep on a trip"},{left:"ticket",right:"pass to travel"}
     ]}
-  ]}
+  ]},
+
+  /* ================= READING (Fase 1 piloto) =================
+     Extensão MÍNIMA do schema: cada topic pode expor um objeto `passage`
+     opcional { title, level, text }. O ActivityRunner exibe o texto de
+     forma "sticky" acima dos exercícios para que o aluno possa reler.
+     Nenhum tipo de exercício novo é criado — MC + Fill in the Blank +
+     Match são reutilizados exatamente como já são.
+     ==========================================================*/
+  reading_my_morning:{
+    label:"Reading · A1 · My Morning",
+    keys:["reading","routine","morning","daily"],
+    passage:{
+      level:"A1",
+      title:"My Morning",
+      text:"Hi! I'm Ana. Every morning I wake up at seven o'clock. First, I drink a glass of water and take a shower. Then I have breakfast — usually coffee, bread and fruit. I like fruit a lot. I leave home at eight and I go to work by bus. It takes about thirty minutes. I never have breakfast at work."
+    },
+    exercises:[
+      // 1 · overall comprehension
+      {type:"multiple_choice",question:"What is the text mainly about?",
+        options:["Ana's job","Ana's morning routine","Ana's weekend","Ana's family"],correct:1},
+      // 2 · specific information
+      {type:"multiple_choice",question:"What time does Ana wake up?",
+        options:["Six o'clock","Seven o'clock","Eight o'clock","Nine o'clock"],correct:1},
+      // 3 · specific information
+      {type:"fill_blank",question:"Ana goes to work ___ bus.",correct:"by"},
+      // 4 · vocabulary from context
+      {type:"multiple_choice",question:"In the text, \"I leave home\" means...",
+        options:["I clean my house","I go out of my house","I stay at home","I sell my house"],correct:1},
+      // 5 · linguistic structure present in the text (Present Simple 3rd person -s)
+      {type:"fill_blank",question:"Ana ___ (drink) a glass of water in the morning.",correct:"drinks"},
+      // 6 · vocabulary in context (match)
+      {type:"matching",question:"Match the word from the text to its meaning:",pairs:[
+        {left:"wake up",right:"to stop sleeping"},
+        {left:"take a shower",right:"to wash your body with water"},
+        {left:"breakfast",right:"the first meal of the day"},
+        {left:"by bus",right:"using a bus"}
+      ]}
+    ]
+  }
 };
 
 // ================= ESTADO =================
@@ -695,6 +770,17 @@ function loadTopic(key){
 function renderExercises(){
   const c=document.getElementById('exercisesContainer');
   c.innerHTML='';
+  // Reading passage (only rendered when the topic exposes one). Stays sticky
+  // above the exercises so the student can re-read at any point.
+  const p = bank[currentKey] && bank[currentKey].passage;
+  if(p){
+    const wrap=document.createElement('div');
+    wrap.className='reading-passage';
+    wrap.innerHTML=`<p class="rp-tag">Reading${p.level?' · '+p.level:''}</p>
+      <h3>${p.title||''}</h3>
+      <p class="rp-body">${p.text||''}</p>`;
+    c.appendChild(wrap);
+  }
   let num=0;
   exercises.forEach((ex,ei)=>{
     const card=document.createElement('div');
@@ -807,6 +893,10 @@ function exportPDF(){
   let num=0;
   let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
     <h1 style="text-align:center;border-bottom:3px solid #0B3B46;padding-bottom:12px">Exercises — ${bank[currentKey].label}</h1>`;
+  const _p = bank[currentKey].passage;
+  if(_p){
+    h+=`<div style="border-left:4px solid #db6d5d;background:#faf4f2;padding:14px 18px;margin:14px 0"><p style="font-size:11px;font-weight:700;letter-spacing:.5px;color:#a04a3e;margin:0 0 4px">READING${_p.level?' · '+_p.level:''}</p><h2 style="margin:0 0 8px;font-size:18px">${_p.title||''}</h2><p style="white-space:pre-wrap;margin:0">${_p.text||''}</p></div>`;
+  }
   exercises.forEach(ex=>{
     if(ex.type==='multiple_choice'){num++;
       h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b></p>`;
@@ -832,6 +922,37 @@ function exportPDF(){
 function printDoc(html,title){ TeacherLu.printDoc(html, title); }
 
 function goHome(){window.location.href='index.html';}
+
+// Reading track — expose the reading topics of `bank` to the Content registry
+// so they show up under Learning Progress → Reading. Presentation and runner
+// remain the existing ones; nothing else changes.
+(function registerReading(){
+  try{
+    var NS = window.TeacherLu = window.TeacherLu || {};
+    var provider = {
+      id:'reading-exercises',
+      skill:'reading',
+      label:'Reading',
+      load:function(){
+        return Object.keys(bank)
+          .filter(function(k){ return bank[k] && bank[k].passage; })
+          .map(function(k){ return { key:k, topic:bank[k] }; });
+      },
+      map:function(raw, i){
+        var p = raw.topic.passage || {};
+        return {
+          key:      raw.key,
+          title:    p.title || raw.topic.label,
+          subtitle: (raw.topic.exercises && raw.topic.exercises.length) ? raw.topic.exercises.length + ' exercises' : '',
+          level:    p.level || '',
+          order:    i
+        };
+      }
+    };
+    if (NS.Content) NS.Content.register(provider);
+    else (NS.__pendingProviders = NS.__pendingProviders || []).push(provider);
+  }catch(e){ console.warn('[reading] could not register', e); }
+})();
 
 // INIT
 renderThemeButtons();
