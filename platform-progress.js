@@ -325,10 +325,114 @@
         return !(i.skill === skillId && i.key === key);
       });
       return write(CUSTOM_KEY, list);
+    },
+
+    /* ------------------------------------------------------------------
+       LEGACY WEEK-PROGRESS MIGRATION  (Fase 2A)
+       ------------------------------------------------------------------
+       The Annual Plan used to store one raw localStorage key per
+       (student, week):
+
+         '<studentIdOrName>-week<N>'  = 'true'
+
+       That parallel model diverges from Progress. This one-shot migration
+       copies every 'true' occurrence into
+         Progress.items['vocabulary:w<N>']  with date '1970-01-01'
+       preserving the legacy keys intact (never deletes them). It is
+       idempotent, guarded by FLAG_V2, and takes a defensive backup of
+       every legacy key it saw before writing anything.
+
+       Runs from ANY page that loads platform-progress.js + platform-
+       students.js — Builder, Annual Plan, Report, Schedule, Structures.
+       The Annual Plan no longer needs its own copy.
+       ------------------------------------------------------------------ */
+    ensureMigrated: function () {
+      var FLAG_V2 = 'sabatovicz_lp_migrated_v2';
+      var BACKUP_KEY = 'sabatovicz_week_progress_backup_v1';
+      var result = { ran: false, migrated: 0, students: 0, backupWritten: false };
+      try {
+        if (localStorage.getItem(FLAG_V2) === '1') { result.reason = 'already-migrated'; return result; }
+        var Students = NS.Students;
+        if (!Students) { result.reason = 'no-students'; return result; }
+
+        // idOf maps both current ids and current names to the canonical id.
+        // Falling back to name preserves legacy keys written before the id
+        // migration (see platform-students.migrateScheduleKeys).
+        var list = Students.load();
+        var idOf = {};
+        list.forEach(function (s) { idOf[s.id] = s.id; if (s.name) idOf[s.name] = s.id; });
+
+        // Snapshot every '<X>-week<N>' key regardless of match — the backup
+        // is a full rollback surface, not a filtered view.
+        var backup = {};
+        var toMigrate = [];
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i);
+          if (!k) continue;
+          var m = k.match(/^(.+)-week(\d+)$/);
+          if (!m) continue;
+          var v = localStorage.getItem(k);
+          backup[k] = v;
+          if (v !== 'true') continue;
+          var sid = idOf[m[1]];
+          if (!sid) continue;
+          toMigrate.push({ sid: sid, week: parseInt(m[2], 10) });
+        }
+
+        // Write backup ONCE, only if there's anything to preserve AND we
+        // don't already have a backup on disk. Never overwrite.
+        if (Object.keys(backup).length && localStorage.getItem(BACKUP_KEY) === null) {
+          try {
+            localStorage.setItem(BACKUP_KEY, JSON.stringify({
+              _v: 1, createdAt: today(), keys: backup
+            }));
+            result.backupWritten = true;
+          } catch (e) { /* backup best-effort — do not block migration */ }
+        }
+
+        // Group by student, but ONLY migrate items that Progress does not
+        // already know about. Migração é consolidação de estado — se o
+        // item já existe, preserva integralmente o registro (times,
+        // firstAt, lastAt, lessons, note). Sem esta guarda, um segundo
+        // boot com legado+Progress inflava times e injetava '1970-01-01'.
+        var byStu = {};
+        toMigrate.forEach(function (t) {
+          var id = 'vocabulary:w' + t.week;
+          if (Progress.isCovered(t.sid, id)) return;   // já em Progress → skip
+          (byStu[t.sid] = byStu[t.sid] || []).push(id);
+        });
+        Object.keys(byStu).forEach(function (sid) {
+          // Data '1970-01-01' sinaliza cobertura pré-Progress; o Report
+          // já ignora esta data em campos "last:". Como filtramos itens
+          // pré-existentes, esta chamada só CRIA registros novos.
+          Progress.record(sid, byStu[sid], '1970-01-01');
+        });
+
+        localStorage.setItem(FLAG_V2, '1');
+        result.ran = true;
+        result.migrated = toMigrate.length;
+        result.students = Object.keys(byStu).length;
+        if (result.migrated) {
+          console.info('[progress] migrated ' + result.migrated + ' legacy week records for ' +
+                       result.students + ' student(s). Legacy keys preserved.');
+        }
+      } catch (e) {
+        console.warn('[progress] ensureMigrated failed — no changes were written', e);
+        result.error = e && e.message;
+      }
+      return result;
     }
   };
 
   NS.Progress = Progress;
+
+  /* Auto-run on load. Requires TeacherLu.Students — every page that also
+     loads Progress also loads Students (verified across builder, annual-
+     plan, report, schedule, structures, students). Pages that don't need
+     Progress (speaking-games, listening, grammar) simply don't trigger
+     the migration; the flag remains unset until a Progress-bearing page
+     opens, at which point migration runs exactly once. */
+  try { if (NS.Students) Progress.ensureMigrated(); } catch (e) { /* never throws */ }
 
   /* ----------------------------------------------------------------------
      Teacher-added items feed the registry through a normal provider, one

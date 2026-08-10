@@ -527,12 +527,29 @@
 
     let progress = {};
 
+    /* Fase 2A: leitura canônica.
+       Se ensureMigrated() já executou com sucesso (flag v2 armada), o
+       legado é ignorado — Progress é a ÚNICA fonte de verdade. Sem esta
+       regra, desmarcar uma semana vinda da migração reaparecia na próxima
+       leitura porque a chave legada continua `true` (a chave é preservada
+       para backup/rollback, não como fonte).
+       O fallback `legado OR Progress` fica reservado ao caso excepcional
+       em que a migração ainda não pôde rodar (ex.: página aberta sem
+       platform-students carregado). */
     function initProgress() {
+      const P = window.TeacherLu && window.TeacherLu.Progress;
+      const migrated = localStorage.getItem('sabatovicz_lp_migrated_v2') === '1';
       students.forEach(student => {
         progress[student] = {};
         curriculum.forEach(item => {
-          const key = `${student}-week${item.week}`;
-          progress[student][`week${item.week}`] = localStorage.getItem(key) === 'true';
+          const itemId = 'vocabulary:w' + item.week;
+          const canonicalOn = !!(P && P.isCovered(student, itemId));
+          if (migrated) {
+            progress[student][`week${item.week}`] = canonicalOn;
+          } else {
+            const legacyOn = localStorage.getItem(`${student}-week${item.week}`) === 'true';
+            progress[student][`week${item.week}`] = legacyOn || canonicalOn;
+          }
         });
       });
     }
@@ -587,10 +604,39 @@
       updateProgress();
     }
 
+    /* Fase 2A: nova escrita SÓ pela API pública de Progress.
+       A chave legada `${student}-week${n}` NÃO é mais escrita nem apagada
+       — permanece intacta para rollback. Como initProgress une legado +
+       canônico com OR, uma semana legada só pode ser "desmarcada"
+       depois que a migração já a espelhou em Progress; a partir daí o
+       toggle abaixo controla o estado. */
     function toggleWeek(student, week) {
-      progress[student][week] = !progress[student][week];
-      const key = `${student}-${week}`;
-      localStorage.setItem(key, progress[student][week]);
+      const P = window.TeacherLu && window.TeacherLu.Progress;
+      const weekN = parseInt(String(week).replace('week', ''), 10);
+      if (!P || !weekN) return;
+      const itemId = 'vocabulary:w' + weekN;
+      // Semântica da semana no Annual Plan: "coberta ou não coberta", sem
+      // data específica. Portanto usamos record (para hoje) / unrecord (item
+      // inteiro) em vez de toggle, que só alterna a data corrente e deixa
+      // datas históricas ('1970-01-01' vindas da migração) presas no estado.
+      const wasOn = P.isCovered(student, itemId);
+      const ok = wasOn
+        ? P.unrecord(student, itemId)         // apaga a entrada por inteiro
+        : P.record(student, [itemId]);        // grava com data de hoje
+      if (ok === false) {
+        alert('Could not save — the browser storage may be full. Nothing was changed.');
+        return;
+      }
+      // Re-sincroniza estado local com a leitura canônica. Igual à initProgress:
+      // Progress-only se a migração já rodou; senão fallback legado OR Progress.
+      const migrated = localStorage.getItem('sabatovicz_lp_migrated_v2') === '1';
+      const canonicalOn = !!P.isCovered(student, itemId);
+      if (migrated) {
+        progress[student][week] = canonicalOn;
+      } else {
+        const legacyOn = localStorage.getItem(`${student}-week${weekN}`) === 'true';
+        progress[student][week] = legacyOn || canonicalOn;
+      }
       renderWeeks();
     }
 
@@ -686,22 +732,12 @@
     let lpFilter = 'all';
     let lpSearch = '';
 
-    /** One-off migration: the old week checkboxes become vocabulary items. */
-    function migrateWeekProgress() {
-      if (!Progress) return;
-      if (localStorage.getItem('sabatovicz_lp_migrated') === '1') return;
-      STUDENTS_DATA.forEach(s => {
-        const ids = [];
-        curriculum.forEach(item => {
-          if (localStorage.getItem(`${s.id}-week${item.week}`) === 'true') {
-            ids.push('vocabulary:w' + item.week);
-          }
-        });
-        if (ids.length) Progress.record(s.id, ids, '1970-01-01');
-      });
-      localStorage.setItem('sabatovicz_lp_migrated', '1');
-      console.info('[learning-progress] old week progress migrated.');
-    }
+    /* Fase 2A: a migração foi movida para platform-progress.ensureMigrated().
+       Roda automaticamente ao carregar Progress em qualquer página que
+       também tenha Students. Manter o call abaixo é defensivo (idempotente
+       via flag `sabatovicz_lp_migrated_v2`). A antiga flag
+       `sabatovicz_lp_migrated` foi substituída por V2 — nenhum
+       migrador antigo grava aqui. */
 
     function renderLearningProgress() {
       if (!Content || !Progress) return;
@@ -820,8 +856,8 @@
 
     // INIT
     renderStudentButtons();
+    if (Progress && Progress.ensureMigrated) Progress.ensureMigrated();
     initProgress();
-    migrateWeekProgress();
     if (students.length) selectStudent(students[0]);
   </script>
 </body>
