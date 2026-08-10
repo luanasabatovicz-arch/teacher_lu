@@ -269,7 +269,11 @@ function renderSelector(){
     const style=p
       ? `background:${on?'linear-gradient(135deg,var(--tl-primary),var(--tl-secondary))':'var(--tl-primary-tint)'} !important;color:${on?'var(--tl-text-inverse)':'var(--tl-primary)'} !important;border:2px solid ${on?'var(--tl-primary)':'var(--tl-border)'} !important;box-shadow:var(--tl-shadow-sm)`
       : '';
-    return `<button class="week-btn ${on?'active':''}" style="${style}" onclick="selectWeek(${i})">${p?'⚡ ':''}S${l.week} · ${l.theme.split('—')[0].trim()}</button>`;
+    const theme = l.theme.split('—')[0].trim();
+    const lvlPill = l.level
+      ? `<span style="display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.5px;background:${on?'rgba(255,255,255,.22)':'var(--tl-secondary-soft)'};color:${on?'var(--tl-text-inverse)':'var(--tl-secondary-hover)'};border:1px solid ${on?'rgba(255,255,255,.35)':'transparent'}">${l.level}</span>`
+      : '';
+    return `<button class="week-btn ${on?'active':''}" style="${style}" onclick="selectWeek(${i})">${p?'⚡ ':''}S${l.week} · ${theme}${lvlPill}</button>`;
   }).join('');
   s.innerHTML=h;
 }
@@ -294,6 +298,40 @@ function randomQuestion(){
 }
 
 function toggleAnswer(id){ document.getElementById(id).classList.toggle('show'); }
+
+/* ------------------------------------------------------------------
+   Speaking stage — visual grouping by prefix.
+   PURELY presentational: does NOT change CONV_LESSONS or any data.
+   Recognised prefixes: SITUATION / COMPLETE / QUICK CHOICE /
+   CHALLENGE / FOLLOW-UP. Anything else stays in "Conversation
+   questions". Legacy lessons (no prefix) fall entirely into that
+   default bucket, so weeks 1-13 render exactly as before.
+   ------------------------------------------------------------------ */
+const SPEAKING_GROUPS = [
+  { key:'conv',      label:'Conversation questions', match:null },
+  { key:'situation', label:'Real-life situations',   match:/^SITUATION:\s*/i },
+  { key:'complete',  label:'Complete the sentence',  match:/^COMPLETE:\s*/i },
+  { key:'quick',     label:'Quick choice',           match:/^QUICK CHOICE:\s*/i },
+  { key:'challenge', label:'Challenge',              match:/^CHALLENGE:\s*/i },
+  { key:'followup',  label:'Follow-up',              match:/^FOLLOW-?UP:\s*/i }
+];
+function groupSpeaking(items){
+  const buckets = {}; SPEAKING_GROUPS.forEach(g => buckets[g.key] = []);
+  (items||[]).forEach(raw => {
+    const g = SPEAKING_GROUPS.slice(1).find(g => g.match.test(raw));
+    if (g) buckets[g.key].push(raw.replace(g.match, ''));
+    else   buckets.conv.push(raw);
+  });
+  return buckets;
+}
+function renderSpeakingGrouped(items){
+  const b = groupSpeaking(items);
+  return SPEAKING_GROUPS.map(g => {
+    const arr = b[g.key]; if (!arr.length) return '';
+    const heading = `<h4 style="font-size:var(--tl-fs-caption);font-weight:var(--tl-fw-bold);letter-spacing:var(--tl-tracking-wide);text-transform:uppercase;color:var(--tl-text-tertiary);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--tl-border)">${g.label} <span style="color:var(--tl-text-tertiary);font-weight:600;opacity:.7">· ${arr.length}</span></h4>`;
+    return heading + arr.map(q => `<div class="q-item">${q}</div>`).join('');
+  }).join('');
+}
 
 function renderLesson(){
   const l = lessons[current];
@@ -359,7 +397,7 @@ function renderLesson(){
        <p class="text-slate-400 text-sm">Answer the questions.</p>
        <button onclick="randomQuestion()" class="gradient-amber text-white font-bold py-2 px-4 rounded-lg text-sm">Random question</button>
      </div>
-     <div id="speakingList">${l.speaking.map(q=>`<div class="q-item">${q}</div>`).join('')}</div>
+     <div id="speakingList">${renderSpeakingGrouped(l.speaking)}</div>
      <div class="mt-5 p-4 rounded-xl dark-box" style="background:linear-gradient(135deg,var(--tl-primary) 0%,var(--tl-primary-hover) 100%);border:1px solid var(--tl-secondary)">
        <p class="text-indigo-200 font-bold mb-2" style="color:var(--tl-secondary-tint)">${l.roleplay.title}</p>
        <p class="text-slate-300 text-sm mb-3">${l.roleplay.scenario}</p>
