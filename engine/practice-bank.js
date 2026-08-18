@@ -33,6 +33,32 @@
      deleted exercises are never reused.
    • Run PracticeBank.audit() after editing this file.
 
+   GRUPOS — QUANDO O EXERCÍCIO NÃO É A UNIDADE DE USO
+   --------------------------------------------------
+   Um tópico pode declarar um `groupId`. Isso diz: "pedagogicamente, o que
+   se consome aqui é o CONJUNTO, não cada item".
+
+   O caso é o Reading. Um texto tem 6 perguntas com 6 ids próprios, mas
+   oferecer o mesmo texto de novo só porque sobraram 2 perguntas não é
+   prática nova — o aluno reconhece o texto. Então:
+
+     • cada pergunta continua registrando o seu id individual;
+     • o `groupId` só é registrado quando TODAS as perguntas do tópico
+       tiverem veredicto — inclusive somando aulas diferentes;
+     • aula interrompida no meio deixa o grupo em aberto, e o texto
+       continua disponível;
+     • abrir o texto ou revelar uma resposta não fecha nada.
+
+   O filtro futuro pergunta uma coisa só:
+
+       PracticeLog.isDone(studentId, topic.groupId)
+
+   e tira o texto inteiro do pool daquele aluno. Os ids individuais
+   continuam existindo para o histórico — nada é apagado.
+
+   Um groupId vive no mesmo espaço de nomes dos ids de exercício, então a
+   auditoria também o verifica contra ausência e duplicidade.
+
    ========================================================================== */
 
 (function (global) {
@@ -415,6 +441,10 @@ var TOPICS = {
   reading_my_morning:{
     label:"Reading · A1 · My Morning",
     keys:["reading","routine","morning","daily"],
+    /* UNIDADE DE USO — ver bloco "GRUPOS" no topo deste arquivo.
+       As 6 perguntas mantêm seus ids individuais; o texto inteiro só é
+       consumido quando todas elas tiverem veredicto. */
+    groupId:"reading-morning-001",
     passage:{
       level:"A1",
       title:"My Morning",
@@ -465,12 +495,13 @@ var TOPICS = {
       var level = (t.passage && t.passage.level) || '';
       (t.exercises || []).forEach(function (ex, i) {
         out.push({
-          id:     ex.id || '',
-          format: ex.type || '',
-          topic:  key,
-          level:  level,
-          index:  i,
-          ex:     ex
+          id:      ex.id || '',
+          format:  ex.type || '',
+          topic:   key,
+          level:   level,
+          groupId: t.groupId || '',
+          index:   i,
+          ex:      ex
         });
       });
     });
@@ -487,6 +518,22 @@ var TOPICS = {
     keys: function () { return Object.keys(TOPICS); },
 
     topic: function (key) { return TOPICS[key] || null; },
+
+    /**
+     * The unit of use for a topic: its groupId when it declares one,
+     * otherwise null (meaning "each exercise is its own unit").
+     */
+    groupOf: function (key) {
+      var t = TOPICS[key];
+      return (t && t.groupId) ? t.groupId : null;
+    },
+
+    /** Every exercise id that must be done for a group to be complete. */
+    groupMembers: function (key) {
+      var t = TOPICS[key];
+      if (!t || !t.groupId) return [];
+      return (t.exercises || []).map(function (ex) { return ex.id; });
+    },
 
     /** Every exercise as a flat descriptor: { id, format, topic, level, ex }. */
     all: flatten,
@@ -532,6 +579,8 @@ var TOPICS = {
       }
 
       Object.keys(TOPICS).forEach(function (key) {
+        // O groupId compartilha o espaço de nomes dos ids de exercício.
+        if (TOPICS[key].groupId) check(TOPICS[key].groupId, 'group:' + key);
         (TOPICS[key].exercises || []).forEach(function (ex, i) {
           check(ex.id, 'bank:' + key + '#' + i);
           if (ex.id && TOKEN[ex.type] && ex.id.indexOf('-' + TOKEN[ex.type] + '-') === -1) {

@@ -269,7 +269,12 @@
          sabe de quem é o registro. UI mínima de propósito (etapa 4). -->
     <div class="card rounded-xl p-4 mb-4 flex items-center justify-between flex-wrap gap-3">
       <div id="stuBar" class="flex items-center flex-wrap"></div>
-      <p class="text-slate-400 text-sm" id="usedCount">—</p>
+      <div class="flex items-center gap-3">
+        <!-- Aviso de gravação: só aparece quando o PracticeLog NÃO conseguiu
+             persistir. Silêncio aqui seria pior que o erro. -->
+        <p id="saveWarn" style="display:none;font-size:13px;font-weight:600;color:var(--tl-danger-text);background:var(--tl-danger-soft);border:1px solid var(--tl-danger);border-radius:var(--tl-radius-md);padding:6px 12px"></p>
+        <p class="text-slate-400 text-sm" id="usedCount">—</p>
+      </div>
     </div>
 
     <div class="card rounded-xl p-5 mb-6 flex items-center justify-between flex-wrap gap-3">
@@ -340,6 +345,7 @@ if(!STUDENTS_DATA.some(s=>s.id===curStu)) curStu = STUDENTS_DATA.length ? STUDEN
 function pickStu(id){
   curStu = id;
   localStorage.setItem('sabatovicz_current_student', id);
+  clearSaveWarning();
   renderStuBar();
   renderUsedCount();
 }
@@ -363,13 +369,68 @@ function renderUsedCount(){
   el.textContent = n + (n===1 ? ' exercise used' : ' exercises used');
 }
 
+/* ---------------------------------------------------------------------------
+   Aviso de gravação
+   ---------------------------------------------------------------------------
+   markDone() devolve false quando o localStorage não aceitou a escrita
+   (cota cheia, modo privado, storage bloqueado). Nesse caso a professora
+   PRECISA saber: o contador não sobe e o aviso aparece. Fingir sucesso
+   aqui seria a pior falha possível — com o filtro ligado, uma gravação
+   perdida vira exercício repetido sem ninguém perceber.
+   --------------------------------------------------------------------------- */
+let saveWarnTimer;
+function showSaveWarning(){
+  const el = document.getElementById('saveWarn');
+  if(!el) return;
+  el.textContent = 'Could not save this exercise. Progress was not recorded.';
+  el.style.display = '';
+  clearTimeout(saveWarnTimer);
+  saveWarnTimer = setTimeout(clearSaveWarning, 8000);
+}
+function clearSaveWarning(){
+  const el = document.getElementById('saveWarn');
+  if(!el) return;
+  el.style.display = 'none';
+  clearTimeout(saveWarnTimer);
+}
+
 /* Chamado UMA vez por exercício, no estado terminal. `_logged` evita
    regravar dentro da mesma renderização; o próprio PracticeLog já é
-   idempotente por (exercício, dia) — as duas guardas são baratas. */
+   idempotente por (exercício, dia) — as duas guardas são baratas.
+   Se a gravação falhar, `_logged` volta atrás para que uma nova
+   interação possa tentar de novo. */
 function markUsed(ex){
   if(!curStu || !ex || !ex.id || ex._logged) return;
   ex._logged = true;
-  TeacherLu.PracticeLog.markDone(curStu, ex.id);
+  if(TeacherLu.PracticeLog.markDone(curStu, ex.id) === false){
+    ex._logged = false;
+    showSaveWarning();
+    return;                       // contador NÃO sobe, grupo NÃO fecha
+  }
+  clearSaveWarning();
+  renderUsedCount();
+  maybeMarkGroup();
+}
+
+/* ---------------------------------------------------------------------------
+   Unidade de uso: grupo
+   ---------------------------------------------------------------------------
+   Tópicos que declaram `groupId` (hoje só o Reading) só são consumidos
+   por inteiro. Consultamos o PracticeLog, e não o estado da tela, para
+   que perguntas respondidas em aulas ANTERIORES também contem.
+   Abrir o texto não fecha nada; reveal sozinho não fecha nada — este
+   caminho só roda depois de um veredicto real.
+   --------------------------------------------------------------------------- */
+function maybeMarkGroup(){
+  if(!curStu) return;
+  const groupId = TeacherLu.PracticeBank.groupOf(currentKey);
+  if(!groupId) return;
+  const PL = TeacherLu.PracticeLog;
+  if(PL.isDone(curStu, groupId)) return;                 // já fechado
+  const members = TeacherLu.PracticeBank.groupMembers(currentKey);
+  if(!members.length) return;
+  if(!members.every(id => PL.isDone(curStu, id))) return; // ainda falta pergunta
+  if(PL.markDone(curStu, groupId) === false){ showSaveWarning(); return; }
   renderUsedCount();
 }
 
