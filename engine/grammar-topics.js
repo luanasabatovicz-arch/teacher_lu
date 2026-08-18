@@ -85,52 +85,52 @@ window.ENGINE_TOPICS={
     {bad:'They is my friends',good:'They ARE my friends',why:'they → are, sempre'}
   ],
   practice:[
-    {t:'fill',q:'I ___ fine, and I ___ ready for class.',a:'am / am',hint:'Same word twice — the "I" word.',fu:'Now say it about ME.',
+    {id:'gr-verb-to-be-pr-001',t:'fill',q:'I ___ fine, and I ___ ready for class.',a:'am / am',hint:'Same word twice — the "I" word.',fu:'Now say it about ME.',
      why:'"I" nunca usa "is" nem "are" — só "am".',ruleRef:'I → am',ex:'I am happy. I am here.'},
-    {t:'fill',q:'My best friend ___ very smart.',a:'is',hint:'One person → i...',fu:'Really? And how old is he/she?',
+    {id:'gr-verb-to-be-pr-002',t:'fill',q:'My best friend ___ very smart.',a:'is',hint:'One person → i...',fu:'Really? And how old is he/she?',
      why:'uma pessoa (he/she) usa "is", não "are".',ruleRef:'he / she / it → is',ex:'My mother is a nurse.'},
-    {t:'fill',q:'My parents ___ at work right now.',a:'are',hint:'Two people → a...',fu:'And where are YOU right now?',
+    {id:'gr-verb-to-be-pr-003',t:'fill',q:'My parents ___ at work right now.',a:'are',hint:'Two people → a...',fu:'And where are YOU right now?',
      why:'plural (they) pede "are", nunca "is".',ruleRef:'you / we / they → are',ex:'My friends are here.'},
-    {t:'fill',q:'You ___ a really good student.',a:'are',hint:'"you" → a...',fu:'Say something nice about me with "are".',
+    {id:'gr-verb-to-be-pr-004',t:'fill',q:'You ___ a really good student.',a:'are',hint:'"you" → a...',fu:'Say something nice about me with "are".',
      why:'"you" sempre usa "are" — nunca "is".',ruleRef:'you → are',ex:'You are kind.'},
-    {t:'fill',q:'It ___ cold today.',a:'is',hint:'weather = it → i...',fu:'Is it hot or cold where you are?',
+    {id:'gr-verb-to-be-pr-005',t:'fill',q:'It ___ cold today.',a:'is',hint:'weather = it → i...',fu:'Is it hot or cold where you are?',
      why:'o tempo/uma coisa (it) usa "is".',ruleRef:'it → is',ex:'It is a nice day.'},
-    {t:'mc',q:'"My city ___ beautiful."',opts:['am','is','are'],a:'B — is',hint:'city = it.',fu:'Why not C? And IS your city beautiful?',
+    {id:'gr-verb-to-be-pr-006',t:'mc',q:'"My city ___ beautiful."',opts:['am','is','are'],a:'B — is',hint:'city = it.',fu:'Why not C? And IS your city beautiful?',
      why:'"city" é uma coisa (it) → is; "are" seria só no plural (cities).',ruleRef:'it → is',ex:'The house is big.'},
-    {t:'mc',q:'"___ you happy today?"',opts:['Is','Am','Are'],a:'C — Are',hint:'with "you", one of the three is always the right one.',fu:'So — ARE you? Why?',
+    {id:'gr-verb-to-be-pr-007',t:'mc',q:'"___ you happy today?"',opts:['Is','Am','Are'],a:'C — Are',hint:'with "you", one of the three is always the right one.',fu:'So — ARE you? Why?',
      why:'com "you" a pergunta começa sempre com "Are".',ruleRef:'question: Are you...?',ex:'Are you tired?'},
-    {t:'mc',q:'"I ___ not from the USA."',opts:['am','is','are'],a:'A — am',hint:'I → only one option ever.',fu:'Where are you from? Full sentence!',
+    {id:'gr-verb-to-be-pr-008',t:'mc',q:'"I ___ not from the USA."',opts:['am','is','are'],a:'A — am',hint:'I → only one option ever.',fu:'Where are you from? Full sentence!',
      why:'"I" só combina com "am" — inclusive na negativa (I\'m not).',ruleRef:'I → am',ex:'I am not ready.'},
-    {t:'mc',q:'"My brothers ___ tall."',opts:['am','is','are'],a:'C — are',hint:'brothers = they.',fu:'Who is tall in your family?',
+    {id:'gr-verb-to-be-pr-009',t:'mc',q:'"My brothers ___ tall."',opts:['am','is','are'],a:'C — are',hint:'brothers = they.',fu:'Who is tall in your family?',
      why:'"brothers" é plural (they) → are; "is" seria só p/ uma pessoa.',ruleRef:'they → are',ex:'My friends are here.'},
-    {t:'mc',q:'"___ she your teacher?"',opts:['Am','Is','Are'],a:'B — Is',hint:'she → the question starts with...',fu:'And AM I your teacher? Answer with "You are..."',
+    {id:'gr-verb-to-be-pr-010',t:'mc',q:'"___ she your teacher?"',opts:['Am','Is','Are'],a:'B — Is',hint:'she → the question starts with...',fu:'And AM I your teacher? Answer with "You are..."',
      why:'"she" usa "is", e a pergunta começa com "Is".',ruleRef:'question: Is she...?',ex:'Is he ready?'},
-    {t:'us',q:'is / my / hungry / dog',a:'My dog is hungry.',hint:'Start with WHOSE dog.',fu:'Is YOUR pet hungry right now?',
+    {id:'gr-verb-to-be-pr-011',t:'us',q:'is / my / hungry / dog',a:'My dog is hungry.',hint:'Start with WHOSE dog.',fu:'Is YOUR pet hungry right now?',
      why:'o sujeito vem primeiro, depois "is" e o adjetivo.',ruleRef:'subject + is + adjective',ex:'My cat is small.'},
-    {t:'us',q:'are / we / class / in / English',a:'We are in English class.',hint:'Who first, then are.',fu:'True or false right now?',
+    {id:'gr-verb-to-be-pr-012',t:'us',q:'are / we / class / in / English',a:'We are in English class.',hint:'Who first, then are.',fu:'True or false right now?',
      why:'"we" pede "are"; o lugar fecha a frase.',ruleRef:'we → are',ex:'We are at home.'},
-    {t:'us',q:'from / she / Brazil / is',a:'She is from Brazil.',hint:'Who first, then is.',fu:'And where are YOU from?',
+    {id:'gr-verb-to-be-pr-013',t:'us',q:'from / she / Brazil / is',a:'She is from Brazil.',hint:'Who first, then is.',fu:'And where are YOU from?',
      why:'sujeito + is + o resto; "she" → is.',ruleRef:'she → is',ex:'He is from Rio.'},
-    {t:'ec',q:'My sister have 10 years.',a:'My sister IS 10 (years old).',hint:'Age: be, not have.',fu:'How old is someone in YOUR family?',
+    {id:'gr-verb-to-be-pr-014',t:'ec',q:'My sister have 10 years.',a:'My sister IS 10 (years old).',hint:'Age: be, not have.',fu:'How old is someone in YOUR family?',
      why:'idade em inglês é com "be" (não "have"): não "have 10 years".',ruleRef:'age → be (She is 10)',ex:'I am 20 years old.'},
-    {t:'ec',q:'You is my teacher.',a:'You ARE my teacher.',hint:'"you" never takes "is" — you → are.',fu:'Say one more thing about me with "are".',
+    {id:'gr-verb-to-be-pr-015',t:'ec',q:'You is my teacher.',a:'You ARE my teacher.',hint:'"you" never takes "is" — you → are.',fu:'Say one more thing about me with "are".',
      why:'"you" nunca usa "is" — sempre "are".',ruleRef:'you → are',ex:'You are kind.'},
-    {t:'ec',q:'We is happy today.',a:'We ARE happy today.',hint:'we → are.',fu:'Are you happy today? Why?',
+    {id:'gr-verb-to-be-pr-016',t:'ec',q:'We is happy today.',a:'We ARE happy today.',hint:'we → are.',fu:'Are you happy today? Why?',
      why:'"we" pede "are", nunca "is".',ruleRef:'we → are',ex:'We are ready.'},
-    {t:'tr',q:'Make it negative: "I am hungry."',a:'I am NOT hungry. / I\'m not hungry.',hint:'Add one small word after am.',fu:'Is it true? Are you hungry right now?',
+    {id:'gr-verb-to-be-pr-017',t:'tr',q:'Make it negative: "I am hungry."',a:'I am NOT hungry. / I\'m not hungry.',hint:'Add one small word after am.',fu:'Is it true? Are you hungry right now?',
      why:'a negativa é só "not" depois de am/is/are — o verbo não muda.',ruleRef:'negative: am/is/are + not',ex:'She is not tired.'},
-    {t:'tr',q:'Make it a question: "She is Brazilian."',a:'IS she Brazilian?',hint:'Move "is" to the front.',fu:'Ask me a question with "Are you...?"',
+    {id:'gr-verb-to-be-pr-018',t:'tr',q:'Make it a question: "She is Brazilian."',a:'IS she Brazilian?',hint:'Move "is" to the front.',fu:'Ask me a question with "Are you...?"',
      why:'na pergunta, o "be" vai para o começo da frase.',ruleRef:'question: is/are + subject?',ex:'Are they ready?'}
   ],
   practiceMore:[
-    {t:'cq',q:'I say: "I\'m Lu, I\'m from Curitiba, and I\'m a teacher." Now YOU — introduce yourself the same way (3 sentences).',a:'e.g. "I\'m Ana, I\'m from São Paulo, and I\'m a student."',fu:'Now add: how are you feeling today?'},
-    {t:'cq',q:'Look at me — am I a teacher or a student? Answer in a FULL sentence.',a:'You are a teacher.',fu:'And is this class in the morning or the evening?'},
-    {t:'cq',q:'Tell me about one person in your family: who is he/she, and how old?',a:'e.g. "This is my brother. He is 15 years old."',fu:'Is he/she happy today?',
+    {id:'gr-verb-to-be-pm-001',t:'cq',q:'I say: "I\'m Lu, I\'m from Curitiba, and I\'m a teacher." Now YOU — introduce yourself the same way (3 sentences).',a:'e.g. "I\'m Ana, I\'m from São Paulo, and I\'m a student."',fu:'Now add: how are you feeling today?'},
+    {id:'gr-verb-to-be-pm-002',t:'cq',q:'Look at me — am I a teacher or a student? Answer in a FULL sentence.',a:'You are a teacher.',fu:'And is this class in the morning or the evening?'},
+    {id:'gr-verb-to-be-pm-003',t:'cq',q:'Tell me about one person in your family: who is he/she, and how old?',a:'e.g. "This is my brother. He is 15 years old."',fu:'Is he/she happy today?',
      why:'lembre: "he IS 15", não "he have 15".',ruleRef:'he/she → is · age → be',ex:'My sister is 20.'},
-    {t:'md',lines:['A: Hi! What ___ your name?','B: My name ___ Ana.','A: ___ you a student?','B: No, I ___ a nurse.'],a:'is · is · Are · am (I\'m)',fu:'Now swap roles and do it about YOU.'},
-    {t:'md',lines:['A: Where ___ you from?','B: I ___ from Brazil. And you?','A: I ___ from Italy.','B: Nice! ___ it a big country?'],a:'are · am (I\'m) · am (I\'m) · Is',fu:'Ask ME one more question with "Are you...?"'},
-    {t:'cq',q:'Describe where you are right now in 2 sentences (use is / are).',a:'e.g. "It is a small room. The walls are white."',fu:'Is it warm or cold in there?'},
-    {t:'md',lines:['A: ___ you tired?','B: No, I ___ fine. And you?','A: I ___ a little tired today.','B: ___ it a hard day?'],a:'Are · am (I\'m) · am (I\'m) · Is',fu:'Now say the TRUE version about you right now.'}
+    {id:'gr-verb-to-be-pm-004',t:'md',lines:['A: Hi! What ___ your name?','B: My name ___ Ana.','A: ___ you a student?','B: No, I ___ a nurse.'],a:'is · is · Are · am (I\'m)',fu:'Now swap roles and do it about YOU.'},
+    {id:'gr-verb-to-be-pm-005',t:'md',lines:['A: Where ___ you from?','B: I ___ from Brazil. And you?','A: I ___ from Italy.','B: Nice! ___ it a big country?'],a:'are · am (I\'m) · am (I\'m) · Is',fu:'Ask ME one more question with "Are you...?"'},
+    {id:'gr-verb-to-be-pm-006',t:'cq',q:'Describe where you are right now in 2 sentences (use is / are).',a:'e.g. "It is a small room. The walls are white."',fu:'Is it warm or cold in there?'},
+    {id:'gr-verb-to-be-pm-007',t:'md',lines:['A: ___ you tired?','B: No, I ___ fine. And you?','A: I ___ a little tired today.','B: ___ it a hard day?'],a:'Are · am (I\'m) · am (I\'m) · Is',fu:'Now say the TRUE version about you right now.'}
   ],
   c3:{
     fill:[{q:'I ___ happy.',a:'am',hint:'The "I" word.',fu:'Show me a happy face!'},{q:'She ___ my friend.',a:'is',hint:'One person.',fu:'Who IS your friend?'}],
@@ -151,12 +151,12 @@ window.ENGINE_TOPICS={
     c4:'Formal version: it\'s a JOB interview now — "I am organized, I am calm, I am good with people." Same verb, new register.'
   },
   exit:[
-    {tag:'🗣 speak',q:'In 4 sentences: who are you? (name, age, from, one feeling)'},
-    {tag:'🗣 speak',q:'Describe one person in your family: who is he/she? how old? how is he/she today?'},
-    {tag:'✏ create',q:'Make a sentence about US with "are".'},
-    {tag:'✏ create',q:'Make a NEGATIVE sentence about your city.',a:'aceite qualquer isn\'t/aren\'t correta ("My city isn\'t small.")'},
-    {tag:'⚠ fix it',q:'"My brother have 15 years."',a:'My brother IS 15 (years old).'},
-    {tag:'💭 concept',q:'When do we use am/is/are — and when NOT? One example of each.',a:'estados/identidade sim; ações não (I am happy ✓ / I am work ✗)'}
+    {id:'gr-verb-to-be-ex-001',tag:'🗣 speak',q:'In 4 sentences: who are you? (name, age, from, one feeling)'},
+    {id:'gr-verb-to-be-ex-002',tag:'🗣 speak',q:'Describe one person in your family: who is he/she? how old? how is he/she today?'},
+    {id:'gr-verb-to-be-ex-003',tag:'✏ create',q:'Make a sentence about US with "are".'},
+    {id:'gr-verb-to-be-ex-004',tag:'✏ create',q:'Make a NEGATIVE sentence about your city.',a:'aceite qualquer isn\'t/aren\'t correta ("My city isn\'t small.")'},
+    {id:'gr-verb-to-be-ex-005',tag:'⚠ fix it',q:'"My brother have 15 years."',a:'My brother IS 15 (years old).'},
+    {id:'gr-verb-to-be-ex-006',tag:'💭 concept',q:'When do we use am/is/are — and when NOT? One example of each.',a:'estados/identidade sim; ações não (I am happy ✓ / I am work ✗)'}
   ]
 },
 
@@ -209,18 +209,18 @@ window.ENGINE_TOPICS={
     {bad:'She doesn\'t likes it',good:'She doesn\'t like it',why:'does entrou → -s sai'}
   ],
   practice:[
-    {t:'fill',q:'I ___ (wake up) at 7 every day.',a:'wake up',hint:'I → base verb, no -s.',fu:'And what time do YOU really wake up?'},
-    {t:'fill',q:'My mom ___ (make) amazing food.',a:'makes',hint:'she → -s.',fu:'What does she make? Tell me!'},
-    {t:'fill',q:'We ___ (not/study) on Sundays.',a:'don\'t study',hint:'we → don\'t + verb.',fu:'What do you do on Sundays then?'},
-    {t:'mc',q:'"___ your friend play videogames?"',opts:['Do','Does','Is'],a:'B — Does',hint:'your friend = he/she.',fu:'Why not A? And does your friend play?'},
-    {t:'mc',q:'"My grandparents ___ near here."',opts:['lives','live','living'],a:'B — live',hint:'grandparents = they → base verb.',fu:'And where do YOUR grandparents live?'},
-    {t:'mc',q:'"She ___ coffee."',opts:['don\'t drink','doesn\'t drink','doesn\'t drinks'],a:'B — doesn\'t drink',hint:'does came in → -s goes out.',fu:'Why not C? That\'s the famous trap!'},
-    {t:'us',q:'every Sunday / cooks / my / lunch / dad',a:'My dad cooks lunch every Sunday.',hint:'Who first, time last.',fu:'Who cooks in YOUR house — and what do they cook?'},
-    {t:'us',q:'don\'t / we / coffee / at night / drink',a:'We don\'t drink coffee at night.',hint:'don\'t before the verb.',fu:'And in YOUR house? What do you drink at night?'},
-    {t:'ec',q:'My dad work on Saturdays.',a:'My dad workS on Saturdays.',hint:'dad = he.',fu:'Does anyone in your family work on weekends?'},
-    {t:'ec',q:'She don\'t eat meat.',a:'She DOESN\'T eat meat.',hint:'she → doesn\'t.',fu:'Do you know a vegetarian? Who?'},
-    {t:'tr',q:'Make it a question: "He speaks English."',a:'DOES he speak English?',hint:'Does first — and the -s leaves.',fu:'Now ask me about MY routine.'},
-    {t:'tr',q:'Make it negative: "I like Mondays."',a:'I DON\'T like Mondays.',hint:'don\'t before like.',fu:'Is it true for you? Why?'}
+    {id:'gr-present-simple-pr-001',t:'fill',q:'I ___ (wake up) at 7 every day.',a:'wake up',hint:'I → base verb, no -s.',fu:'And what time do YOU really wake up?'},
+    {id:'gr-present-simple-pr-002',t:'fill',q:'My mom ___ (make) amazing food.',a:'makes',hint:'she → -s.',fu:'What does she make? Tell me!'},
+    {id:'gr-present-simple-pr-003',t:'fill',q:'We ___ (not/study) on Sundays.',a:'don\'t study',hint:'we → don\'t + verb.',fu:'What do you do on Sundays then?'},
+    {id:'gr-present-simple-pr-004',t:'mc',q:'"___ your friend play videogames?"',opts:['Do','Does','Is'],a:'B — Does',hint:'your friend = he/she.',fu:'Why not A? And does your friend play?'},
+    {id:'gr-present-simple-pr-005',t:'mc',q:'"My grandparents ___ near here."',opts:['lives','live','living'],a:'B — live',hint:'grandparents = they → base verb.',fu:'And where do YOUR grandparents live?'},
+    {id:'gr-present-simple-pr-006',t:'mc',q:'"She ___ coffee."',opts:['don\'t drink','doesn\'t drink','doesn\'t drinks'],a:'B — doesn\'t drink',hint:'does came in → -s goes out.',fu:'Why not C? That\'s the famous trap!'},
+    {id:'gr-present-simple-pr-007',t:'us',q:'every Sunday / cooks / my / lunch / dad',a:'My dad cooks lunch every Sunday.',hint:'Who first, time last.',fu:'Who cooks in YOUR house — and what do they cook?'},
+    {id:'gr-present-simple-pr-008',t:'us',q:'don\'t / we / coffee / at night / drink',a:'We don\'t drink coffee at night.',hint:'don\'t before the verb.',fu:'And in YOUR house? What do you drink at night?'},
+    {id:'gr-present-simple-pr-009',t:'ec',q:'My dad work on Saturdays.',a:'My dad workS on Saturdays.',hint:'dad = he.',fu:'Does anyone in your family work on weekends?'},
+    {id:'gr-present-simple-pr-010',t:'ec',q:'She don\'t eat meat.',a:'She DOESN\'T eat meat.',hint:'she → doesn\'t.',fu:'Do you know a vegetarian? Who?'},
+    {id:'gr-present-simple-pr-011',t:'tr',q:'Make it a question: "He speaks English."',a:'DOES he speak English?',hint:'Does first — and the -s leaves.',fu:'Now ask me about MY routine.'},
+    {id:'gr-present-simple-pr-012',t:'tr',q:'Make it negative: "I like Mondays."',a:'I DON\'T like Mondays.',hint:'don\'t before like.',fu:'Is it true for you? Why?'}
   ],
   c3:{
     fill:[{q:'She ___ (like) music.',a:'likes',hint:'she → -s.',fu:'What music does she like?'},{q:'I ___ (play) on weekends.',a:'play',hint:'I → no -s.',fu:'Play what?'}],
@@ -241,12 +241,12 @@ window.ENGINE_TOPICS={
     c4:'Switch: now the detective (you, teacher) interrogates {name} — student answers under pressure with full sentences, then delivers the case report ALOUD in 4 sentences.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Your perfect Saturday: 4 sentences about what you do.'},
-    {tag:'🗣 speak',q:'One person in your family: 3 things he/she does every week.'},
-    {tag:'✏ create',q:'A sentence with "never" about you.'},
-    {tag:'✏ create',q:'A QUESTION for me with "Does...?"'},
-    {tag:'⚠ fix it',q:'"My brother don\'t plays videogames."',a:'My brother DOESN\'T play videogames.'},
-    {tag:'💭 concept',q:'Present Simple: when yes, when no? One example of each.',a:'rotina/fato sim ("I work every day"); só este exato momento, não'}
+    {id:'gr-present-simple-ex-001',tag:'🗣 speak',q:'Your perfect Saturday: 4 sentences about what you do.'},
+    {id:'gr-present-simple-ex-002',tag:'🗣 speak',q:'One person in your family: 3 things he/she does every week.'},
+    {id:'gr-present-simple-ex-003',tag:'✏ create',q:'A sentence with "never" about you.'},
+    {id:'gr-present-simple-ex-004',tag:'✏ create',q:'A QUESTION for me with "Does...?"'},
+    {id:'gr-present-simple-ex-005',tag:'⚠ fix it',q:'"My brother don\'t plays videogames."',a:'My brother DOESN\'T play videogames.'},
+    {id:'gr-present-simple-ex-006',tag:'💭 concept',q:'Present Simple: when yes, when no? One example of each.',a:'rotina/fato sim ("I work every day"); só este exato momento, não'}
   ]
 },
 
@@ -299,18 +299,18 @@ window.ENGINE_TOPICS={
     {bad:'It\'s rainning',good:'It\'s raining',why:'rain não dobra o n'}
   ],
   practice:[
-    {t:'fill',q:'Right now, I ___ (use) my computer.',a:'am using',hint:'Two pieces: am + ...ing (use → using).',fu:'And what ELSE are you doing right now?'},
-    {t:'fill',q:'Shh! The baby ___ (sleep).',a:'is sleeping',hint:'baby = it/she → is + ing.',fu:'Who is sleeping in your house right now, probably?'},
-    {t:'fill',q:'My friends ___ (not/study) right now, I\'m sure!',a:'aren\'t studying',hint:'are + not + ing.',fu:'What are they probably doing?'},
-    {t:'mc',q:'"Look! The kids ___ outside."',opts:['play','are playing','playing'],a:'B — are playing',hint:'"Look!" = this second.',fu:'Why not A? And why not C?'},
-    {t:'mc',q:'"___ you listening to me?"',opts:['Do','Is','Are'],a:'C — Are',hint:'you → are, first position.',fu:'ARE you? Prove it — repeat my last sentence! 😄'},
-    {t:'mc',q:'"I ___ pizza right now." (want)',opts:['am wanting','want','wanting'],a:'B — want',hint:'want = state verb!',fu:'Why not A? That\'s the state-verb trap. What do you want right now?'},
-    {t:'us',q:'is / my / barking / dog / again',a:'My dog is barking again.',hint:'Whose dog first.',fu:'What sounds do you hear right now? Use -ing!'},
-    {t:'us',q:'are / we / English / practicing / now',a:'We are practicing English now.',hint:'we are + verb-ing.',fu:'True! And what are we NOT doing?'},
-    {t:'ec',q:'She cooking dinner now.',a:'She IS cooking dinner now.',hint:'The motor (be) is missing.',fu:'Who cooks dinner in your house — and are they cooking NOW?'},
-    {t:'ec',q:'I am watch a series this week.',a:'I am watchING a series this week.',hint:'The wheel (-ing) is missing.',fu:'Are you watching a series these days? Which one?'},
-    {t:'tr',q:'Make it a question: "He is playing videogames."',a:'IS he playing videogames?',hint:'is jumps to the front.',fu:'Ask me what I\'m doing — right now!'},
-    {t:'tr',q:'Habit → NOW: "I drink coffee every day." (right now version)',a:'I am drinking coffee right now.',hint:'Add the two pieces.',fu:'And which one is TRUE for you this minute?'}
+    {id:'gr-present-continuous-pr-001',t:'fill',q:'Right now, I ___ (use) my computer.',a:'am using',hint:'Two pieces: am + ...ing (use → using).',fu:'And what ELSE are you doing right now?'},
+    {id:'gr-present-continuous-pr-002',t:'fill',q:'Shh! The baby ___ (sleep).',a:'is sleeping',hint:'baby = it/she → is + ing.',fu:'Who is sleeping in your house right now, probably?'},
+    {id:'gr-present-continuous-pr-003',t:'fill',q:'My friends ___ (not/study) right now, I\'m sure!',a:'aren\'t studying',hint:'are + not + ing.',fu:'What are they probably doing?'},
+    {id:'gr-present-continuous-pr-004',t:'mc',q:'"Look! The kids ___ outside."',opts:['play','are playing','playing'],a:'B — are playing',hint:'"Look!" = this second.',fu:'Why not A? And why not C?'},
+    {id:'gr-present-continuous-pr-005',t:'mc',q:'"___ you listening to me?"',opts:['Do','Is','Are'],a:'C — Are',hint:'you → are, first position.',fu:'ARE you? Prove it — repeat my last sentence! 😄'},
+    {id:'gr-present-continuous-pr-006',t:'mc',q:'"I ___ pizza right now." (want)',opts:['am wanting','want','wanting'],a:'B — want',hint:'want = state verb!',fu:'Why not A? That\'s the state-verb trap. What do you want right now?'},
+    {id:'gr-present-continuous-pr-007',t:'us',q:'is / my / barking / dog / again',a:'My dog is barking again.',hint:'Whose dog first.',fu:'What sounds do you hear right now? Use -ing!'},
+    {id:'gr-present-continuous-pr-008',t:'us',q:'are / we / English / practicing / now',a:'We are practicing English now.',hint:'we are + verb-ing.',fu:'True! And what are we NOT doing?'},
+    {id:'gr-present-continuous-pr-009',t:'ec',q:'She cooking dinner now.',a:'She IS cooking dinner now.',hint:'The motor (be) is missing.',fu:'Who cooks dinner in your house — and are they cooking NOW?'},
+    {id:'gr-present-continuous-pr-010',t:'ec',q:'I am watch a series this week.',a:'I am watchING a series this week.',hint:'The wheel (-ing) is missing.',fu:'Are you watching a series these days? Which one?'},
+    {id:'gr-present-continuous-pr-011',t:'tr',q:'Make it a question: "He is playing videogames."',a:'IS he playing videogames?',hint:'is jumps to the front.',fu:'Ask me what I\'m doing — right now!'},
+    {id:'gr-present-continuous-pr-012',t:'tr',q:'Habit → NOW: "I drink coffee every day." (right now version)',a:'I am drinking coffee right now.',hint:'Add the two pieces.',fu:'And which one is TRUE for you this minute?'}
   ],
   c3:{
     fill:[{q:'I ___ (sit) on my chair.',a:'am sitting',hint:'am + ing.',fu:'Comfortable?'},{q:'She ___ (eat) now.',a:'is eating',hint:'is + ing.',fu:'Eating what, you think?'}],
@@ -331,12 +331,12 @@ window.ENGINE_TOPICS={
     c4:'Professional broadcast: narrate a real muted video (or window view) for 2 minutes, formal register: "As we can see, the residents are..."'
   },
   exit:[
-    {tag:'🗣 speak',q:'4 sentences: what is happening around you right NOW (room, street, house)?'},
-    {tag:'🗣 speak',q:'What are 2 people you love probably doing at this moment?'},
-    {tag:'✏ create',q:'A sentence with "Look!" + continuous.'},
-    {tag:'✏ create',q:'A NEGATIVE sentence: something you are NOT doing now.'},
-    {tag:'⚠ fix it',q:'"My mom cooking dinner now."',a:'My mom IS cooking dinner now.'},
-    {tag:'💭 concept',q:'Continuous vs Simple: "I work" / "I am working" — what\'s the difference? Example of each.',a:'rotina vs agora'}
+    {id:'gr-present-continuous-ex-001',tag:'🗣 speak',q:'4 sentences: what is happening around you right NOW (room, street, house)?'},
+    {id:'gr-present-continuous-ex-002',tag:'🗣 speak',q:'What are 2 people you love probably doing at this moment?'},
+    {id:'gr-present-continuous-ex-003',tag:'✏ create',q:'A sentence with "Look!" + continuous.'},
+    {id:'gr-present-continuous-ex-004',tag:'✏ create',q:'A NEGATIVE sentence: something you are NOT doing now.'},
+    {id:'gr-present-continuous-ex-005',tag:'⚠ fix it',q:'"My mom cooking dinner now."',a:'My mom IS cooking dinner now.'},
+    {id:'gr-present-continuous-ex-006',tag:'💭 concept',q:'Continuous vs Simple: "I work" / "I am working" — what\'s the difference? Example of each.',a:'rotina vs agora'}
   ]
 },
 
@@ -389,18 +389,18 @@ window.ENGINE_TOPICS={
     {bad:'I work yesterday',good:'I workED yesterday',why:'yesterday exige passado'}
   ],
   practice:[
-    {t:'fill',q:'Yesterday I ___ (watch) a movie at home.',a:'watched',hint:'verb + ed.',fu:'Which movie did YOU watch last?'},
-    {t:'fill',q:'She ___ (study) for the test last night.',a:'studied',hint:'y → ied.',fu:'When did you last study something?'},
-    {t:'fill',q:'We ___ (not/talk) yesterday.',a:'didn\'t talk',hint:'didn\'t + base verb.',fu:'Who did you talk to yesterday?'},
-    {t:'mc',q:'"___ you play videogames last weekend?"',opts:['Do','Did','Does'],a:'B — Did',hint:'last weekend = past.',fu:'And DID you? What did you play?'},
-    {t:'mc',q:'"He ___ his room on Saturday."',opts:['cleaned','cleans','cleaning'],a:'A — cleaned',hint:'on Saturday (passado).',fu:'When did you last clean YOUR room? 😄'},
-    {t:'mc',q:'"I ___ like the food."',opts:['didn\'t liked','didn\'t like','don\'t liked'],a:'B — didn\'t like',hint:'did came → -ed goes.',fu:'Why not A? Tell me a food you didn\'t like before.'},
-    {t:'us',q:'yesterday / cleaned / house / the / I',a:'I cleaned the house yesterday.',hint:'Who first, time last.',fu:'And you? What did you clean or organize last week?'},
-    {t:'us',q:'didn\'t / we / TV / watch / night / last',a:'We didn\'t watch TV last night.',hint:'didn\'t before the verb.',fu:'What did you watch or play last night instead?'},
-    {t:'ec',q:'I didn\'t studied for the test.',a:'I didn\'t STUDY for the test.',hint:'double past!',fu:'Confess: did you ever skip studying? 😄'},
-    {t:'ec',q:'Did she watched the game?',a:'Did she WATCH the game?',hint:'did already marks past.',fu:'Did anyone in your house watch something yesterday?'},
-    {t:'tr',q:'Make it past: "I play with my dog every day." (yesterday version)',a:'I playED with my dog yesterday.',hint:'verb + ed, swap the time word.',fu:'Who did you play or talk with yesterday?'},
-    {t:'tr',q:'Make it a question: "They visited their grandma."',a:'DID they visit their grandma?',hint:'Did first, -ed leaves.',fu:'Ask ME about my weekend — with Did!'}
+    {id:'gr-past-simple-pr-001',t:'fill',q:'Yesterday I ___ (watch) a movie at home.',a:'watched',hint:'verb + ed.',fu:'Which movie did YOU watch last?'},
+    {id:'gr-past-simple-pr-002',t:'fill',q:'She ___ (study) for the test last night.',a:'studied',hint:'y → ied.',fu:'When did you last study something?'},
+    {id:'gr-past-simple-pr-003',t:'fill',q:'We ___ (not/talk) yesterday.',a:'didn\'t talk',hint:'didn\'t + base verb.',fu:'Who did you talk to yesterday?'},
+    {id:'gr-past-simple-pr-004',t:'mc',q:'"___ you play videogames last weekend?"',opts:['Do','Did','Does'],a:'B — Did',hint:'last weekend = past.',fu:'And DID you? What did you play?'},
+    {id:'gr-past-simple-pr-005',t:'mc',q:'"He ___ his room on Saturday."',opts:['cleaned','cleans','cleaning'],a:'A — cleaned',hint:'on Saturday (passado).',fu:'When did you last clean YOUR room? 😄'},
+    {id:'gr-past-simple-pr-006',t:'mc',q:'"I ___ like the food."',opts:['didn\'t liked','didn\'t like','don\'t liked'],a:'B — didn\'t like',hint:'did came → -ed goes.',fu:'Why not A? Tell me a food you didn\'t like before.'},
+    {id:'gr-past-simple-pr-007',t:'us',q:'yesterday / cleaned / house / the / I',a:'I cleaned the house yesterday.',hint:'Who first, time last.',fu:'And you? What did you clean or organize last week?'},
+    {id:'gr-past-simple-pr-008',t:'us',q:'didn\'t / we / TV / watch / night / last',a:'We didn\'t watch TV last night.',hint:'didn\'t before the verb.',fu:'What did you watch or play last night instead?'},
+    {id:'gr-past-simple-pr-009',t:'ec',q:'I didn\'t studied for the test.',a:'I didn\'t STUDY for the test.',hint:'double past!',fu:'Confess: did you ever skip studying? 😄'},
+    {id:'gr-past-simple-pr-010',t:'ec',q:'Did she watched the game?',a:'Did she WATCH the game?',hint:'did already marks past.',fu:'Did anyone in your house watch something yesterday?'},
+    {id:'gr-past-simple-pr-011',t:'tr',q:'Make it past: "I play with my dog every day." (yesterday version)',a:'I playED with my dog yesterday.',hint:'verb + ed, swap the time word.',fu:'Who did you play or talk with yesterday?'},
+    {id:'gr-past-simple-pr-012',t:'tr',q:'Make it a question: "They visited their grandma."',a:'DID they visit their grandma?',hint:'Did first, -ed leaves.',fu:'Ask ME about my weekend — with Did!'}
   ],
   c3:{
     fill:[{q:'I ___ (play) yesterday.',a:'played',hint:'+ed.',fu:'Played what?'},{q:'He ___ (work) last week.',a:'worked',hint:'+ed.',fu:'Where?'}],
@@ -421,12 +421,12 @@ window.ENGINE_TOPICS={
     c4:'Formal statement: repeat the alibi as an official declaration — "At approximately 4pm, I visited..." — 5 sentences, no hesitation.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Yesterday in 4 sentences (use -ed verbs!): morning, afternoon, evening, night.'},
-    {tag:'🗣 speak',q:'Tell me about the last time you cooked, cleaned or studied — when and what happened?'},
-    {tag:'✏ create',q:'A sentence with "last week" about someone in your family.'},
-    {tag:'✏ create',q:'A NEGATIVE sentence: something you didn\'t do yesterday.'},
-    {tag:'⚠ fix it',q:'"I didn\'t watched the game."',a:'I didn\'t WATCH the game.'},
-    {tag:'💭 concept',q:'Past Simple: when yes, when no? One example of each.',a:'ação terminada com tempo definido sim ("I worked yesterday"); agora/rotina não'}
+    {id:'gr-past-simple-ex-001',tag:'🗣 speak',q:'Yesterday in 4 sentences (use -ed verbs!): morning, afternoon, evening, night.'},
+    {id:'gr-past-simple-ex-002',tag:'🗣 speak',q:'Tell me about the last time you cooked, cleaned or studied — when and what happened?'},
+    {id:'gr-past-simple-ex-003',tag:'✏ create',q:'A sentence with "last week" about someone in your family.'},
+    {id:'gr-past-simple-ex-004',tag:'✏ create',q:'A NEGATIVE sentence: something you didn\'t do yesterday.'},
+    {id:'gr-past-simple-ex-005',tag:'⚠ fix it',q:'"I didn\'t watched the game."',a:'I didn\'t WATCH the game.'},
+    {id:'gr-past-simple-ex-006',tag:'💭 concept',q:'Past Simple: when yes, when no? One example of each.',a:'ação terminada com tempo definido sim ("I worked yesterday"); agora/rotina não'}
   ]
 },
 
@@ -479,18 +479,18 @@ window.ENGINE_TOPICS={
     {bad:'Right now I work',good:'Right now I AM WORKING',why:'right now → continuous'}
   ],
   practice:[
-    {t:'fill',q:'I ___ (usually/drink) coffee, but today I ___ (drink) tea.',a:'usually drink / am drinking',hint:'habit first, then the now version.',fu:'And what are YOU drinking right now?'},
-    {t:'fill',q:'She ___ (work) in a bank, but this week she ___ (work) from home.',a:'works / is working',hint:'she → +s for the habit; be+ing for the temporary.',fu:'Do you ever work or study from home?'},
-    {t:'fill',q:'Listen! The neighbours ___ (make) noise again.',a:'are making',hint:'Listen! = right now.',fu:'What can you hear around you right now?'},
-    {t:'mc',q:'"He ___ football every Sunday."',opts:['is playing','plays','playing'],a:'B — plays',hint:'every Sunday = routine.',fu:'Why not A? And do you play anything on weekends?'},
-    {t:'mc',q:'"Look! It ___ outside."',opts:['rains','is raining','rain'],a:'B — is raining',hint:'Look! = this moment.',fu:'Is it raining where you are now?'},
-    {t:'mc',q:'"I ___ this song right now." (love)',opts:['am loving','love','loving'],a:'B — love',hint:'love = state verb → stays simple.',fu:'That\'s the state-verb trap! What song do you love these days?'},
-    {t:'us',q:'usually / I / early / wake up',a:'I usually wake up early.',hint:'time adverb before the verb.',fu:'True for you? What time exactly?'},
-    {t:'us',q:'is / now / she / sleeping / right',a:'She is sleeping right now.',hint:'Who first, then is + -ing.',fu:'Who\'s probably sleeping in your house now?'},
-    {t:'ec',q:'I am studying English every day.',a:'I STUDY English every day.',hint:'every day = habit → simple.',fu:'How often do you really study?'},
-    {t:'ec',q:'Look! The baby cry.',a:'Look! The baby IS CRYING.',hint:'Look! → continuous, and add -ing.',fu:'What makes a baby cry, usually?'},
-    {t:'tr',q:'Habit → now: "I watch series." (right now version)',a:'I am watching a series right now.',hint:'add am + -ing.',fu:'Which series are you watching these days?'},
-    {t:'tr',q:'Now → habit: "She is drinking coffee." (every morning version)',a:'She drinks coffee every morning.',hint:'drop be+ing, add the habit.',fu:'Coffee or tea person — you?'}
+    {id:'gr-present-simple-continuous-pr-001',t:'fill',q:'I ___ (usually/drink) coffee, but today I ___ (drink) tea.',a:'usually drink / am drinking',hint:'habit first, then the now version.',fu:'And what are YOU drinking right now?'},
+    {id:'gr-present-simple-continuous-pr-002',t:'fill',q:'She ___ (work) in a bank, but this week she ___ (work) from home.',a:'works / is working',hint:'she → +s for the habit; be+ing for the temporary.',fu:'Do you ever work or study from home?'},
+    {id:'gr-present-simple-continuous-pr-003',t:'fill',q:'Listen! The neighbours ___ (make) noise again.',a:'are making',hint:'Listen! = right now.',fu:'What can you hear around you right now?'},
+    {id:'gr-present-simple-continuous-pr-004',t:'mc',q:'"He ___ football every Sunday."',opts:['is playing','plays','playing'],a:'B — plays',hint:'every Sunday = routine.',fu:'Why not A? And do you play anything on weekends?'},
+    {id:'gr-present-simple-continuous-pr-005',t:'mc',q:'"Look! It ___ outside."',opts:['rains','is raining','rain'],a:'B — is raining',hint:'Look! = this moment.',fu:'Is it raining where you are now?'},
+    {id:'gr-present-simple-continuous-pr-006',t:'mc',q:'"I ___ this song right now." (love)',opts:['am loving','love','loving'],a:'B — love',hint:'love = state verb → stays simple.',fu:'That\'s the state-verb trap! What song do you love these days?'},
+    {id:'gr-present-simple-continuous-pr-007',t:'us',q:'usually / I / early / wake up',a:'I usually wake up early.',hint:'time adverb before the verb.',fu:'True for you? What time exactly?'},
+    {id:'gr-present-simple-continuous-pr-008',t:'us',q:'is / now / she / sleeping / right',a:'She is sleeping right now.',hint:'Who first, then is + -ing.',fu:'Who\'s probably sleeping in your house now?'},
+    {id:'gr-present-simple-continuous-pr-009',t:'ec',q:'I am studying English every day.',a:'I STUDY English every day.',hint:'every day = habit → simple.',fu:'How often do you really study?'},
+    {id:'gr-present-simple-continuous-pr-010',t:'ec',q:'Look! The baby cry.',a:'Look! The baby IS CRYING.',hint:'Look! → continuous, and add -ing.',fu:'What makes a baby cry, usually?'},
+    {id:'gr-present-simple-continuous-pr-011',t:'tr',q:'Habit → now: "I watch series." (right now version)',a:'I am watching a series right now.',hint:'add am + -ing.',fu:'Which series are you watching these days?'},
+    {id:'gr-present-simple-continuous-pr-012',t:'tr',q:'Now → habit: "She is drinking coffee." (every morning version)',a:'She drinks coffee every morning.',hint:'drop be+ing, add the habit.',fu:'Coffee or tea person — you?'}
   ],
   c3:{
     fill:[{q:'I ___ (play) tennis on Sundays.',a:'play',hint:'Sundays = habit.',fu:'And now?'},{q:'Right now she ___ (cook).',a:'is cooking',hint:'right now → be+ing.',fu:'Cooking what?'}],
@@ -511,12 +511,12 @@ window.ENGINE_TOPICS={
     c4:'Live-report a window or a photo for 90 seconds mixing both: "People here usually..., but today they are..."'
   },
   exit:[
-    {tag:'🗣 speak',q:'One habit + one "right now" about yourself, in two clear sentences.'},
-    {tag:'🗣 speak',q:'Describe a family member: what they do every day AND what they\'re doing now.'},
-    {tag:'✏ create',q:'A sentence with "Look!" (continuous).'},
-    {tag:'✏ create',q:'A sentence with "usually" (simple).'},
-    {tag:'⚠ fix it',q:'"I am going to work every day."',a:'I GO to work every day.'},
-    {tag:'💭 concept',q:'Which time words go with each tense? Give one example of each.',a:'every day/usually → simple; now/Look! → continuous'}
+    {id:'gr-present-simple-continuous-ex-001',tag:'🗣 speak',q:'One habit + one "right now" about yourself, in two clear sentences.'},
+    {id:'gr-present-simple-continuous-ex-002',tag:'🗣 speak',q:'Describe a family member: what they do every day AND what they\'re doing now.'},
+    {id:'gr-present-simple-continuous-ex-003',tag:'✏ create',q:'A sentence with "Look!" (continuous).'},
+    {id:'gr-present-simple-continuous-ex-004',tag:'✏ create',q:'A sentence with "usually" (simple).'},
+    {id:'gr-present-simple-continuous-ex-005',tag:'⚠ fix it',q:'"I am going to work every day."',a:'I GO to work every day.'},
+    {id:'gr-present-simple-continuous-ex-006',tag:'💭 concept',q:'Which time words go with each tense? Give one example of each.',a:'every day/usually → simple; now/Look! → continuous'}
   ]
 },
 
@@ -569,18 +569,18 @@ window.ENGINE_TOPICS={
     {bad:'I was work yesterday',good:'I WORKED yesterday',why:'ação → past simple, não was+verbo'}
   ],
   practice:[
-    {t:'fill',q:'I ___ very tired after work yesterday.',a:'was',hint:'I → was.',fu:'Why were you tired? Tell me.'},
-    {t:'fill',q:'My parents ___ at home all weekend.',a:'were',hint:'parents = they → were.',fu:'And where were YOU last weekend?'},
-    {t:'fill',q:'The film ___ (not) good — we left early.',a:'wasn\'t',hint:'film = it → wasn\'t.',fu:'What\'s the last bad film you saw?'},
-    {t:'mc',q:'"___ you at the party last night?"',opts:['Was','Were','Did'],a:'B — Were',hint:'you → were.',fu:'So — WERE you? Where were you?'},
-    {t:'mc',q:'"She ___ happy with the news."',opts:['were','was','did'],a:'B — was',hint:'she → was.',fu:'When were you last really happy?'},
-    {t:'mc',q:'"They ___ ready on time."',opts:['wasn\'t','weren\'t','didn\'t'],a:'B — weren\'t',hint:'they → weren\'t.',fu:'Are you usually early or late? 😄'},
-    {t:'us',q:'was / cold / it / last night / very',a:'It was very cold last night.',hint:'It first, time last.',fu:'How\'s the weather where you are now?'},
-    {t:'us',q:'were / we / at / the beach',a:'We were at the beach.',hint:'We → were.',fu:'When were you last at the beach?'},
-    {t:'ec',q:'I were happy yesterday.',a:'I WAS happy yesterday.',hint:'I → was.',fu:'What made you happy recently?'},
-    {t:'ec',q:'Was they at school?',a:'WERE they at school?',hint:'they → were.',fu:'Ask me: "Were you...?"'},
-    {t:'tr',q:'Make it negative: "I was at home."',a:'I wasn\'t at home. / I was not at home.',hint:'add n\'t / not after was.',fu:'So where WERE you?'},
-    {t:'tr',q:'Make it a question: "They were tired."',a:'WERE they tired?',hint:'were goes first.',fu:'Ask me the same about yesterday.'}
+    {id:'gr-past-to-be-pr-001',t:'fill',q:'I ___ very tired after work yesterday.',a:'was',hint:'I → was.',fu:'Why were you tired? Tell me.'},
+    {id:'gr-past-to-be-pr-002',t:'fill',q:'My parents ___ at home all weekend.',a:'were',hint:'parents = they → were.',fu:'And where were YOU last weekend?'},
+    {id:'gr-past-to-be-pr-003',t:'fill',q:'The film ___ (not) good — we left early.',a:'wasn\'t',hint:'film = it → wasn\'t.',fu:'What\'s the last bad film you saw?'},
+    {id:'gr-past-to-be-pr-004',t:'mc',q:'"___ you at the party last night?"',opts:['Was','Were','Did'],a:'B — Were',hint:'you → were.',fu:'So — WERE you? Where were you?'},
+    {id:'gr-past-to-be-pr-005',t:'mc',q:'"She ___ happy with the news."',opts:['were','was','did'],a:'B — was',hint:'she → was.',fu:'When were you last really happy?'},
+    {id:'gr-past-to-be-pr-006',t:'mc',q:'"They ___ ready on time."',opts:['wasn\'t','weren\'t','didn\'t'],a:'B — weren\'t',hint:'they → weren\'t.',fu:'Are you usually early or late? 😄'},
+    {id:'gr-past-to-be-pr-007',t:'us',q:'was / cold / it / last night / very',a:'It was very cold last night.',hint:'It first, time last.',fu:'How\'s the weather where you are now?'},
+    {id:'gr-past-to-be-pr-008',t:'us',q:'were / we / at / the beach',a:'We were at the beach.',hint:'We → were.',fu:'When were you last at the beach?'},
+    {id:'gr-past-to-be-pr-009',t:'ec',q:'I were happy yesterday.',a:'I WAS happy yesterday.',hint:'I → was.',fu:'What made you happy recently?'},
+    {id:'gr-past-to-be-pr-010',t:'ec',q:'Was they at school?',a:'WERE they at school?',hint:'they → were.',fu:'Ask me: "Were you...?"'},
+    {id:'gr-past-to-be-pr-011',t:'tr',q:'Make it negative: "I was at home."',a:'I wasn\'t at home. / I was not at home.',hint:'add n\'t / not after was.',fu:'So where WERE you?'},
+    {id:'gr-past-to-be-pr-012',t:'tr',q:'Make it a question: "They were tired."',a:'WERE they tired?',hint:'were goes first.',fu:'Ask me the same about yesterday.'}
   ],
   c3:{
     fill:[{q:'I ___ at home.',a:'was',hint:'I → was.',fu:'When?'},{q:'They ___ happy.',a:'were',hint:'they → were.',fu:'Why?'}],
@@ -601,12 +601,12 @@ window.ENGINE_TOPICS={
     c4:'Tell the story of a real memorable day entirely in was/were + past states: the weather, the place, the people, the mood — a mini time-capsule, 6 sentences.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Yesterday in 3 sentences with was/were: where, who with, how you felt.'},
-    {tag:'🗣 speak',q:'Describe a place from your childhood: how was it? (was/were)'},
-    {tag:'✏ create',q:'A NEGATIVE sentence with wasn\'t or weren\'t about last week.'},
-    {tag:'✏ create',q:'A QUESTION with "Were you...?" for me.'},
-    {tag:'⚠ fix it',q:'"They was at the party."',a:'They WERE at the party.'},
-    {tag:'💭 concept',q:'Who takes was, who takes were? And when do we NOT use was/were? One example.',a:'I/he/she/it→was; you/we/they→were; not before a normal verb (ação=past simple)'}
+    {id:'gr-past-to-be-ex-001',tag:'🗣 speak',q:'Yesterday in 3 sentences with was/were: where, who with, how you felt.'},
+    {id:'gr-past-to-be-ex-002',tag:'🗣 speak',q:'Describe a place from your childhood: how was it? (was/were)'},
+    {id:'gr-past-to-be-ex-003',tag:'✏ create',q:'A NEGATIVE sentence with wasn\'t or weren\'t about last week.'},
+    {id:'gr-past-to-be-ex-004',tag:'✏ create',q:'A QUESTION with "Were you...?" for me.'},
+    {id:'gr-past-to-be-ex-005',tag:'⚠ fix it',q:'"They was at the party."',a:'They WERE at the party.'},
+    {id:'gr-past-to-be-ex-006',tag:'💭 concept',q:'Who takes was, who takes were? And when do we NOT use was/were? One example.',a:'I/he/she/it→was; you/we/they→were; not before a normal verb (ação=past simple)'}
   ]
 },
 
@@ -659,18 +659,18 @@ window.ENGINE_TOPICS={
     {bad:'I didn\'t saw it',good:'I didn\'t SEE it',why:'didn\'t → base verb'}
   ],
   practice:[
-    {t:'fill',q:'Last night I ___ (go) to bed very late.',a:'went',hint:'go → w...',fu:'What time did YOU go to bed?'},
-    {t:'fill',q:'She ___ (have) eggs for breakfast.',a:'had',hint:'have → h...',fu:'What did you have this morning?'},
-    {t:'fill',q:'We ___ (not/see) the end of the film.',a:'didn\'t see',hint:'didn\'t + base (see, not saw).',fu:'What film do you want to finish?'},
-    {t:'mc',q:'"I ___ a new phone last week."',opts:['buyed','bought','buy'],a:'B — bought',hint:'buy → bought.',fu:'What was the last thing YOU bought?'},
-    {t:'mc',q:'"___ you go out yesterday?"',opts:['Do','Did','Were'],a:'B — Did',hint:'past question → Did.',fu:'And DID you? Where?'},
-    {t:'mc',q:'"She ___ come to the party."',opts:['didn\'t came','didn\'t come','not came'],a:'B — didn\'t come',hint:'didn\'t → base verb.',fu:'Why not A? Who came to your last party?'},
-    {t:'us',q:'to work / I / by bus / went',a:'I went to work by bus.',hint:'Who first, how last.',fu:'How did you get to work/school last time?'},
-    {t:'us',q:'a / she / cake / made / delicious',a:'She made a delicious cake.',hint:'Who + made + what.',fu:'Who\'s the best cook in your family?'},
-    {t:'ec',q:'I seed a great movie.',a:'I SAW a great movie.',hint:'see → saw.',fu:'What\'s a movie you saw recently?'},
-    {t:'ec',q:'Did she made dinner?',a:'Did she MAKE dinner?',hint:'did → base verb.',fu:'Who made dinner in your house yesterday?'},
-    {t:'tr',q:'Make it past: "I eat pizza." (last night version)',a:'I ate pizza last night.',hint:'eat → ate.',fu:'What did you eat last night?'},
-    {t:'tr',q:'Make it a question: "They took the bus."',a:'DID they take the bus?',hint:'Did first, took → take.',fu:'Ask me how I got here — with Did!'}
+    {id:'gr-past-irregular-pr-001',t:'fill',q:'Last night I ___ (go) to bed very late.',a:'went',hint:'go → w...',fu:'What time did YOU go to bed?'},
+    {id:'gr-past-irregular-pr-002',t:'fill',q:'She ___ (have) eggs for breakfast.',a:'had',hint:'have → h...',fu:'What did you have this morning?'},
+    {id:'gr-past-irregular-pr-003',t:'fill',q:'We ___ (not/see) the end of the film.',a:'didn\'t see',hint:'didn\'t + base (see, not saw).',fu:'What film do you want to finish?'},
+    {id:'gr-past-irregular-pr-004',t:'mc',q:'"I ___ a new phone last week."',opts:['buyed','bought','buy'],a:'B — bought',hint:'buy → bought.',fu:'What was the last thing YOU bought?'},
+    {id:'gr-past-irregular-pr-005',t:'mc',q:'"___ you go out yesterday?"',opts:['Do','Did','Were'],a:'B — Did',hint:'past question → Did.',fu:'And DID you? Where?'},
+    {id:'gr-past-irregular-pr-006',t:'mc',q:'"She ___ come to the party."',opts:['didn\'t came','didn\'t come','not came'],a:'B — didn\'t come',hint:'didn\'t → base verb.',fu:'Why not A? Who came to your last party?'},
+    {id:'gr-past-irregular-pr-007',t:'us',q:'to work / I / by bus / went',a:'I went to work by bus.',hint:'Who first, how last.',fu:'How did you get to work/school last time?'},
+    {id:'gr-past-irregular-pr-008',t:'us',q:'a / she / cake / made / delicious',a:'She made a delicious cake.',hint:'Who + made + what.',fu:'Who\'s the best cook in your family?'},
+    {id:'gr-past-irregular-pr-009',t:'ec',q:'I seed a great movie.',a:'I SAW a great movie.',hint:'see → saw.',fu:'What\'s a movie you saw recently?'},
+    {id:'gr-past-irregular-pr-010',t:'ec',q:'Did she made dinner?',a:'Did she MAKE dinner?',hint:'did → base verb.',fu:'Who made dinner in your house yesterday?'},
+    {id:'gr-past-irregular-pr-011',t:'tr',q:'Make it past: "I eat pizza." (last night version)',a:'I ate pizza last night.',hint:'eat → ate.',fu:'What did you eat last night?'},
+    {id:'gr-past-irregular-pr-012',t:'tr',q:'Make it a question: "They took the bus."',a:'DID they take the bus?',hint:'Did first, took → take.',fu:'Ask me how I got here — with Did!'}
   ],
   c3:{
     fill:[{q:'I ___ (go) out.',a:'went',hint:'go→went.',fu:'Where?'},{q:'He ___ (have) a coffee.',a:'had',hint:'have→had.',fu:'Where?'}],
@@ -691,12 +691,12 @@ window.ENGINE_TOPICS={
     c4:'Tell the story of the best trip you ever took — 8 sentences, mostly irregular verbs, with a beginning, a surprise, and an ending.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Your yesterday in 4 sentences using only irregular verbs.'},
-    {tag:'🗣 speak',q:'Tell me about the last meal you really enjoyed: where you went, what you ate.'},
-    {tag:'✏ create',q:'A sentence with "last week" and an irregular verb.'},
-    {tag:'✏ create',q:'A NEGATIVE sentence: something you didn\'t do yesterday.'},
-    {tag:'⚠ fix it',q:'"I didn\'t went to work."',a:'I didn\'t GO to work.'},
-    {tag:'💭 concept',q:'Where does the irregular form appear — and where does the verb go back to base? Example of each.',a:'irregular no afirmativo (I went); base após did/didn\'t (Did you go?)'}
+    {id:'gr-past-irregular-ex-001',tag:'🗣 speak',q:'Your yesterday in 4 sentences using only irregular verbs.'},
+    {id:'gr-past-irregular-ex-002',tag:'🗣 speak',q:'Tell me about the last meal you really enjoyed: where you went, what you ate.'},
+    {id:'gr-past-irregular-ex-003',tag:'✏ create',q:'A sentence with "last week" and an irregular verb.'},
+    {id:'gr-past-irregular-ex-004',tag:'✏ create',q:'A NEGATIVE sentence: something you didn\'t do yesterday.'},
+    {id:'gr-past-irregular-ex-005',tag:'⚠ fix it',q:'"I didn\'t went to work."',a:'I didn\'t GO to work.'},
+    {id:'gr-past-irregular-ex-006',tag:'💭 concept',q:'Where does the irregular form appear — and where does the verb go back to base? Example of each.',a:'irregular no afirmativo (I went); base após did/didn\'t (Did you go?)'}
   ]
 },
 
@@ -749,18 +749,18 @@ window.ENGINE_TOPICS={
     {bad:'Are you going travel?',good:'Are you going TO travel?',why:'o "to" não some'}
   ],
   practice:[
-    {t:'fill',q:'This weekend I ___ (going to/visit) my grandma.',a:'am going to visit',hint:'am + going to + base.',fu:'And what are YOU going to do this weekend?'},
-    {t:'fill',q:'She ___ (going to/start) a new job.',a:'is going to start',hint:'she → is going to.',fu:'Any new plans starting soon for you?'},
-    {t:'fill',q:'We ___ (not/going to/travel) this year.',a:'aren\'t going to travel',hint:'are + not + going to + base.',fu:'Where would you go if you could?'},
-    {t:'mc',q:'"Look at the sky! It ___ rain."',opts:['will','is going to','going to'],a:'B — is going to',hint:'evidence you can see → going to.',fu:'Why not C? Is it going to rain today where you are?'},
-    {t:'mc',q:'"___ you going to help me?"',opts:['Do','Are','Will'],a:'B — Are',hint:'"to be" first in the question.',fu:'ARE you? 😄 What are you good at helping with?'},
-    {t:'mc',q:'"I\'m going to ___ English every day."',opts:['studying','study','studied'],a:'B — study',hint:'after "to" → base verb.',fu:'Is that a real plan for you? Be honest!'},
-    {t:'us',q:'going to / I / a car / buy / am',a:'I am going to buy a car.',hint:'am + going to + verb + object.',fu:'What\'s the next big thing you\'re going to buy?'},
-    {t:'us',q:'is / she / going to / us / call',a:'She is going to call us.',hint:'is going to + verb.',fu:'Who are you going to call today?'},
-    {t:'ec',q:'I going to cook tonight.',a:'I\'M going to cook tonight.',hint:'add the to be.',fu:'What are you going to cook, then?'},
-    {t:'ec',q:'They going to studying.',a:'They\'re going to STUDY.',hint:'to be missing + base verb.',fu:'What are they going to study?'},
-    {t:'tr',q:'Make it a question: "He\'s going to move."',a:'IS he going to move?',hint:'"is" jumps to the front.',fu:'Ask me about MY plans with "Are you going to...?"'},
-    {t:'tr',q:'Make it negative: "I\'m going to work on Sunday."',a:'I\'m NOT going to work on Sunday.',hint:'add not after am.',fu:'What ARE you going to do on Sunday?'}
+    {id:'gr-going-to-pr-001',t:'fill',q:'This weekend I ___ (going to/visit) my grandma.',a:'am going to visit',hint:'am + going to + base.',fu:'And what are YOU going to do this weekend?'},
+    {id:'gr-going-to-pr-002',t:'fill',q:'She ___ (going to/start) a new job.',a:'is going to start',hint:'she → is going to.',fu:'Any new plans starting soon for you?'},
+    {id:'gr-going-to-pr-003',t:'fill',q:'We ___ (not/going to/travel) this year.',a:'aren\'t going to travel',hint:'are + not + going to + base.',fu:'Where would you go if you could?'},
+    {id:'gr-going-to-pr-004',t:'mc',q:'"Look at the sky! It ___ rain."',opts:['will','is going to','going to'],a:'B — is going to',hint:'evidence you can see → going to.',fu:'Why not C? Is it going to rain today where you are?'},
+    {id:'gr-going-to-pr-005',t:'mc',q:'"___ you going to help me?"',opts:['Do','Are','Will'],a:'B — Are',hint:'"to be" first in the question.',fu:'ARE you? 😄 What are you good at helping with?'},
+    {id:'gr-going-to-pr-006',t:'mc',q:'"I\'m going to ___ English every day."',opts:['studying','study','studied'],a:'B — study',hint:'after "to" → base verb.',fu:'Is that a real plan for you? Be honest!'},
+    {id:'gr-going-to-pr-007',t:'us',q:'going to / I / a car / buy / am',a:'I am going to buy a car.',hint:'am + going to + verb + object.',fu:'What\'s the next big thing you\'re going to buy?'},
+    {id:'gr-going-to-pr-008',t:'us',q:'is / she / going to / us / call',a:'She is going to call us.',hint:'is going to + verb.',fu:'Who are you going to call today?'},
+    {id:'gr-going-to-pr-009',t:'ec',q:'I going to cook tonight.',a:'I\'M going to cook tonight.',hint:'add the to be.',fu:'What are you going to cook, then?'},
+    {id:'gr-going-to-pr-010',t:'ec',q:'They going to studying.',a:'They\'re going to STUDY.',hint:'to be missing + base verb.',fu:'What are they going to study?'},
+    {id:'gr-going-to-pr-011',t:'tr',q:'Make it a question: "He\'s going to move."',a:'IS he going to move?',hint:'"is" jumps to the front.',fu:'Ask me about MY plans with "Are you going to...?"'},
+    {id:'gr-going-to-pr-012',t:'tr',q:'Make it negative: "I\'m going to work on Sunday."',a:'I\'m NOT going to work on Sunday.',hint:'add not after am.',fu:'What ARE you going to do on Sunday?'}
   ],
   c3:{
     fill:[{q:'I ___ (going to/rest).',a:'am going to rest',hint:'am + going to.',fu:'When?'},{q:'She ___ (going to/cook).',a:'is going to cook',hint:'is going to.',fu:'What?'}],
@@ -781,12 +781,12 @@ window.ENGINE_TOPICS={
     c4:'Turn the plan into a 60-second "vision pitch" for next year: 5 big "I\'m going to..." goals with one reason each.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Your real plans for this weekend — 3 sentences with "going to".'},
-    {tag:'🗣 speak',q:'One prediction based on something you can see right now (going to).'},
-    {tag:'✏ create',q:'A NEGATIVE plan: something you\'re NOT going to do.'},
-    {tag:'✏ create',q:'A QUESTION for me with "Are you going to...?"'},
-    {tag:'⚠ fix it',q:'"I going to study tonight."',a:'I\'M going to study tonight.'},
-    {tag:'💭 concept',q:'When "going to" and when "will"? One example of each.',a:'plano decidido/evidência → going to; decisão na hora → will'}
+    {id:'gr-going-to-ex-001',tag:'🗣 speak',q:'Your real plans for this weekend — 3 sentences with "going to".'},
+    {id:'gr-going-to-ex-002',tag:'🗣 speak',q:'One prediction based on something you can see right now (going to).'},
+    {id:'gr-going-to-ex-003',tag:'✏ create',q:'A NEGATIVE plan: something you\'re NOT going to do.'},
+    {id:'gr-going-to-ex-004',tag:'✏ create',q:'A QUESTION for me with "Are you going to...?"'},
+    {id:'gr-going-to-ex-005',tag:'⚠ fix it',q:'"I going to study tonight."',a:'I\'M going to study tonight.'},
+    {id:'gr-going-to-ex-006',tag:'💭 concept',q:'When "going to" and when "will"? One example of each.',a:'plano decidido/evidência → going to; decisão na hora → will'}
   ]
 },
 
@@ -839,18 +839,18 @@ window.ENGINE_TOPICS={
     {bad:'I not will go',good:'I WON\'T go',why:'negativa = won\'t'}
   ],
   practice:[
-    {t:'fill',q:'That looks heavy — I ___ (help) you.',a:'will help / \'ll help',hint:'on-the-spot offer → will + base.',fu:'When did someone last help YOU?'},
-    {t:'fill',q:'I think she ___ (call) you later.',a:'will call',hint:'prediction → will.',fu:'Who do you think will call you today?'},
-    {t:'fill',q:'Don\'t worry, I ___ (not/forget) your birthday.',a:'won\'t forget',hint:'promise, negative → won\'t.',fu:'What\'s a promise you always keep?'},
-    {t:'mc',q:'"The bell rang. I ___ open the door."',opts:['am going to','will','open'],a:'B — will',hint:'decision at this second → will.',fu:'Why not A? A is for plans made before.'},
-    {t:'mc',q:'"In 20 years, robots ___ everywhere."',opts:['will be','will are','will being'],a:'A — will be',hint:'will + base (be).',fu:'What do you think will change in 20 years?'},
-    {t:'mc',q:'"I promise I ___ late again."',opts:['won\'t be','not will','will not be'],a:'A — won\'t be',hint:'won\'t + base.',fu:'Are you usually on time? 😄'},
-    {t:'us',q:'help / I / you / will',a:'I will help you.',hint:'will + base + object.',fu:'What will you help me with?'},
-    {t:'us',q:'won\'t / it / I think / rain',a:'I think it won\'t rain.',hint:'I think + subject + won\'t.',fu:'What\'s your prediction for tomorrow?'},
-    {t:'ec',q:'I will to call you.',a:'I will CALL you.',hint:'no "to" after will.',fu:'When will you call me?'},
-    {t:'ec',q:'She wills be happy.',a:'She WILL be happy.',hint:'will never changes.',fu:'What will make her happy?'},
-    {t:'tr',q:'Make it negative: "I will tell him."',a:'I won\'t tell him. / I will not tell him.',hint:'will not = won\'t.',fu:'Can you keep a secret? 😄'},
-    {t:'tr',q:'Make it a question: "They will come."',a:'WILL they come?',hint:'will goes first.',fu:'Ask me a "Will you...?" question.'}
+    {id:'gr-will-pr-001',t:'fill',q:'That looks heavy — I ___ (help) you.',a:'will help / \'ll help',hint:'on-the-spot offer → will + base.',fu:'When did someone last help YOU?'},
+    {id:'gr-will-pr-002',t:'fill',q:'I think she ___ (call) you later.',a:'will call',hint:'prediction → will.',fu:'Who do you think will call you today?'},
+    {id:'gr-will-pr-003',t:'fill',q:'Don\'t worry, I ___ (not/forget) your birthday.',a:'won\'t forget',hint:'promise, negative → won\'t.',fu:'What\'s a promise you always keep?'},
+    {id:'gr-will-pr-004',t:'mc',q:'"The bell rang. I ___ open the door."',opts:['am going to','will','open'],a:'B — will',hint:'decision at this second → will.',fu:'Why not A? A is for plans made before.'},
+    {id:'gr-will-pr-005',t:'mc',q:'"In 20 years, robots ___ everywhere."',opts:['will be','will are','will being'],a:'A — will be',hint:'will + base (be).',fu:'What do you think will change in 20 years?'},
+    {id:'gr-will-pr-006',t:'mc',q:'"I promise I ___ late again."',opts:['won\'t be','not will','will not be'],a:'A — won\'t be',hint:'won\'t + base.',fu:'Are you usually on time? 😄'},
+    {id:'gr-will-pr-007',t:'us',q:'help / I / you / will',a:'I will help you.',hint:'will + base + object.',fu:'What will you help me with?'},
+    {id:'gr-will-pr-008',t:'us',q:'won\'t / it / I think / rain',a:'I think it won\'t rain.',hint:'I think + subject + won\'t.',fu:'What\'s your prediction for tomorrow?'},
+    {id:'gr-will-pr-009',t:'ec',q:'I will to call you.',a:'I will CALL you.',hint:'no "to" after will.',fu:'When will you call me?'},
+    {id:'gr-will-pr-010',t:'ec',q:'She wills be happy.',a:'She WILL be happy.',hint:'will never changes.',fu:'What will make her happy?'},
+    {id:'gr-will-pr-011',t:'tr',q:'Make it negative: "I will tell him."',a:'I won\'t tell him. / I will not tell him.',hint:'will not = won\'t.',fu:'Can you keep a secret? 😄'},
+    {id:'gr-will-pr-012',t:'tr',q:'Make it a question: "They will come."',a:'WILL they come?',hint:'will goes first.',fu:'Ask me a "Will you...?" question.'}
   ],
   c3:{
     fill:[{q:'I ___ (help) you.',a:'will help',hint:'will+base.',fu:'With what?'},{q:'It ___ (not/rain).',a:'won\'t rain',hint:'won\'t.',fu:'Sure?'}],
@@ -871,12 +871,12 @@ window.ENGINE_TOPICS={
     c4:'Give a 60-second "prediction speech" about technology or your city in 2040 — 5 will-statements with reasons.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Make 3 predictions about tomorrow using "will".'},
-    {tag:'🗣 speak',q:'Offer to help me with 2 things (spontaneous "I\'ll...").'},
-    {tag:'✏ create',q:'A promise with "won\'t".'},
-    {tag:'✏ create',q:'A QUESTION for me with "Will you...?"'},
-    {tag:'⚠ fix it',q:'"I will to help you."',a:'I will HELP you.'},
-    {tag:'💭 concept',q:'Will vs going to — when each? One example of each.',a:'will = decisão na hora/promessa/palpite; going to = plano já feito'}
+    {id:'gr-will-ex-001',tag:'🗣 speak',q:'Make 3 predictions about tomorrow using "will".'},
+    {id:'gr-will-ex-002',tag:'🗣 speak',q:'Offer to help me with 2 things (spontaneous "I\'ll...").'},
+    {id:'gr-will-ex-003',tag:'✏ create',q:'A promise with "won\'t".'},
+    {id:'gr-will-ex-004',tag:'✏ create',q:'A QUESTION for me with "Will you...?"'},
+    {id:'gr-will-ex-005',tag:'⚠ fix it',q:'"I will to help you."',a:'I will HELP you.'},
+    {id:'gr-will-ex-006',tag:'💭 concept',q:'Will vs going to — when each? One example of each.',a:'will = decisão na hora/promessa/palpite; going to = plano já feito'}
   ]
 },
 
@@ -929,18 +929,18 @@ window.ENGINE_TOPICS={
     {bad:'Have you saw it?',good:'Have you SEEN it?',why:'participle após have'}
   ],
   practice:[
-    {t:'fill',q:'I ___ (see) that film — it\'s great!',a:'have seen / \'ve seen',hint:'have + participle (see→seen).',fu:'What\'s the best film you\'ve seen?'},
-    {t:'fill',q:'She ___ (just/arrive).',a:'has just arrived',hint:'has + just + participle.',fu:'Who has just arrived in your life recently?'},
-    {t:'fill',q:'We ___ (not/finish) the project yet.',a:'haven\'t finished',hint:'haven\'t + participle.',fu:'What haven\'t you finished yet?'},
-    {t:'mc',q:'"___ you ever been to another country?"',opts:['Did','Have','Are'],a:'B — Have',hint:'ever → present perfect.',fu:'So HAVE you? Which one?'},
-    {t:'mc',q:'"He has ___ here for ten years."',opts:['live','lived','living'],a:'B — lived',hint:'has + participle.',fu:'How long have you lived in your city?'},
-    {t:'mc',q:'"I ___ Paris in 2019."',opts:['have visited','visited','has visited'],a:'B — visited',hint:'2019 = specific time → past simple!',fu:'Why not A? That\'s the classic trap.'},
-    {t:'us',q:'never / I / have / broken / a bone',a:'I have never broken a bone.',hint:'have + never + participle.',fu:'Lucky? Have you ever been to hospital?'},
-    {t:'us',q:'she / just / has / left / the office',a:'She has just left the office.',hint:'has + just + participle.',fu:'What have you just done, before this class?'},
-    {t:'ec',q:'I have saw that show.',a:'I have SEEN that show.',hint:'see → seen.',fu:'Which show? Any good?'},
-    {t:'ec',q:'She has lived here since 5 years.',a:'She has lived here FOR 5 years.',hint:'a period → for; a point → since.',fu:'For how long have you studied English?'},
-    {t:'tr',q:'Make it a question: "You have tried Japanese food."',a:'HAVE you tried Japanese food?',hint:'have jumps to the front.',fu:'Answer it — and tell me about it!'},
-    {t:'tr',q:'Perfect → past simple: "I have visited Rome." (add: last summer)',a:'I visited Rome last summer.',hint:'a fixed time switches the tense.',fu:'Where did you go last summer?'}
+    {id:'gr-present-perfect-pr-001',t:'fill',q:'I ___ (see) that film — it\'s great!',a:'have seen / \'ve seen',hint:'have + participle (see→seen).',fu:'What\'s the best film you\'ve seen?'},
+    {id:'gr-present-perfect-pr-002',t:'fill',q:'She ___ (just/arrive).',a:'has just arrived',hint:'has + just + participle.',fu:'Who has just arrived in your life recently?'},
+    {id:'gr-present-perfect-pr-003',t:'fill',q:'We ___ (not/finish) the project yet.',a:'haven\'t finished',hint:'haven\'t + participle.',fu:'What haven\'t you finished yet?'},
+    {id:'gr-present-perfect-pr-004',t:'mc',q:'"___ you ever been to another country?"',opts:['Did','Have','Are'],a:'B — Have',hint:'ever → present perfect.',fu:'So HAVE you? Which one?'},
+    {id:'gr-present-perfect-pr-005',t:'mc',q:'"He has ___ here for ten years."',opts:['live','lived','living'],a:'B — lived',hint:'has + participle.',fu:'How long have you lived in your city?'},
+    {id:'gr-present-perfect-pr-006',t:'mc',q:'"I ___ Paris in 2019."',opts:['have visited','visited','has visited'],a:'B — visited',hint:'2019 = specific time → past simple!',fu:'Why not A? That\'s the classic trap.'},
+    {id:'gr-present-perfect-pr-007',t:'us',q:'never / I / have / broken / a bone',a:'I have never broken a bone.',hint:'have + never + participle.',fu:'Lucky? Have you ever been to hospital?'},
+    {id:'gr-present-perfect-pr-008',t:'us',q:'she / just / has / left / the office',a:'She has just left the office.',hint:'has + just + participle.',fu:'What have you just done, before this class?'},
+    {id:'gr-present-perfect-pr-009',t:'ec',q:'I have saw that show.',a:'I have SEEN that show.',hint:'see → seen.',fu:'Which show? Any good?'},
+    {id:'gr-present-perfect-pr-010',t:'ec',q:'She has lived here since 5 years.',a:'She has lived here FOR 5 years.',hint:'a period → for; a point → since.',fu:'For how long have you studied English?'},
+    {id:'gr-present-perfect-pr-011',t:'tr',q:'Make it a question: "You have tried Japanese food."',a:'HAVE you tried Japanese food?',hint:'have jumps to the front.',fu:'Answer it — and tell me about it!'},
+    {id:'gr-present-perfect-pr-012',t:'tr',q:'Perfect → past simple: "I have visited Rome." (add: last summer)',a:'I visited Rome last summer.',hint:'a fixed time switches the tense.',fu:'Where did you go last summer?'}
   ],
   c3:{
     fill:[{q:'I ___ (be) to Italy.',a:'have been',hint:'have+been.',fu:'When... no, HAVE you?'},{q:'She ___ (finish).',a:'has finished',hint:'has+participle.',fu:'What?'}],
@@ -961,12 +961,12 @@ window.ENGINE_TOPICS={
     c4:'Give a 60-second "my life so far" monologue: 5 experiences (present perfect) + one you did last year (past simple) — notice the switch yourself.'
   },
   exit:[
-    {tag:'🗣 speak',q:'3 life experiences using present perfect (no dates!).'},
-    {tag:'🗣 speak',q:'Something you have never done but want to — and why.'},
-    {tag:'✏ create',q:'A question with "Have you ever...?"'},
-    {tag:'✏ create',q:'A sentence with "just", "already" or "yet".'},
-    {tag:'⚠ fix it',q:'"I have seen her yesterday."',a:'I SAW her yesterday.'},
-    {tag:'💭 concept',q:'Present perfect vs past simple — what decides which? One example of each.',a:'sem hora marcada → present perfect; com hora marcada → past simple'}
+    {id:'gr-present-perfect-ex-001',tag:'🗣 speak',q:'3 life experiences using present perfect (no dates!).'},
+    {id:'gr-present-perfect-ex-002',tag:'🗣 speak',q:'Something you have never done but want to — and why.'},
+    {id:'gr-present-perfect-ex-003',tag:'✏ create',q:'A question with "Have you ever...?"'},
+    {id:'gr-present-perfect-ex-004',tag:'✏ create',q:'A sentence with "just", "already" or "yet".'},
+    {id:'gr-present-perfect-ex-005',tag:'⚠ fix it',q:'"I have seen her yesterday."',a:'I SAW her yesterday.'},
+    {id:'gr-present-perfect-ex-006',tag:'💭 concept',q:'Present perfect vs past simple — what decides which? One example of each.',a:'sem hora marcada → present perfect; com hora marcada → past simple'}
   ]
 },
 
@@ -1019,18 +1019,18 @@ window.ENGINE_TOPICS={
     {bad:'I can swimming',good:'I can SWIM',why:'verbo base após can'}
   ],
   practice:[
-    {t:'fill',q:'I ___ (ability) speak a little English already.',a:'can',hint:'present ability → can.',fu:'What else can you do well?'},
-    {t:'fill',q:'She ___ (not/ability) drive — no licence yet.',a:'can\'t',hint:'negative ability → can\'t.',fu:'Can you drive? Do you want to?'},
-    {t:'fill',q:'When he was young, he ___ (past ability) run for hours.',a:'could',hint:'past ability → could.',fu:'What could YOU do easily as a kid?'},
-    {t:'mc',q:'"___ you help me with this, please?"',opts:['Do','Could','Are'],a:'B — Could',hint:'polite request → could.',fu:'What do you often need help with?'},
-    {t:'mc',q:'"She ___ play the piano beautifully."',opts:['cans','can','can to'],a:'B — can',hint:'can never changes, no "to".',fu:'Can anyone in your family play an instrument?'},
-    {t:'mc',q:'"___ I open the window? It\'s hot."',opts:['Do','Can','Am'],a:'B — Can',hint:'asking permission → Can I.',fu:'How do you ask for permission politely?'},
-    {t:'us',q:'swim / can / very well / I',a:'I can swim very well.',hint:'I + can + base + rest.',fu:'True? How did you learn?'},
-    {t:'us',q:'you / could / the door / open / ?',a:'Could you open the door?',hint:'Could you + base?',fu:'Ask me something politely with "Could you...?"'},
-    {t:'ec',q:'I can to cook.',a:'I can COOK.',hint:'no "to".',fu:'What can you cook?'},
-    {t:'ec',q:'She cans sing.',a:'She CAN sing.',hint:'can is fixed.',fu:'Is she good?'},
-    {t:'tr',q:'Make it a polite request: "Give me the salt."',a:'Could you give me the salt, please?',hint:'Could you + base + please.',fu:'Now ask me for something politely.'},
-    {t:'tr',q:'Make it negative: "I can come tonight."',a:'I can\'t come tonight. / I cannot come tonight.',hint:'can not = can\'t.',fu:'Why can\'t you? Give an excuse! 😄'}
+    {id:'gr-can-could-pr-001',t:'fill',q:'I ___ (ability) speak a little English already.',a:'can',hint:'present ability → can.',fu:'What else can you do well?'},
+    {id:'gr-can-could-pr-002',t:'fill',q:'She ___ (not/ability) drive — no licence yet.',a:'can\'t',hint:'negative ability → can\'t.',fu:'Can you drive? Do you want to?'},
+    {id:'gr-can-could-pr-003',t:'fill',q:'When he was young, he ___ (past ability) run for hours.',a:'could',hint:'past ability → could.',fu:'What could YOU do easily as a kid?'},
+    {id:'gr-can-could-pr-004',t:'mc',q:'"___ you help me with this, please?"',opts:['Do','Could','Are'],a:'B — Could',hint:'polite request → could.',fu:'What do you often need help with?'},
+    {id:'gr-can-could-pr-005',t:'mc',q:'"She ___ play the piano beautifully."',opts:['cans','can','can to'],a:'B — can',hint:'can never changes, no "to".',fu:'Can anyone in your family play an instrument?'},
+    {id:'gr-can-could-pr-006',t:'mc',q:'"___ I open the window? It\'s hot."',opts:['Do','Can','Am'],a:'B — Can',hint:'asking permission → Can I.',fu:'How do you ask for permission politely?'},
+    {id:'gr-can-could-pr-007',t:'us',q:'swim / can / very well / I',a:'I can swim very well.',hint:'I + can + base + rest.',fu:'True? How did you learn?'},
+    {id:'gr-can-could-pr-008',t:'us',q:'you / could / the door / open / ?',a:'Could you open the door?',hint:'Could you + base?',fu:'Ask me something politely with "Could you...?"'},
+    {id:'gr-can-could-pr-009',t:'ec',q:'I can to cook.',a:'I can COOK.',hint:'no "to".',fu:'What can you cook?'},
+    {id:'gr-can-could-pr-010',t:'ec',q:'She cans sing.',a:'She CAN sing.',hint:'can is fixed.',fu:'Is she good?'},
+    {id:'gr-can-could-pr-011',t:'tr',q:'Make it a polite request: "Give me the salt."',a:'Could you give me the salt, please?',hint:'Could you + base + please.',fu:'Now ask me for something politely.'},
+    {id:'gr-can-could-pr-012',t:'tr',q:'Make it negative: "I can come tonight."',a:'I can\'t come tonight. / I cannot come tonight.',hint:'can not = can\'t.',fu:'Why can\'t you? Give an excuse! 😄'}
   ],
   c3:{
     fill:[{q:'I ___ swim.',a:'can',hint:'ability.',fu:'How well?'},{q:'She ___ (not) come.',a:'can\'t',hint:'negative.',fu:'Why not?'}],
@@ -1051,12 +1051,12 @@ window.ENGINE_TOPICS={
     c4:'Job interview register: describe your professional abilities formally — "I can manage, I can communicate..." — 5 sentences, polished.'
   },
   exit:[
-    {tag:'🗣 speak',q:'3 things you can do and 1 thing you can\'t.'},
-    {tag:'🗣 speak',q:'Something you could do as a child but maybe can\'t now.'},
-    {tag:'✏ create',q:'A polite request with "Could you...?"'},
-    {tag:'✏ create',q:'A permission question with "Can I...?"'},
-    {tag:'⚠ fix it',q:'"She cans play tennis."',a:'She CAN play tennis.'},
-    {tag:'💭 concept',q:'Can vs could — the two main differences? One example of each.',a:'could = passado de can E pedido mais educado'}
+    {id:'gr-can-could-ex-001',tag:'🗣 speak',q:'3 things you can do and 1 thing you can\'t.'},
+    {id:'gr-can-could-ex-002',tag:'🗣 speak',q:'Something you could do as a child but maybe can\'t now.'},
+    {id:'gr-can-could-ex-003',tag:'✏ create',q:'A polite request with "Could you...?"'},
+    {id:'gr-can-could-ex-004',tag:'✏ create',q:'A permission question with "Can I...?"'},
+    {id:'gr-can-could-ex-005',tag:'⚠ fix it',q:'"She cans play tennis."',a:'She CAN play tennis.'},
+    {id:'gr-can-could-ex-006',tag:'💭 concept',q:'Can vs could — the two main differences? One example of each.',a:'could = passado de can E pedido mais educado'}
   ]
 },
 
@@ -1109,18 +1109,18 @@ window.ENGINE_TOPICS={
     {bad:'taller that me',good:'taller THAN me',why:'than, não that'}
   ],
   practice:[
-    {t:'fill',q:'A car is ___ (fast) than a bike.',a:'faster',hint:'short adj → +er.',fu:'What\'s faster than a car?'},
-    {t:'fill',q:'This phone is ___ (expensive) than that one.',a:'more expensive',hint:'long adj → more.',fu:'What\'s the most you\'d pay for a phone?'},
-    {t:'fill',q:'Winter is ___ (cold) than summer here.',a:'colder',hint:'short adj → +er.',fu:'Which season do you prefer? Why?'},
-    {t:'mc',q:'"Health is ___ than money."',opts:['importanter','more important','more importanter'],a:'B — more important',hint:'long adjective → more.',fu:'Do you agree? Why?'},
-    {t:'mc',q:'"My English is ___ than last year."',opts:['gooder','better','more good'],a:'B — better',hint:'good is irregular.',fu:'What helped you improve?'},
-    {t:'mc',q:'"A bus is ___ a taxi."',opts:['cheaper than','more cheap than','cheaper that'],a:'A — cheaper than',hint:'short → -er, and "than".',fu:'How do you usually travel in your city?'},
-    {t:'us',q:'than / is / taller / she / me',a:'She is taller than me.',hint:'A + is + comparative + than + B.',fu:'Who\'s the tallest in your family?'},
-    {t:'us',q:'more / this / interesting / is / than / that',a:'This is more interesting than that.',hint:'more + adj + than.',fu:'Name two things — which is more interesting?'},
-    {t:'ec',q:'A plane is more faster than a train.',a:'A plane is FASTER than a train.',hint:'-er OR more, not both.',fu:'Have you been on a plane recently?'},
-    {t:'ec',q:'Today is hotter that yesterday.',a:'Today is hotter THAN yesterday.',hint:'than, not that.',fu:'Is today hot where you are?'},
-    {t:'tr',q:'Compare: "big" — an elephant and a dog.',a:'An elephant is bigger than a dog.',hint:'big → bigger than.',fu:'Compare two animals you like.'},
-    {t:'tr',q:'Compare: "good" — your two favourite foods.',a:'___ is better than ___. (e.g. Pizza is better than pasta.)',hint:'good → better than.',fu:'Defend your choice!'}
+    {id:'gr-comparatives-pr-001',t:'fill',q:'A car is ___ (fast) than a bike.',a:'faster',hint:'short adj → +er.',fu:'What\'s faster than a car?'},
+    {id:'gr-comparatives-pr-002',t:'fill',q:'This phone is ___ (expensive) than that one.',a:'more expensive',hint:'long adj → more.',fu:'What\'s the most you\'d pay for a phone?'},
+    {id:'gr-comparatives-pr-003',t:'fill',q:'Winter is ___ (cold) than summer here.',a:'colder',hint:'short adj → +er.',fu:'Which season do you prefer? Why?'},
+    {id:'gr-comparatives-pr-004',t:'mc',q:'"Health is ___ than money."',opts:['importanter','more important','more importanter'],a:'B — more important',hint:'long adjective → more.',fu:'Do you agree? Why?'},
+    {id:'gr-comparatives-pr-005',t:'mc',q:'"My English is ___ than last year."',opts:['gooder','better','more good'],a:'B — better',hint:'good is irregular.',fu:'What helped you improve?'},
+    {id:'gr-comparatives-pr-006',t:'mc',q:'"A bus is ___ a taxi."',opts:['cheaper than','more cheap than','cheaper that'],a:'A — cheaper than',hint:'short → -er, and "than".',fu:'How do you usually travel in your city?'},
+    {id:'gr-comparatives-pr-007',t:'us',q:'than / is / taller / she / me',a:'She is taller than me.',hint:'A + is + comparative + than + B.',fu:'Who\'s the tallest in your family?'},
+    {id:'gr-comparatives-pr-008',t:'us',q:'more / this / interesting / is / than / that',a:'This is more interesting than that.',hint:'more + adj + than.',fu:'Name two things — which is more interesting?'},
+    {id:'gr-comparatives-pr-009',t:'ec',q:'A plane is more faster than a train.',a:'A plane is FASTER than a train.',hint:'-er OR more, not both.',fu:'Have you been on a plane recently?'},
+    {id:'gr-comparatives-pr-010',t:'ec',q:'Today is hotter that yesterday.',a:'Today is hotter THAN yesterday.',hint:'than, not that.',fu:'Is today hot where you are?'},
+    {id:'gr-comparatives-pr-011',t:'tr',q:'Compare: "big" — an elephant and a dog.',a:'An elephant is bigger than a dog.',hint:'big → bigger than.',fu:'Compare two animals you like.'},
+    {id:'gr-comparatives-pr-012',t:'tr',q:'Compare: "good" — your two favourite foods.',a:'___ is better than ___. (e.g. Pizza is better than pasta.)',hint:'good → better than.',fu:'Defend your choice!'}
   ],
   c3:{
     fill:[{q:'A is ___ (small) than B.',a:'smaller',hint:'+er.',fu:'Example?'},{q:'It\'s ___ (beautiful) than that.',a:'more beautiful',hint:'more.',fu:'Why?'}],
@@ -1141,12 +1141,12 @@ window.ENGINE_TOPICS={
     c4:'Compare two real options in your life (two jobs, two trips, two phones) across 3 criteria each — a mini decision speech.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Compare your city with another city — 2 comparatives.'},
-    {tag:'🗣 speak',q:'Compare two foods you like and say which is better, and why.'},
-    {tag:'✏ create',q:'A sentence with "more ___ than" (long adjective).'},
-    {tag:'✏ create',q:'A sentence with an irregular comparative (better/worse).'},
-    {tag:'⚠ fix it',q:'"A car is more faster than a bike."',a:'A car is FASTER than a bike.'},
-    {tag:'💭 concept',q:'When -er and when "more"? And the irregular ones? One example each.',a:'curto→-er, longo→more; good→better, bad→worse'}
+    {id:'gr-comparatives-ex-001',tag:'🗣 speak',q:'Compare your city with another city — 2 comparatives.'},
+    {id:'gr-comparatives-ex-002',tag:'🗣 speak',q:'Compare two foods you like and say which is better, and why.'},
+    {id:'gr-comparatives-ex-003',tag:'✏ create',q:'A sentence with "more ___ than" (long adjective).'},
+    {id:'gr-comparatives-ex-004',tag:'✏ create',q:'A sentence with an irregular comparative (better/worse).'},
+    {id:'gr-comparatives-ex-005',tag:'⚠ fix it',q:'"A car is more faster than a bike."',a:'A car is FASTER than a bike.'},
+    {id:'gr-comparatives-ex-006',tag:'💭 concept',q:'When -er and when "more"? And the irregular ones? One example each.',a:'curto→-er, longo→more; good→better, bad→worse'}
   ]
 },
 
@@ -1199,18 +1199,18 @@ window.ENGINE_TOPICS={
     {bad:'the goodest',good:'the best',why:'good é irregular'}
   ],
   practice:[
-    {t:'fill',q:'Everest is ___ (high) mountain in the world.',a:'the highest',hint:'short adj → the ___est.',fu:'What\'s the highest place you\'ve been?'},
-    {t:'fill',q:'This is ___ (expensive) hotel in the city.',a:'the most expensive',hint:'long adj → the most.',fu:'What\'s the most you\'d pay for a hotel?'},
-    {t:'fill',q:'That was ___ (funny) joke of the night.',a:'the funniest',hint:'y → the ___iest.',fu:'Who\'s the funniest person you know?'},
-    {t:'mc',q:'"She is ___ singer in the group."',opts:['the goodest','the best','the most good'],a:'B — the best',hint:'good is irregular.',fu:'Who\'s the best singer you know?'},
-    {t:'mc',q:'"It\'s ___ day of the year."',opts:['the hotter','the hottest','the most hot'],a:'B — the hottest',hint:'short adj → the ___est.',fu:'When\'s the hottest time where you live?'},
-    {t:'mc',q:'"This is ___ film I\'ve ever seen."',opts:['the most boring','the boringest','the more boring'],a:'A — the most boring',hint:'long adj → the most.',fu:'What\'s the most boring film you\'ve seen?'},
-    {t:'us',q:'the / in / tallest / he / is / family / the',a:'He is the tallest in the family.',hint:'the + adj-est + in the group.',fu:'Who\'s the tallest in yours?'},
-    {t:'us',q:'the / it / most / is / beautiful / city',a:'It is the most beautiful city.',hint:'the most + adj + noun.',fu:'What\'s the most beautiful city you know?'},
-    {t:'ec',q:'It\'s the most biggest house here.',a:'It\'s the BIGGEST house here.',hint:'-est OR most, not both.',fu:'What\'s the biggest place you\'ve lived in?'},
-    {t:'ec',q:'She is best in the class.',a:'She is THE best in the class.',hint:'keep "the".',fu:'Best at what?'},
-    {t:'tr',q:'Superlative: "high" — mountain in the world.',a:'the highest mountain in the world',hint:'the + high+est.',fu:'Name it!'},
-    {t:'tr',q:'Superlative: "good" — day of your life.',a:'the best day of my life',hint:'good → the best.',fu:'Tell me about it!'}
+    {id:'gr-superlatives-pr-001',t:'fill',q:'Everest is ___ (high) mountain in the world.',a:'the highest',hint:'short adj → the ___est.',fu:'What\'s the highest place you\'ve been?'},
+    {id:'gr-superlatives-pr-002',t:'fill',q:'This is ___ (expensive) hotel in the city.',a:'the most expensive',hint:'long adj → the most.',fu:'What\'s the most you\'d pay for a hotel?'},
+    {id:'gr-superlatives-pr-003',t:'fill',q:'That was ___ (funny) joke of the night.',a:'the funniest',hint:'y → the ___iest.',fu:'Who\'s the funniest person you know?'},
+    {id:'gr-superlatives-pr-004',t:'mc',q:'"She is ___ singer in the group."',opts:['the goodest','the best','the most good'],a:'B — the best',hint:'good is irregular.',fu:'Who\'s the best singer you know?'},
+    {id:'gr-superlatives-pr-005',t:'mc',q:'"It\'s ___ day of the year."',opts:['the hotter','the hottest','the most hot'],a:'B — the hottest',hint:'short adj → the ___est.',fu:'When\'s the hottest time where you live?'},
+    {id:'gr-superlatives-pr-006',t:'mc',q:'"This is ___ film I\'ve ever seen."',opts:['the most boring','the boringest','the more boring'],a:'A — the most boring',hint:'long adj → the most.',fu:'What\'s the most boring film you\'ve seen?'},
+    {id:'gr-superlatives-pr-007',t:'us',q:'the / in / tallest / he / is / family / the',a:'He is the tallest in the family.',hint:'the + adj-est + in the group.',fu:'Who\'s the tallest in yours?'},
+    {id:'gr-superlatives-pr-008',t:'us',q:'the / it / most / is / beautiful / city',a:'It is the most beautiful city.',hint:'the most + adj + noun.',fu:'What\'s the most beautiful city you know?'},
+    {id:'gr-superlatives-pr-009',t:'ec',q:'It\'s the most biggest house here.',a:'It\'s the BIGGEST house here.',hint:'-est OR most, not both.',fu:'What\'s the biggest place you\'ve lived in?'},
+    {id:'gr-superlatives-pr-010',t:'ec',q:'She is best in the class.',a:'She is THE best in the class.',hint:'keep "the".',fu:'Best at what?'},
+    {id:'gr-superlatives-pr-011',t:'tr',q:'Superlative: "high" — mountain in the world.',a:'the highest mountain in the world',hint:'the + high+est.',fu:'Name it!'},
+    {id:'gr-superlatives-pr-012',t:'tr',q:'Superlative: "good" — day of your life.',a:'the best day of my life',hint:'good → the best.',fu:'Tell me about it!'}
   ],
   c3:{
     fill:[{q:'the ___ (big) house.',a:'the biggest',hint:'the -est.',fu:'Where?'},{q:'the ___ (expensive).',a:'the most expensive',hint:'the most.',fu:'What?'}],
@@ -1231,12 +1231,12 @@ window.ENGINE_TOPICS={
     c4:'Deliver a 60-second "best of my year" speech: 5 superlatives (best moment, biggest surprise, hardest challenge...) with one line each.'
   },
   exit:[
-    {tag:'🗣 speak',q:'The best and the worst thing about your city — with superlatives.'},
-    {tag:'🗣 speak',q:'The most ___ person or place in your life, and why.'},
-    {tag:'✏ create',q:'A sentence with "the most ___" (long adjective).'},
-    {tag:'✏ create',q:'A sentence with an irregular superlative (the best/the worst).'},
-    {tag:'⚠ fix it',q:'"It\'s the most biggest city."',a:'It\'s the BIGGEST city.'},
-    {tag:'💭 concept',q:'Comparative vs superlative — when each? One example of each.',a:'dois → comparativo (than); grupo → superlativo (the ___est/the most)'}
+    {id:'gr-superlatives-ex-001',tag:'🗣 speak',q:'The best and the worst thing about your city — with superlatives.'},
+    {id:'gr-superlatives-ex-002',tag:'🗣 speak',q:'The most ___ person or place in your life, and why.'},
+    {id:'gr-superlatives-ex-003',tag:'✏ create',q:'A sentence with "the most ___" (long adjective).'},
+    {id:'gr-superlatives-ex-004',tag:'✏ create',q:'A sentence with an irregular superlative (the best/the worst).'},
+    {id:'gr-superlatives-ex-005',tag:'⚠ fix it',q:'"It\'s the most biggest city."',a:'It\'s the BIGGEST city.'},
+    {id:'gr-superlatives-ex-006',tag:'💭 concept',q:'Comparative vs superlative — when each? One example of each.',a:'dois → comparativo (than); grupo → superlativo (the ___est/the most)'}
   ]
 },
 
@@ -1289,18 +1289,18 @@ window.ENGINE_TOPICS={
     {bad:'There is any milk',good:'There ISN\'T any milk (neg) / There is SOME milk (aff)',why:'any na negativa, some na afirmativa'}
   ],
   practice:[
-    {t:'fill',q:'___ a cat on the sofa.',a:'There is / There\'s',hint:'one → there is.',fu:'What\'s on your sofa right now?'},
-    {t:'fill',q:'___ five students in the class.',a:'There are',hint:'many → there are.',fu:'How many people are in your home right now?'},
-    {t:'fill',q:'There ___ (not) any bread at home.',a:'isn\'t',hint:'bread (uncount) → isn\'t any.',fu:'What isn\'t in your fridge right now?'},
-    {t:'mc',q:'"___ a park near your house?"',opts:['Is there','Are there','Have there'],a:'A — Is there',hint:'a park = singular question.',fu:'So — IS there? Tell me about it.'},
-    {t:'mc',q:'"___ many cars in the street."',opts:['There is','There are','It has'],a:'B — There are',hint:'many cars = plural.',fu:'Is your street busy or quiet?'},
-    {t:'mc',q:'"There ___ any chairs in the room."',opts:['isn\'t','aren\'t','not are'],a:'B — aren\'t',hint:'chairs = plural negative.',fu:'What\'s missing in your room?'},
-    {t:'us',q:'a / there / bank / is / near / here',a:'There is a bank near here.',hint:'There is + a + noun + place.',fu:'Is there a bank near you?'},
-    {t:'us',q:'are / people / there / many / today',a:'There are many people today.',hint:'There are + plural.',fu:'Where are there many people in your city?'},
-    {t:'ec',q:'Have a problem with my computer.',a:'THERE IS a problem with my computer.',hint:'existence = there is.',fu:'Any problem with YOUR computer lately?'},
-    {t:'ec',q:'There is three windows here.',a:'There ARE three windows here.',hint:'three → plural.',fu:'How many windows are there in this room?'},
-    {t:'tr',q:'Make it a question: "There is a supermarket near here."',a:'IS there a supermarket near here?',hint:'Is jumps to the front.',fu:'Ask me about shops near me.'},
-    {t:'tr',q:'Make it negative: "There are some eggs."',a:'There aren\'t any eggs.',hint:'aren\'t + any.',fu:'What don\'t you have in your kitchen?'}
+    {id:'gr-there-is-are-pr-001',t:'fill',q:'___ a cat on the sofa.',a:'There is / There\'s',hint:'one → there is.',fu:'What\'s on your sofa right now?'},
+    {id:'gr-there-is-are-pr-002',t:'fill',q:'___ five students in the class.',a:'There are',hint:'many → there are.',fu:'How many people are in your home right now?'},
+    {id:'gr-there-is-are-pr-003',t:'fill',q:'There ___ (not) any bread at home.',a:'isn\'t',hint:'bread (uncount) → isn\'t any.',fu:'What isn\'t in your fridge right now?'},
+    {id:'gr-there-is-are-pr-004',t:'mc',q:'"___ a park near your house?"',opts:['Is there','Are there','Have there'],a:'A — Is there',hint:'a park = singular question.',fu:'So — IS there? Tell me about it.'},
+    {id:'gr-there-is-are-pr-005',t:'mc',q:'"___ many cars in the street."',opts:['There is','There are','It has'],a:'B — There are',hint:'many cars = plural.',fu:'Is your street busy or quiet?'},
+    {id:'gr-there-is-are-pr-006',t:'mc',q:'"There ___ any chairs in the room."',opts:['isn\'t','aren\'t','not are'],a:'B — aren\'t',hint:'chairs = plural negative.',fu:'What\'s missing in your room?'},
+    {id:'gr-there-is-are-pr-007',t:'us',q:'a / there / bank / is / near / here',a:'There is a bank near here.',hint:'There is + a + noun + place.',fu:'Is there a bank near you?'},
+    {id:'gr-there-is-are-pr-008',t:'us',q:'are / people / there / many / today',a:'There are many people today.',hint:'There are + plural.',fu:'Where are there many people in your city?'},
+    {id:'gr-there-is-are-pr-009',t:'ec',q:'Have a problem with my computer.',a:'THERE IS a problem with my computer.',hint:'existence = there is.',fu:'Any problem with YOUR computer lately?'},
+    {id:'gr-there-is-are-pr-010',t:'ec',q:'There is three windows here.',a:'There ARE three windows here.',hint:'three → plural.',fu:'How many windows are there in this room?'},
+    {id:'gr-there-is-are-pr-011',t:'tr',q:'Make it a question: "There is a supermarket near here."',a:'IS there a supermarket near here?',hint:'Is jumps to the front.',fu:'Ask me about shops near me.'},
+    {id:'gr-there-is-are-pr-012',t:'tr',q:'Make it negative: "There are some eggs."',a:'There aren\'t any eggs.',hint:'aren\'t + any.',fu:'What don\'t you have in your kitchen?'}
   ],
   c3:{
     fill:[{q:'___ a dog here.',a:'There is',hint:'one.',fu:'Whose?'},{q:'___ two cats.',a:'There are',hint:'many.',fu:'Where?'}],
@@ -1321,12 +1321,12 @@ window.ENGINE_TOPICS={
     c4:'Describe your city to a tourist: what there is, what there isn\'t, and what makes it special — 6 sentences.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Describe your room: 4 sentences with There is / There are.'},
-    {tag:'🗣 speak',q:'What is there (and isn\'t there) in your neighbourhood?'},
-    {tag:'✏ create',q:'A NEGATIVE sentence with "There isn\'t/aren\'t any".'},
-    {tag:'✏ create',q:'A QUESTION with "Is there...?" for me.'},
-    {tag:'⚠ fix it',q:'"There is two parks in my city."',a:'There ARE two parks in my city.'},
-    {tag:'💭 concept',q:'When "is" and when "are"? And how do we say the "tem" of existence? Example.',a:'singular→is, plural→are; existência = there is/are (não have)'}
+    {id:'gr-there-is-are-ex-001',tag:'🗣 speak',q:'Describe your room: 4 sentences with There is / There are.'},
+    {id:'gr-there-is-are-ex-002',tag:'🗣 speak',q:'What is there (and isn\'t there) in your neighbourhood?'},
+    {id:'gr-there-is-are-ex-003',tag:'✏ create',q:'A NEGATIVE sentence with "There isn\'t/aren\'t any".'},
+    {id:'gr-there-is-are-ex-004',tag:'✏ create',q:'A QUESTION with "Is there...?" for me.'},
+    {id:'gr-there-is-are-ex-005',tag:'⚠ fix it',q:'"There is two parks in my city."',a:'There ARE two parks in my city.'},
+    {id:'gr-there-is-are-ex-006',tag:'💭 concept',q:'When "is" and when "are"? And how do we say the "tem" of existence? Example.',a:'singular→is, plural→are; existência = there is/are (não have)'}
   ]
 },
 
@@ -1379,18 +1379,18 @@ window.ENGINE_TOPICS={
     {bad:'Where she works?',good:'Where DOES she work?',why:'she → does, verbo base'}
   ],
   practice:[
-    {t:'fill',q:'___ is your name? (thing)',a:'What',hint:'asking a thing → What.',fu:'And what\'s MY name? 😄'},
-    {t:'fill',q:'___ do you live? (place)',a:'Where',hint:'place → Where.',fu:'Where exactly? Tell me more.'},
-    {t:'fill',q:'___ are you learning English? (reason)',a:'Why',hint:'reason → Why.',fu:'Answer your own question!'},
-    {t:'mc',q:'"___ do you go to work?"',opts:['What','How','Who'],a:'B — How',hint:'by car? by bus? → How.',fu:'So HOW do you? And how long does it take?'},
-    {t:'mc',q:'"Where ___ she work?"',opts:['do','does','is'],a:'B — does',hint:'she → does + base.',fu:'Where does someone in your family work?'},
-    {t:'mc',q:'"___ is your birthday?"',opts:['What','When','Who'],a:'B — When',hint:'a time → When.',fu:'When IS it? What do you do?'},
-    {t:'us',q:'do / where / you / live / ?',a:'Where do you live?',hint:'WH + do + you + verb.',fu:'Now answer it!'},
-    {t:'us',q:'does / what / she / do / ?',a:'What does she do?',hint:'What + does + she + verb.',fu:'Ask about a real person you know.'},
-    {t:'ec',q:'Where you work?',a:'Where DO you work?',hint:'add the auxiliary.',fu:'Answer it about yourself!'},
-    {t:'ec',q:'How old you are?',a:'How old ARE you?',hint:'with be, invert.',fu:'Ask ME how old I am — correctly!'},
-    {t:'tr',q:'Make a question: answer is "I live in Curitiba." (ask where)',a:'Where do you live?',hint:'Where + do + you + live.',fu:'Ask me 2 more WH- questions.'},
-    {t:'tr',q:'Make a question: answer is "She\'s a nurse." (ask job)',a:'What does she do?',hint:'What + does + she + do.',fu:'What do YOU do?'}
+    {id:'gr-wh-questions-pr-001',t:'fill',q:'___ is your name? (thing)',a:'What',hint:'asking a thing → What.',fu:'And what\'s MY name? 😄'},
+    {id:'gr-wh-questions-pr-002',t:'fill',q:'___ do you live? (place)',a:'Where',hint:'place → Where.',fu:'Where exactly? Tell me more.'},
+    {id:'gr-wh-questions-pr-003',t:'fill',q:'___ are you learning English? (reason)',a:'Why',hint:'reason → Why.',fu:'Answer your own question!'},
+    {id:'gr-wh-questions-pr-004',t:'mc',q:'"___ do you go to work?"',opts:['What','How','Who'],a:'B — How',hint:'by car? by bus? → How.',fu:'So HOW do you? And how long does it take?'},
+    {id:'gr-wh-questions-pr-005',t:'mc',q:'"Where ___ she work?"',opts:['do','does','is'],a:'B — does',hint:'she → does + base.',fu:'Where does someone in your family work?'},
+    {id:'gr-wh-questions-pr-006',t:'mc',q:'"___ is your birthday?"',opts:['What','When','Who'],a:'B — When',hint:'a time → When.',fu:'When IS it? What do you do?'},
+    {id:'gr-wh-questions-pr-007',t:'us',q:'do / where / you / live / ?',a:'Where do you live?',hint:'WH + do + you + verb.',fu:'Now answer it!'},
+    {id:'gr-wh-questions-pr-008',t:'us',q:'does / what / she / do / ?',a:'What does she do?',hint:'What + does + she + verb.',fu:'Ask about a real person you know.'},
+    {id:'gr-wh-questions-pr-009',t:'ec',q:'Where you work?',a:'Where DO you work?',hint:'add the auxiliary.',fu:'Answer it about yourself!'},
+    {id:'gr-wh-questions-pr-010',t:'ec',q:'How old you are?',a:'How old ARE you?',hint:'with be, invert.',fu:'Ask ME how old I am — correctly!'},
+    {id:'gr-wh-questions-pr-011',t:'tr',q:'Make a question: answer is "I live in Curitiba." (ask where)',a:'Where do you live?',hint:'Where + do + you + live.',fu:'Ask me 2 more WH- questions.'},
+    {id:'gr-wh-questions-pr-012',t:'tr',q:'Make a question: answer is "She\'s a nurse." (ask job)',a:'What does she do?',hint:'What + does + she + do.',fu:'What do YOU do?'}
   ],
   c3:{
     fill:[{q:'___ do you live?',a:'Where',hint:'place.',fu:'Where?'},{q:'___ is your name?',a:'What',hint:'thing.',fu:'Answer!'}],
@@ -1411,12 +1411,12 @@ window.ENGINE_TOPICS={
     c4:'Prepare and run a 2-minute "podcast interview" on a topic I choose — at least 6 WH- questions, all following naturally.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Ask me 3 WH- questions in a row (what, where, why).'},
-    {tag:'🗣 speak',q:'Interview a family member in your head — say 4 questions you\'d ask.'},
-    {tag:'✏ create',q:'A question with "How much / How many / How old".'},
-    {tag:'✏ create',q:'A "why" question for me.'},
-    {tag:'⚠ fix it',q:'"Where you live?"',a:'Where DO you live?'},
-    {tag:'💭 concept',q:'What\'s the word order of a WH- question? What can never be missing? Example.',a:'WH + auxiliar (do/does/is/are) + sujeito + verbo; o auxiliar nunca some'}
+    {id:'gr-wh-questions-ex-001',tag:'🗣 speak',q:'Ask me 3 WH- questions in a row (what, where, why).'},
+    {id:'gr-wh-questions-ex-002',tag:'🗣 speak',q:'Interview a family member in your head — say 4 questions you\'d ask.'},
+    {id:'gr-wh-questions-ex-003',tag:'✏ create',q:'A question with "How much / How many / How old".'},
+    {id:'gr-wh-questions-ex-004',tag:'✏ create',q:'A "why" question for me.'},
+    {id:'gr-wh-questions-ex-005',tag:'⚠ fix it',q:'"Where you live?"',a:'Where DO you live?'},
+    {id:'gr-wh-questions-ex-006',tag:'💭 concept',q:'What\'s the word order of a WH- question? What can never be missing? Example.',a:'WH + auxiliar (do/does/is/are) + sujeito + verbo; o auxiliar nunca some'}
   ]
 },
 
@@ -1469,18 +1469,18 @@ window.ENGINE_TOPICS={
     {bad:'Do you have some money?',good:'Do you have ANY money?',why:'pergunta → any'}
   ],
   practice:[
-    {t:'fill',q:'I have ___ (positive) apples in my bag.',a:'some',hint:'positive → some.',fu:'What fruit do you have at home?'},
-    {t:'fill',q:'There isn\'t ___ (negative) milk left.',a:'any',hint:'negative → any.',fu:'What runs out fast in your kitchen?'},
-    {t:'fill',q:'How ___ coffee do you drink a day? (uncountable)',a:'much',hint:'coffee = uncountable → much.',fu:'Honestly — how much? 😄'},
-    {t:'mc',q:'"How ___ languages do you speak?"',opts:['much','many','any'],a:'B — many',hint:'languages = countable.',fu:'So HOW many? Which ones?'},
-    {t:'mc',q:'"Would you like ___ tea?" (offer)',opts:['any','some','many'],a:'B — some',hint:'offers use some.',fu:'Tea or coffee for you?'},
-    {t:'mc',q:'"There isn\'t ___ sugar."',opts:['some','any','many'],a:'B — any',hint:'negative → any.',fu:'Do you take sugar?'},
-    {t:'us',q:'much / how / do / water / you / drink / ?',a:'How much water do you drink?',hint:'How much + uncountable + do you...',fu:'Answer it!'},
-    {t:'us',q:'some / there / bread / is',a:'There is some bread.',hint:'positive → some.',fu:'What\'s in your kitchen right now?'},
-    {t:'ec',q:'How many money do you have?',a:'How MUCH money do you have?',hint:'money = uncountable.',fu:'Don\'t answer that one! 😄'},
-    {t:'ec',q:'I don\'t have some time.',a:'I don\'t have ANY time.',hint:'negative → any.',fu:'What do you never have time for?'},
-    {t:'tr',q:'Make it a question: "You have some brothers." (how many)',a:'How many brothers do you have?',hint:'How many + countable.',fu:'Answer it!'},
-    {t:'tr',q:'Positive → negative: "There is some milk."',a:'There isn\'t any milk.',hint:'some → any in negatives.',fu:'What isn\'t in your fridge?'}
+    {id:'gr-countable-uncountable-pr-001',t:'fill',q:'I have ___ (positive) apples in my bag.',a:'some',hint:'positive → some.',fu:'What fruit do you have at home?'},
+    {id:'gr-countable-uncountable-pr-002',t:'fill',q:'There isn\'t ___ (negative) milk left.',a:'any',hint:'negative → any.',fu:'What runs out fast in your kitchen?'},
+    {id:'gr-countable-uncountable-pr-003',t:'fill',q:'How ___ coffee do you drink a day? (uncountable)',a:'much',hint:'coffee = uncountable → much.',fu:'Honestly — how much? 😄'},
+    {id:'gr-countable-uncountable-pr-004',t:'mc',q:'"How ___ languages do you speak?"',opts:['much','many','any'],a:'B — many',hint:'languages = countable.',fu:'So HOW many? Which ones?'},
+    {id:'gr-countable-uncountable-pr-005',t:'mc',q:'"Would you like ___ tea?" (offer)',opts:['any','some','many'],a:'B — some',hint:'offers use some.',fu:'Tea or coffee for you?'},
+    {id:'gr-countable-uncountable-pr-006',t:'mc',q:'"There isn\'t ___ sugar."',opts:['some','any','many'],a:'B — any',hint:'negative → any.',fu:'Do you take sugar?'},
+    {id:'gr-countable-uncountable-pr-007',t:'us',q:'much / how / do / water / you / drink / ?',a:'How much water do you drink?',hint:'How much + uncountable + do you...',fu:'Answer it!'},
+    {id:'gr-countable-uncountable-pr-008',t:'us',q:'some / there / bread / is',a:'There is some bread.',hint:'positive → some.',fu:'What\'s in your kitchen right now?'},
+    {id:'gr-countable-uncountable-pr-009',t:'ec',q:'How many money do you have?',a:'How MUCH money do you have?',hint:'money = uncountable.',fu:'Don\'t answer that one! 😄'},
+    {id:'gr-countable-uncountable-pr-010',t:'ec',q:'I don\'t have some time.',a:'I don\'t have ANY time.',hint:'negative → any.',fu:'What do you never have time for?'},
+    {id:'gr-countable-uncountable-pr-011',t:'tr',q:'Make it a question: "You have some brothers." (how many)',a:'How many brothers do you have?',hint:'How many + countable.',fu:'Answer it!'},
+    {id:'gr-countable-uncountable-pr-012',t:'tr',q:'Positive → negative: "There is some milk."',a:'There isn\'t any milk.',hint:'some → any in negatives.',fu:'What isn\'t in your fridge?'}
   ],
   c3:{
     fill:[{q:'I have ___ apples.',a:'some',hint:'positive.',fu:'How many?'},{q:'Not ___ milk.',a:'any',hint:'negative.',fu:'None?'}],
@@ -1501,12 +1501,12 @@ window.ENGINE_TOPICS={
     c4:'Plan a dinner for 4 people: list ingredients with exact quantities (much/many, containers) — a full spoken shopping list.'
   },
   exit:[
-    {tag:'🗣 speak',q:'What\'s in your kitchen? Use some / any / much / many (4 sentences).'},
-    {tag:'🗣 speak',q:'Describe your eating in a day using quantities.'},
-    {tag:'✏ create',q:'A "How much...?" question and a "How many...?" question.'},
-    {tag:'✏ create',q:'A negative sentence with "any".'},
-    {tag:'⚠ fix it',q:'"How many water do you drink?"',a:'How MUCH water do you drink?'},
-    {tag:'💭 concept',q:'Countable vs uncountable — how do you know? And some vs any? Example.',a:'conta 1,2,3 → countable (many); massa → uncountable (much); some no positivo, any no resto'}
+    {id:'gr-countable-uncountable-ex-001',tag:'🗣 speak',q:'What\'s in your kitchen? Use some / any / much / many (4 sentences).'},
+    {id:'gr-countable-uncountable-ex-002',tag:'🗣 speak',q:'Describe your eating in a day using quantities.'},
+    {id:'gr-countable-uncountable-ex-003',tag:'✏ create',q:'A "How much...?" question and a "How many...?" question.'},
+    {id:'gr-countable-uncountable-ex-004',tag:'✏ create',q:'A negative sentence with "any".'},
+    {id:'gr-countable-uncountable-ex-005',tag:'⚠ fix it',q:'"How many water do you drink?"',a:'How MUCH water do you drink?'},
+    {id:'gr-countable-uncountable-ex-006',tag:'💭 concept',q:'Countable vs uncountable — how do you know? And some vs any? Example.',a:'conta 1,2,3 → countable (many); massa → uncountable (much); some no positivo, any no resto'}
   ]
 },
 
@@ -1559,18 +1559,18 @@ window.ENGINE_TOPICS={
     {bad:'You mustn\'t pay (= não precisa)',good:'You DON\'T HAVE TO pay',why:'mustn\'t = proibido, não "não precisa"'}
   ],
   practice:[
-    {t:'fill',q:'You look sick — you ___ (advice) see a doctor.',a:'should',hint:'advice → should.',fu:'What should someone do for a cold?'},
-    {t:'fill',q:'I ___ (obligation) work this Saturday.',a:'have to',hint:'obligation → have to.',fu:'What do you have to do this week?'},
-    {t:'fill',q:'He ___ (obligation, he) study tonight.',a:'has to',hint:'he → has to.',fu:'What does someone in your family have to do?'},
-    {t:'mc',q:'"You ___ park here — it\'s forbidden."',opts:['don\'t have to','mustn\'t','should'],a:'B — mustn\'t',hint:'forbidden → mustn\'t.',fu:'What mustn\'t you do at your job?'},
-    {t:'mc',q:'"It\'s free — you ___ pay."',opts:['mustn\'t','don\'t have to','should'],a:'B — don\'t have to',hint:'not necessary → don\'t have to.',fu:'What don\'t you have to do on weekends?'},
-    {t:'mc',q:'"You ___ drink more water."',opts:['should to','should','must to'],a:'B — should',hint:'no "to" after should.',fu:'Good advice? Do you drink enough?'},
-    {t:'us',q:'see / should / a / you / doctor',a:'You should see a doctor.',hint:'You should + base.',fu:'Give me advice for stress.'},
-    {t:'us',q:'to / has / work / she / early',a:'She has to work early.',hint:'has to + base.',fu:'What time do you have to start?'},
-    {t:'ec',q:'You should to sleep more.',a:'You should SLEEP more.',hint:'no "to".',fu:'Do you sleep enough?'},
-    {t:'ec',q:'He have to go now.',a:'He HAS to go now.',hint:'he → has to.',fu:'Where does he have to go?'},
-    {t:'tr',q:'Give advice: "I\'m always tired."',a:'You should sleep more / rest more.',hint:'You should + base.',fu:'Take your own advice? 😄'},
-    {t:'tr',q:'Make it forbidden: "smoking in here" (use mustn\'t)',a:'You mustn\'t smoke in here.',hint:'mustn\'t + base.',fu:'What else mustn\'t you do here?'}
+    {id:'gr-should-must-pr-001',t:'fill',q:'You look sick — you ___ (advice) see a doctor.',a:'should',hint:'advice → should.',fu:'What should someone do for a cold?'},
+    {id:'gr-should-must-pr-002',t:'fill',q:'I ___ (obligation) work this Saturday.',a:'have to',hint:'obligation → have to.',fu:'What do you have to do this week?'},
+    {id:'gr-should-must-pr-003',t:'fill',q:'He ___ (obligation, he) study tonight.',a:'has to',hint:'he → has to.',fu:'What does someone in your family have to do?'},
+    {id:'gr-should-must-pr-004',t:'mc',q:'"You ___ park here — it\'s forbidden."',opts:['don\'t have to','mustn\'t','should'],a:'B — mustn\'t',hint:'forbidden → mustn\'t.',fu:'What mustn\'t you do at your job?'},
+    {id:'gr-should-must-pr-005',t:'mc',q:'"It\'s free — you ___ pay."',opts:['mustn\'t','don\'t have to','should'],a:'B — don\'t have to',hint:'not necessary → don\'t have to.',fu:'What don\'t you have to do on weekends?'},
+    {id:'gr-should-must-pr-006',t:'mc',q:'"You ___ drink more water."',opts:['should to','should','must to'],a:'B — should',hint:'no "to" after should.',fu:'Good advice? Do you drink enough?'},
+    {id:'gr-should-must-pr-007',t:'us',q:'see / should / a / you / doctor',a:'You should see a doctor.',hint:'You should + base.',fu:'Give me advice for stress.'},
+    {id:'gr-should-must-pr-008',t:'us',q:'to / has / work / she / early',a:'She has to work early.',hint:'has to + base.',fu:'What time do you have to start?'},
+    {id:'gr-should-must-pr-009',t:'ec',q:'You should to sleep more.',a:'You should SLEEP more.',hint:'no "to".',fu:'Do you sleep enough?'},
+    {id:'gr-should-must-pr-010',t:'ec',q:'He have to go now.',a:'He HAS to go now.',hint:'he → has to.',fu:'Where does he have to go?'},
+    {id:'gr-should-must-pr-011',t:'tr',q:'Give advice: "I\'m always tired."',a:'You should sleep more / rest more.',hint:'You should + base.',fu:'Take your own advice? 😄'},
+    {id:'gr-should-must-pr-012',t:'tr',q:'Make it forbidden: "smoking in here" (use mustn\'t)',a:'You mustn\'t smoke in here.',hint:'mustn\'t + base.',fu:'What else mustn\'t you do here?'}
   ],
   c3:{
     fill:[{q:'You ___ (advice) rest.',a:'should',hint:'advice.',fu:'Why?'},{q:'I ___ (obligation) go.',a:'have to',hint:'obligation.',fu:'Where?'}],
@@ -1591,12 +1591,12 @@ window.ENGINE_TOPICS={
     c4:'Give a 60-second "survival guide" for a newcomer to your city or job: 3 shoulds, 2 musts, 1 mustn\'t.'
   },
   exit:[
-    {tag:'🗣 speak',q:'Give me 2 pieces of advice with "should" for learning English.'},
-    {tag:'🗣 speak',q:'What do you have to do — and not have to do — this week?'},
-    {tag:'✏ create',q:'A "forbidden" sentence with "mustn\'t".'},
-    {tag:'✏ create',q:'A "not necessary" sentence with "don\'t have to".'},
-    {tag:'⚠ fix it',q:'"He have to work on Sunday."',a:'He HAS to work on Sunday.'},
-    {tag:'💭 concept',q:'should vs must vs mustn\'t vs don\'t have to — one example of each.',a:'conselho / obrigação / proibido / não necessário'}
+    {id:'gr-should-must-ex-001',tag:'🗣 speak',q:'Give me 2 pieces of advice with "should" for learning English.'},
+    {id:'gr-should-must-ex-002',tag:'🗣 speak',q:'What do you have to do — and not have to do — this week?'},
+    {id:'gr-should-must-ex-003',tag:'✏ create',q:'A "forbidden" sentence with "mustn\'t".'},
+    {id:'gr-should-must-ex-004',tag:'✏ create',q:'A "not necessary" sentence with "don\'t have to".'},
+    {id:'gr-should-must-ex-005',tag:'⚠ fix it',q:'"He have to work on Sunday."',a:'He HAS to work on Sunday.'},
+    {id:'gr-should-must-ex-006',tag:'💭 concept',q:'should vs must vs mustn\'t vs don\'t have to — one example of each.',a:'conselho / obrigação / proibido / não necessário'}
   ]
 },
 
@@ -1649,18 +1649,18 @@ window.ENGINE_TOPICS={
     {bad:'If you study, you pass',good:'If you study, you WILL pass',why:'a consequência leva will'}
   ],
   practice:[
-    {t:'fill',q:'If it ___ (rain), we\'ll stay home.',a:'rains',hint:'after if → present.',fu:'What will you do if it rains this weekend?'},
-    {t:'fill',q:'If you study hard, you ___ (pass) the test.',a:'will pass',hint:'result → will + base.',fu:'What are you studying for right now?'},
-    {t:'fill',q:'I ___ (call) you if I ___ (have) time later.',a:'will call / have',hint:'result=will; if=present.',fu:'Who will you call if you have time today?'},
-    {t:'mc',q:'"If you ___ now, you\'ll be on time."',opts:['will leave','leave','leaving'],a:'B — leave',hint:'after if → present.',fu:'Why not A? And are you usually on time?'},
-    {t:'mc',q:'"If she asks me, I ___ say yes."',opts:['will','am','ask'],a:'A — will',hint:'result → will.',fu:'What would make you say yes to something?'},
-    {t:'mc',q:'"You\'ll be tired if you ___ enough."',opts:['won\'t sleep','don\'t sleep','not sleep'],a:'B — don\'t sleep',hint:'if part, negative present.',fu:'Do you sleep enough?'},
-    {t:'us',q:'stay / home / if / rains / it / I\'ll',a:'If it rains, I\'ll stay home.',hint:'If + present, will + verb.',fu:'And if it\'s sunny?'},
-    {t:'us',q:'you / study / pass / if / will / you',a:'If you study, you will pass.',hint:'If + present, will.',fu:'True in your experience?'},
-    {t:'ec',q:'If it will rain, I will stay home.',a:'If it RAINS, I will stay home.',hint:'if → present.',fu:'What will you do this weekend?'},
-    {t:'ec',q:'I will help you if you will ask.',a:'I will help you if you ASK.',hint:'if part = present.',fu:'Will you ask me for help? 😄'},
-    {t:'tr',q:'Join them: "Maybe it rains." + "I stay home."',a:'If it rains, I\'ll stay home.',hint:'If + present, will + base.',fu:'Make one about your weekend.'},
-    {t:'tr',q:'Finish it: "If I have time this weekend, ..."',a:'..., I\'ll ___ (e.g. I\'ll visit my family).',hint:'result → will + base.',fu:'Say the real version for you!'}
+    {id:'gr-first-conditional-pr-001',t:'fill',q:'If it ___ (rain), we\'ll stay home.',a:'rains',hint:'after if → present.',fu:'What will you do if it rains this weekend?'},
+    {id:'gr-first-conditional-pr-002',t:'fill',q:'If you study hard, you ___ (pass) the test.',a:'will pass',hint:'result → will + base.',fu:'What are you studying for right now?'},
+    {id:'gr-first-conditional-pr-003',t:'fill',q:'I ___ (call) you if I ___ (have) time later.',a:'will call / have',hint:'result=will; if=present.',fu:'Who will you call if you have time today?'},
+    {id:'gr-first-conditional-pr-004',t:'mc',q:'"If you ___ now, you\'ll be on time."',opts:['will leave','leave','leaving'],a:'B — leave',hint:'after if → present.',fu:'Why not A? And are you usually on time?'},
+    {id:'gr-first-conditional-pr-005',t:'mc',q:'"If she asks me, I ___ say yes."',opts:['will','am','ask'],a:'A — will',hint:'result → will.',fu:'What would make you say yes to something?'},
+    {id:'gr-first-conditional-pr-006',t:'mc',q:'"You\'ll be tired if you ___ enough."',opts:['won\'t sleep','don\'t sleep','not sleep'],a:'B — don\'t sleep',hint:'if part, negative present.',fu:'Do you sleep enough?'},
+    {id:'gr-first-conditional-pr-007',t:'us',q:'stay / home / if / rains / it / I\'ll',a:'If it rains, I\'ll stay home.',hint:'If + present, will + verb.',fu:'And if it\'s sunny?'},
+    {id:'gr-first-conditional-pr-008',t:'us',q:'you / study / pass / if / will / you',a:'If you study, you will pass.',hint:'If + present, will.',fu:'True in your experience?'},
+    {id:'gr-first-conditional-pr-009',t:'ec',q:'If it will rain, I will stay home.',a:'If it RAINS, I will stay home.',hint:'if → present.',fu:'What will you do this weekend?'},
+    {id:'gr-first-conditional-pr-010',t:'ec',q:'I will help you if you will ask.',a:'I will help you if you ASK.',hint:'if part = present.',fu:'Will you ask me for help? 😄'},
+    {id:'gr-first-conditional-pr-011',t:'tr',q:'Join them: "Maybe it rains." + "I stay home."',a:'If it rains, I\'ll stay home.',hint:'If + present, will + base.',fu:'Make one about your weekend.'},
+    {id:'gr-first-conditional-pr-012',t:'tr',q:'Finish it: "If I have time this weekend, ..."',a:'..., I\'ll ___ (e.g. I\'ll visit my family).',hint:'result → will + base.',fu:'Say the real version for you!'}
   ],
   c3:{
     fill:[{q:'If it ___ (rain), I\'ll stay.',a:'rains',hint:'if→present.',fu:'And if not?'},{q:'You ___ (pass) if you study.',a:'will pass',hint:'result→will.',fu:'Studying now?'}],
@@ -1681,12 +1681,12 @@ window.ENGINE_TOPICS={
     c4:'Plan a real "if-then" strategy for a goal (a trip, an exam, a project): 4 conditional steps, each depending on the last.'
   },
   exit:[
-    {tag:'🗣 speak',q:'3 real plans for your weekend using "If..., I\'ll...".'},
-    {tag:'🗣 speak',q:'A chain of 2 consequences: "If I..., I\'ll..., and then..."'},
-    {tag:'✏ create',q:'A first-conditional sentence with "unless" or "when".'},
-    {tag:'✏ create',q:'A warning: "If you don\'t..., you\'ll..."'},
-    {tag:'⚠ fix it',q:'"If it will rain, I will stay home."',a:'If it RAINS, I will stay home.'},
-    {tag:'💭 concept',q:'Which tense after "if", and where does "will" go? One example.',a:'if + presente; will só na consequência (If it rains, I will stay)'}
+    {id:'gr-first-conditional-ex-001',tag:'🗣 speak',q:'3 real plans for your weekend using "If..., I\'ll...".'},
+    {id:'gr-first-conditional-ex-002',tag:'🗣 speak',q:'A chain of 2 consequences: "If I..., I\'ll..., and then..."'},
+    {id:'gr-first-conditional-ex-003',tag:'✏ create',q:'A first-conditional sentence with "unless" or "when".'},
+    {id:'gr-first-conditional-ex-004',tag:'✏ create',q:'A warning: "If you don\'t..., you\'ll..."'},
+    {id:'gr-first-conditional-ex-005',tag:'⚠ fix it',q:'"If it will rain, I will stay home."',a:'If it RAINS, I will stay home.'},
+    {id:'gr-first-conditional-ex-006',tag:'💭 concept',q:'Which tense after "if", and where does "will" go? One example.',a:'if + presente; will só na consequência (If it rains, I will stay)'}
   ]
 }
 };
