@@ -247,6 +247,19 @@
 
 /* ===== PRACTICE — formatos novos ===== */
 
+  /* Seletores compactos (Student · Topic). Um select nativo é o controle
+     mais simples que mostra só a escolha atual e dá acesso aos 33 tópicos
+     sem ocupar quatro linhas de chips. Legível em screen share. */
+  /* Não dependemos do Tailwind (CDN) para o layout desta linha. */
+  .pick-row    { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 18px; }
+  .pick        { display: flex; flex-direction: column; gap: 4px; }
+  .pick label  { font-size: 10px; font-weight: 800; letter-spacing: .09em;
+                 text-transform: uppercase; color: var(--tl-text-tertiary); }
+  .pick-sel    { font-size: 17px; font-weight: 700; padding: 10px 14px;
+                 width: auto; min-width: 230px; max-width: 340px; cursor: pointer; }
+  .pick-meta   { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+
   /* Grupos de tipo: rótulo pequeno, chips compactos. O menu não compete
      com o exercício. */
   .type-group      { margin-bottom: 10px; }
@@ -286,6 +299,9 @@
     transition: all var(--tl-dur-fast) var(--tl-ease);
   }
   .verb-card:hover { border-color: var(--tl-primary); transform: translateY(-2px); }
+  .verb-card.used { border-color: var(--tl-success); }
+  .verb-card .vmark { display:block; font-size: 13px; color: var(--tl-success-text); margin-top: 2px; }
+  .verb-card.on .vmark { color: var(--tl-text-inverse); }
   .verb-card.on {
     background: linear-gradient(135deg, var(--tl-primary), var(--tl-secondary));
     color: var(--tl-text-inverse); border-color: transparent;
@@ -314,16 +330,19 @@
         </div>
         <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 text-sm"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</button>
       </div>
-      <div class="flex gap-2 overflow-x-auto pb-1" id="topicSelector"></div>
     </div>
   </div>
 
   <div class="max-w-4xl mx-auto p-4 md:p-6">
 
-    <!-- Aluno · aviso de gravação · contador -->
-    <div class="card rounded-xl p-4 mb-4 flex items-center justify-between flex-wrap gap-3">
-      <div id="stuBar" class="flex items-center flex-wrap"></div>
-      <div class="flex items-center gap-3">
+    <!-- Aluno e tópico em dois seletores. 33 tópicos não cabem como chips:
+         um select mostra só o escolhido e continua dando acesso a todos. -->
+    <div class="card rounded-xl p-4 mb-4 pick-row">
+      <div class="pick"><label for="stuSelect">Student</label>
+        <select id="stuSelect" class="inp pick-sel" onchange="pickStu(this.value)"></select></div>
+      <div class="pick"><label for="topicSelect">Topic</label>
+        <select id="topicSelect" class="inp pick-sel" onchange="pickTopic(this.value)"></select></div>
+      <div class="pick-meta">
         <p id="saveWarn" style="display:none;font-size:13px;font-weight:600;color:var(--tl-danger-text);background:var(--tl-danger-soft);border:1px solid var(--tl-danger);border-radius:var(--tl-radius-md);padding:6px 12px"></p>
         <p class="text-slate-400 text-sm" id="usedCount">—</p>
       </div>
@@ -392,12 +411,10 @@ function pickStu(id){
   renderStuBar(); renderUsedCount();
 }
 function renderStuBar(){
-  const el=document.getElementById('stuBar'); if(!el) return;
-  if(!STUDENTS_DATA.length){
-    el.innerHTML='<span class="text-slate-400 text-sm">No students yet — add one in Students.</span>'; return;
-  }
-  el.innerHTML='<span class="text-slate-400 text-sm font-bold" style="margin-right:8px">Student:</span>'+
-    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn ${s.id===curStu?'active':''}" style="margin:2px">${s.emoji||''} ${s.name}</button>`).join('');
+  const el=document.getElementById('stuSelect'); if(!el) return;
+  if(!STUDENTS_DATA.length){ el.innerHTML='<option>No students yet</option>'; return; }
+  el.innerHTML=STUDENTS_DATA.map(s=>
+    `<option value="${s.id}" ${s.id===curStu?'selected':''}>${s.emoji||''} ${s.name}</option>`).join('');
 }
 function renderUsedCount(){
   const el=document.getElementById('usedCount'); if(!el) return;
@@ -440,6 +457,32 @@ function markUsed(item){
   maybeMarkGroup(item);
 }
 
+/* Sub-unidade com id próprio (verbo de Make a Sentence). Marca só ela.
+   Quando TODAS as sub-unidades estiverem gastas, o id da tela também é
+   marcado — assim o filtro futuro pergunta uma coisa só para tirar o
+   conjunto inteiro do pool, do mesmo jeito que o Reading. */
+function markUnit(item, unitId){
+  if(!curStu || !unitId) return;
+  const s=st(item);
+  s._loggedUnits = s._loggedUnits || {};
+  if(s._loggedUnits[unitId]) return;
+  s._loggedUnits[unitId]=true;
+  if(PL.markDone(curStu, unitId) === false){
+    s._loggedUnits[unitId]=false;
+    if(s.judgedVerbs) delete s.judgedVerbs[unitId];
+    showSaveWarning();
+    return;
+  }
+  clearSaveWarning();
+  renderUsedCount();
+
+  const units=PB.unitsOf(item);
+  if(units.length && units.every(id=>PL.isDone(curStu,id))){
+    if(PL.markDone(curStu, item.id) === false){ showSaveWarning(); return; }
+    renderUsedCount();
+  }
+}
+
 /* Unidade de uso: um texto de Reading só é consumido por inteiro. */
 function maybeMarkGroup(item){
   if(!curStu || !item || !item.groupId) return;
@@ -453,8 +496,9 @@ function maybeMarkGroup(item){
 
 /* ---------- seleção ---------- */
 function renderTopics(){
-  document.getElementById('topicSelector').innerHTML =
-    TOPICS.map(t=>`<button class="theme-btn ${t.key===curTopic?'active':''}" onclick="pickTopic('${t.key}')">${t.label}</button>`).join('');
+  const el=document.getElementById('topicSelect'); if(!el) return;
+  el.innerHTML = TOPICS.map(t=>
+    `<option value="${t.key}" ${t.key===curTopic?'selected':''}>${t.label}${t.level?' · '+t.level:''}</option>`).join('');
 }
 function pickTopic(k){ curTopic=k; curType='all'; loadPool(); window.scrollTo({top:0,behavior:'smooth'}); }
 function pickType(t){ curType=t; loadPool(); }
@@ -627,17 +671,24 @@ function bodyOf(item){
     }
 
     case 'make_sentence': {
+      // Cada VERBO é a unidade de uso. Trabalhar BUY não gasta DRINK.
+      // A polaridade (+ / – / ?) é variação de produção do mesmo verbo e
+      // nunca cria registro.
       const s2=st(item);
       if(!s2.pol) s2.pol='+';
       const POL=['+','–','?'];
+      const sel=s2.verbId ? (item.verbs||[]).find(v=>v.id===s2.verbId) : null;
       return `<p class="q-big text-white font-semibold mb-1">${esc(item.instruction)}</p>
         <div style="display:flex;gap:8px;align-items:center;margin-top:14px">
           ${POL.map(p=>`<button class="pol ${s2.pol===p?'on':''}" onclick="setPol('${p}')">${p}</button>`).join('')}
           <button class="theme-btn font-bold py-2 px-4 rounded-lg" style="margin-left:6px" onclick="randomPol()">🎲 Random</button>
-          ${s2.verb?`<span style="margin-left:auto;font-size:22px;font-weight:800;color:var(--tl-primary)">${esc(s2.verb)} &nbsp;${s2.pol}</span>`:''}
+          ${sel?`<span style="margin-left:auto;font-size:22px;font-weight:800;color:var(--tl-primary)">${esc(sel.v)} &nbsp;${s2.pol}</span>`:''}
         </div>
-        <div class="verb-grid">${(item.verbs||[]).map(v=>
-          `<div class="verb-card ${s2.verb===v?'on':''}" onclick="pickVerb('${esc(v)}')">${esc(v)}</div>`).join('')}</div>`;
+        <div class="verb-grid">${(item.verbs||[]).map(v=>{
+          const on   = s2.verbId===v.id;
+          const done = !!(s2.judgedVerbs && s2.judgedVerbs[v.id]);
+          return `<div class="verb-card ${on?'on':''} ${done?'used':''}" onclick="pickVerb('${v.id}')">${esc(v.v)}${done?'<span class="vmark">✓</span>':''}</div>`;
+        }).join('')}</div>`;
     }
 
     /* complete · unscramble · fix · transform · open — mesmo runner */
@@ -690,7 +741,7 @@ function canJudge(item){
     for(let i=0;i<n;i++) if(!s['g'+i]) return false;
     return true;
   }
-  if(item.format==='make_sentence') return !!s.verb;
+  if(item.format==='make_sentence') return !!s.verbId && !(s.judgedVerbs&&s.judgedVerbs[s.verbId]);
   return true;
 }
 
@@ -752,13 +803,27 @@ function fillGap(i){                          // Story / Dialogue
   renderExercise();
 }
 
-function setPol(p){ st(pool[idx]).pol=p; renderExercise(); }
+function setPol(p){ st(pool[idx]).pol=p; renderExercise(); }   // não marca nada
 function randomPol(){ const P=['+','–','?']; setPol(P[Math.floor(Math.random()*3)]); }
-function pickVerb(v){ st(pool[idx]).verb=v; renderExercise(); }
+function pickVerb(id){ st(pool[idx]).verbId=id; renderExercise(); }   // selecionar não marca
 
-function judge(ok){                           // estado terminal dos demais formatos
+function judge(ok){                           // estado terminal
   const item=pool[idx], s=st(item);
   if(!canJudge(item)) return;
+
+  // Make a Sentence: o veredicto marca O VERBO, não a tela.
+  if(item.format==='make_sentence'){
+    const verbId=s.verbId;
+    if(!verbId) return;
+    s.judgedVerbs = s.judgedVerbs || {};
+    if(s.judgedVerbs[verbId]!==undefined) return;
+    s.judgedVerbs[verbId]=ok;
+    markUnit(item, verbId);
+    s.verbId=null;                            // libera a tela para o próximo verbo
+    renderExercise();
+    return;
+  }
+
   if(s.verdict!==undefined) return;
   s.verdict=ok;
   markUsed(item);

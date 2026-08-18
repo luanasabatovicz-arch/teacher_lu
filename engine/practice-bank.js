@@ -453,10 +453,32 @@ var TOPICS = {
       ],
       answers:["were","was","didn't","had","Did","went"]},
 
-    // MAKE A SENTENCE — produção oral. Não há correção automática.
+    /* MAKE A SENTENCE — produção oral, sem correção automática.
+       A UNIDADE DE USO É O VERBO, não a tela. Se o aluno produzir uma frase
+       com BUY, só BUY foi gasto — os outros onze continuam disponíveis para
+       ele. Por isso cada verbo carrega o seu próprio id permanente, escrito
+       aqui no dado (nunca derivado de posição em runtime).
+       As polaridades + / – / ? são variações de produção do MESMO verbo e
+       não geram id nenhum.
+       O id da tela (past-sentence-021) é a unidade de uso do conjunto: só é
+       marcado quando os doze verbos já tiverem sido trabalhados — mesma
+       lógica do groupId do Reading. */
     {id:"past-sentence-021",type:"make_sentence",
       instruction:"Choose a verb and make a sentence in the Simple Past.",
-      verbs:["buy","drink","eat","go","listen","look","play","sell","sleep","walk","watch","work"]}
+      verbs:[
+        {v:"buy",    id:"past-sentence-buy-001"},
+        {v:"drink",  id:"past-sentence-drink-001"},
+        {v:"eat",    id:"past-sentence-eat-001"},
+        {v:"go",     id:"past-sentence-go-001"},
+        {v:"listen", id:"past-sentence-listen-001"},
+        {v:"look",   id:"past-sentence-look-001"},
+        {v:"play",   id:"past-sentence-play-001"},
+        {v:"sell",   id:"past-sentence-sell-001"},
+        {v:"sleep",  id:"past-sentence-sleep-001"},
+        {v:"walk",   id:"past-sentence-walk-001"},
+        {v:"watch",  id:"past-sentence-watch-001"},
+        {v:"work",   id:"past-sentence-work-001"}
+      ]}
   ]},
 
   travel:{ label:"Travel", keys:["travel","trip","vacation","holiday","viagem"], exercises:[
@@ -753,6 +775,14 @@ var TOPICS = {
       return (t && t.groupId) ? t.groupId : null;
     },
 
+    /** Os ids das sub-unidades de um exercício (hoje: verbos de Make a Sentence). */
+    unitsOf: function (item) {
+      if (!item || !item.verbs) return [];
+      return item.verbs
+        .filter(function (v) { return v && typeof v === 'object' && v.id; })
+        .map(function (v) { return v.id; });
+    },
+
     groupMembers: function (key) {
       var t = TOPICS[key];
       if (!t || !t.groupId) return [];
@@ -780,6 +810,11 @@ var TOPICS = {
           if (ex.id && TOKEN[ex.type] && ex.id.indexOf('-' + TOKEN[ex.type] + '-') === -1) {
             malformed.push(ex.id + ' (token não bate com o tipo ' + ex.type + ')');
           }
+          // Sub-unidades com id próprio: cada verbo de Make a Sentence é uma
+          // unidade de uso e entra na auditoria como qualquer exercício.
+          (ex.verbs || []).forEach(function (v, k) {
+            if (v && typeof v === 'object') check(v.id, 'bank:' + key + '#' + i + '.verb[' + k + ']');
+          });
         });
       });
 
