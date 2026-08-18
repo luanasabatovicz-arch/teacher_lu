@@ -402,7 +402,61 @@ var TOPICS = {
     {id:"past-match-013",type:"matching",question:"Match the verb to its past form:",pairs:[
       {left:"go",right:"went"},{left:"have",right:"had"},{left:"see",right:"saw"},
       {left:"buy",right:"bought"},{left:"eat",right:"ate"}
-    ]}
+    ]},
+
+    /* ---- CONTEÚDO PILOTO — formatos novos ------------------------------
+       Poucos itens de propósito: o objetivo aqui é validar os renderers em
+       aula, não encher o banco. Numeração continua de onde o tópico parou
+       (013), sem reaproveitar número de item nenhum. -------------------- */
+
+    // MAKE A QUESTION — a resposta está dada; o aluno formula a pergunta.
+    {id:"past-question-014",type:"make_question",
+      answer:"I went to London last year.",prompt:"Ask about the place.",
+      correct:"Where did you go last year?"},
+    {id:"past-question-015",type:"make_question",
+      answer:"She bought a new phone because the old one broke.",prompt:"Ask about the reason.",
+      correct:"Why did she buy a new phone?"},
+    {id:"past-question-016",type:"make_question",
+      answer:"They arrived at eight o'clock.",prompt:"Ask about the time.",
+      correct:"When did they arrive?"},
+    {id:"past-question-017",type:"make_question",
+      answer:"My brother cooked dinner yesterday.",prompt:"Ask about the person.",
+      correct:"Who cooked dinner yesterday?"},
+    {id:"past-question-018",type:"make_question",
+      answer:"We watched three films last weekend.",prompt:"Ask about the quantity.",
+      correct:"How many films did you watch last weekend?"},
+
+    // COMPLETE THE STORY — 8 lacunas, word bank opcional (níveis mais baixos).
+    {id:"past-story-019",type:"story",
+      title:"A Lucky Day",
+      context:"Last Saturday something very good happened to Ana.",
+      wordBank:["bought","went","won","called","celebrated","was","did not sleep","opened"],
+      text:"Last Saturday Ana ___ to the shop near her house. She ___ a lottery ticket "+
+           "and put it in her bag. In the evening she ___ the newspaper and checked the "+
+           "numbers. She ___ two thousand reais! She ___ so happy that she ___ her sister "+
+           "immediately. They ___ with a pizza and a film. That night Ana ___ very well — "+
+           "she was too excited.",
+      answers:["went","bought","opened","won","was","called","celebrated","did not sleep"]},
+
+    // COMPLETE THE DIALOGUE — 6 lacunas, mesma infraestrutura da Story.
+    {id:"past-dialogue-020",type:"dialogue",
+      title:"Where were you?",
+      context:"Two colleagues meet on Monday morning.",
+      wordBank:["were","was","didn't","did","went","had"],
+      lines:[
+        {who:"A",text:"Where ___ you yesterday?"},
+        {who:"B",text:"I ___ at home all day."},
+        {who:"A",text:"Why ___ you come to the party?"},
+        {who:"B",text:"Because I ___ a terrible headache."},
+        {who:"A",text:"Oh no. ___ you take anything for it?"},
+        {who:"B",text:"Yes, and then I ___ straight to bed."}
+      ],
+      answers:["were","was","didn't","had","Did","went"]},
+
+    // MAKE A SENTENCE — produção oral. Não há correção automática.
+    {id:"past-sentence-021",type:"make_sentence",
+      instruction:"Choose a verb and make a sentence in the Simple Past.",
+      verbs:["buy","drink","eat","go","listen","look","play","sell","sleep","walk","watch","work"]}
   ]},
 
   travel:{ label:"Travel", keys:["travel","trip","vacation","holiday","viagem"], exercises:[
@@ -474,84 +528,218 @@ var TOPICS = {
     ]
   }
 };
+  /* ======================================================================
+     API
+     ----------------------------------------------------------------------
+     Uma peça só resolve três perguntas:
+       "o que existe?"        -> all() / query()
+       "que tópicos há?"      -> topics()
+       "os ids estão sãos?"   -> audit()
 
-  /* ----------------------------------------------------------------------
-     Minimal API. Deliberately small: a lookup, a filter and an audit.
-     No abstraction that nothing uses yet.
-     ---------------------------------------------------------------------- */
+     FONTES EXTERNAS
+     ---------------
+     Outros bancos entram por registerSource() sem copiar uma linha de
+     conteúdo — é assim que os 337 exercícios de grammar-topics.js aparecem
+     aqui (ver engine/practice-adapters.js). O conteúdo continua morando
+     onde sempre morou.
 
-  /** Format token used in the ids, derived from the exercise type. */
+     DESCRITOR NORMALIZADO
+     ---------------------
+     A página nunca vê o formato bruto de cada banco. Todo item sai daqui
+     no mesmo formato:
+
+       { id, format, topic, topicLabel, level, theme, groupId,
+         q, a, options, correctIndex, statements, pairs,
+         title, context, wordBank, text, lines, answers,
+         verbs, instruction, prompt, passage }
+
+     Só os campos do formato em questão vêm preenchidos.
+     ====================================================================== */
+
+  /* Token de formato usado nos ids do banco próprio. */
   var TOKEN = {
     multiple_choice: 'mc',
     fill_blank:      'complete',
     true_false:      'tf',
-    matching:        'match'
+    matching:        'match',
+    make_question:   'question',
+    story:           'story',
+    dialogue:        'dialogue',
+    make_sentence:   'sentence'
   };
+
+  /* type do banco próprio -> format canônico */
+  var FORMAT_OF = {
+    fill_blank:      'complete',
+    multiple_choice: 'multiple_choice',
+    true_false:      'true_false',
+    matching:        'matching',
+    make_question:   'make_question',
+    story:           'story',
+    dialogue:        'dialogue',
+    make_sentence:   'make_sentence'
+  };
+
+  /* Os tipos de prática oferecidos na tela, em três grupos. Cada um sabe
+     dizer se um item pertence a ele — assim Reading não rouba os itens dos
+     grupos rápidos, e nada fica órfão. */
+  var TYPES = [
+    { id:'all',             label:'All',                  group:'quick',
+      match:function(){ return true; } },
+    { id:'complete',        label:'Complete',             group:'quick',
+      match:function(x){ return x.format==='complete' && !x.passage; } },
+    { id:'multiple_choice', label:'Multiple Choice',      group:'quick',
+      match:function(x){ return x.format==='multiple_choice' && !x.passage; } },
+    { id:'unscramble',      label:'Unscramble',           group:'quick',
+      match:function(x){ return x.format==='unscramble'; } },
+    { id:'fix',             label:'Fix the Mistake',      group:'quick',
+      match:function(x){ return x.format==='fix'; } },
+    { id:'transform',       label:'Transformation',       group:'quick',
+      match:function(x){ return x.format==='transform'; } },
+    { id:'make_question',   label:'Make a Question',      group:'quick',
+      match:function(x){ return x.format==='make_question'; } },
+    { id:'story',           label:'Complete the Story',   group:'context',
+      match:function(x){ return x.format==='story'; } },
+    { id:'dialogue',        label:'Complete the Dialogue',group:'context',
+      match:function(x){ return x.format==='dialogue'; } },
+    { id:'reading',         label:'Reading',              group:'context',
+      match:function(x){ return !!x.passage; } },
+    { id:'make_sentence',   label:'Make a Sentence',      group:'production',
+      match:function(x){ return x.format==='make_sentence'; } }
+  ];
+  var GROUPS = [
+    { id:'quick',      label:'Quick Practice' },
+    { id:'context',    label:'Context' },
+    { id:'production', label:'Production' }
+  ];
+
+  var sources = [];
+
+  function safe(fn, fallback, label) {
+    try { return fn(); }
+    catch (e) { console.warn('[practice-bank] source "' + label + '" failed', e); return fallback; }
+  }
+
+  /** Normaliza um exercício do banco próprio. */
+  function shapeOwn(key, topic, ex, i) {
+    return {
+      id:         ex.id || '',
+      format:     FORMAT_OF[ex.type] || ex.type || '',
+      topic:      key,
+      topicLabel: topic.label || key,
+      level:      (topic.passage && topic.passage.level) || ex.level || '',
+      theme:      topic.theme || '',
+      groupId:    topic.groupId || '',
+      passage:    topic.passage || null,
+      index:      i,
+
+      q:            ex.question || '',
+      a:            ex.correct || '',
+      options:      ex.options || null,
+      correctIndex: (typeof ex.correct === 'number') ? ex.correct : null,
+      statements:   ex.statements || null,
+      pairs:        ex.pairs || null,
+
+      title:    ex.title || '',
+      context:  ex.context || '',
+      wordBank: ex.wordBank || null,
+      text:     ex.text || '',
+      lines:    ex.lines || null,
+      answers:  ex.answers || null,
+
+      verbs:       ex.verbs || null,
+      instruction: ex.instruction || '',
+      prompt:      ex.prompt || '',
+      answerLine:  ex.answer || '',
+      expected:    ex.correct && typeof ex.correct === 'string' ? ex.correct : '',
+
+      raw: ex
+    };
+  }
 
   function flatten() {
     var out = [];
     Object.keys(TOPICS).forEach(function (key) {
       var t = TOPICS[key] || {};
-      var level = (t.passage && t.passage.level) || '';
-      (t.exercises || []).forEach(function (ex, i) {
-        out.push({
-          id:      ex.id || '',
-          format:  ex.type || '',
-          topic:   key,
-          level:   level,
-          groupId: t.groupId || '',
-          index:   i,
-          ex:      ex
-        });
-      });
+      (t.exercises || []).forEach(function (ex, i) { out.push(shapeOwn(key, t, ex, i)); });
+    });
+    sources.forEach(function (src) {
+      var items = safe(function () { return src.load ? src.load() : []; }, [], src.id) || [];
+      items.forEach(function (it) { if (it && it.id) out.push(it); });
     });
     return out;
   }
 
   var PracticeBank = {
 
-    VERSION: '1.0.0',
+    VERSION: '2.0.0',
 
-    /** The bank itself — the page renders straight from this. */
     TOPICS: TOPICS,
+    TYPES: TYPES,
+    GROUPS: GROUPS,
+
+    /** Registra um banco externo. Não copia conteúdo: guarda a função. */
+    registerSource: function (src) {
+      if (!src || !src.id || typeof src.load !== 'function') {
+        console.warn('[practice-bank] a source needs id and load()');
+        return PracticeBank;
+      }
+      sources = sources.filter(function (s) { return s.id !== src.id; });
+      sources.push(src);
+      return PracticeBank;
+    },
+
+    sources: function () { return sources.map(function (s) { return s.id; }); },
 
     keys: function () { return Object.keys(TOPICS); },
-
     topic: function (key) { return TOPICS[key] || null; },
 
-    /**
-     * The unit of use for a topic: its groupId when it declares one,
-     * otherwise null (meaning "each exercise is its own unit").
-     */
-    groupOf: function (key) {
-      var t = TOPICS[key];
-      return (t && t.groupId) ? t.groupId : null;
-    },
-
-    /** Every exercise id that must be done for a group to be complete. */
-    groupMembers: function (key) {
-      var t = TOPICS[key];
-      if (!t || !t.groupId) return [];
-      return (t.exercises || []).map(function (ex) { return ex.id; });
-    },
-
-    /** Every exercise as a flat descriptor: { id, format, topic, level, ex }. */
+    /** Todos os itens já normalizados. */
     all: flatten,
 
+    /** [{ key, label, level, count }] — a lista de tópicos da tela. */
+    topics: function () {
+      var seen = {}, out = [];
+      flatten().forEach(function (x) {
+        if (!seen[x.topic]) {
+          seen[x.topic] = { key: x.topic, label: x.topicLabel, level: x.level || '', count: 0 };
+          out.push(seen[x.topic]);
+        }
+        seen[x.topic].count++;
+        if (!seen[x.topic].level && x.level) seen[x.topic].level = x.level;
+      });
+      return out;
+    },
+
     /**
-     * Filter the flat list.
-     *   PracticeBank.query({ topic: 'past', format: 'fill_blank' })
-     * An absent or empty field means "any".
+     * Filtro. `type` usa os predicados de TYPES; os demais são igualdade.
+     *   query({ topic:'past', type:'complete' })
      */
     query: function (f) {
       f = f || {};
+      var type = null;
+      if (f.type && f.type !== 'all') {
+        for (var i = 0; i < TYPES.length; i++) if (TYPES[i].id === f.type) type = TYPES[i];
+      }
       return flatten().filter(function (x) {
         if (f.topic  && x.topic  !== f.topic)  return false;
         if (f.format && x.format !== f.format) return false;
         if (f.level  && x.level  !== f.level)  return false;
+        if (f.theme  && x.theme  !== f.theme)  return false;
         if (f.id     && x.id     !== f.id)     return false;
+        if (type && !type.match(x)) return false;
         return true;
       });
+    },
+
+    /** Quantos itens cada tipo tem dentro de um tópico. */
+    typeCounts: function (topicKey) {
+      var pool = PracticeBank.query({ topic: topicKey });
+      var c = {};
+      TYPES.forEach(function (t) {
+        c[t.id] = (t.id === 'all') ? pool.length : pool.filter(t.match).length;
+      });
+      return c;
     },
 
     byId: function (id) {
@@ -559,65 +747,66 @@ var TOPICS = {
       return hit.length ? hit[0] : null;
     },
 
+    /** A unidade de uso de um tópico: o groupId, quando existe. */
+    groupOf: function (key) {
+      var t = TOPICS[key];
+      return (t && t.groupId) ? t.groupId : null;
+    },
+
+    groupMembers: function (key) {
+      var t = TOPICS[key];
+      if (!t || !t.groupId) return [];
+      return (t.exercises || []).map(function (ex) { return ex.id; });
+    },
+
     /**
-     * Id health check. Also audits the Grammar topics when
-     * engine/grammar-topics.js happens to be loaded on the same page.
-     *
+     * Saúde dos ids — banco próprio, groupIds e TODAS as fontes externas.
      *   TeacherLu.PracticeBank.audit()
-     *   -> { total, missing: [], duplicates: [], malformed: [], ok: true }
      */
-    audit: function (opts) {
-      opts = opts || {};
+    audit: function () {
       var seen = {}, missing = [], duplicates = [], malformed = [], total = 0;
 
-      function check(id, where, expectPrefix) {
+      function check(id, where) {
         total++;
         if (!id) { missing.push(where); return; }
         if (seen[id]) duplicates.push(id + ' (' + seen[id] + ' & ' + where + ')');
         else seen[id] = where;
-        if (expectPrefix && id.indexOf(expectPrefix) !== 0) malformed.push(id + ' @ ' + where);
       }
 
       Object.keys(TOPICS).forEach(function (key) {
-        // O groupId compartilha o espaço de nomes dos ids de exercício.
         if (TOPICS[key].groupId) check(TOPICS[key].groupId, 'group:' + key);
         (TOPICS[key].exercises || []).forEach(function (ex, i) {
           check(ex.id, 'bank:' + key + '#' + i);
           if (ex.id && TOKEN[ex.type] && ex.id.indexOf('-' + TOKEN[ex.type] + '-') === -1) {
-            malformed.push(ex.id + ' (token does not match type ' + ex.type + ')');
+            malformed.push(ex.id + ' (token não bate com o tipo ' + ex.type + ')');
           }
         });
       });
 
-      // Grammar legacy ids — only when that file is loaded.
-      var GT = opts.grammar === false ? null : global.ENGINE_TOPICS;
-      if (GT) {
-        Object.keys(GT).forEach(function (k) {
-          var t = GT[k] || {};
-          [['practice', 'pr'], ['practiceMore', 'pm'], ['exit', 'ex']].forEach(function (pair) {
-            (t[pair[0]] || []).forEach(function (item, i) {
-              check(item.id, 'grammar:' + k + '.' + pair[0] + '#' + i, 'gr-' + (t.id || k) + '-' + pair[1] + '-');
-            });
-          });
-        });
-      }
+      sources.forEach(function (src) {
+        var items = safe(function () { return src.load(); }, [], src.id) || [];
+        items.forEach(function (it, i) { check(it && it.id, src.id + '#' + i); });
+      });
 
       var res = {
-        total: total,
-        missing: missing,
-        duplicates: duplicates,
-        malformed: malformed,
+        total: total, missing: missing, duplicates: duplicates, malformed: malformed,
         ok: !missing.length && !duplicates.length && !malformed.length
       };
       console[res.ok ? 'info' : 'error'](
-        '[practice-bank] audit: ' + total + ' ids · ' +
-        missing.length + ' missing · ' + duplicates.length + ' duplicated · ' +
-        malformed.length + ' malformed', res.ok ? '' : res
+        '[practice-bank] audit: ' + total + ' ids · ' + missing.length + ' missing · ' +
+        duplicates.length + ' duplicated · ' + malformed.length + ' malformed',
+        res.ok ? '' : res
       );
       return res;
     }
   };
 
   NS.PracticeBank = PracticeBank;
+
+  /* Fontes registradas antes deste arquivo carregar não se perdem. */
+  if (Array.isArray(NS.__pendingPracticeSources)) {
+    NS.__pendingPracticeSources.forEach(function (s) { PracticeBank.registerSource(s); });
+    NS.__pendingPracticeSources = [];
+  }
 
 })(typeof window !== 'undefined' ? window : this);
