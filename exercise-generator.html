@@ -265,6 +265,18 @@
 
   <!-- MAIN -->
   <div class="max-w-4xl mx-auto p-4 md:p-6">
+    <!-- Student bar — quem está praticando agora. Sem isto o PracticeLog não
+         sabe de quem é o registro. UI mínima de propósito (etapa 4). -->
+    <div class="card rounded-xl p-4 mb-4 flex items-center justify-between flex-wrap gap-3">
+      <div id="stuBar" class="flex items-center flex-wrap"></div>
+      <div class="flex items-center gap-3">
+        <!-- Aviso de gravação: só aparece quando o PracticeLog NÃO conseguiu
+             persistir. Silêncio aqui seria pior que o erro. -->
+        <p id="saveWarn" style="display:none;font-size:13px;font-weight:600;color:var(--tl-danger-text);background:var(--tl-danger-soft);border:1px solid var(--tl-danger);border-radius:var(--tl-radius-md);padding:6px 12px"></p>
+        <p class="text-slate-400 text-sm" id="usedCount">—</p>
+      </div>
+    </div>
+
     <div class="card rounded-xl p-5 mb-6 flex items-center justify-between flex-wrap gap-3">
       <div>
         <p class="text-slate-400 text-sm">Current topic</p>
@@ -286,414 +298,18 @@
   </div>
 </div>
 
+<script src="platform-students.js?v=1"></script>
 <script src="platform-content.js?v=1"></script>
+<script src="platform-practice-log.js?v=1"></script>
+<script src="engine/practice-bank.js?v=1"></script>
 <script src="platform-print.js?v=1"></script>
 <script>
 // ================= EXERCISE BANK =================
-const bank = {
-  personal:{ label:"Personal Info (to be)", keys:["personal","identity","i am","to be","name","apresent"], exercises:[
-    {type:"multiple_choice",question:"I ___ a teacher.",options:["am","is","are","be"],correct:0},
-    {type:"multiple_choice",question:"She ___ from Brazil.",options:["am","are","is","be"],correct:2},
-    {type:"multiple_choice",question:"They ___ my friends.",options:["is","am","are","be"],correct:2},
-    {type:"multiple_choice",question:"___ you happy today?",options:["Is","Am","Are","Be"],correct:2},
-    {type:"multiple_choice",question:"He ___ 45 years old.",options:["am","is","are","be"],correct:1},
-    {type:"multiple_choice",question:"We ___ students.",options:["is","am","are","been"],correct:2},
-    {type:"fill_blank",question:"My name ___ Ana.",correct:"is"},
-    {type:"fill_blank",question:"I ___ from Curitiba.",correct:"am"},
-    {type:"fill_blank",question:"You ___ very kind.",correct:"are"},
-    {type:"fill_blank",question:"It ___ a nice day.",correct:"is"},
-    {type:"fill_blank",question:"We ___ tired.",correct:"are"},
-    {type:"true_false",statements:[
-      {text:"'I'm' is short for 'I am'.",answer:true},
-      {text:"'She are happy' is correct.",answer:false},
-      {text:"We use 'is' with he, she and it.",answer:true},
-      {text:"'Are you a doctor?' is a question.",answer:true},
-      {text:"'They is my family' is correct.",answer:false},
-      {text:"'I'm not' means 'I am not'.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"name",right:"what people call you"},{left:"age",right:"how old you are"},{left:"country",right:"a nation"},
-      {left:"married",right:"has a husband or wife"},{left:"single",right:"not married"}
-    ]}
-  ]},
-
-  jobs:{ label:"Jobs & Nationalities", keys:["job","profession","national","work","nacional"], exercises:[
-    {type:"multiple_choice",question:"A person who teaches is a ___.",options:["doctor","teacher","nurse","pilot"],correct:1},
-    {type:"multiple_choice",question:"A person from Brazil is ___.",options:["Brazil","Brazilian","Brazilic","Brazilish"],correct:1},
-    {type:"multiple_choice",question:"A ___ works in a hospital and cares for patients.",options:["teacher","nurse","lawyer","chef"],correct:1},
-    {type:"multiple_choice",question:"A person from the United States is ___.",options:["American","America","Americano","US"],correct:0},
-    {type:"multiple_choice",question:"A person who designs bridges is an ___.",options:["artist","engineer","actor","author"],correct:1},
-    {type:"multiple_choice",question:"What ___ you do for work?",options:["do","are","is","be"],correct:0},
-    {type:"fill_blank",question:"I teach English. I'm a ___.",correct:"teacher"},
-    {type:"fill_blank",question:"She's from Italy. She's ___.",correct:"italian"},
-    {type:"fill_blank",question:"He flies planes. He's a ___.",correct:"pilot"},
-    {type:"fill_blank",question:"A person who cooks in a restaurant is a ___.",correct:"chef"},
-    {type:"fill_blank",question:"I'm from Brazil, so I'm ___.",correct:"brazilian"},
-    {type:"true_false",statements:[
-      {text:"A nurse works in a hospital.",answer:true},
-      {text:"A person from France is 'Frenchian'.",answer:false},
-      {text:"An engineer designs and builds things.",answer:true},
-      {text:"'Teacher' is a nationality.",answer:false},
-      {text:"A person from Japan is Japanese.",answer:true},
-      {text:"A retired person works every day.",answer:false}
-    ]},
-    {type:"matching",question:"Match the job to its meaning:",pairs:[
-      {left:"teacher",right:"teaches students"},{left:"nurse",right:"cares for patients"},{left:"engineer",right:"designs machines"},
-      {left:"lawyer",right:"works with the law"},{left:"retired",right:"stopped working"}
-    ]}
-  ]},
-
-  family:{ label:"Family", keys:["family","famil","relatives"], exercises:[
-    {type:"multiple_choice",question:"My mother's mother is my ___.",options:["aunt","grandmother","sister","cousin"],correct:1},
-    {type:"multiple_choice",question:"My father's brother is my ___.",options:["uncle","cousin","nephew","grandfather"],correct:0},
-    {type:"multiple_choice",question:"My brother's daughter is my ___.",options:["sister","niece","aunt","cousin"],correct:1},
-    {type:"multiple_choice",question:"My sister's son is my ___.",options:["nephew","niece","uncle","cousin"],correct:0},
-    {type:"multiple_choice",question:"The children of my aunt are my ___.",options:["siblings","cousins","parents","nieces"],correct:1},
-    {type:"multiple_choice",question:"My wife's mother is my ___.",options:["sister","mother-in-law","aunt","cousin"],correct:1},
-    {type:"fill_blank",question:"My mother and father are my ___.",correct:"parents"},
-    {type:"fill_blank",question:"My brother and sister are my ___.",correct:"siblings"},
-    {type:"fill_blank",question:"My son and daughter are my ___.",correct:"children"},
-    {type:"fill_blank",question:"My father's wife is my ___.",correct:"mother"},
-    {type:"fill_blank",question:"I'm married. My female partner is my ___.",correct:"wife"},
-    {type:"true_false",statements:[
-      {text:"Your parents are your mother and father.",answer:true},
-      {text:"Your uncle is your mother's sister.",answer:false},
-      {text:"Cousins are children of your parents' siblings.",answer:true},
-      {text:"A daughter is a female child.",answer:true},
-      {text:"Your grandmother is your mother's daughter.",answer:false},
-      {text:"'Siblings' means brothers and sisters.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"mother",right:"female parent"},{left:"husband",right:"married man"},{left:"daughter",right:"female child"},
-      {left:"brother",right:"male sibling"},{left:"parents",right:"mother and father"}
-    ]}
-  ]},
-
-  routine:{ label:"Daily Routine", keys:["routine","daily","everyday","day"], exercises:[
-    {type:"multiple_choice",question:"I ___ up at 7 AM.",options:["wake","sleep","cook","work"],correct:0},
-    {type:"multiple_choice",question:"She ___ to work by bus.",options:["go","goes","going","gone"],correct:1},
-    {type:"multiple_choice",question:"I have ___ in the morning.",options:["dinner","breakfast","lunch","night"],correct:1},
-    {type:"multiple_choice",question:"He ___ a shower every day.",options:["take","takes","taking","took"],correct:1},
-    {type:"multiple_choice",question:"At night, I go to ___.",options:["bed","work","school","gym"],correct:0},
-    {type:"multiple_choice",question:"We ___ dinner at 8 PM.",options:["have","has","having","to have"],correct:0},
-    {type:"fill_blank",question:"I ___ up at 6 o'clock.",correct:"wake"},
-    {type:"fill_blank",question:"She ___ (go) to work at 8.",correct:"goes"},
-    {type:"fill_blank",question:"I ___ breakfast at 7.",correct:"have"},
-    {type:"fill_blank",question:"He ___ (brush) his teeth.",correct:"brushes"},
-    {type:"fill_blank",question:"They ___ eight hours.",correct:"sleep"},
-    {type:"true_false",statements:[
-      {text:"We usually have breakfast in the morning.",answer:true},
-      {text:"'He go to work' is correct.",answer:false},
-      {text:"'Wake up' means to stop sleeping.",answer:true},
-      {text:"People normally sleep at noon.",answer:false},
-      {text:"'She has lunch at 1 PM' is correct.",answer:true},
-      {text:"We add -s to the verb with he, she, it.",answer:true}
-    ]},
-    {type:"matching",question:"Match the action to its meaning:",pairs:[
-      {left:"wake up",right:"stop sleeping"},{left:"have lunch",right:"eat at midday"},{left:"cook",right:"prepare food"},
-      {left:"sleep",right:"rest at night"},{left:"go to bed",right:"go to sleep"}
-    ]}
-  ]},
-
-  frequency:{ label:"Frequency", keys:["frequency","often","adverb","how often"], exercises:[
-    {type:"multiple_choice",question:"'100% of the time' = ___.",options:["never","always","rarely","sometimes"],correct:1},
-    {type:"multiple_choice",question:"'0% of the time' = ___.",options:["always","never","often","usually"],correct:1},
-    {type:"multiple_choice",question:"I ___ drink coffee (about 90%).",options:["never","usually","rarely","sometimes"],correct:1},
-    {type:"multiple_choice",question:"She is ___ late (rarely).",options:["rarely","always","often","usually"],correct:0},
-    {type:"multiple_choice",question:"Correct: 'I ___ go to the gym.'",options:["always","go always","am always go","go to always"],correct:0},
-    {type:"multiple_choice",question:"'Once a week' means ___.",options:["one time every week","every day","never","always"],correct:0},
-    {type:"fill_blank",question:"I ___ eat breakfast.",correct:"always"},
-    {type:"fill_blank",question:"He ___ smokes.",correct:"never"},
-    {type:"fill_blank",question:"They ___ travel.",correct:"sometimes"},
-    {type:"fill_blank",question:"She is ___ happy.",correct:"usually"},
-    {type:"fill_blank",question:"We go to church ___ a week.",correct:"once"},
-    {type:"true_false",statements:[
-      {text:"'Always' means 100% of the time.",answer:true},
-      {text:"Frequency adverbs go after the main verb.",answer:false},
-      {text:"'Never' is a negative idea.",answer:true},
-      {text:"'She is always late' is correct.",answer:true},
-      {text:"'I go usually to work' is correct word order.",answer:false},
-      {text:"'Every day' means daily.",answer:true}
-    ]},
-    {type:"matching",question:"Match the adverb to its meaning:",pairs:[
-      {left:"always",right:"100% of the time"},{left:"never",right:"0% of the time"},{left:"sometimes",right:"now and then"},
-      {left:"usually",right:"most of the time"},{left:"rarely",right:"almost never"}
-    ]}
-  ]},
-
-  freetime:{ label:"Free Time / Hobbies", keys:["free time","hobby","hobbies","leisure","freetime","tempo livre"], exercises:[
-    {type:"multiple_choice",question:"I like ___ (read) books.",options:["read","reading","reads","to reading"],correct:1},
-    {type:"multiple_choice",question:"She loves ___ (dance).",options:["dance","dancing","dances","danced"],correct:1},
-    {type:"multiple_choice",question:"I don't ___ cooking.",options:["likes","like","liking","to like"],correct:1},
-    {type:"multiple_choice",question:"He ___ playing video games.",options:["enjoy","enjoys","enjoying","to enjoy"],correct:1},
-    {type:"multiple_choice",question:"'I hate ___ early' (wake).",options:["wake","waking","wakes","woke"],correct:1},
-    {type:"multiple_choice",question:"A ___ is an activity you do for fun.",options:["job","hobby","homework","chore"],correct:1},
-    {type:"fill_blank",question:"I like ___ (listen) to music.",correct:"listening"},
-    {type:"fill_blank",question:"She enjoys ___ (paint).",correct:"painting"},
-    {type:"fill_blank",question:"They love ___ (travel).",correct:"traveling"},
-    {type:"fill_blank",question:"I don't like ___ (cook).",correct:"cooking"},
-    {type:"fill_blank",question:"My favorite ___ is reading.",correct:"hobby"},
-    {type:"true_false",statements:[
-      {text:"After 'like', the verb takes -ing.",answer:true},
-      {text:"'I like read' is correct.",answer:false},
-      {text:"'Enjoy' is followed by -ing.",answer:true},
-      {text:"A hobby is something you do for work.",answer:false},
-      {text:"'She loves dancing' is correct.",answer:true},
-      {text:"'Don't' is used with I, you, we, they.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"read",right:"look at a book"},{left:"travel",right:"go to other places"},{left:"dance",right:"move to music"},
-      {left:"relax",right:"rest and calm down"},{left:"hobby",right:"a free-time activity"}
-    ]}
-  ]},
-
-  sports:{ label:"Sports", keys:["sport","sports"], exercises:[
-    {type:"multiple_choice",question:"You play this with feet and a ball: ___.",options:["tennis","football","swimming","boxing"],correct:1},
-    {type:"multiple_choice",question:"This sport is in water: ___.",options:["running","swimming","cycling","golf"],correct:1},
-    {type:"multiple_choice",question:"You ride a bike in ___.",options:["walking","cycling","yoga","boxing"],correct:1},
-    {type:"multiple_choice",question:"Right now I ___ (play) tennis.",options:["play","am playing","plays","played"],correct:1},
-    {type:"multiple_choice",question:"She ___ (run) in the park at the moment.",options:["runs","is running","run","ran"],correct:1},
-    {type:"multiple_choice",question:"A group of players is a ___.",options:["team","gym","coach","ball"],correct:0},
-    {type:"fill_blank",question:"I go to the ___ to exercise.",correct:"gym"},
-    {type:"fill_blank",question:"Look! They ___ (swim) now.",correct:"are swimming"},
-    {type:"fill_blank",question:"He usually ___ (play) football on Sundays.",correct:"plays"},
-    {type:"fill_blank",question:"Right now we ___ (watch) a game.",correct:"are watching"},
-    {type:"fill_blank",question:"My favorite ___ is basketball.",correct:"sport"},
-    {type:"true_false",statements:[
-      {text:"Present continuous = am/is/are + verb-ing.",answer:true},
-      {text:"'I am play football now' is correct.",answer:false},
-      {text:"Swimming is a water sport.",answer:true},
-      {text:"'She plays tennis every week' talks about a habit.",answer:true},
-      {text:"'They are run' is correct.",answer:false},
-      {text:"A team is one single player.",answer:false}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"football",right:"game with feet and a ball"},{left:"swimming",right:"sport in water"},{left:"gym",right:"place to exercise"},
-      {left:"team",right:"group of players"},{left:"win",right:"to be first"}
-    ]}
-  ]},
-
-  food:{ label:"Food & Drinks", keys:["food","eat","drink","comida"], exercises:[
-    {type:"multiple_choice",question:"Which is a fruit? ___.",options:["carrot","apple","lettuce","potato"],correct:1},
-    {type:"multiple_choice",question:"Which is a drink? ___.",options:["bread","water","rice","meat"],correct:1},
-    {type:"multiple_choice",question:"Which is a vegetable? ___.",options:["banana","carrot","milk","chicken"],correct:1},
-    {type:"multiple_choice",question:"We ___ breakfast in the morning.",options:["have","has","having","drinks"],correct:0},
-    {type:"multiple_choice",question:"Rice is ___ : we say 'some rice'.",options:["countable","uncountable","plural","a number"],correct:1},
-    {type:"multiple_choice",question:"'How ___ apples do you want?'",options:["much","many","any","lot"],correct:1},
-    {type:"fill_blank",question:"I drink ___ in the morning.",correct:"coffee"},
-    {type:"fill_blank",question:"An ___ a day keeps the doctor away.",correct:"apple"},
-    {type:"fill_blank",question:"I have ___ for breakfast.",correct:"eggs"},
-    {type:"fill_blank",question:"'How ___ water do you drink?'",correct:"much"},
-    {type:"fill_blank",question:"Chicken and beef are types of ___.",correct:"meat"},
-    {type:"true_false",statements:[
-      {text:"An apple is a fruit.",answer:true},
-      {text:"Chicken is a vegetable.",answer:false},
-      {text:"Water is a drink.",answer:true},
-      {text:"We use 'many' with countable nouns.",answer:true},
-      {text:"'Rice' is countable: one rice, two rices.",answer:false},
-      {text:"Milk is a dairy product.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"apple",right:"a round fruit"},{left:"water",right:"a clear drink"},{left:"bread",right:"made from wheat"},
-      {left:"meat",right:"chicken or beef"},{left:"egg",right:"comes from a hen"}
-    ]}
-  ]},
-
-  restaurant:{ label:"Restaurant", keys:["restaurant","order","waiter","menu"], exercises:[
-    {type:"multiple_choice",question:"I ___ like a coffee, please.",options:["would","will","want to","am"],correct:0},
-    {type:"multiple_choice",question:"The person who serves you is the ___.",options:["chef","waiter","manager","guest"],correct:1},
-    {type:"multiple_choice",question:"You pay at the end. You ask for the ___.",options:["menu","bill","tip","order"],correct:1},
-    {type:"multiple_choice",question:"___ you like a dessert?",options:["Would","Do","Are","Will"],correct:0},
-    {type:"multiple_choice",question:"The sweet dish at the end is the ___.",options:["starter","main course","dessert","side"],correct:2},
-    {type:"multiple_choice",question:"Extra money for good service is a ___.",options:["bill","tip","price","discount"],correct:1},
-    {type:"fill_blank",question:"I'd like ___ book a table for two.",correct:"to"},
-    {type:"fill_blank",question:"___ I have the menu, please?",correct:"could"},
-    {type:"fill_blank",question:"The list of food is the ___.",correct:"menu"},
-    {type:"fill_blank",question:"We'd like ___ order now.",correct:"to"},
-    {type:"fill_blank",question:"The paper showing what you pay is the ___.",correct:"bill"},
-    {type:"true_false",statements:[
-      {text:"'I'd like' is more polite than 'I want'.",answer:true},
-      {text:"A starter comes after the main course.",answer:false},
-      {text:"'Could I have...?' is a polite request.",answer:true},
-      {text:"A waiter cooks the food.",answer:false},
-      {text:"You ask for the bill when you want to pay.",answer:true},
-      {text:"'Would you like a drink?' is an offer.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"menu",right:"list of dishes"},{left:"waiter",right:"person who serves"},{left:"bill",right:"what you must pay"},
-      {left:"tip",right:"extra money for service"},{left:"dessert",right:"sweet dish at the end"}
-    ]}
-  ]},
-
-  shopping:{ label:"Shopping", keys:["shopping","shop","buy","price","store"], exercises:[
-    {type:"multiple_choice",question:"___ shirt here is nice.",options:["This","That","These","Those"],correct:0},
-    {type:"multiple_choice",question:"___ shoes here are expensive.",options:["This","That","These","Those"],correct:2},
-    {type:"multiple_choice",question:"How much ___ this bag?",options:["is","are","do","does"],correct:0},
-    {type:"multiple_choice",question:"How much ___ those glasses?",options:["is","are","do","much"],correct:1},
-    {type:"multiple_choice",question:"Something that costs a lot is ___.",options:["cheap","expensive","free","small"],correct:1},
-    {type:"multiple_choice",question:"Money taken off the price is a ___.",options:["bill","receipt","discount","tip"],correct:2},
-    {type:"fill_blank",question:"___ car over there is new.",correct:"that"},
-    {type:"fill_blank",question:"How ___ is this shirt?",correct:"much"},
-    {type:"fill_blank",question:"The paper proving you paid is the ___.",correct:"receipt"},
-    {type:"fill_blank",question:"It costs little money. It's ___.",correct:"cheap"},
-    {type:"fill_blank",question:"I don't have cash. Can I pay by ___ card?",correct:"credit"},
-    {type:"true_false",statements:[
-      {text:"'These' is plural and near.",answer:true},
-      {text:"'That' is used for things near you.",answer:false},
-      {text:"'How much is it?' asks about the price.",answer:true},
-      {text:"Cheap is the opposite of expensive.",answer:true},
-      {text:"'How much are this shoes?' is correct.",answer:false},
-      {text:"A receipt proves you paid.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"price",right:"how much it costs"},{left:"discount",right:"money off"},{left:"receipt",right:"proof of payment"},
-      {left:"cash",right:"notes and coins"},{left:"size",right:"how big it is"}
-    ]}
-  ]},
-
-  clothes:{ label:"Clothes", keys:["clothes","clothing","wear","dress"], exercises:[
-    {type:"multiple_choice",question:"Right now I ___ a shirt.",options:["wear","am wearing","wears","wore"],correct:1},
-    {type:"multiple_choice",question:"I usually ___ jeans at the weekend.",options:["wear","am wearing","wearing","worn"],correct:0},
-    {type:"multiple_choice",question:"You wear these on your feet: ___.",options:["gloves","shoes","hat","scarf"],correct:1},
-    {type:"multiple_choice",question:"She ___ a uniform every day.",options:["wear","wears","is wear","wearing"],correct:1},
-    {type:"multiple_choice",question:"A short coat is a ___.",options:["dress","jacket","shirt","sock"],correct:1},
-    {type:"multiple_choice",question:"To put clothes on to test them is to ___.",options:["try on","wear out","take off","fit in"],correct:0},
-    {type:"fill_blank",question:"Today I ___ (wear) a dress.",correct:"am wearing"},
-    {type:"fill_blank",question:"He ___ (wear) a suit to work every day.",correct:"wears"},
-    {type:"fill_blank",question:"Clothing for your legs: ___.",correct:"trousers"},
-    {type:"fill_blank",question:"These shoes are the right size. They ___ me.",correct:"fit"},
-    {type:"fill_blank",question:"It looks good on you: 'It ___ you.'",correct:"suits"},
-    {type:"true_false",statements:[
-      {text:"'I'm wearing jeans' talks about now.",answer:true},
-      {text:"'I wear a coat now' is the best way to say what you have on at this moment.",answer:false},
-      {text:"'Trousers' is plural in English.",answer:true},
-      {text:"A jacket is a kind of shoe.",answer:false},
-      {text:"'It suits you' is a compliment.",answer:true},
-      {text:"'She wears black every day' describes a habit.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"wear",right:"have clothes on"},{left:"try on",right:"test clothes in a shop"},{left:"fit",right:"be the right size"},
-      {left:"jacket",right:"a short coat"},{left:"comfortable",right:"easy and nice to wear"}
-    ]}
-  ]},
-
-  city:{ label:"City & Directions", keys:["city","directions","places","town"], exercises:[
-    {type:"multiple_choice",question:"___ a bank near my house.",options:["There is","There are","It is","Have"],correct:0},
-    {type:"multiple_choice",question:"___ three parks in my city.",options:["There is","There are","It has","Have"],correct:1},
-    {type:"multiple_choice",question:"You buy medicine at the ___.",options:["bank","pharmacy","bakery","library"],correct:1},
-    {type:"multiple_choice",question:"The cinema is ___ the square. (facing it)",options:["next","opposite","between","on"],correct:1},
-    {type:"multiple_choice",question:"My house is ___ the school and the bank.",options:["next","opposite","between","near of"],correct:2},
-    {type:"multiple_choice",question:"To change direction: '___ left at the corner.'",options:["Go","Turn","Cross","Take"],correct:1},
-    {type:"fill_blank",question:"___ a park near here?",correct:"is there"},
-    {type:"fill_blank",question:"The pharmacy is ___ to the bank.",correct:"next"},
-    {type:"fill_blank",question:"The city centre is also called ___.",correct:"downtown"},
-    {type:"fill_blank",question:"You wait for the bus at the bus ___.",correct:"stop"},
-    {type:"fill_blank",question:"The area where you live is your ___.",correct:"neighbourhood"},
-    {type:"true_false",statements:[
-      {text:"'There are' is used with plural nouns.",answer:true},
-      {text:"'There is two parks' is correct.",answer:false},
-      {text:"'Opposite' means facing something.",answer:true},
-      {text:"'Between' needs two things.",answer:true},
-      {text:"A pharmacy is where you keep money.",answer:false},
-      {text:"'Turn right' is a direction.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"downtown",right:"the city centre"},{left:"pharmacy",right:"where you buy medicine"},{left:"square",right:"open public space"},
-      {left:"next to",right:"at the side of"},{left:"between",right:"in the middle of two"}
-    ]}
-  ]},
-
-  past:{ label:"Past Simple", keys:["past","yesterday","ago","last"], exercises:[
-    {type:"multiple_choice",question:"Yesterday I ___ to the park.",options:["go","went","gone","going"],correct:1},
-    {type:"multiple_choice",question:"She ___ tennis last week.",options:["play","played","plays","playing"],correct:1},
-    {type:"multiple_choice",question:"I ___ watch TV last night.",options:["didn't","don't","wasn't","haven't"],correct:0},
-    {type:"multiple_choice",question:"___ you like the film?",options:["Did","Do","Was","Were"],correct:0},
-    {type:"multiple_choice",question:"We ___ dinner at 8 last night.",options:["have","had","has","having"],correct:1},
-    {type:"multiple_choice",question:"He ___ a new car two years ago.",options:["buy","bought","buys","buyed"],correct:1},
-    {type:"fill_blank",question:"I ___ (work) yesterday.",correct:"worked"},
-    {type:"fill_blank",question:"She ___ (go) to Rio last year.",correct:"went"},
-    {type:"fill_blank",question:"They ___ (not/come) to the party.",correct:"didn't come"},
-    {type:"fill_blank",question:"___ you ___ (eat) lunch?",correct:"Did / eat"},
-    {type:"fill_blank",question:"He ___ (study) all night.",correct:"studied"},
-    {type:"true_false",statements:[
-      {text:"Regular past verbs end in -ed.",answer:true},
-      {text:"'I didn't went' is correct.",answer:false},
-      {text:"After 'did', we use the base verb.",answer:true},
-      {text:"'Yesterday' is a past signal word.",answer:true},
-      {text:"The past of 'go' is 'goed'.",answer:false},
-      {text:"'Was' and 'were' are past forms of 'to be'.",answer:true}
-    ]},
-    {type:"matching",question:"Match the verb to its past form:",pairs:[
-      {left:"go",right:"went"},{left:"have",right:"had"},{left:"see",right:"saw"},
-      {left:"buy",right:"bought"},{left:"eat",right:"ate"}
-    ]}
-  ]},
-
-  travel:{ label:"Travel", keys:["travel","trip","vacation","holiday","viagem"], exercises:[
-    {type:"multiple_choice",question:"You need a ___ to travel to another country.",options:["ticket","passport","map","hotel"],correct:1},
-    {type:"multiple_choice",question:"You sleep here on a trip: ___.",options:["airport","hotel","station","beach"],correct:1},
-    {type:"multiple_choice",question:"You travel by air in an ___.",options:["car","airplane","train","ship"],correct:1},
-    {type:"multiple_choice",question:"You pack your clothes in a ___.",options:["wallet","suitcase","passport","ticket"],correct:1},
-    {type:"multiple_choice",question:"A ship travels on the ___.",options:["land","sea","air","road"],correct:1},
-    {type:"multiple_choice",question:"You buy a ___ to enter the plane.",options:["suitcase","ticket","hotel","map"],correct:1},
-    {type:"fill_blank",question:"I keep my clothes in a ___.",correct:"suitcase"},
-    {type:"fill_blank",question:"We fly in an ___.",correct:"airplane"},
-    {type:"fill_blank",question:"At night we stay in a ___.",correct:"hotel"},
-    {type:"fill_blank",question:"I need my ___ to travel abroad.",correct:"passport"},
-    {type:"fill_blank",question:"A ___ travels on rails.",correct:"train"},
-    {type:"true_false",statements:[
-      {text:"A plane is used for air travel.",answer:true},
-      {text:"A train travels on water.",answer:false},
-      {text:"A hotel is a place to stay.",answer:true},
-      {text:"You need a passport to travel to another country.",answer:true},
-      {text:"A suitcase is a small wallet.",answer:false},
-      {text:"The sea is where ships travel.",answer:true}
-    ]},
-    {type:"matching",question:"Match the word to its meaning:",pairs:[
-      {left:"passport",right:"travel document"},{left:"suitcase",right:"bag for clothes"},{left:"airplane",right:"flies in the sky"},
-      {left:"hotel",right:"place to sleep on a trip"},{left:"ticket",right:"pass to travel"}
-    ]}
-  ]},
-
-  /* ================= READING (Fase 1 piloto) =================
-     Extensão MÍNIMA do schema: cada topic pode expor um objeto `passage`
-     opcional { title, level, text }. O ActivityRunner exibe o texto de
-     forma "sticky" acima dos exercícios para que o aluno possa reler.
-     Nenhum tipo de exercício novo é criado — MC + Fill in the Blank +
-     Match são reutilizados exatamente como já são.
-     ==========================================================*/
-  reading_my_morning:{
-    label:"Reading · A1 · My Morning",
-    keys:["reading","routine","morning","daily"],
-    passage:{
-      level:"A1",
-      title:"My Morning",
-      text:"Hi! I'm Ana. Every morning I wake up at seven o'clock. First, I drink a glass of water and take a shower. Then I have breakfast — usually coffee, bread and fruit. I like fruit a lot. I leave home at eight and I go to work by bus. It takes about thirty minutes. I never have breakfast at work."
-    },
-    exercises:[
-      // 1 · overall comprehension
-      {type:"multiple_choice",question:"What is the text mainly about?",
-        options:["Ana's job","Ana's morning routine","Ana's weekend","Ana's family"],correct:1},
-      // 2 · specific information
-      {type:"multiple_choice",question:"What time does Ana wake up?",
-        options:["Six o'clock","Seven o'clock","Eight o'clock","Nine o'clock"],correct:1},
-      // 3 · specific information
-      {type:"fill_blank",question:"Ana goes to work ___ bus.",correct:"by"},
-      // 4 · vocabulary from context
-      {type:"multiple_choice",question:"In the text, \"I leave home\" means...",
-        options:["I clean my house","I go out of my house","I stay at home","I sell my house"],correct:1},
-      // 5 · linguistic structure present in the text (Present Simple 3rd person -s)
-      {type:"fill_blank",question:"Ana ___ (drink) a glass of water in the morning.",correct:"drinks"},
-      // 6 · vocabulary in context (match)
-      {type:"matching",question:"Match the word from the text to its meaning:",pairs:[
-        {left:"wake up",right:"to stop sleeping"},
-        {left:"take a shower",right:"to wash your body with water"},
-        {left:"breakfast",right:"the first meal of the day"},
-        {left:"by bus",right:"using a bus"}
-      ]}
-    ]
-  }
-};
+/* ================= EXERCISE BANK =================
+   Os dados saíram desta página para engine/practice-bank.js (mesmos tópicos,
+   mesma ordem, mesmas respostas — só ganharam um `id` permanente por
+   exercício). Este alias mantém todo o resto do arquivo inalterado. */
+const bank = TeacherLu.PracticeBank.TOPICS;
 
 // ================= ESTADO =================
 // LIVE CLASS MODE: the student watches the shared screen and SAYS the answer
@@ -701,6 +317,122 @@ const bank = {
 let currentKey = null;
 let exercises = [];
 let correctCount = 0, answeredCount = 0, totalCount = 0;
+
+/* ===========================================================================
+   ALUNO + PRACTICE LOG  (etapa 4 — registrar SEM esconder)
+   ---------------------------------------------------------------------------
+   Nesta fase o log só GRAVA. Nenhum exercício é filtrado nem escondido:
+   um exercício já feito continua aparecendo normalmente. O objetivo é
+   validar a regra de conclusão em aula real antes de tirar conteúdo do
+   pool de alguém.
+
+   REGRA DE CONCLUSÃO (canônica)
+   -----------------------------
+   Um exercício é marcado no PRIMEIRO instante em que atinge estado
+   terminal — veredicto registrado em todos os sub-itens obrigatórios.
+     • Multiple choice ....... clique na alternativa
+     • Fill in the blank ..... clique em ✓ got it / ✗ missed
+     • True/False (bloco) .... último statement julgado
+     • Matching (bloco) ...... último par julgado
+   NUNCA ao renderizar. NUNCA no reveal sozinho. NUNCA no Next sozinho.
+   Errar TAMBÉM marca: o exercício foi usado. A fila de erros é outra
+   responsabilidade, de outro módulo.
+   =========================================================================== */
+const STUDENTS_DATA = TeacherLu.Students.load();
+let curStu = localStorage.getItem('sabatovicz_current_student');
+if(!STUDENTS_DATA.some(s=>s.id===curStu)) curStu = STUDENTS_DATA.length ? STUDENTS_DATA[0].id : null;
+
+function pickStu(id){
+  curStu = id;
+  localStorage.setItem('sabatovicz_current_student', id);
+  clearSaveWarning();
+  renderStuBar();
+  renderUsedCount();
+}
+
+function renderStuBar(){
+  const el = document.getElementById('stuBar');
+  if(!el) return;
+  if(!STUDENTS_DATA.length){
+    el.innerHTML = '<span class="text-slate-400 text-sm">No students yet — add one in Students.</span>';
+    return;
+  }
+  el.innerHTML = '<span class="text-slate-400 text-sm font-bold" style="margin-right:8px">Student:</span>' +
+    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn ${s.id===curStu?'active':''}" style="margin:2px">${s.emoji||''} ${s.name}</button>`).join('');
+}
+
+function renderUsedCount(){
+  const el = document.getElementById('usedCount');
+  if(!el) return;
+  if(!curStu){ el.textContent = '—'; return; }
+  const n = TeacherLu.PracticeLog.countDone(curStu);
+  el.textContent = n + (n===1 ? ' exercise used' : ' exercises used');
+}
+
+/* ---------------------------------------------------------------------------
+   Aviso de gravação
+   ---------------------------------------------------------------------------
+   markDone() devolve false quando o localStorage não aceitou a escrita
+   (cota cheia, modo privado, storage bloqueado). Nesse caso a professora
+   PRECISA saber: o contador não sobe e o aviso aparece. Fingir sucesso
+   aqui seria a pior falha possível — com o filtro ligado, uma gravação
+   perdida vira exercício repetido sem ninguém perceber.
+   --------------------------------------------------------------------------- */
+let saveWarnTimer;
+function showSaveWarning(){
+  const el = document.getElementById('saveWarn');
+  if(!el) return;
+  el.textContent = 'Could not save this exercise. Progress was not recorded.';
+  el.style.display = '';
+  clearTimeout(saveWarnTimer);
+  saveWarnTimer = setTimeout(clearSaveWarning, 8000);
+}
+function clearSaveWarning(){
+  const el = document.getElementById('saveWarn');
+  if(!el) return;
+  el.style.display = 'none';
+  clearTimeout(saveWarnTimer);
+}
+
+/* Chamado UMA vez por exercício, no estado terminal. `_logged` evita
+   regravar dentro da mesma renderização; o próprio PracticeLog já é
+   idempotente por (exercício, dia) — as duas guardas são baratas.
+   Se a gravação falhar, `_logged` volta atrás para que uma nova
+   interação possa tentar de novo. */
+function markUsed(ex){
+  if(!curStu || !ex || !ex.id || ex._logged) return;
+  ex._logged = true;
+  if(TeacherLu.PracticeLog.markDone(curStu, ex.id) === false){
+    ex._logged = false;
+    showSaveWarning();
+    return;                       // contador NÃO sobe, grupo NÃO fecha
+  }
+  clearSaveWarning();
+  renderUsedCount();
+  maybeMarkGroup();
+}
+
+/* ---------------------------------------------------------------------------
+   Unidade de uso: grupo
+   ---------------------------------------------------------------------------
+   Tópicos que declaram `groupId` (hoje só o Reading) só são consumidos
+   por inteiro. Consultamos o PracticeLog, e não o estado da tela, para
+   que perguntas respondidas em aulas ANTERIORES também contem.
+   Abrir o texto não fecha nada; reveal sozinho não fecha nada — este
+   caminho só roda depois de um veredicto real.
+   --------------------------------------------------------------------------- */
+function maybeMarkGroup(){
+  if(!curStu) return;
+  const groupId = TeacherLu.PracticeBank.groupOf(currentKey);
+  if(!groupId) return;
+  const PL = TeacherLu.PracticeLog;
+  if(PL.isDone(curStu, groupId)) return;                 // já fechado
+  const members = TeacherLu.PracticeBank.groupMembers(currentKey);
+  if(!members.length) return;
+  if(!members.every(id => PL.isDone(curStu, id))) return; // ainda falta pergunta
+  if(PL.markDone(curStu, groupId) === false){ showSaveWarning(); return; }
+  renderUsedCount();
+}
 
 function updateScore(ok){
   answeredCount++; if(ok)correctCount++;
@@ -839,6 +571,7 @@ function pick(ei,oi){
     else el.classList.add('dim');
   });
   updateScore(ok);
+  markUsed(ex);                        // alternativa escolhida = exercício usado
 }
 
 function pickTF(ei,si,val){
@@ -852,6 +585,8 @@ function pickTF(ei,si,val){
   (s.answer?t:f).classList.add('right');
   if(val!==s.answer)(val?t:f).classList.add('wrong');
   updateScore(val===s.answer);
+  // Bloco: só conta como usado quando TODOS os statements foram julgados.
+  if(Object.keys(ex._done).length===ex.statements.length) markUsed(ex);
 }
 
 function pickMatch(ei,pi,ri){
@@ -867,6 +602,8 @@ function pickMatch(ei,pi,ri){
     else el.classList.add('dim');
   });
   updateScore(ri===correctIdx);
+  // Bloco: só conta como usado quando TODOS os pares foram julgados.
+  if(Object.keys(ex._done).length===ex.pairs.length) markUsed(ex);
 }
 
 // Fill in the blank: professora clica "Show answer" para revelar (aluno responde antes).
@@ -885,6 +622,7 @@ function judge(ei,ok){
   r.disabled=true;w.disabled=true;
   (ok?r:w).classList.add('picked');
   updateScore(ok);
+  markUsed(ex);                        // veredicto dado — reveal sozinho não marca
 }
 
 function exportPDF(){
@@ -955,6 +693,8 @@ function goHome(){window.location.href='index.html';}
 })();
 
 // INIT
+renderStuBar();
+renderUsedCount();
 renderThemeButtons();
 loadTopic('personal');
 </script>
