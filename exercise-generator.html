@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sabatovicz - Exercise Generator</title>
+<title>Sabatovicz - Practice</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design-system/theme.css">
 <script src="design-system/icons.js" defer></script>
@@ -245,458 +244,598 @@
   .bg-slate-700, .bg-slate-800, .bg-slate-900 { background: var(--tl-surface-alt) !important; }
   .bg-slate-600 { background: var(--tl-primary-soft) !important; }
   .border-slate-600, .border-slate-700 { border-color: var(--tl-border) !important; }
+
+/* ===== PRACTICE — formatos novos ===== */
+
+  /* Seletores compactos (Student · Topic). Um select nativo é o controle
+     mais simples que mostra só a escolha atual e dá acesso aos 33 tópicos
+     sem ocupar quatro linhas de chips. Legível em screen share. */
+  /* Não dependemos do Tailwind (CDN) para o layout desta linha. */
+  .pick-row    { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 18px; }
+  .pick        { display: flex; flex-direction: column; gap: 4px; }
+  .pick label  { font-size: 10px; font-weight: 800; letter-spacing: .09em;
+                 text-transform: uppercase; color: var(--tl-text-tertiary); }
+  .pick-sel    { font-size: 17px; font-weight: 700; padding: 10px 14px;
+                 width: auto; min-width: 230px; max-width: 340px; cursor: pointer; }
+  .pick-meta   { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+
+  /* Grupos de tipo: rótulo pequeno, chips compactos. O menu não compete
+     com o exercício. */
+  .type-group      { margin-bottom: 10px; }
+  .type-group .lbl { font-size: 10px; font-weight: 800; letter-spacing: .09em;
+                     text-transform: uppercase; color: var(--tl-text-tertiary);
+                     margin-bottom: 6px; }
+  .type-group .type-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* Word bank */
+  .wordbank      { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 18px; }
+  .wordbank .wb  { background: var(--tl-primary-tint); color: var(--tl-primary);
+                   border-radius: var(--tl-radius-pill); padding: 7px 16px;
+                   font-size: 16px; font-weight: 600; }
+
+  /* Lacuna clicável dentro de Story / Dialogue */
+  .gap { display: inline-block; min-width: 90px; text-align: center;
+         border-bottom: 2px solid var(--tl-primary); color: var(--tl-primary);
+         background: var(--tl-primary-tint); border-radius: 6px 6px 0 0;
+         padding: 1px 10px; margin: 0 3px; cursor: pointer; font-weight: 700; }
+  .gap:hover { background: var(--tl-primary-soft); }
+  .gap.filled { background: var(--tl-success-soft); color: var(--tl-success-text);
+                border-bottom-color: var(--tl-success); cursor: default; }
+
+  .story-text { font-size: 21px; line-height: 2.1; color: var(--tl-text); }
+  .dlg-line   { font-size: 21px; line-height: 2.1; margin-bottom: 6px; color: var(--tl-text); }
+  .dlg-who    { font-weight: 800; color: var(--tl-primary); margin-right: 8px; }
+
+  /* Make a Sentence — cards grandes, legíveis em screen share */
+  .verb-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
+  @media(max-width:860px){ .verb-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media(max-width:560px){ .verb-grid { grid-template-columns: repeat(2, 1fr); } }
+  .verb-card {
+    background: var(--tl-surface-alt); border: 2px solid var(--tl-border);
+    border-radius: var(--tl-radius-lg); padding: 22px 10px;
+    font-size: 24px; font-weight: 700; color: var(--tl-text);
+    text-align: center; cursor: pointer;
+    transition: all var(--tl-dur-fast) var(--tl-ease);
+  }
+  .verb-card:hover { border-color: var(--tl-primary); transform: translateY(-2px); }
+  .verb-card.used { border-color: var(--tl-success); }
+  .verb-card .vmark { display:block; font-size: 13px; color: var(--tl-success-text); margin-top: 2px; }
+  .verb-card.on .vmark { color: var(--tl-text-inverse); }
+  .verb-card.on {
+    background: linear-gradient(135deg, var(--tl-primary), var(--tl-secondary));
+    color: var(--tl-text-inverse); border-color: transparent;
+  }
+  .pol { display: inline-flex; align-items: center; justify-content: center;
+         width: 46px; height: 46px; border-radius: var(--tl-radius-md);
+         font-size: 22px; font-weight: 800; cursor: pointer;
+         background: var(--tl-surface-alt); border: 2px solid var(--tl-border);
+         color: var(--tl-text); }
+  .pol.on { background: var(--tl-primary); color: var(--tl-text-inverse); border-color: transparent; }
+
+
 </style>
+  
 </head>
 <body>
 <div class="min-h-screen">
-  <!-- HEADER -->
+
+  <!-- HEADER — Practice. O arquivo continua exercise-generator.html. -->
   <div class="topbar text-white p-6 sticky top-0 z-40">
     <div class="max-w-4xl mx-auto">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold">Exercise Generator</h1>
-          <p class="text-[#6B7280] text-sm">Lots of practice · A1</p>
+          <h1 class="text-2xl md:text-3xl font-bold">Practice</h1>
+          <p class="text-[#6B7280] text-sm font-semibold" id="hdrSub">Pick a topic</p>
         </div>
         <button onclick="goHome()" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-lg hover:bg-indigo-50 text-sm"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</button>
       </div>
-      <div class="flex gap-2 overflow-x-auto pb-1" id="themeButtons"></div>
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="max-w-4xl mx-auto p-4 md:p-6">
-    <!-- Student bar — quem está praticando agora. Sem isto o PracticeLog não
-         sabe de quem é o registro. UI mínima de propósito (etapa 4). -->
-    <div class="card rounded-xl p-4 mb-4 flex items-center justify-between flex-wrap gap-3">
-      <div id="stuBar" class="flex items-center flex-wrap"></div>
-      <div class="flex items-center gap-3">
-        <!-- Aviso de gravação: só aparece quando o PracticeLog NÃO conseguiu
-             persistir. Silêncio aqui seria pior que o erro. -->
+
+    <!-- Aluno e tópico em dois seletores. 33 tópicos não cabem como chips:
+         um select mostra só o escolhido e continua dando acesso a todos. -->
+    <div class="card rounded-xl p-4 mb-4 pick-row">
+      <div class="pick"><label for="stuSelect">Student</label>
+        <select id="stuSelect" class="inp pick-sel" onchange="pickStu(this.value)"></select></div>
+      <div class="pick"><label for="topicSelect">Topic</label>
+        <select id="topicSelect" class="inp pick-sel" onchange="pickTopic(this.value)"></select></div>
+      <div class="pick-meta">
         <p id="saveWarn" style="display:none;font-size:13px;font-weight:600;color:var(--tl-danger-text);background:var(--tl-danger-soft);border:1px solid var(--tl-danger);border-radius:var(--tl-radius-md);padding:6px 12px"></p>
         <p class="text-slate-400 text-sm" id="usedCount">—</p>
       </div>
     </div>
 
-    <div class="card rounded-xl p-5 mb-6 flex items-center justify-between flex-wrap gap-3">
-      <div>
-        <p class="text-slate-400 text-sm">Current topic</p>
-        <p class="text-white text-xl font-bold" id="currentTopic">—</p>
-      </div>
-      <div class="text-right">
-        <p class="text-slate-400 text-sm">Score</p>
-        <p class="text-emerald-400 text-2xl font-bold" id="scoreDisplay">—</p>
-      </div>
-    </div>
+    <!-- Tipos de prática, em três grupos -->
+    <div id="typeSelector" class="mb-5"></div>
 
-    <div id="exercisesContainer"></div>
+    <!-- Um exercício por vez -->
+    <div id="exerciseArea"></div>
 
-    <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
-      <button onclick="loadTopic(currentKey)" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">↺ Restart</button>
-      <button onclick="exportPDF()" class="gradient-indigo text-white font-bold py-3 px-6 rounded-lg">Download PDF (with answer key)</button>
-    </div>
-    <div id="printArea" class="hidden"></div>
   </div>
 </div>
 
 <script src="platform-students.js?v=1"></script>
 <script src="platform-content.js?v=1"></script>
 <script src="platform-practice-log.js?v=1"></script>
-<script src="engine/practice-bank.js?v=1"></script>
-<script src="platform-print.js?v=1"></script>
+<script src="engine/grammar-topics.js?v=4"></script>
+<script src="engine/practice-bank.js?v=2"></script>
+<script src="engine/practice-adapters.js?v=1"></script>
 <script>
-// ================= EXERCISE BANK =================
-/* ================= EXERCISE BANK =================
-   Os dados saíram desta página para engine/practice-bank.js (mesmos tópicos,
-   mesma ordem, mesmas respostas — só ganharam um `id` permanente por
-   exercício). Este alias mantém todo o resto do arquivo inalterado. */
-const bank = TeacherLu.PracticeBank.TOPICS;
-
-// ================= ESTADO =================
-// LIVE CLASS MODE: the student watches the shared screen and SAYS the answer
-// (e.g. "letter B!"); the TEACHER clicks it. Feedback is instant, score is live.
-let currentKey = null;
-let exercises = [];
-let correctCount = 0, answeredCount = 0, totalCount = 0;
-
 /* ===========================================================================
-   ALUNO + PRACTICE LOG  (etapa 4 — registrar SEM esconder)
+   PRACTICE — a página central de prática
    ---------------------------------------------------------------------------
-   Nesta fase o log só GRAVA. Nenhum exercício é filtrado nem escondido:
-   um exercício já feito continua aparecendo normalmente. O objetivo é
-   validar a regra de conclusão em aula real antes de tirar conteúdo do
-   pool de alguém.
+   Student → Topic → Type → Exercise, um exercício por vez.
 
-   REGRA DE CONCLUSÃO (canônica)
-   -----------------------------
-   Um exercício é marcado no PRIMEIRO instante em que atinge estado
-   terminal — veredicto registrado em todos os sub-itens obrigatórios.
-     • Multiple choice ....... clique na alternativa
-     • Fill in the blank ..... clique em ✓ got it / ✗ missed
-     • True/False (bloco) .... último statement julgado
-     • Matching (bloco) ...... último par julgado
-   NUNCA ao renderizar. NUNCA no reveal sozinho. NUNCA no Next sozinho.
-   Errar TAMBÉM marca: o exercício foi usado. A fila de erros é outra
-   responsabilidade, de outro módulo.
+   O arquivo continua sendo exercise-generator.html (URLs preservadas); só o
+   nome visível mudou para "Practice".
+
+   FONTE DO CONTEÚDO
+   -----------------
+   Tudo vem de TeacherLu.PracticeBank: o banco próprio (engine/practice-bank.js)
+   e os bancos externos registrados (engine/practice-adapters.js expõe os 337
+   exercícios do Grammar sem copiá-los). Nenhum conteúdo é declarado aqui.
+
+   REGISTRO DE USO
+   ---------------
+   Cada formato marca no PracticeLog no seu estado terminal — nunca ao
+   renderizar, nunca só no reveal, nunca só no Next. Errar conta como uso.
+
+   FILTRO DE CONCLUÍDOS: DESLIGADO
+   -------------------------------
+   Ainda estamos no piloto. Um exercício já feito continua aparecendo
+   normalmente; o PracticeLog só grava e mostra o contador.
    =========================================================================== */
+
+const PB = TeacherLu.PracticeBank;
+const PL = TeacherLu.PracticeLog;
+
+let TOPICS = PB.topics();
+let curTopic = TOPICS.length ? (TOPICS.find(t=>t.key==='past') ? 'past' : TOPICS[0].key) : null;
+let curType  = 'all';
+let pool = [];
+let idx  = 0;
+let ui   = {};        // estado transitório da tela, por id de exercício
+
+/* ---------- aluno ---------- */
 const STUDENTS_DATA = TeacherLu.Students.load();
 let curStu = localStorage.getItem('sabatovicz_current_student');
 if(!STUDENTS_DATA.some(s=>s.id===curStu)) curStu = STUDENTS_DATA.length ? STUDENTS_DATA[0].id : null;
 
 function pickStu(id){
-  curStu = id;
-  localStorage.setItem('sabatovicz_current_student', id);
+  curStu=id;
+  localStorage.setItem('sabatovicz_current_student',id);
   clearSaveWarning();
-  renderStuBar();
-  renderUsedCount();
+  renderStuBar(); renderUsedCount();
 }
-
 function renderStuBar(){
-  const el = document.getElementById('stuBar');
-  if(!el) return;
-  if(!STUDENTS_DATA.length){
-    el.innerHTML = '<span class="text-slate-400 text-sm">No students yet — add one in Students.</span>';
-    return;
-  }
-  el.innerHTML = '<span class="text-slate-400 text-sm font-bold" style="margin-right:8px">Student:</span>' +
-    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn ${s.id===curStu?'active':''}" style="margin:2px">${s.emoji||''} ${s.name}</button>`).join('');
+  const el=document.getElementById('stuSelect'); if(!el) return;
+  if(!STUDENTS_DATA.length){ el.innerHTML='<option>No students yet</option>'; return; }
+  el.innerHTML=STUDENTS_DATA.map(s=>
+    `<option value="${s.id}" ${s.id===curStu?'selected':''}>${s.emoji||''} ${s.name}</option>`).join('');
 }
-
 function renderUsedCount(){
-  const el = document.getElementById('usedCount');
-  if(!el) return;
-  if(!curStu){ el.textContent = '—'; return; }
-  const n = TeacherLu.PracticeLog.countDone(curStu);
-  el.textContent = n + (n===1 ? ' exercise used' : ' exercises used');
+  const el=document.getElementById('usedCount'); if(!el) return;
+  if(!curStu){ el.textContent='—'; return; }
+  const n=PL.countDone(curStu);
+  el.textContent = n + (n===1?' exercise used':' exercises used');
 }
 
-/* ---------------------------------------------------------------------------
-   Aviso de gravação
-   ---------------------------------------------------------------------------
-   markDone() devolve false quando o localStorage não aceitou a escrita
-   (cota cheia, modo privado, storage bloqueado). Nesse caso a professora
-   PRECISA saber: o contador não sobe e o aviso aparece. Fingir sucesso
-   aqui seria a pior falha possível — com o filtro ligado, uma gravação
-   perdida vira exercício repetido sem ninguém perceber.
-   --------------------------------------------------------------------------- */
+/* ---------- aviso de gravação ----------
+   markDone devolvendo false significa que o localStorage recusou a escrita.
+   A professora precisa ver: o contador não sobe e o aviso aparece. */
 let saveWarnTimer;
 function showSaveWarning(){
-  const el = document.getElementById('saveWarn');
-  if(!el) return;
-  el.textContent = 'Could not save this exercise. Progress was not recorded.';
-  el.style.display = '';
+  const el=document.getElementById('saveWarn'); if(!el) return;
+  el.textContent='Could not save this exercise. Progress was not recorded.';
+  el.style.display='';
   clearTimeout(saveWarnTimer);
-  saveWarnTimer = setTimeout(clearSaveWarning, 8000);
+  saveWarnTimer=setTimeout(clearSaveWarning,8000);
 }
 function clearSaveWarning(){
-  const el = document.getElementById('saveWarn');
-  if(!el) return;
-  el.style.display = 'none';
-  clearTimeout(saveWarnTimer);
+  const el=document.getElementById('saveWarn'); if(!el) return;
+  el.style.display='none'; clearTimeout(saveWarnTimer);
 }
 
-/* Chamado UMA vez por exercício, no estado terminal. `_logged` evita
-   regravar dentro da mesma renderização; o próprio PracticeLog já é
-   idempotente por (exercício, dia) — as duas guardas são baratas.
-   Se a gravação falhar, `_logged` volta atrás para que uma nova
-   interação possa tentar de novo. */
-function markUsed(ex){
-  if(!curStu || !ex || !ex.id || ex._logged) return;
-  ex._logged = true;
-  if(TeacherLu.PracticeLog.markDone(curStu, ex.id) === false){
-    ex._logged = false;
+/* ---------- registro de uso ----------
+   Uma única porta de entrada. `_logged` evita regravar na mesma tela; o
+   PracticeLog já é idempotente por (exercício, dia). */
+function markUsed(item){
+  if(!curStu || !item || !item.id) return;
+  const st = ui[item.id] || (ui[item.id]={});
+  if(st._logged) return;
+  st._logged = true;
+  if(PL.markDone(curStu, item.id) === false){
+    st._logged = false;
     showSaveWarning();
-    return;                       // contador NÃO sobe, grupo NÃO fecha
+    return;
   }
   clearSaveWarning();
   renderUsedCount();
-  maybeMarkGroup();
+  maybeMarkGroup(item);
 }
 
-/* ---------------------------------------------------------------------------
-   Unidade de uso: grupo
-   ---------------------------------------------------------------------------
-   Tópicos que declaram `groupId` (hoje só o Reading) só são consumidos
-   por inteiro. Consultamos o PracticeLog, e não o estado da tela, para
-   que perguntas respondidas em aulas ANTERIORES também contem.
-   Abrir o texto não fecha nada; reveal sozinho não fecha nada — este
-   caminho só roda depois de um veredicto real.
-   --------------------------------------------------------------------------- */
-function maybeMarkGroup(){
-  if(!curStu) return;
-  const groupId = TeacherLu.PracticeBank.groupOf(currentKey);
-  if(!groupId) return;
-  const PL = TeacherLu.PracticeLog;
-  if(PL.isDone(curStu, groupId)) return;                 // já fechado
-  const members = TeacherLu.PracticeBank.groupMembers(currentKey);
+/* Sub-unidade com id próprio (verbo de Make a Sentence). Marca só ela.
+   Quando TODAS as sub-unidades estiverem gastas, o id da tela também é
+   marcado — assim o filtro futuro pergunta uma coisa só para tirar o
+   conjunto inteiro do pool, do mesmo jeito que o Reading. */
+function markUnit(item, unitId){
+  if(!curStu || !unitId) return;
+  const s=st(item);
+  s._loggedUnits = s._loggedUnits || {};
+  if(s._loggedUnits[unitId]) return;
+  s._loggedUnits[unitId]=true;
+  if(PL.markDone(curStu, unitId) === false){
+    s._loggedUnits[unitId]=false;
+    if(s.judgedVerbs) delete s.judgedVerbs[unitId];
+    showSaveWarning();
+    return;
+  }
+  clearSaveWarning();
+  renderUsedCount();
+
+  const units=PB.unitsOf(item);
+  if(units.length && units.every(id=>PL.isDone(curStu,id))){
+    if(PL.markDone(curStu, item.id) === false){ showSaveWarning(); return; }
+    renderUsedCount();
+  }
+}
+
+/* Unidade de uso: um texto de Reading só é consumido por inteiro. */
+function maybeMarkGroup(item){
+  if(!curStu || !item || !item.groupId) return;
+  if(PL.isDone(curStu, item.groupId)) return;
+  const members = PB.groupMembers(item.topic);
   if(!members.length) return;
-  if(!members.every(id => PL.isDone(curStu, id))) return; // ainda falta pergunta
-  if(PL.markDone(curStu, groupId) === false){ showSaveWarning(); return; }
+  if(!members.every(id=>PL.isDone(curStu,id))) return;
+  if(PL.markDone(curStu, item.groupId) === false){ showSaveWarning(); return; }
   renderUsedCount();
 }
 
-function updateScore(ok){
-  answeredCount++; if(ok)correctCount++;
-  document.getElementById('scoreDisplay').textContent=`${correctCount}/${answeredCount} · ${totalCount} total`;
+/* ---------- seleção ---------- */
+function renderTopics(){
+  const el=document.getElementById('topicSelect'); if(!el) return;
+  el.innerHTML = TOPICS.map(t=>
+    `<option value="${t.key}" ${t.key===curTopic?'selected':''}>${t.label}${t.level?' · '+t.level:''}</option>`).join('');
+}
+function pickTopic(k){ curTopic=k; curType='all'; loadPool(); window.scrollTo({top:0,behavior:'smooth'}); }
+function pickType(t){ curType=t; loadPool(); }
+
+function renderTypes(){
+  const counts=PB.typeCounts(curTopic);
+  const el=document.getElementById('typeSelector');
+  el.innerHTML = PB.GROUPS.map(g=>{
+    const chips=PB.TYPES.filter(t=>t.group===g.id && counts[t.id]>0);
+    if(!chips.length) return '';
+    return `<div class="type-group"><div class="lbl">${g.label}</div><div class="type-row">`+
+      chips.map(t=>`<button class="theme-btn ${t.id===curType?'active':''}" onclick="pickType('${t.id}')">${t.label} <span style="opacity:.6">${counts[t.id]}</span></button>`).join('')+
+    `</div></div>`;
+  }).join('');
 }
 
-function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-
-/* ---------------------------------------------------------------------------
-   Sanitização do enunciado de fill_blank para tela compartilhada com o aluno
-   ---------------------------------------------------------------------------
-   Alguns itens do banco carregam a resposta (ou o hint) entre parênteses no
-   próprio enunciado — legado da versão em que a professora usava o texto para
-   se lembrar da resposta durante a aula presencial. Ex.:
-      "She is ___ happy (usually)."   answer:"usually"
-      "We go to church ___ a week (once)."  answer:"once"
-   Na aula online (tela compartilhada), esse parêntese ENTREGA a resposta
-   antes do clique em "Show answer". Removemos apenas o parêntese final
-   quando seu conteúdo corresponde exatamente à resposta ou ao hint
-   (case-insensitive, ignorando espaços). Nenhum outro parêntese é tocado —
-   parênteses semânticos como "(paint)" em "She enjoys ___ (paint)."
-   permanecem, porque são a base verbal que o aluno precisa transformar.
-   Nunca modificamos o dado original: só a string visível é sanitizada.
-   ---------------------------------------------------------------------------*/
-function sanitizeFillBlankQuestion(ex){
-  if(!ex || typeof ex.question!=='string') return ex ? ex.question : '';
-  const norm = s => String(s==null?'':s).trim().toLowerCase();
-  const answer = norm(ex.correct);
-  const hint   = norm(ex.hint);
-  // captura APENAS o último parêntese antes de eventual ponto/interrogação
-  //   final (ou fim de string). Aceita parênteses simples, sem aninhados.
-  return ex.question.replace(
-    /\s*\(([^()]+)\)\s*([.!?…]?)\s*$/,
-    (match, inner, punct) => {
-      const key = norm(inner);
-      if(key && (key===answer || key===hint)){
-        return punct || '';        // remove o parêntese, mantém a pontuação
-      }
-      return match;                // não bate: preserva
-    }
-  );
+function loadPool(){
+  pool = PB.query({topic:curTopic, type:curType});   // sem filtro de concluídos (piloto)
+  idx = 0; ui = {};
+  const t = TOPICS.find(x=>x.key===curTopic);
+  document.getElementById('hdrSub').textContent = t ? (t.label + (t.level?' · '+t.level:'')) : '';
+  renderTopics(); renderTypes(); renderExercise();
 }
 
-function renderThemeButtons(){
-  const c=document.getElementById('themeButtons');
-  c.innerHTML=Object.keys(bank).map(k=>`<button class="theme-btn ${k===currentKey?'active':''}" onclick="loadTopic('${k}')">${bank[k].label}</button>`).join('');
-}
+/* ---------- navegação ---------- */
+function nextEx(){ if(idx < pool.length){ idx++; renderExercise(); window.scrollTo({top:0,behavior:'smooth'}); } }
+function prevEx(){ if(idx > 0){ idx--; renderExercise(); } }
+function restartPool(){ idx=0; ui={}; renderExercise(); }
 
-function loadTopic(key){
-  currentKey=key;
-  correctCount=0;answeredCount=0;totalCount=0;
-  exercises=JSON.parse(JSON.stringify(bank[key].exercises));
-  // pre-shuffle matching option lists
-  exercises.forEach(ex=>{ if(ex.type==='matching'){ ex._opts=shuffle(ex.pairs.map(p=>p.right)); } });
-  exercises.forEach(ex=>{
-    if(ex.type==='multiple_choice'||ex.type==='fill_blank')totalCount++;
-    if(ex.type==='true_false')totalCount+=ex.statements.length;
-    if(ex.type==='matching')totalCount+=ex.pairs.length;
-  });
-  document.getElementById('currentTopic').textContent=bank[key].label;
-  document.getElementById('scoreDisplay').textContent=`0/0 · ${totalCount} total`;
-  renderThemeButtons();
-  renderExercises();
-  window.scrollTo({top:0,behavior:'smooth'});
+/* ---------- helpers ---------- */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function typeLabel(item){
+  for(const t of PB.TYPES){ if(t.id!=='all' && t.match(item)) return t.label; }
+  return 'Practice';
 }
+function st(item){ return ui[item.id] || (ui[item.id]={}); }
 
-function renderExercises(){
-  const c=document.getElementById('exercisesContainer');
-  c.innerHTML='';
-  // Reading passage (only rendered when the topic exposes one). Stays sticky
-  // above the exercises so the student can re-read at any point.
-  const p = bank[currentKey] && bank[currentKey].passage;
-  if(p){
-    const wrap=document.createElement('div');
-    wrap.className='reading-passage';
-    wrap.innerHTML=`<p class="rp-tag">Reading${p.level?' · '+p.level:''}</p>
-      <h3>${p.title||''}</h3>
-      <p class="rp-body">${p.text||''}</p>`;
-    c.appendChild(wrap);
+/* ---------- render ---------- */
+function renderExercise(){
+  const el=document.getElementById('exerciseArea');
+  if(!pool.length){ el.innerHTML='<div class="card rounded-xl p-8" style="text-align:center"><p class="text-slate-400">Nothing here yet.</p></div>'; return; }
+  if(idx>=pool.length){
+    el.innerHTML='<div class="card rounded-xl p-8" style="text-align:center">'+
+      '<p class="text-white font-bold" style="font-size:20px;margin-bottom:6px">Finished.</p>'+
+      `<p class="text-slate-400 text-sm" style="margin-bottom:16px">${pool.length} exercises in this set.</p>`+
+      '<button onclick="restartPool()" class="theme-btn font-bold py-2 px-5 rounded-lg">↺ Start again</button></div>';
+    return;
   }
-  let num=0;
-  exercises.forEach((ex,ei)=>{
-    const card=document.createElement('div');
-    card.className='card ex-card';
-    if(ex.type==='multiple_choice'){
-      num++;
-      card.innerHTML=`<p class="tag">Choose the correct answer</p>
-        <p class="text-white q-big font-semibold mb-3">${num}. ${ex.question}</p>
-        <div>${ex.options.map((o,oi)=>`<button class="opt" id="opt-${ei}-${oi}" onclick="pick(${ei},${oi})"><span class="letter">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div>`;
+  const item=pool[idx];
+  const s=st(item);
+
+  let html='';
+  if(item.passage){
+    html+=`<div class="reading-passage">
+      <p class="rp-tag">Reading${item.passage.level?' · '+item.passage.level:''}</p>
+      <h3>${esc(item.passage.title||'')}</h3>
+      <p class="rp-body">${esc(item.passage.text||'')}</p></div>`;
+  }
+
+  html+='<div class="card rounded-xl p-6">'+
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">'+
+      `<span class="tag">${typeLabel(item)}</span>`+
+      `<span class="text-slate-400 text-sm font-bold">${idx+1} / ${pool.length}</span>`+
+    '</div>'+
+    bodyOf(item)+
+    footerOf(item)+
+  '</div>';
+
+  el.innerHTML=html;
+}
+
+/* ---------- corpo por formato ---------- */
+function bodyOf(item){
+  const s=st(item);
+  switch(item.format){
+
+    case 'multiple_choice': {
+      const opts=item.options||[];
+      // Duas origens, dois comportamentos:
+      //  · banco próprio  -> correctIndex numérico: a professora clica na
+      //    alternativa que o aluno disse e o feedback é imediato;
+      //  · Grammar        -> a resposta vem como texto ("B — went"), então
+      //    as alternativas são só leitura e o veredicto é ✓/✗.
+      if(item.correctIndex===null||item.correctIndex===undefined){
+        return `<p class="q-big text-white font-semibold mb-3">${item.q}</p>`+
+          `<div>`+opts.map((o,i)=>`<div class="opt" style="cursor:default"><span class="letter">${String.fromCharCode(65+i)}</span>${o}</div>`).join('')+`</div>`+
+          answerBlock(item, item.a);
+      }
+      return `<p class="q-big text-white font-semibold mb-4">${item.q}</p><div>`+
+        opts.map((o,i)=>{
+          let cls='opt';
+          if(s.picked!==undefined){
+            if(i===item.correctIndex) cls+=' right';
+            else if(i===s.picked) cls+=' wrong';
+            else cls+=' dim';
+          }
+          return `<button class="${cls}" ${s.picked!==undefined?'disabled':''} onclick="pickOption(${i})"><span class="letter">${String.fromCharCode(65+i)}</span>${o}</button>`;
+        }).join('')+'</div>';
     }
-    if(ex.type==='fill_blank'){
-      num++;
-      // ex.hint preservado no dado; nunca exibido na tela.
-      // ex.question passa por sanitizeFillBlankQuestion() para remover parênteses
-      //   finais que entregariam a resposta (ver comentário da função acima).
-      const safeQ = sanitizeFillBlankQuestion(ex);
-      card.innerHTML=`<p class="tag">Complete the sentence</p>
-        <p class="text-white q-big font-semibold mb-3">${num}. ${safeQ}</p>
-        <div id="fb-${ei}"><button class="reveal-btn" onclick="reveal(${ei})">👁 Show answer</button></div>`;
-    }
-    if(ex.type==='true_false'){
-      card.innerHTML=`<p class="tag">True or False</p>
-        <div class="space-y-3 mt-2">${ex.statements.map((s,si)=>`
-          <div>
-            <p class="text-white q-big mb-2">${si+1}. ${s.text}</p>
+
+    case 'true_false': {
+      const list=item.statements||[];
+      return `<p class="tag mb-2">True or False</p><div class="space-y-3 mt-2">`+
+        list.map((x,i)=>{
+          const done=s['tf'+i]!==undefined;
+          const t=done?(x.answer?' right':(s['tf'+i]===true?' wrong':'')):'';
+          const f=done?(!x.answer?' right':(s['tf'+i]===false?' wrong':'')):'';
+          return `<div><p class="text-white q-big mb-2">${i+1}. ${x.text}</p>
             <div style="display:flex;gap:8px">
-              <button class="opt" style="flex:1;text-align:center" id="tf-${ei}-${si}-t" onclick="pickTF(${ei},${si},true)">✓ True</button>
-              <button class="opt" style="flex:1;text-align:center" id="tf-${ei}-${si}-f" onclick="pickTF(${ei},${si},false)">✗ False</button>
-            </div>
-          </div>`).join('')}</div>`;
+              <button class="opt${t}" style="flex:1;text-align:center" ${done?'disabled':''} onclick="pickTF(${i},true)">✓ True</button>
+              <button class="opt${f}" style="flex:1;text-align:center" ${done?'disabled':''} onclick="pickTF(${i},false)">✗ False</button>
+            </div></div>`;
+        }).join('')+'</div>';
     }
-    if(ex.type==='matching'){
-      card.innerHTML=`<p class="tag">Match the pairs</p>
-        <p class="text-white q-big font-semibold mb-3">${ex.question}</p>
-        <div class="legend">${ex._opts.map((r,ri)=>`<p><b>${String.fromCharCode(65+ri)}</b>${r}</p>`).join('')}</div>
-        <div class="space-y-2">${ex.pairs.map((p,pi)=>`
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <div style="min-width:110px"><span class="text-white font-bold" style="font-size:18px">${p.left}</span></div>
-            <div style="display:flex;gap:6px">${ex._opts.map((r,ri)=>`<button class="mletter" id="ml-${ei}-${pi}-${ri}" onclick="pickMatch(${ei},${pi},${ri})">${String.fromCharCode(65+ri)}</button>`).join('')}</div>
-          </div>`).join('')}</div>`;
+
+    case 'matching': {
+      const pairs=item.pairs||[];
+      if(!s.opts) s.opts = pairs.map(p=>p.right).sort(()=>Math.random()-0.5);
+      return `<p class="q-big text-white font-semibold mb-3">${item.q}</p>`+
+        `<div class="legend">${s.opts.map((r,i)=>`<p><b>${String.fromCharCode(65+i)}</b>${r}</p>`).join('')}</div>`+
+        `<div class="space-y-2">`+pairs.map((p,pi)=>{
+          const done=s['m'+pi]!==undefined;
+          const correct=s.opts.indexOf(p.right);
+          return `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div style="min-width:120px"><span class="text-white font-bold" style="font-size:18px">${p.left}</span></div>
+            <div style="display:flex;gap:6px">`+
+              s.opts.map((r,ri)=>{
+                let c='mletter';
+                if(done){ if(ri===correct)c+=' right'; else if(ri===s['m'+pi])c+=' wrong'; else c+=' dim'; }
+                return `<button class="${c}" ${done?'disabled':''} onclick="pickMatch(${pi},${ri},${correct})">${String.fromCharCode(65+ri)}</button>`;
+              }).join('')+
+            `</div></div>`;
+        }).join('')+`</div>`;
     }
-    c.appendChild(card);
-  });
-}
 
-// Teacher clicks the option the student SAID → instant feedback, question locks.
-function pick(ei,oi){
-  const ex=exercises[ei];
-  if(ex._done)return; ex._done=true;
-  const ok=oi===ex.correct;
-  ex.options.forEach((_,i)=>{
-    const el=document.getElementById(`opt-${ei}-${i}`);
-    el.disabled=true;
-    if(i===ex.correct)el.classList.add('right');
-    else if(i===oi)el.classList.add('wrong');
-    else el.classList.add('dim');
-  });
-  updateScore(ok);
-  markUsed(ex);                        // alternativa escolhida = exercício usado
-}
+    case 'make_question':
+      return `<p class="text-slate-400 text-sm mb-2">Answer</p>
+        <p class="q-big text-white font-semibold mb-4">${item.answerLine}</p>
+        <p class="text-slate-400 text-sm mb-1">${item.prompt}</p>`+
+        answerBlock(item, item.expected);
 
-function pickTF(ei,si,val){
-  const ex=exercises[ei];
-  if(!ex._done)ex._done={};
-  if(ex._done[si])return; ex._done[si]=true;
-  const s=ex.statements[si];
-  const t=document.getElementById(`tf-${ei}-${si}-t`);
-  const f=document.getElementById(`tf-${ei}-${si}-f`);
-  t.disabled=true;f.disabled=true;
-  (s.answer?t:f).classList.add('right');
-  if(val!==s.answer)(val?t:f).classList.add('wrong');
-  updateScore(val===s.answer);
-  // Bloco: só conta como usado quando TODOS os statements foram julgados.
-  if(Object.keys(ex._done).length===ex.statements.length) markUsed(ex);
-}
+    case 'story': {
+      const parts=String(item.text).split('___');
+      let h = `<h3 class="text-white font-bold" style="font-size:26px;margin-bottom:4px">${esc(item.title)}</h3>`+
+              (item.context?`<p class="text-slate-400 text-sm mb-2">${esc(item.context)}</p>`:'');
+      if(item.wordBank) h+=`<div class="wordbank">${item.wordBank.map(w=>`<span class="wb">${esc(w)}</span>`).join('')}</div>`;
+      h+='<p class="story-text">';
+      parts.forEach((txt,i)=>{
+        h+=esc(txt);
+        if(i<parts.length-1) h+=gapHTML(item,i);
+      });
+      h+='</p>';
+      return h;
+    }
 
-function pickMatch(ei,pi,ri){
-  const ex=exercises[ei];
-  if(!ex._done)ex._done={};
-  if(ex._done[pi])return; ex._done[pi]=true;
-  const correctIdx=ex._opts.indexOf(ex.pairs[pi].right);
-  ex._opts.forEach((_,i)=>{
-    const el=document.getElementById(`ml-${ei}-${pi}-${i}`);
-    el.disabled=true;
-    if(i===correctIdx)el.classList.add('right');
-    else if(i===ri)el.classList.add('wrong');
-    else el.classList.add('dim');
-  });
-  updateScore(ri===correctIdx);
-  // Bloco: só conta como usado quando TODOS os pares foram julgados.
-  if(Object.keys(ex._done).length===ex.pairs.length) markUsed(ex);
-}
+    case 'dialogue': {
+      let h = `<h3 class="text-white font-bold" style="font-size:26px;margin-bottom:4px">${esc(item.title)}</h3>`+
+              (item.context?`<p class="text-slate-400 text-sm mb-2">${esc(item.context)}</p>`:'');
+      if(item.wordBank) h+=`<div class="wordbank">${item.wordBank.map(w=>`<span class="wb">${esc(w)}</span>`).join('')}</div>`;
+      let g=0;
+      (item.lines||[]).forEach(ln=>{
+        h+='<div class="dlg-line"><span class="dlg-who">'+esc(ln.who)+':</span>';
+        String(ln.text).split('___').forEach((txt,i,arr)=>{
+          h+=esc(txt);
+          if(i<arr.length-1){ h+=gapHTML(item,g); g++; }
+        });
+        h+='</div>';
+      });
+      return h;
+    }
 
-// Fill in the blank: professora clica "Show answer" para revelar (aluno responde antes).
-function reveal(ei){
-  const box=document.getElementById(`fb-${ei}`);
-  box.innerHTML=`<p class="answer-big">${exercises[ei].correct}</p>
-    <div style="display:flex;gap:8px">
-      <button class="judge jr" id="jr-${ei}" onclick="judge(${ei},true)">✓ Student got it</button>
-      <button class="judge jw" id="jw-${ei}" onclick="judge(${ei},false)">✗ Missed it</button>
-    </div>`;
-}
-function judge(ei,ok){
-  const ex=exercises[ei];
-  if(ex._done)return; ex._done=true;
-  const r=document.getElementById(`jr-${ei}`),w=document.getElementById(`jw-${ei}`);
-  r.disabled=true;w.disabled=true;
-  (ok?r:w).classList.add('picked');
-  updateScore(ok);
-  markUsed(ex);                        // veredicto dado — reveal sozinho não marca
-}
+    case 'make_sentence': {
+      // Cada VERBO é a unidade de uso. Trabalhar BUY não gasta DRINK.
+      // A polaridade (+ / – / ?) é variação de produção do mesmo verbo e
+      // nunca cria registro.
+      const s2=st(item);
+      if(!s2.pol) s2.pol='+';
+      const POL=['+','–','?'];
+      const sel=s2.verbId ? (item.verbs||[]).find(v=>v.id===s2.verbId) : null;
+      return `<p class="q-big text-white font-semibold mb-1">${esc(item.instruction)}</p>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:14px">
+          ${POL.map(p=>`<button class="pol ${s2.pol===p?'on':''}" onclick="setPol('${p}')">${p}</button>`).join('')}
+          <button class="theme-btn font-bold py-2 px-4 rounded-lg" style="margin-left:6px" onclick="randomPol()">🎲 Random</button>
+          ${sel?`<span style="margin-left:auto;font-size:22px;font-weight:800;color:var(--tl-primary)">${esc(sel.v)} &nbsp;${s2.pol}</span>`:''}
+        </div>
+        <div class="verb-grid">${(item.verbs||[]).map(v=>{
+          const on   = s2.verbId===v.id;
+          const done = !!(s2.judgedVerbs && s2.judgedVerbs[v.id]);
+          return `<div class="verb-card ${on?'on':''} ${done?'used':''}" onclick="pickVerb('${v.id}')">${esc(v.v)}${done?'<span class="vmark">✓</span>':''}</div>`;
+        }).join('')}</div>`;
+    }
 
-function exportPDF(){
-  if(!currentKey){alert('Choose a topic first!');return;}
-  const pa=document.getElementById('printArea');
-  let num=0;
-  let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #0B3B46;padding-bottom:12px">Exercises — ${bank[currentKey].label}</h1>`;
-  const _p = bank[currentKey].passage;
-  if(_p){
-    h+=`<div style="border-left:4px solid #db6d5d;background:#faf4f2;padding:14px 18px;margin:14px 0"><p style="font-size:11px;font-weight:700;letter-spacing:.5px;color:#a04a3e;margin:0 0 4px">READING${_p.level?' · '+_p.level:''}</p><h2 style="margin:0 0 8px;font-size:18px">${_p.title||''}</h2><p style="white-space:pre-wrap;margin:0">${_p.text||''}</p></div>`;
+    /* complete · unscramble · fix · transform · open — mesmo runner */
+    case 'unscramble':
+      return `<p class="q-big text-white font-semibold mb-2">Put in order: <b>${item.q}</b></p>`+answerBlock(item,item.a);
+    case 'fix':
+      return `<p class="q-big text-white font-semibold mb-2">Find the mistake: <span style="color:var(--tl-danger-text)">“${item.q}”</span></p>`+answerBlock(item,item.a);
+    default:
+      return `<p class="q-big text-white font-semibold mb-2">${item.q}</p>`+answerBlock(item, item.a);
   }
-  exercises.forEach(ex=>{
-    if(ex.type==='multiple_choice'){num++;
-      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b></p>`;
-      ex.options.forEach((o,i)=>h+=`<p style="margin-left:15px">${String.fromCharCode(65+i)}) ${o} ${i===ex.correct?'<b>✔</b>':''}</p>`);
-    }
-    if(ex.type==='fill_blank'){num++;
-      h+=`<p style="margin-top:14px"><b>${num}. ${ex.question}</b> &nbsp; <span style="color:#22C55E"><b>(${ex.correct})</b></span></p>`;
-    }
-    if(ex.type==='true_false'){
-      h+=`<p style="margin-top:14px"><b>True or False:</b></p>`;
-      ex.statements.forEach((s,i)=>h+=`<p style="margin-left:15px">${i+1}. ${s.text} — <b>${s.answer?'True':'False'}</b></p>`);
-    }
-    if(ex.type==='matching'){
-      h+=`<p style="margin-top:14px"><b>${ex.question}</b></p>`;
-      ex.pairs.forEach(p=>h+=`<p style="margin-left:15px">${p.left} → <b>${p.right}</b></p>`);
-    }
-  });
-  h+=`</div>`;
-  pa.innerHTML=h;
-  printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
 }
 
-function printDoc(html,title){ TeacherLu.printDoc(html, title); }
+function gapHTML(item,i){
+  const s=st(item);
+  const filled = s['g'+i];
+  return filled
+    ? `<span class="gap filled">${esc((item.answers||[])[i]||'')}</span>`
+    : `<span class="gap" onclick="fillGap(${i})">___</span>`;
+}
 
-function goHome(){window.location.href='index.html';}
+function answerBlock(item, answer){
+  const s=st(item);
+  if(!answer) return '';
+  if(!s.revealed){
+    return `<div style="margin-top:18px"><button class="reveal-btn" onclick="revealAnswer()">👁 Show answer</button></div>`;
+  }
+  let h=`<div style="margin-top:18px"><p class="answer-big">${answer}</p>`;
+  if(item.why||item.ruleRef||item.exSample){
+    h+='<div class="mistake" style="margin-top:6px">'+
+      (item.why?`<div class="text-sm">❌ ${item.why}</div>`:'')+
+      (item.ruleRef?`<div class="text-sm">📐 ${item.ruleRef}</div>`:'')+
+      (item.exSample?`<div class="text-sm">➕ ${item.exSample}</div>`:'')+
+    '</div>';
+  }
+  return h+'</div>';
+}
 
-// Reading track — expose the reading topics of `bank` to the Content registry
-// so they show up under Learning Progress → Reading. Presentation and runner
-// remain the existing ones; nothing else changes.
-(function registerReading(){
-  try{
-    var NS = window.TeacherLu = window.TeacherLu || {};
-    var provider = {
-      id:'reading-exercises',
-      skill:'reading',
-      label:'Reading',
-      load:function(){
-        return Object.keys(bank)
-          .filter(function(k){ return bank[k] && bank[k].passage; })
-          .map(function(k){ return { key:k, topic:bank[k] }; });
-      },
-      map:function(raw, i){
-        var p = raw.topic.passage || {};
-        return {
-          key:      raw.key,
-          title:    p.title || raw.topic.label,
-          subtitle: (raw.topic.exercises && raw.topic.exercises.length) ? raw.topic.exercises.length + ' exercises' : '',
-          level:    p.level || '',
-          order:    i
-        };
-      }
-    };
-    if (NS.Content) NS.Content.register(provider);
-    else (NS.__pendingProviders = NS.__pendingProviders || []).push(provider);
-  }catch(e){ console.warn('[reading] could not register', e); }
-})();
+/* ---------- rodapé: veredicto + navegação ---------- */
+/* Formatos que dão o próprio veredicto pelo clique do aluno/professora —
+   não precisam dos botões ✓/✗ no rodapé. */
+function selfJudging(item){
+  if(item.format==='true_false'||item.format==='matching') return true;
+  return item.format==='multiple_choice' && item.correctIndex!==null && item.correctIndex!==undefined;
+}
 
-// INIT
+function canJudge(item){
+  const s=st(item);
+  if(item.format==='story'||item.format==='dialogue'){
+    const n=(item.answers||[]).length;
+    for(let i=0;i<n;i++) if(!s['g'+i]) return false;
+    return true;
+  }
+  if(item.format==='make_sentence') return !!s.verbId && !(s.judgedVerbs&&s.judgedVerbs[s.verbId]);
+  return true;
+}
+
+function footerOf(item){
+  const s=st(item);
+  const showVerdict = !selfJudging(item);
+  const enabled = canJudge(item);
+  let h='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid var(--tl-border)">';
+  if(showVerdict){
+    h+=`<button onclick="judge(true)" class="font-bold" style="cursor:${enabled?'pointer':'default'};font-size:17px;padding:9px 22px;border-radius:var(--tl-radius-md);background:var(--tl-success-soft);color:var(--tl-success-text);border:2px solid ${s.verdict===true?'var(--tl-success)':'transparent'};opacity:${enabled?(s.verdict===false?'.35':'1'):'.3'}">✓</button>`+
+       `<button onclick="judge(false)" class="font-bold" style="cursor:${enabled?'pointer':'default'};font-size:17px;padding:9px 22px;border-radius:var(--tl-radius-md);background:var(--tl-danger-soft);color:var(--tl-danger-text);border:2px solid ${s.verdict===false?'var(--tl-danger)':'transparent'};opacity:${enabled?(s.verdict===true?'.35':'1'):'.3'}">✗</button>`;
+  }
+  h+='<span style="flex:1"></span>';
+  if(idx>0) h+='<button onclick="prevEx()" class="theme-btn py-2 px-4 rounded-lg">←</button>';
+  h+='<button id="btnNext" onclick="nextEx()" class="theme-btn active font-bold py-2 px-6 rounded-lg">Next →</button>';
+  return h+'</div>';
+}
+
+/* ---------- interações ----------
+   Cada uma leva ao estado terminal do seu formato — e só aí markUsed. */
+
+function pickOption(i){                       // Multiple Choice
+  const item=pool[idx], s=st(item);
+  if(s.picked!==undefined) return;
+  s.picked=i;
+  markUsed(item);                             // alternativa escolhida = usado
+  renderExercise();
+}
+
+function pickTF(i,val){                       // True/False (bloco)
+  const item=pool[idx], s=st(item);
+  if(s['tf'+i]!==undefined) return;
+  s['tf'+i]=val;
+  const n=(item.statements||[]).length;
+  let all=true; for(let k=0;k<n;k++) if(s['tf'+k]===undefined) all=false;
+  if(all) markUsed(item);                     // bloco só conta inteiro
+  renderExercise();
+}
+
+function pickMatch(pi,ri){                    // Matching (bloco)
+  const item=pool[idx], s=st(item);
+  if(s['m'+pi]!==undefined) return;
+  s['m'+pi]=ri;
+  const n=(item.pairs||[]).length;
+  let all=true; for(let k=0;k<n;k++) if(s['m'+k]===undefined) all=false;
+  if(all) markUsed(item);
+  renderExercise();
+}
+
+function revealAnswer(){                      // reveal NUNCA marca
+  const item=pool[idx];
+  st(item).revealed=true;
+  renderExercise();
+}
+
+function fillGap(i){                          // Story / Dialogue
+  const item=pool[idx];
+  st(item)['g'+i]=true;                       // revelar lacuna também não marca
+  renderExercise();
+}
+
+function setPol(p){ st(pool[idx]).pol=p; renderExercise(); }   // não marca nada
+function randomPol(){ const P=['+','–','?']; setPol(P[Math.floor(Math.random()*3)]); }
+function pickVerb(id){ st(pool[idx]).verbId=id; renderExercise(); }   // selecionar não marca
+
+function judge(ok){                           // estado terminal
+  const item=pool[idx], s=st(item);
+  if(!canJudge(item)) return;
+
+  // Make a Sentence: o veredicto marca O VERBO, não a tela.
+  if(item.format==='make_sentence'){
+    const verbId=s.verbId;
+    if(!verbId) return;
+    s.judgedVerbs = s.judgedVerbs || {};
+    if(s.judgedVerbs[verbId]!==undefined) return;
+    s.judgedVerbs[verbId]=ok;
+    markUnit(item, verbId);
+    s.verbId=null;                            // libera a tela para o próximo verbo
+    renderExercise();
+    return;
+  }
+
+  if(s.verdict!==undefined) return;
+  s.verdict=ok;
+  markUsed(item);
+  renderExercise();
+}
+
+function goHome(){ window.location.href='index.html'; }
+
+/* ---------- init ---------- */
 renderStuBar();
 renderUsedCount();
-renderThemeButtons();
-loadTopic('personal');
+if(curTopic) loadPool();
 </script>
 </body>
 </html>
