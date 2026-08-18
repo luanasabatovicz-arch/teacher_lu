@@ -1,690 +1,295 @@
 /* ============================================================
-   GRAMMAR ENGINE v1 — runtime genérico (GRAMMAR-ENGINE.md)
-   A arquitetura nunca muda; só o conteúdo (grammar-topics.js).
-   Obedece SLF G1–G10 · 10 seções · portões · camadas C2/C3/C4.
+   GRAMMAR PRACTICE — runtime (antigo GRAMMAR ENGINE v1)
+   ------------------------------------------------------------
+   O QUE MUDOU E POR QUÊ
+   ---------------------
+   Este arquivo executava uma aula guiada em 10 seções — Goal,
+   Warm-up, Notice, CCQs, Rule, Watch out, Practice, Make it
+   yours, Task, Exit Ticket — com portões de 80%, relógio por
+   seção, mapa de etapas e sessão recuperável.
+
+   Esse fluxo não é usado: a professora dá a explicação, a regra,
+   os CCQs e o warm-up fora da plataforma. O que ela abre em aula
+   é a PRÁTICA. Então o runtime virou practice-only:
+
+     aluno → tópico → um exercício por vez → veredicto → Next
+
+   O CONTEÚDO NÃO FOI TOCADO. engine/grammar-topics.js continua
+   inteiro: notice, ccqs, rule, watchout, makeit, task e goal
+   seguem lá, apenas não são renderizados. Se um dia essa aula
+   guiada voltar, os dados estão intactos.
+
+   O POOL
+   ------
+   Três campos alimentam um único pool de prática:
+
+     practice      exercícios principais (fill · mc · us · ec · tr)
+     practiceMore  prática livre (cq · md)
+     exit          revisão final — aqui são exercícios normais,
+                   e a interface NUNCA os chama de "Exit Ticket"
+
+   Cada item mantém o `id` permanente que grammar-topics.js já
+   carrega (gr-<topico>-pr-001 / -pm- / -ex-). Nada aqui gera id.
+
+   O QUE ESTE ARQUIVO NÃO FAZ
+   --------------------------
+   Não filtra por aluno. O PracticeLog não é consultado nem
+   escrito daqui — ligar o filtro é uma etapa posterior, e a
+   página é quem vai decidir isso.
    ============================================================ */
 (function(){
 'use strict';
 
-/* ---------- constantes da arquitetura (invariantes) ---------- */
-const SECTIONS=[
-  {id:'goal',    n:'1', t:'Goal',          time:0.5, color:'#0B3B46'},
-  {id:'warmup',  n:'2', t:'Warm-up',       time:4,   color:'#22C55E'},
-  {id:'notice',  n:'3', t:'Notice',        time:5,   color:'#22C55E'},
-  {id:'ccq',     n:'4', t:'CCQs',          time:4,   color:'#F59E0B'},
-  {id:'rule',    n:'5', t:'Rule',          time:3,   color:'#0EA5E9'},
-  {id:'watchout',n:'6', t:'Watch out',     time:1.5, color:'#EF4444'},
-  {id:'practice',n:'7', t:'Practice',      time:12,  color:'#FF6B6B'},
-  {id:'makeit',  n:'8', t:'Make it yours', time:6,   color:'#16B1A9'},
-  {id:'task',    n:'9', t:'Task',          time:10,  color:'#0B3B46'},
-  {id:'exit',    n:'10',t:'Exit ticket',   time:5,   color:'#0B3B46'}
+/* ---------- formatos: rótulo neutro, sem vocabulário de aula ---------- */
+var FORMATS=[
+  {id:'all',  label:'All'},
+  {id:'fill', label:'Complete'},
+  {id:'mc',   label:'Multiple Choice'},
+  {id:'us',   label:'Unscramble'},
+  {id:'ec',   label:'Fix the mistake'},
+  {id:'tr',   label:'Transform'},
+  {id:'open', label:'Open answer'}
 ];
-const GATE_CCQ=4;        // 4/5
-const GATE_PRACTICE=10;  // 10/12 (≥80%)
-const GATE_EXIT=5;       // 5/6 (≥80%)
-const PRACTICE_TYPES={fill:'Fill in',mc:'Choose A/B/C',us:'Unscramble',ec:'Fix the mistake',tr:'Transform'};
-// Ordem de corte quando o tempo aperta (§ runtime): C4 → C3 → §7 12→8 → §8 6→4 → §2 3→1.
-const CUTS=[
-  {k:'c4',   msg:'Extensão da missão removida.'},
-  {k:'c3',   msg:'Prática extra removida.'},
-  {k:'p8',   msg:'Prática reduzida para 8 itens.'},
-  {k:'m4',   msg:'Produção reduzida para 4 itens.'},
-  {k:'w1',   msg:'Aquecimento reduzido para 1 pergunta.'}
-];
+var FORMAT_LABEL={fill:'Complete',mc:'Multiple Choice',us:'Unscramble',
+                  ec:'Fix the mistake',tr:'Transform',cq:'Open answer',
+                  md:'Open answer',op:'Open answer'};
 
-/* ---------- estado da aula ---------- */
-let T=null;       // tópico ativo (dados)
-let S=null;       // estado runtime
+/* ---------- estado ---------- */
+var T=null;      // tópico ativo (dados, nunca modificados)
+var S=null;      // estado runtime
+var MOUNT='gePractice';
+
 function freshState(){
-  return {
-    sec:0, maxSec:0,
-    judged:{},           // judged[secId] = {idx:bool}
-    ccqRound:1, ccqReserveOn:false, noticeRetry:false, abortAdvised:false,
-    c3On:false, c3Items:[], c3Judged:{}, practiceRound:1, conceptGap:false,
-    cuts:{}, cutIdx:0, mapOpen:true,
-    secStart:Date.now(), clockTimer:null,
-    ruleRevealed:false, weekComplete:null, finished:false
-  };
+  return { pool:[], view:[], i:0, filter:'all', judged:{}, revealed:{} };
 }
 
-/* ---------- pontes com a página (aluno, fila de erros) ---------- */
-const env={
-  stuName:()=> (typeof window.stuName==='function'?window.stuName():'the student'),
-  student:()=>{
-    try{
-      const id=window.curStu, list=window.STUDENTS_DATA||[];
-      return list.find(s=>s.id===id)||null;
-    }catch(e){return null;}
-  },
-  isKid:()=>{const s=env.student();return !!(s&&s.age&&+s.age<=12);},
-  queue:()=> (typeof window.getQueue==='function'?window.getQueue():[]),
-  logError:(kind,q,a)=>{ if(typeof window.logError==='function')window.logError(kind,q,a); },
-  markQueue:(item,ok)=>{
-    try{
-      const k='errq|'+window.curStu;
-      const arr=JSON.parse(localStorage.getItem(k)||'[]');
-      const it=arr[item._i];
-      if(it){ if(ok)it.rv=1; else it.d=new Date().toISOString().slice(0,10); }
-      localStorage.setItem(k,JSON.stringify(arr));
-    }catch(e){}
-  }
+/* ---------- ponte com a página (aluno, fila de erros) ---------- */
+var env={
+  stuName:function(){ return (typeof window.stuName==='function') ? window.stuName() : 'the student'; },
+  logError:function(kind,q,a){ if(typeof window.logError==='function') window.logError(kind,q,a); }
 };
-function P(s){ return String(s==null?'':s).replace(/\{name\}/g,env.stuName()); }
-function esc(s){ return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
 
-/* ---------- RANDOMIZAÇÃO (anti-memorização da interface) ----------
-   Embaralha UMA VEZ por aula (em buildSession) e guarda no estado S:
-   se embaralhasse a cada render, os itens pulariam a cada clique. */
-function shuffle(a){ a=(a||[]).slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
-function shuffleByType(arr){            // embaralha DENTRO de cada tipo, preservando a progressão
-  const order=[],g={};
-  (arr||[]).forEach(function(p){ if(!g[p.t]){g[p.t]=[];order.push(p.t);} g[p.t].push(p); });
-  let out=[]; order.forEach(function(t){ out=out.concat(shuffle(g[t])); });
+function P(s){ return String(s==null?'':s).replace(/\{name\}/g, env.stuName()); }
+function esc(s){ return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function strip(s){ return String(s==null?'':s).replace(/<[^>]*>/g,''); }
+
+/* ---------- randomização (anti-memorização da ordem) ---------- */
+function shuffle(a){
+  a=(a||[]).slice();
+  for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
+  return a;
+}
+/* embaralha as alternativas do MC e RECALCULA a letra da resposta */
+function prepMC(p){
+  if(!p||p.t!=='mc'||!p.opts||!p.opts.length) return p;
+  var txt=String(p.a).replace(/^\s*[A-Z]\s*—\s*/,'').trim();
+  var opts=shuffle(p.opts), idx=-1;
+  for(var i=0;i<opts.length;i++){
+    if(String(opts[i]).trim().toLowerCase()===txt.toLowerCase()){ idx=i; break; }
+  }
+  if(idx<0) return p;                       // sem correspondência: mantém o original
+  var out={}; for(var k in p) out[k]=p[k];
+  out.opts=opts; out.a=String.fromCharCode(65+idx)+' — '+opts[idx];
   return out;
 }
-function prepMC(p){                     // embaralha alternativas e RECALCULA a letra correta
-  if(!p||p.t!=='mc'||!p.opts||!p.opts.length)return p;
-  const txt=String(p.a).replace(/^\s*[A-Z]\s*—\s*/,'').trim();
-  const opts=shuffle(p.opts);
-  let idx=-1;
-  for(let i=0;i<opts.length;i++){ if(String(opts[i]).trim().toLowerCase()===txt.toLowerCase()){ idx=i; break; } }
-  if(idx<0)return p;                    // sem correspondência: mantém o original (seguro)
-  return Object.assign({},p,{opts:opts, a:String.fromCharCode(65+idx)+' — '+opts[idx]});
-}
-function buildSession(){                // monta as versões embaralhadas desta aula
-  S.practice     = shuffleByType(T.practice).map(prepMC);
-  S.practiceMore = shuffle(T.practiceMore||[]).map(prepMC);
-  S.ccqMain      = shuffle((T.ccqs&&T.ccqs.main)||[]);
-  S.ccqReserve   = (((T.ccqs&&T.ccqs.reserve)||[])).slice();
-  S.exitItems    = shuffle(T.exit||[]);
-  S.makeitItems  = shuffle(T.makeit||[]);
-  S.watchoutItems= shuffle(T.watchout||[]);
-  S.noticeEx     = shuffle((T.notice&&T.notice.examples)||[]);
-  S.noticeAlt    = shuffle((T.notice&&T.notice.altExamples)||[]);
-  S.examplesRnd  = T.examples?{
-      byUse:(T.examples.byUse||[]).map(function(g){return {use:g.use, ex:shuffle(g.ex)};}),
-      aff:shuffle(T.examples.aff||[]), neg:shuffle(T.examples.neg||[]),
-      q:shuffle(T.examples.q||[]), context:shuffle(T.examples.context||[]),
-      contrast:shuffle(T.examples.contrast||[])
-    }:null;
-}
 
-/* ---------- auditoria de invariância (teste do motor) ---------- */
-function audit(t){
-  const errs=[];
-  const need=(cond,msg)=>{ if(!cond)errs.push(msg); };
-  need(t.slots&&t.slots.form&&t.slots.meaning&&t.slots.use&&t.slots.contrast&&t.slots.ptTrap&&t.slots.visual,'6 slots incompletos');
-  need(t.notice&&t.notice.examples&&t.notice.examples.length===4,'§3 exige 4 frases-exemplo');
-  need(t.notice&&t.notice.hints&&t.notice.hints.length===3,'§3 exige 3 hints em escada');
-  need(t.ccqs&&t.ccqs.main&&t.ccqs.main.length===5,'§4 exige 5 CCQs');
-  need(t.ccqs&&t.ccqs.reserve&&t.ccqs.reserve.length===3,'§4 exige 3 CCQs reserva');
-  need(t.watchout&&t.watchout.length===4,'§6 exige exatamente 4 erros');
-  need(t.practice&&t.practice.length>=12,'§7 exige ≥12 itens');
-  if(t.practice){
-    const c={};t.practice.forEach(p=>c[p.t]=(c[p.t]||0)+1);
-    need((c.fill||0)>=3&&(c.mc||0)>=3&&(c.us||0)>=2&&(c.ec||0)>=2&&(c.tr||0)>=2,'§7 mínimos por tipo: ≥3 fill · ≥3 mc · ≥2 us · ≥2 ec · ≥2 tr (encontrado: '+JSON.stringify(c)+')');
-    need(t.practice.every(p=>p.hint&&p.fu),'§7: todo item exige hint + follow-up (C2)');
+/* ---------- pool ---------- */
+function buildPool(){
+  var pool=[];
+  function take(list, src, defType){
+    shuffle(list||[]).forEach(function(p){
+      var it={}; for(var k in p) it[k]=p[k];
+      it._src=src;
+      it.t=p.t||defType;
+      pool.push(prepMC(it));
+    });
   }
-  need(t.makeit&&t.makeit.length===6,'§8 exige 6 stems');
-  need(t.task&&t.task.mission&&t.task.roles&&t.task.complication,'§9 exige missão + papéis + complicação');
-  need(t.task&&t.task.extras&&t.task.extras.length===2,'§9 exige 2 complicações injetáveis (C2)');
-  need(t.exit&&t.exit.length===6,'§10 exige 6 itens');
-  if(errs.length)console.warn('[Grammar Engine] Auditoria falhou para "'+t.short+'":\n - '+errs.join('\n - '));
-  return errs;
+  take(T.practice,     'practice', 'fill');
+  take(T.practiceMore, 'more',     'cq');
+  take(T.exit,         'exit',     'op');   // exercício normal; sem rótulo de "exit"
+  return pool;
 }
 
-/* ---------- UI helpers ---------- */
-function bigCard(inner,extra){
-  return '<div class="stage" style="border-left-color:'+SECTIONS[S.sec].color+';'+(extra||'')+'">'+inner+'</div>';
-}
-function judgeBtns(sec,i){
-  return '<span style="display:flex;gap:6px;flex-shrink:0">'+
-    '<button onclick="GE.judge(\''+sec+'\','+i+',true)" id="ge-y-'+sec+'-'+i+'" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓</button>'+
-    '<button onclick="GE.judge(\''+sec+'\','+i+',false)" id="ge-n-'+sec+'-'+i+'" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗</button></span>';
-}
-function ansBlock(id,a,extraHtml){
-  if(!a)return extraHtml||'';
-  return '<button onclick="GE.tg(\''+id+'\')" class="text-xs bg-slate-700 text-white px-3 py-1 rounded" style="margin-left:6px">answer</button>'+
-    '<div id="'+id+'" class="answer">✓ '+P(a)+(extraHtml||'')+'</div>';
-}
-function score(sec){
-  const j=S.judged[sec]||{};
-  const n=Object.keys(j).length, c=Object.values(j).filter(Boolean).length;
-  return {n,c};
+function applyFilter(){
+  var f=S.filter;
+  S.view = (f==='all') ? S.pool.slice()
+         : (f==='open') ? S.pool.filter(function(p){ return p.t==='cq'||p.t==='md'||p.t==='op'; })
+         : S.pool.filter(function(p){ return p.t===f; });
+  S.i=0;
 }
 
-/* ---------- visual por família ---------- */
-function visual(type){
-  const line='<div style="position:relative;height:70px;margin:10px 0">'+
-    '<div style="position:absolute;top:34px;left:0;right:0;height:4px;background:#E5E7EB;border-radius:2px"></div>'+
-    '<div style="position:absolute;top:22px;left:50%;width:2px;height:28px;background:#0B3B46"></div>'+
-    '<div style="position:absolute;top:52px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:#0B3B46">NOW</div>';
-  const dot=(l,c,lab,ly)=>'<div style="position:absolute;top:28px;left:'+l+'%;width:16px;height:16px;border-radius:50%;background:'+c+'"></div>'+
-    (lab?'<div style="position:absolute;top:'+(ly||6)+'px;left:'+l+'%;transform:translateX(-40%);font-size:11px;font-weight:700;color:'+c+'">'+lab+'</div>':'');
-  if(type==='now')            return line+dot(50,'#22C55E','is / am / are')+'</div>';
-  if(type==='routine'){       let d='';[10,24,38,52,66,80].forEach(x=>d+=dot(x,'#22C55E'));return line+d+'<div style="position:absolute;top:6px;left:38%;font-size:11px;font-weight:700;color:#22C55E">every day · always ↻</div></div>';}
-  if(type==='now-progress')   return line+'<div style="position:absolute;top:26px;left:38%;width:24%;height:20px;border-radius:12px;background:linear-gradient(90deg,#22C55E44,#22C55E);"></div><div style="position:absolute;top:6px;left:42%;font-size:11px;font-weight:700;color:#22C55E">happening now →</div></div>';
-  if(type==='past-point')     return line+dot(20,'#DC2626','yesterday ✔ finished')+'</div>';
-  if(type==='table')          return '';
-  return '';
+/** Quantos itens existem em cada formato — usado só para desabilitar chips vazios. */
+function countByFormat(){
+  var c={all:S.pool.length};
+  FORMATS.forEach(function(f){ if(f.id!=='all') c[f.id]=0; });
+  S.pool.forEach(function(p){
+    if(p.t==='cq'||p.t==='md'||p.t==='op') c.open++;
+    else if(c[p.t]!==undefined) c[p.t]++;
+  });
+  return c;
 }
 
-/* ---------- bloco rico de exemplos (opcional: T.examples) ----------
-   "o aluno aprende observando muitos exemplos antes de ser avaliado".
-   afirmativos · negativos · interrogativos · contextualizados · certo×errado. */
-function examplesBlock(){
-  const E=(S&&S.examplesRnd)||T.examples;
-  if(!E)return '';
-  const line=x=>{const plain=P(x).replace(/<[^>]*>/g,'');return '<div class="ex-line"><span>'+P(x)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';};
-  const grp=(label,color,arr)=> (arr&&arr.length)?'<div class="form-box"><div class="label" style="color:'+color+'">'+label+'</div>'+arr.map(line).join('')+'</div>':'';
-  let h='<div class="label" style="color:#0B3B46;margin:14px 0 4px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:10px">📚 Many examples — study these BEFORE practising (read aloud)</div>';
-  // exemplos agrupados por USO (opcional: E.byUse = [{use, ex:[...]}])
-  if(E.byUse&&E.byUse.length){
-    h+='<p class="text-slate-400 text-sm mb-1" style="color:#6B7280">First, by meaning — see the SAME verb doing different jobs:</p>';
-    E.byUse.forEach(function(g){ h+='<div class="form-box"><div class="label" style="color:#16B1A9">'+P(g.use)+'</div>'+g.ex.map(line).join('')+'</div>'; });
-    h+='<p class="text-slate-400 text-sm mb-1 mt-2" style="color:#6B7280">Now, by form — affirmative, negative, question:</p>';
-  }
-  h+=grp('Affirmative','#22C55E',E.aff);
-  h+=grp('Negative','#DC2626',E.neg);
-  h+=grp('Question','#0EA5E9',E.q);
-  h+=grp('In real life (everyday situations)','#0B3B46',E.context);
-  if(E.contrast&&E.contrast.length){
-    h+='<div class="form-box"><div class="label" style="color:#F59E0B">Correct vs incorrect</div>'+
-      E.contrast.map(c=>'<div class="mistake text-sm"><span style="color:#DC2626">❌ '+P(c.bad)+'</span> → <span style="color:#22C55E;font-weight:700">✅ '+P(c.good)+'</span>'+(c.why?'<span class="text-slate-400" style="margin-left:8px">('+P(c.why)+')</span>':'')+'</div>').join('')+'</div>';
-  }
-  return h;
-}
-
-/* ---------- painel "Aula completa" (mapa da aula, sempre no topo) ----------
-   Resolve a primeira impressão: mostra objetivo, contagem de exemplos/atividades
-   e as 10 etapas em cards navegáveis — a estrutura completa nunca fica escondida. */
-function examplesCount(){
-  const E=(S&&S.examplesRnd)||T.examples; if(!E)return 0; let n=0;
-  ['aff','neg','q','context'].forEach(k=>{ if(E[k])n+=E[k].length; });
-  if(E.byUse)E.byUse.forEach(g=>n+=g.ex.length);
-  if(E.contrast)n+=E.contrast.length;
-  return n;
-}
-function sectionDesc(id){
-  const pr=(T.practice?T.practice.length:0)+((T.practiceMore||[]).length);
-  switch(id){
-    case 'goal':     return 'O que você vai conseguir fazer';
-    case 'warmup':   return 'Aquecimento e revisão';
-    case 'notice':   return (T.notice?T.notice.examples.length:0)+' frases para descobrir o padrão';
-    case 'ccq':      return (T.ccqs?T.ccqs.main.length:0)+' perguntas de conceito';
-    case 'rule':     return 'Explicação'+(T.explain?' ('+T.explain.length+' cartões)':'')+(examplesCount()?' + '+examplesCount()+' exemplos':'');
-    case 'watchout': return (T.watchout?T.watchout.length:0)+' erros comuns (certo × errado)';
-    case 'practice': return pr+' atividades · 3 estágios (simples → livre)';
-    case 'makeit':   return (T.makeit?T.makeit.length:0)+' produções sobre a sua vida';
-    case 'task':     return 'Missão: '+P(T.task?T.task.title:'');
-    case 'exit':     return (T.exit?T.exit.length:0)+' itens de revisão final';
-    default:         return '';
-  }
-}
-function overviewPanel(){
-  const ex=examplesCount(), pr=(T.practice?T.practice.length:0)+((T.practiceMore||[]).length);
-  const chips=[
-    T.explain?('🧠 '+T.explain.length+' explicações'):null,
-    ex?('📚 '+ex+' exemplos'):null,
-    '🎯 '+(T.ccqs?T.ccqs.main.length:0)+' CCQs',
-    '✍️ '+pr+' atividades',
-    '🗣 '+(T.makeit?T.makeit.length:0)+' produções livres',
-    '🎬 1 task',
-    '✅ '+(T.exit?T.exit.length:0)+' na revisão'
-  ].filter(Boolean).map(c=>'<span class="chip">'+c+'</span>').join('');
-  const goal=P(env.isKid()&&T.goal.kid?T.goal.kid:T.goal.can);
-  const open=S.mapOpen!==false;
-  const cards=SECTIONS.map(function(s,i){
-    const done=i<S.maxSec, cur=i===S.sec;
-    const icon=cur?'▶':(done?'✓':'○');
-    const bg=cur?'linear-gradient(135deg,#0B3B46,#FF6B6B)':(done?'#DCFCE7':'#F2F6F7');
-    const col=cur?'#fff':'#1F2937';
-    return '<button onclick="GE.goto('+i+')" style="text-align:left;border:1px solid '+(cur?'#0B3B46':'#E5E7EB')+';background:'+bg+';color:'+col+';border-radius:10px;padding:8px 10px;cursor:pointer;min-width:150px;flex:1 1 150px">'+
-      '<div style="font-size:11px;font-weight:800;opacity:.85">'+icon+' '+s.n+' · '+s.t+'</div>'+
-      '<div style="font-size:11.5px;margin-top:2px;line-height:1.3">'+sectionDesc(s.id)+'</div></button>';
-  }).join('');
-  return '<div class="card" style="padding:14px 16px;margin-bottom:14px;border-left:5px solid #0B3B46 !important">'+
-    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">'+
-      '<div style="flex:1;min-width:220px"><div class="label" style="color:#0B3B46">📘 Aula completa · '+P(T.name)+' · '+SECTIONS.length+' etapas</div>'+
-      '<p style="font-weight:700;color:#1F2937;margin-top:3px;font-size:15px">🎯 By the end, '+env.stuName()+' can '+goal+'</p></div>'+
-      '<button onclick="GE.toggleMap()" class="theme-btn text-xs font-bold" style="padding:6px 12px;border-radius:8px;white-space:nowrap">'+(open?'▾ ocultar mapa':'▸ ver a aula toda')+'</button>'+
-    '</div>'+
-    '<div style="margin-top:8px">'+chips+'</div>'+
-    (open?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+cards+'</div>'+
-      '<p style="margin-top:8px;font-size:12px;color:#9CA3AF">Clique em qualquer etapa para ir até ela — a aula avança passo a passo, mas a estrutura completa fica sempre à vista.</p>':'')+
-    '</div>';
-}
-
-/* ---------- renderizadores por seção ---------- */
-const R={};
-
-R.goal=function(){
-  const kid=env.isKid();
-  const g=kid&&T.goal.kid?T.goal.kid:T.goal.can;
-  return bigCard(
-    '<div style="text-align:center;padding:18px 6px">'+
-    '<div class="chip" style="margin-bottom:10px">'+ (kid?'🎯 Today\'s mission':'🎯 Today\'s goal') +'</div>'+
-    '<p style="font-size:22px;font-weight:700;line-height:1.5;color:#1F2937">By the end of this lesson, <span style="color:#0B3B46">'+env.stuName()+'</span> can '+P(g)+'.</p>'+
-    (T.goal.teaser?'<p class="text-slate-400" style="margin-top:8px;font-size:14px">'+P(T.goal.teaser)+'</p>':'')+
-    '</div>');
-};
-
-R.warmup=function(){
-  /* fila CACHEADA no estado: re-ler a cada clique deslocava os índices
-     quando um ✓ removia item — e o clique seguinte marcava o item errado */
-  if(!S.wuItems)S.wuItems=env.queue().slice(0,3);
-  const q=S.wuItems;
-  let h='';
-  if(q.length){
-    h+='<p class="text-slate-400 text-sm mb-2">Review — items you missed before.</p>';
-    h+=q.map(function(it,i){
-      return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
-        '<span><span class="chip" style="margin:0 6px 0 0">'+(it.topic||'review')+'</span>'+it.q+'</span>'+
-        '<span style="display:flex;gap:6px;align-items:center">'+ansBlock('ge-wua-'+i,it.a)+judgeBtns('warmup',i)+'</span></div></div>';
-    }).join('');
-  }else{
-    const n=S.cuts.w1?1:3;
-    h+='<p class="text-slate-400 text-sm mb-2">Warm-up — try these first.</p>';
-    h+=T.warmup.gap.slice(0,n).map(function(g,i){
-      return '<div class="ex-line"><span>'+P(g)+'</span>'+judgeBtns('warmup',i)+'</div>';
-    }).join('');
-  }
-  if(env.isKid()&&T.warmup.kidGame)h+='<div class="chip" style="margin-top:8px">🎲 Kids: '+P(T.warmup.kidGame)+'</div>';
-  return bigCard(h);
-};
-
-R.notice=function(){
-  const ex=(S.noticeRetry&&S.noticeAlt&&S.noticeAlt.length)?S.noticeAlt:(S.noticeEx||T.notice.examples);
-  let h='<p class="text-slate-500 text-sm mb-2">'+(S.noticeRetry?'Exemplos novos — vamos descobrir de novo.':'Leia em voz alta e descubra o padrão.')+'</p>';
-  h+=ex.map(function(e){
-    const plain=P(e).replace(/<[^>]*>/g,'');
-    return '<div class="ex-line"><span style="font-size:17px">'+P(e)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';
-  }).join('');
-  h+='<div style="margin-top:12px"><span class="chip">🔍 '+P(T.notice.qs.form)+'</span><span class="chip">🕐 '+P(T.notice.qs.meaning)+'</span><span class="chip">🗣️ Say the rule in YOUR words</span></div>';
-  return bigCard(h);
-};
-
-R.ccq=function(){
-  const items=S.ccqReserveOn?(S.ccqMain||[]).concat(S.ccqReserve||[]):(S.ccqMain||T.ccqs.main);
-  const sc=score('ccq');
-  let h='<p class="text-slate-400 text-sm mb-2">Answer in 1–3 words.</p>';
-  h+='<div id="ge-ccq-score" class="text-sm font-bold mb-2" style="color:#0B3B46">'+sc.c+' ✓ de '+sc.n+' respondidas</div>';
-  h+=items.map(function(c,i){
-    const res=i>=5?'<span class="chip" style="margin:0 6px 0 0">reserva</span>':'';
-    return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
-      '<span>'+res+(i+1)+'. '+P(c.q)+'</span>'+
-      '<span style="display:flex;gap:6px;align-items:center">'+ansBlock('ge-ccqa-'+i,c.a)+judgeBtns('ccq',i)+'</span></div></div>';
-  }).join('');
-  h+='<div id="ge-ccq-verdict" style="margin-top:10px"></div>';
-  return bigCard(h);
-};
-
-R.rule=function(){
-  const kid=env.isKid();
-  const txt=kid&&T.rule.kid?T.rule.kid:T.rule.text;
-  let h='';
-  if(!S.ruleRevealed){
-    h+='<div style="text-align:center;padding:20px">'+
-       '<p class="text-slate-400 mb-3">'+env.stuName()+' já disse a versão dele(a)?</p>'+
-       '<button onclick="GE.revealRule()" class="theme-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Confirmar a descoberta</button></div>';
-    return bigCard(h);
-  }
-  h+='<p style="font-size:16px;line-height:1.7;color:#1F2937"><b style="color:#22C55E">Exatamente o que você percebeu:</b> '+P(txt)+'</p>';
-  // explicação estruturada — vários pontos, cada um com seus exemplos (opcional: T.explain)
-  if(T.explain&&T.explain.length){
-    h+='<div style="margin-top:10px">'+T.explain.map(function(c){
-      return '<div class="form-box"><div class="label" style="color:#0B3B46">'+P(c.title)+'</div>'+
-        '<p class="text-sm" style="color:#1F2937;margin-bottom:'+(c.ex?'6px':'0')+'">'+P(c.text)+'</p>'+
-        (c.ex?c.ex.map(function(e){var plain=P(e).replace(/<[^>]*>/g,'');return '<div class="ex-line"><span>'+P(e)+'</span><button class="speak-btn" onclick="GE.say(\''+esc(plain)+'\')">►</button></div>';}).join(''):'')+
-        '</div>';
-    }).join('')+'</div>';
-  }
-  h+=visual(T.slots.visual);
-  h+='<div class="form-box"><div class="label" style="color:#22C55E">When YES</div>'+T.slots.use.yes.map(u=>'<span class="chip">'+P(u)+'</span>').join('')+'</div>';
-  h+='<div class="form-box"><div class="label" style="color:#DC2626">When NO</div>'+T.slots.use.no.map(u=>'<span class="chip" style="color:#DC2626 !important">'+P(u)+'</span>').join('')+'</div>';
-  h+='<div class="form-box"><div class="label" style="color:#FF6B6B">🔊 Pronunciation</div><p class="text-sm" style="color:#1F2937">'+P(T.rule.pron)+'</p></div>';
-  if(!kid&&T.rule.pt)h+='<div class="form-box"><div class="label" style="color:#0B3B46">🇧🇷 Contraste com o português</div><p class="text-sm" style="color:#1F2937">'+P(T.rule.pt)+'</p></div>';
-  h+=examplesBlock();
-  return bigCard(h);
-};
-
-R.watchout=function(){
-  const kid=env.isKid();
-  const list=kid?(S.watchoutItems||T.watchout).slice(0,2):(S.watchoutItems||T.watchout);
-  let h='<p class="text-slate-500 text-sm mb-2">Erros comuns — fique atento a estes:</p>'+
-    '<p class="text-slate-400 text-sm mb-2">'+(kid?'Spot the mistake — act out the wrong version!':'Spot the mistake in each pair.')+'</p>';
-  h+=list.map(function(w,i){
-    return '<div class="mistake text-sm"><span style="color:#DC2626">❌ '+P(w.bad)+'</span> → <span style="color:#22C55E;font-weight:700">✅ '+P(w.good)+'</span><span class="text-slate-400" style="margin-left:8px">('+P(w.why)+')</span>'+'</div>';
-  }).join('');
-  h+='<div class="chip" style="margin-top:8px">😏 "Qual desses EU vou tentar te fazer errar hoje?"</div>';
-  return bigCard(h);
-};
-
-R.practice=function(){
-  const kid=env.isKid();
-  const items=S.cuts.p8?(S.practice||T.practice).slice(0,8):(S.practice||T.practice);
-  const sc=score('practice');
-  let h='<p class="text-slate-500 text-sm mb-2">Responda em voz alta — depois confira.'+(kid?' Cada ✓ vale ponto! 🎯':'')+'</p>'+
-    '<p class="text-slate-400 text-sm mb-2">Answer aloud — recognise, then transform, then use it for real.</p>';
-  h+='<div id="ge-pr-score" class="text-sm font-bold mb-2" style="color:#FF6B6B">'+sc.c+' ✓ / '+sc.n+' marcadas de '+items.length+'</div>';
-  const stageOf=t=>((t==='fill'||t==='mc')?1:2);
-  const stageName={1:'STAGE 1 · Simple — recognise & complete',2:'STAGE 2 · Intermediate — manipulate the form'};
-  let lastType='',lastStage=0;
-  h+=items.map(function(p,i){
-    let head='';
-    const st=stageOf(p.t);
-    if(st!==lastStage){lastStage=st;head+='<div class="label" style="color:#0B3B46;margin:16px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:8px">'+stageName[st]+'</div>';}
-    if(p.t!==lastType){lastType=p.t;head+='<div class="label" style="color:#FF6B6B;margin:10px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase">'+PRACTICE_TYPES[p.t]+'</div>';}
-    return head+prItem('practice',p,i);
-  }).join('');
-  h+='<div id="ge-pr-verdict" style="margin-top:10px"></div>';
-  // C3 — só dos tipos falhados, 1 degrau mais fácil, máx. 1x por aula
-  if(S.c3On){
-    h+='<div class="label" style="color:#0B3B46;margin:16px 0 4px;font-weight:800">Segunda chance — vamos de novo, um degrau mais fácil</div>';
-    h+=S.c3Items.map(function(p,i){return prItem('c3',p,i);}).join('');
-    h+='<div id="ge-c3-verdict" style="margin-top:10px"></div>';
-  }
-  // STAGE 3 — prática livre (opcional: T.practiceMore): perguntas contextualizadas + mini-diálogos.
-  // Não é portão (é consolidação); os erros ainda entram na fila (G4).
-  if(S.practiceMore&&S.practiceMore.length){
-    h+='<div class="label" style="color:#16B1A9;margin:18px 0 2px;font-size:12px;font-weight:800;border-top:1px solid #E5E7EB;padding-top:8px">STAGE 3 · Free — use it for real</div>';
-    h+=S.practiceMore.map(function(p,i){return prItem('free',p,i);}).join('');
-  }
-  return bigCard(h);
-};
-function prItem(sec,p,i){
-  let q='';
+/* ---------- render de um item ---------- */
+function questionHTML(p){
   if(p.t==='mc'){
-    q=P(p.q)+'<div style="margin-top:6px">'+p.opts.map(function(o,k){return '<span class="chip">'+String.fromCharCode(65+k)+' · '+P(o)+'</span>';}).join('')+'</div>';
-  }else if(p.t==='us'){
-    q='Put in order: <b>'+P(p.q)+'</b>';
-  }else if(p.t==='ec'){
-    q='Find the mistake: <span style="color:#DC2626">“'+P(p.q)+'”</span>';
-  }else if(p.t==='tr'){
-    q=P(p.q);
-  }else if(p.t==='cq'){                       // pergunta contextualizada (fala livre guiada)
-    q='<span class="chip" style="margin:0 6px 0 0">💬 real life</span>'+P(p.q);
-  }else if(p.t==='md'){                       // mini-diálogo
-    q='<span class="chip" style="margin:0 6px 0 0">🎭 mini-dialogue</span>'+(p.lines?'<div style="margin-top:6px">'+p.lines.map(function(l){return '<div style="padding:2px 0">'+P(l)+'</div>';}).join('')+'</div>':P(p.q));
-  }else{ q=P(p.q); }
-  const aid='ge-a-'+sec+'-'+i;
-  // 💡 hint removido da UI do exercício: na aula compartilhada, o hint
-  //   entregava a resposta ao aluno. O dado p.hint continua preservado
-  //   (usado pela auditoria em §7); nenhuma variação recolhida é renderizada.
-  const hintBtn='';
-  const hintDiv='';
-  // feedback rico de erro (opcional): por quê + regra + novo exemplo
-  let fb='';
-  if(p.why||p.ruleRef||p.ex){
-    fb='<div style="margin-top:6px;padding:8px 10px;border-radius:8px;background:#F2F6F7;border:1px solid #F59E0B">'+
-      '<div class="text-xs" style="color:#92400E;font-weight:700;margin-bottom:2px">Entenda o erro:</div>'+
-      (p.why?'<div class="text-xs" style="color:#92400E">❌ <b>Why the wrong answer is wrong:</b> '+P(p.why)+'</div>':'')+
-      (p.ruleRef?'<div class="text-xs" style="color:#0B3B46">📐 <b>Rule:</b> '+P(p.ruleRef)+'</div>':'')+
-      (p.ex?'<div class="text-xs" style="color:#22C55E">➕ <b>Another example:</b> '+P(p.ex)+'</div>':'')+
-      '</div>';
+    return P(p.q)+'<div style="margin-top:14px">'+
+      (p.opts||[]).map(function(o,k){
+        return '<div class="opt" style="cursor:default">'+
+               '<span class="chip" style="margin-right:10px">'+String.fromCharCode(65+k)+'</span>'+P(o)+'</div>';
+      }).join('')+'</div>';
   }
-  return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">'+
-    '<span style="flex:1">'+(i+1)+'. '+q+'</span>'+
-    '<span style="display:flex;gap:6px;flex-shrink:0">'+hintBtn+
-    '<button onclick="GE.tg(\''+aid+'\')" class="text-xs bg-slate-700 text-white px-3 py-1 rounded">answer</button>'+
-    judgeBtns(sec,i)+'</span></div>'+
-    hintDiv+
-    '<div id="'+aid+'" class="answer">✓ '+P(p.a)+
-      (p.fu?'<div class="text-xs" style="color:#0B3B46;margin-top:4px">↳ follow-up: '+P(p.fu)+'</div>':'')+
-      fb+
-    '</div></div>';
+  if(p.t==='us') return 'Put in order: <b>'+P(p.q)+'</b>';
+  if(p.t==='ec') return 'Find the mistake: <span style="color:var(--tl-danger-text)">“'+P(p.q)+'”</span>';
+  if(p.t==='md'){
+    return (p.lines
+      ? '<div>'+p.lines.map(function(l){ return '<div style="padding:3px 0">'+P(l)+'</div>'; }).join('')+'</div>'
+      : P(p.q));
+  }
+  return P(p.q);
 }
 
-R.makeit=function(){
-  const n=S.cuts.m4?4:6;
-  const sc=score('makeit');
-  let h='<p class="text-slate-500 text-sm mb-2">Agora com a sua vida — complete do seu jeito:</p>'+
-    '<p class="text-slate-400 text-sm mb-2">Aim for 4 or more with the correct form.</p>';
-  h+='<div class="text-sm font-bold mb-2" style="color:#16B1A9">'+sc.c+' ✓ de '+sc.n+'</div>';
-  h+=(S.makeitItems||T.makeit).slice(0,n).map(function(m,i){
-    return '<div class="ex-line"><span style="font-size:17px">'+(i+1)+'. '+P(m)+'</span>'+judgeBtns('makeit',i)+'</div>';
-  }).join('');
-  return bigCard(h);
-};
-
-R.task=function(){
-  const kid=env.isKid();
-  const t=T.task;
-  let h='<div class="chip" style="margin-bottom:8px">🎬 '+P(t.title)+'</div>';
-  h+='<p style="font-size:18px;font-weight:700;color:#1F2937;line-height:1.6">'+P(kid&&t.kid?t.kid:t.mission)+'</p>';
-  h+='<div class="form-box" style="margin-top:10px"><div class="label" style="color:#0B3B46">Roles</div>'+
-     '<p class="text-sm" style="color:#1F2937"><b>Partner A:</b> '+P(t.roles.student)+'</p>'+
-     '<p class="text-sm" style="color:#1F2937"><b>Partner B:</b> '+P(t.roles.teacher)+'</p></div>';
-  h+='<div class="form-box"><div class="label" style="color:#F59E0B">⚡ Complication</div><p class="text-sm" style="color:#1F2937">'+P(t.complication)+'</p></div>';
-  // Nota pedagógica ("Correção adiada: anote…") removida da UI: era orientação
-  //   exclusiva da professora, exposta na tela compartilhada com o aluno.
-  if(!S.cuts.c4){
-    h+='<div style="margin-top:10px"><button onclick="GE.tg(\'ge-c4\')" class="theme-btn text-xs font-bold py-2 px-4 rounded-lg">🚀 Extra challenge</button>'+
-       '<div id="ge-c4" class="answer" style="color:#0B3B46 !important">'+P(t.c4)+'</div></div>';
-  }
-  return bigCard(h);
-};
-
-R.exit=function(){
-  const kid=env.isKid();
-  const sc=score('exit');
-  let h='<p class="text-slate-500 text-sm mb-2">Revisão final — mostre tudo o que você aprendeu!'+(kid?' 👾 Chefão final!':'')+'</p>';
-  h+='<p class="text-slate-400 text-sm mb-2">New items — how many will you get right?</p>';
-  h+=(S.exitItems||T.exit).map(function(it,i){
-    return '<div class="ex-line" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
-      '<span><span class="chip" style="margin:0 6px 0 0">'+it.tag+'</span>'+P(it.q)+'</span>'+
-      '<span style="display:flex;gap:6px;align-items:center">'+ansBlock('ge-eta-'+i,it.a)+judgeBtns('exit',i)+'</span></div></div>';
-  }).join('');
-  h+='<div id="ge-exit-verdict" style="margin-top:10px"></div>';
-  return bigCard(h);
-};
-
-/* ---------- shell: progresso + timer + navegação ---------- */
-function shell(){
-  const cur=SECTIONS[S.sec];
-  return '<div class="card" style="padding:14px 16px;margin-bottom:14px">'+
-    '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
-    '<div class="label" style="color:#0B3B46">Etapa '+(S.sec+1)+' de '+SECTIONS.length+'</div>'+
-    '<div class="flexrow" style="gap:8px;align-items:center">'+
-      '<span id="ge-clock" class="text-sm font-bold" style="color:#0B3B46">0:00</span>'+
-      '<span class="text-xs" style="color:#9CA3AF">/ ~'+cur.time+' min</span>'+
-      '<button onclick="GE.cut()" class="text-xs font-bold px-3 py-2 rounded-lg" style="background:#FEF3C7;color:#92400E" title="Encurtar a aula">⏱ tempo apertado</button>'+
-    '</div></div>'+
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">'+
-    '<h3 class="text-lg font-bold" style="color:'+cur.color+'">'+cur.n+' · '+cur.t+'</h3>'+
-    '<div style="display:flex;gap:8px">'+
-      (S.sec>0?'<button onclick="GE.back()" class="theme-btn text-sm font-bold py-2 px-4 rounded-lg">← Back</button>':'')+
-      '<button onclick="GE.next()" id="ge-next" class="text-sm font-bold py-2 px-5 rounded-lg" style="background:linear-gradient(135deg,#0B3B46,#FF6B6B);color:#fff">'+(S.sec===SECTIONS.length-1?'Finish class ✔':'Next →')+'</button>'+
-    '</div></div>'+
-    '<div id="ge-gatemsg" style="margin-top:6px"></div></div>';
+function feedbackHTML(p){
+  if(!(p.why||p.ruleRef||p.ex)) return '';
+  return '<div class="mistake" style="margin-top:10px">'+
+    (p.why    ? '<div class="text-sm">❌ '+P(p.why)+'</div>' : '')+
+    (p.ruleRef? '<div class="text-sm">📐 '+P(p.ruleRef)+'</div>' : '')+
+    (p.ex     ? '<div class="text-sm">➕ '+P(p.ex)+'</div>' : '')+
+  '</div>';
 }
 
-/* ---------- portões ---------- */
-function gateCheck(){
-  const id=SECTIONS[S.sec].id;
-  if(id==='ccq'){
-    const sc=score('ccq');
-    const need=S.ccqReserveOn?8:5;
-    if(sc.n<need)return 'Marque as respostas (✓/✗) antes de avançar.';
-    if(sc.c>=GATE_CCQ)return null;
-    if(!S.ccqReserveOn){S.ccqReserveOn=true;render();return 'Vamos reforçar: 3 perguntas extras, mais concretas.';}
-    if(!S.noticeRetry){S.noticeRetry=true;S.ccqReserveOn=false;S.judged.ccq={};S.sec=2;render();return 'Vamos voltar aos exemplos e descobrir de novo.';}
-    S.conceptGap=true;
-    return 'Tópico acima do nível atual — siga em Next para encerrar com algo que '+env.stuName()+' já domina.';
-  }
-  if(id==='practice'){
-    const full=(S.practice||T.practice).length;
-    const total=S.cuts.p8?Math.min(8,full):full;
-    const gate=Math.ceil(total*0.8);
-    const sc=score('practice');
-    if(S.c3On){
-      const c3n=Object.keys(S.judged.c3||{}).length, c3c=Object.values(S.judged.c3||{}).filter(Boolean).length;
-      if(c3n<S.c3Items.length)return 'Marque os itens da segunda chance antes de avançar.';
-      if(c3c/S.c3Items.length>=0.8)return null;
-      return 'Ainda não fixou — vale rever a regra juntos (botão Back) e seguir depois.';
-    }
-    if(sc.n<total)return 'Marque os '+total+' itens (✓/✗) antes de avançar.';
-    if(sc.c>=gate)return null;
-    if(!S.cuts.c3){
-      const failedTypes={};
-      (S.cuts.p8?(S.practice||T.practice).slice(0,8):(S.practice||T.practice)).forEach(function(p,i){ if(S.judged.practice[i]===false)failedTypes[p.t]=1; });
-      S.c3Items=[];
-      Object.keys(failedTypes).forEach(function(t){ shuffle(T.c3[t]||[]).slice(0,2).forEach(function(p){ S.c3Items.push(prepMC(Object.assign({},p,{t:t}))); }); });
-      S.c3Items=S.c3Items.slice(0,6);
-      if(S.c3Items.length){S.c3On=true;render();return 'Vamos praticar mais um pouco: '+S.c3Items.length+' itens novos, um degrau mais fáceis.';}
-    }
-    return 'Vale rever a regra juntos e avançar (Next de novo).';
-  }
-  if(id==='makeit'){
-    const sc=score('makeit');
-    if(sc.c<4&&sc.n<(S.cuts.m4?4:6))return 'Marque ao menos 4 antes de seguir.';
-    return null;
-  }
-  if(id==='exit'){
-    const sc=score('exit');
-    if(sc.n<6)return 'Marque os 6 itens da revisão final antes de concluir.';
-    return null;
-  }
-  return null;
-}
-let gateOverride=false;
-
-/* ---------- persistência da aula ao vivo (sobrevive a F5) ---------- */
-function liveKey(){return 'gelive|'+(window.curStu||'?');}
-function saveLive(){
-  if(!S||!T||S.finished)return;
-  try{
-    const c=Object.assign({},S);delete c.clockTimer;
-    localStorage.setItem(liveKey(),JSON.stringify({topic:T.id,S:c,ts:Date.now()}));
-  }catch(e){}
-}
-function clearLive(){try{localStorage.removeItem(liveKey());}catch(e){}}
-
-/* ---------- fim da aula ---------- */
-function finishScreen(){
-  clearLive();
-  const ex=score('exit'), pr=score('practice');
-  const pass=ex.c>=GATE_EXIT;
-  S.weekComplete=pass;
-  // registra
-  try{
-    const k='gev1|'+(window.curStu||'?');
-    const log=JSON.parse(localStorage.getItem(k)||'[]');
-    log.push({topic:T.id,d:new Date().toISOString().slice(0,10),exit:ex.c,practice:pr.c,week:pass?1:0});
-    localStorage.setItem(k,JSON.stringify(log));
-  }catch(e){}
-  const misses=[];
-  (S.exitItems||T.exit).forEach(function(it,i){ if(S.judged.exit[i]===false)misses.push({q:P(it.q),a:it.a?P(it.a):''}); });
-  (S.cuts.p8?(S.practice||T.practice).slice(0,8):(S.practice||T.practice)).forEach(function(p,i){ if(S.judged.practice[i]===false)misses.push({q:P(p.q),a:P(p.a)}); });
-  let h='<div class="stage" style="border-left-color:'+(pass?'#22C55E':'#F59E0B')+';text-align:center;padding:30px">';
-  h+=pass?'<h3 class="text-2xl font-bold" style="color:#22C55E">🏆 '+ex.c+'/6 — semana concluída!</h3>'
-        :'<h3 class="text-2xl font-bold" style="color:#92400E">↩ '+ex.c+'/6 — a semana NÃO avança</h3><p class="text-slate-400 text-sm">O que falhou volta na próxima aula (já está na fila).</p>';
-  h+='<p style="margin-top:10px;color:#1F2937">Diga a '+env.stuName()+' <b>uma coisa que ele(a) faz hoje que não fazia antes</b>.</p>';
-  if(misses.length)h+='<p class="text-slate-400 text-sm" style="margin-top:6px">'+misses.length+' ponto(s) para revisar na próxima aula.</p>';
-  h+='<div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">';
-  if(misses.length)h+='<button onclick="GE.homework()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">📄 Dever de casa (PDF dos ✗ de hoje)</button>';
-  h+='<button onclick="GE.restart()" class="theme-btn font-bold py-3 px-6 rounded-lg">↺ Reabrir a aula</button></div></div>';
-  document.getElementById('lessonBody').innerHTML=h;
-  S._misses=misses;
-}
-
-/* ---------- render principal ---------- */
 function render(){
-  if(S.finished){finishScreen();return;}
-  const id=SECTIONS[S.sec].id;
-  document.getElementById('lessonBody').innerHTML=overviewPanel()+shell()+R[id]();
-  gateOverride=false;
-  clearInterval(S.clockTimer);
-  S.clockTimer=setInterval(function(){
-    const el=document.getElementById('ge-clock');if(!el){clearInterval(S.clockTimer);return;}
-    const s=Math.floor((Date.now()-S.secStart)/1000);
-    el.textContent=Math.floor(s/60)+':'+('0'+s%60).slice(-2);
-    if(s>SECTIONS[S.sec].time*60)el.style.color='#DC2626';
-  },1000);
-  window.scrollTo({top:0,behavior:'smooth'});
+  var el=document.getElementById(MOUNT);
+  if(!el) return;
+
+  if(!S.view.length){
+    el.innerHTML='<div class="card rounded-xl p-8" style="text-align:center">'+
+      '<p class="text-slate-400">No exercises in this filter.</p></div>';
+    paintNav();
+    return;
+  }
+  if(S.i>=S.view.length){
+    el.innerHTML='<div class="card rounded-xl p-8" style="text-align:center">'+
+      '<p class="text-white font-bold" style="font-size:20px;margin-bottom:6px">Finished.</p>'+
+      '<p class="text-slate-400 text-sm" style="margin-bottom:16px">'+S.view.length+' exercises in this set.</p>'+
+      '<button onclick="GE.restart()" class="theme-btn font-bold py-2 px-5 rounded-lg">↺ Start again</button></div>';
+    paintNav();
+    return;
+  }
+
+  var p=S.view[S.i];
+  var key=p.id||('i'+S.i);
+  var verdict=S.judged[key];
+
+  el.innerHTML='<div class="card rounded-xl p-6 p-md-8">'+
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">'+
+      '<span class="tag">'+(FORMAT_LABEL[p.t]||'Practice')+'</span>'+
+      '<span class="text-slate-400 text-sm font-bold">'+(S.i+1)+' / '+S.view.length+'</span>'+
+    '</div>'+
+
+    '<p class="text-white font-semibold" style="font-size:24px;line-height:1.45">'+questionHTML(p)+'</p>'+
+
+    (p.a ? '<div style="margin-top:18px">'+
+             (S.revealed[key]
+               ? '<div class="answer show" style="font-size:22px;font-weight:700;color:var(--tl-success-text)">✓ '+P(p.a)+'</div>'+feedbackHTML(p)
+               : '<button onclick="GE.reveal()" class="theme-btn font-bold py-2 px-5 rounded-lg">👁 Show answer</button>')+
+           '</div>'
+        : '')+
+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--tl-border)">'+
+      '<button onclick="GE.judge(true)" class="font-bold" '+
+        'style="cursor:pointer;font-size:17px;padding:9px 22px;border-radius:var(--tl-radius-md);'+
+        'background:var(--tl-success-soft);color:var(--tl-success-text);'+
+        'border:2px solid '+(verdict===true?'var(--tl-success)':'transparent')+';'+
+        'opacity:'+(verdict===false?'.35':'1')+'">✓</button>'+
+      '<button onclick="GE.judge(false)" class="font-bold" '+
+        'style="cursor:pointer;font-size:17px;padding:9px 22px;border-radius:var(--tl-radius-md);'+
+        'background:var(--tl-danger-soft);color:var(--tl-danger-text);'+
+        'border:2px solid '+(verdict===false?'var(--tl-danger)':'transparent')+';'+
+        'opacity:'+(verdict===true?'.35':'1')+'">✗</button>'+
+      '<span style="flex:1"></span>'+
+      (S.i>0 ? '<button onclick="GE.prev()" class="theme-btn py-2 px-4 rounded-lg">←</button>' : '')+
+      '<button onclick="GE.next()" class="theme-btn active font-bold py-2 px-6 rounded-lg" id="ge-next">Next →</button>'+
+    '</div>'+
+  '</div>';
+
+  paintNav();
+}
+
+/** Avisa a página para repintar cabeçalho/contadores dela. */
+function paintNav(){
+  if(typeof window.onPracticeRender==='function'){
+    try{ window.onPracticeRender(GE.state()); }catch(e){}
+  }
 }
 
 /* ---------- API pública ---------- */
-window.GE={
-  start:function(topic){
-    T=topic;S=freshState();audit(T);buildSession();
-    try{
-      const v=JSON.parse(localStorage.getItem(liveKey())||'null');
-      if(v&&v.topic===topic.id&&Date.now()-v.ts<3*3600*1000&&v.S&&!v.S.finished){
-        S=Object.assign(freshState(),v.S,{clockTimer:null,secStart:Date.now()});
-        render();
-        const el=document.getElementById('ge-gatemsg');
-        if(el)el.innerHTML='<div class="mistake" style="background:#FEF3C7 !important;border-color:#F59E0B !important;color:#92400E !important;font-weight:600;font-size:13px">⏸ Aula recuperada de onde parou. <button onclick="GE.restartFresh()" style="margin-left:8px;background:#fff;border:1px solid #F59E0B;border-radius:8px;padding:3px 10px;cursor:pointer;font-weight:700;color:#92400E">↺ Recomeçar do zero</button></div>';
-        return;
-      }
-    }catch(e){}
+var GE={
+  FORMATS:FORMATS,
+
+  /** Abre um tópico em modo prática. `mountId` é opcional. */
+  start:function(topic, mountId){
+    if(mountId) MOUNT=mountId;
+    T=topic; S=freshState();
+    S.pool=buildPool();
+    applyFilter();
     render();
   },
-  restartFresh:function(){clearLive();S=freshState();buildSession();render();},
-  goto:function(i){ if(!S)return; S.finished=false; S.sec=Math.max(0,Math.min(i,SECTIONS.length-1)); S.maxSec=Math.max(S.maxSec,S.sec); S.secStart=Date.now(); render(); saveLive(); },
-  toggleMap:function(){ if(!S)return; S.mapOpen=(S.mapOpen===false); render(); },
-  next:function(){
-    const msg=gateOverride?null:gateCheck();
-    const el=document.getElementById('ge-gatemsg');
-    if(msg){
-      if(el)el.innerHTML='<div class="mistake" style="font-weight:600;font-size:13px">'+msg+'</div>';
-      // G3: itens não marcados NUNCA são puláveis; veredictos pedagógicos a professora pode atravessar no 2º clique.
-      gateOverride=msg.indexOf('Marque')!==0;
-      return;
-    }
-    if(S.sec===SECTIONS.length-1){S.finished=true;clearInterval(S.clockTimer);finishScreen();return;}
-    S.sec++;S.maxSec=Math.max(S.maxSec,S.sec);S.secStart=Date.now();
-    // §5 pulável: se §3 foi limpo e §4 deu 5/5, Rule vira confirmação (mantém visual)
-    render();saveLive();
+
+  setFilter:function(f){
+    if(!S) return;
+    S.filter=f||'all';
+    applyFilter();
+    render();
   },
-  back:function(){ if(S.sec>0){S.sec--;S.secStart=Date.now();render();saveLive();} },
-  judge:function(sec,i,ok){
-    S.judged[sec]=S.judged[sec]||{};
-    if(sec==='c3'){ if(S.judged.c3&&S.judged.c3[i]!==undefined)return; S.judged.c3=S.judged.c3||{}; S.judged.c3[i]=ok;
-      if(!ok&&S.c3Items[i])env.logError('practice-c3',S.c3Items[i].q,S.c3Items[i].a);
-    }else{
-      if(S.judged[sec][i]!==undefined)return;
-      S.judged[sec][i]=ok;
-      if(sec==='warmup'){ const q=S.wuItems||[]; if(q[i])env.markQueue(q[i],ok); }
-      if(sec==='practice'&&!ok){const p=(S.practice||T.practice)[i];env.logError('practice',P(p.q),P(p.a));}
-      if(sec==='free'&&!ok){const p=(S.practiceMore||[])[i];if(p)env.logError('practice-free',P(p.q||(p.lines?p.lines.join(' '):'')),P(p.a));}
-      if(sec==='ccq'&&!ok){const c=(S.ccqReserveOn?(S.ccqMain||[]).concat(S.ccqReserve||[]):(S.ccqMain||T.ccqs.main))[i];env.logError('ccq',P(c.q),c.a?P(c.a):'');}
-      if(sec==='exit'&&!ok){const e2=(S.exitItems||T.exit)[i];env.logError('exit',P(e2.q),e2.a?P(e2.a):'');}
-    }
-    const y=document.getElementById('ge-y-'+sec+'-'+i),n=document.getElementById('ge-n-'+sec+'-'+i);
-    if(y)y.style.opacity=ok?'1':'.35'; if(n)n.style.opacity=ok?'.35':'1';
-    // placares vivos
-    if(sec==='ccq'){const sc=score('ccq');const e3=document.getElementById('ge-ccq-score');if(e3)e3.textContent=sc.c+' ✓ de '+sc.n+' respondidas';}
-    if(sec==='practice'||sec==='c3'){const sc=score('practice');const e4=document.getElementById('ge-pr-score');if(e4)e4.textContent=sc.c+' ✓ / '+sc.n+' marcadas';}
-    saveLive();
+
+  next:function(){ if(!S) return; if(S.i<S.view.length){ S.i++; render(); } },
+  prev:function(){ if(!S) return; if(S.i>0){ S.i--; render(); } },
+  restart:function(){ if(!S) return; S.pool=buildPool(); applyFilter(); S.judged={}; S.revealed={}; render(); },
+
+  reveal:function(){
+    if(!S||!S.view[S.i]) return;
+    S.revealed[S.view[S.i].id||('i'+S.i)]=true;
+    render();
   },
-  revealRule:function(){S.ruleRevealed=true;render();saveLive();},
-  cut:function(){
-    while(S.cutIdx<CUTS.length&&S.cuts[CUTS[S.cutIdx].k])S.cutIdx++;
-    if(S.cutIdx>=CUTS.length)return;
-    const c=CUTS[S.cutIdx];S.cuts[c.k]=true;S.cutIdx++;
-    const el=document.getElementById('ge-gatemsg');
-    if(el)el.innerHTML='<div class="mistake" style="background:#FEF3C7 !important;border-color:#F59E0B !important;color:#92400E !important;font-weight:600;font-size:13px">✂ '+c.msg+'</div>';
-    if(['p8','m4','w1'].indexOf(c.k)>=0)render();
-    saveLive();
+
+  /**
+   * Veredicto do item atual. ✗ alimenta a fila de erros do aluno
+   * (errq|<studentId>), que é responsabilidade da página — aqui só
+   * avisamos. Não avança sozinho: quem avança é o Next.
+   */
+  judge:function(ok){
+    if(!S) return;
+    var p=S.view[S.i];
+    if(!p) return;
+    var key=p.id||('i'+S.i);
+    if(S.judged[key]!==undefined) return;      // um veredicto por item
+    S.judged[key]=!!ok;
+    if(!ok) env.logError('practice', strip(P(p.q||(p.lines?p.lines.join(' '):''))), strip(P(p.a||'')));
+    render();
   },
-  tg:function(id){const el=document.getElementById(id);if(el)el.classList.toggle('show');},
+
   say:function(txt){
-    if(!('speechSynthesis' in window))return;
-    const u=new SpeechSynthesisUtterance(txt);u.lang='en-US';u.rate=0.9;
-    speechSynthesis.cancel();speechSynthesis.speak(u);
+    if(!('speechSynthesis' in window)) return;
+    var u=new SpeechSynthesisUtterance(txt); u.lang='en-US'; u.rate=0.9;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
   },
-  homework:function(){
-    if(!S._misses||!S._misses.length)return;
-    let h='<h1 style="border-bottom:3px solid #0B3B46;padding-bottom:10px">Homework — '+env.stuName()+' · '+T.name+'</h1>'+
-      '<p>Practice these — we\'ll check them next class:</p>'+
-      S._misses.map(function(m,i){return '<p style="margin-left:14px">'+(i+1)+'. '+m.q.replace(/<[^>]*>/g,'')+'</p>';}).join('')+
-      '<p style="color:#888;margin-top:18px">Answers on the last line — no peeking! 😉</p><hr>'+
-      '<p style="font-size:11px;color:#9CA3AF">'+S._misses.map(function(m,i){return (i+1)+') '+String(m.a).replace(/<[^>]*>/g,'');}).join(' · ')+'</p>';
-    if(typeof window.printDoc==='function')window.printDoc(h,'Homework — '+env.stuName());
+
+  /** Estado para a página desenhar o cabeçalho. */
+  state:function(){
+    if(!S) return {topic:null,total:0,shown:0,index:0,filter:'all',counts:{}};
+    return {
+      topic:  T ? {id:T.id, name:T.name, level:T.level} : null,
+      total:  S.pool.length,
+      shown:  S.view.length,
+      index:  Math.min(S.i, S.view.length),
+      filter: S.filter,
+      counts: countByFormat()
+    };
   },
-  restart:function(){S.finished=false;S.sec=0;render();},
-  audit:audit,
-  _sess:function(){return S;}
+
+  _sess:function(){ return S; }
 };
+
+window.GE=GE;
+
 })();

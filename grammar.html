@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sabatovicz - Grammar Lessons</title>
+<title>Sabatovicz - Grammar Practice</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="engine/grammar-topics.js?v=4"></script>
 <script src="engine/grammar-engine.js?v=4"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -206,37 +205,140 @@
 </head>
 <body>
 <div class="min-h-screen">
-  <!-- HEADER -->
+
+  <!-- HEADER — só o essencial: onde estou e para quem -->
   <div class="topbar text-white p-6 sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-4xl mx-auto">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <h1 class="text-2xl md:text-3xl font-bold">Grammar Lessons</h1>
-          <p class="text-[#6B7280] text-sm font-semibold">Essential grammar · Open, explain and practice</p>
+          <h1 class="text-2xl md:text-3xl font-bold">Grammar Practice</h1>
+          <p class="text-[#6B7280] text-sm font-semibold" id="hdrSub">Pick a topic and practise</p>
         </div>
         <button onclick="goHome()" class=" font-bold py-2 px-4 rounded-lg hover:bg-gray-800 text-sm"><i data-lucide="arrow-left" class="tl-icon-sm"></i> Menu</button>
       </div>
-      <div class="flex gap-2 overflow-x-auto pb-1" id="tenseSelector"></div>
+      <div class="flex gap-2 overflow-x-auto pb-1" id="topicSelector"></div>
     </div>
   </div>
 
-  <!-- LESSON -->
-  <div class="max-w-5xl mx-auto p-4 md:p-6">
-    <div id="lessonTitle" class="card rounded-xl p-6 mb-6"></div>
-    <div id="stuBar" class="card rounded-xl p-4 mb-6"></div>
-    <div id="lessonBody"></div>
-    <div class="card rounded-xl p-6 mt-6 flex gap-3 flex-wrap">
-      <button onclick="exportLesson()" class="gradient-emerald text-white font-bold py-3 px-6 rounded-lg">Download lesson as PDF</button>
+  <div class="max-w-4xl mx-auto p-4 md:p-6">
+
+    <!-- Aluno + tópico atual -->
+    <div class="card rounded-xl p-4 mb-4 flex items-center justify-between flex-wrap gap-3">
+      <div id="stuBar" class="flex items-center flex-wrap"></div>
+      <p class="text-slate-400 text-sm" id="poolCount">—</p>
     </div>
-    <div id="printArea" class="hidden"></div>
+
+    <!-- Filtros de formato -->
+    <div class="flex gap-2 overflow-x-auto pb-1 mb-4" id="formatFilter"></div>
+
+    <!-- Um exercício por vez -->
+    <div id="gePractice"></div>
+
   </div>
 </div>
 
 <script src="platform-students.js?v=1"></script>
-<script src="platform-print.js?v=1"></script>
 <script>
-// ============ GRAMMAR LESSON BANK ============
-const tenses = [
+/* ===========================================================================
+   GRAMMAR PRACTICE — página
+   ---------------------------------------------------------------------------
+   Student → Topic → um exercício por vez → veredicto → Next.
+
+   A aula guiada em 10 etapas (Goal, Warm-up, Notice, CCQs, Rule, Watch out,
+   Make it yours, Task, Exit Ticket), o mapa de etapas, os portões de 80% e o
+   relógio por seção saíram da interface. A explicação acontece fora da
+   plataforma; aqui só se pratica.
+
+   O conteúdo continua inteiro em engine/grammar-topics.js — inclusive os
+   campos que deixaram de ser renderizados.
+   =========================================================================== */
+
+/* ---------- tópicos: direto do banco, sem lista paralela ---------- */
+const TOPICS = Object.keys(window.ENGINE_TOPICS||{}).map(k=>window.ENGINE_TOPICS[k]);
+let current = TOPICS.length ? TOPICS[0].id : null;
+
+/* ---------- aluno ---------- */
+const STUDENTS_DATA = TeacherLu.Students.load();
+let curStu = localStorage.getItem('sabatovicz_current_student');
+if(!STUDENTS_DATA.some(s=>s.id===curStu)) curStu = STUDENTS_DATA.length ? STUDENTS_DATA[0].id : null;
+function stuName(){ const s=STUDENTS_DATA.find(x=>x.id===curStu); return s?s.name:'the student'; }
+function pickStu(id){
+  curStu=id;
+  localStorage.setItem('sabatovicz_current_student',id);
+  renderStuBar();
+}
+function renderStuBar(){
+  const el=document.getElementById('stuBar');
+  if(!el) return;
+  if(!STUDENTS_DATA.length){
+    el.innerHTML='<span class="text-slate-400 text-sm">No students yet — add one in Students.</span>';
+    return;
+  }
+  el.innerHTML='<span class="text-slate-400 text-sm font-bold" style="margin-right:8px">Student:</span>'+
+    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn ${s.id===curStu?'active':''}" style="margin:2px">${s.emoji||''} ${s.name}</button>`).join('');
+}
+
+/* ---------- fila de erros — sem UI, igual ao que já existia ----------
+   Um ✗ continua alimentando errq|<studentId>. É outro assunto (revisão),
+   não aparece nesta tela. */
+function logError(kind,q,a){
+  if(!curStu) return;
+  try{
+    const k='errq|'+curStu;
+    const arr=JSON.parse(localStorage.getItem(k)||'[]');
+    const t=ENGINE_TOPICS[current];
+    arr.push({m:'grammar',topic:t?t.short||t.name:'',kind,q:String(q),a:String(a),d:new Date().toISOString().slice(0,10)});
+    localStorage.setItem(k,JSON.stringify(arr));
+  }catch(e){}
+}
+
+/* ---------- tópicos ---------- */
+function renderTopics(){
+  document.getElementById('topicSelector').innerHTML =
+    TOPICS.map(t=>`<button class="tense-btn ${t.id===current?'active':''}" onclick="pickTopic('${t.id}')">${t.short||t.name}</button>`).join('');
+}
+function pickTopic(id){
+  current=id;
+  renderTopics();
+  GE.start(ENGINE_TOPICS[id],'gePractice');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- filtros de formato ---------- */
+function renderFilters(state){
+  const el=document.getElementById('formatFilter');
+  if(!el) return;
+  const c=state.counts||{};
+  el.innerHTML = GE.FORMATS
+    .filter(f=>f.id==='all' || c[f.id]>0)
+    .map(f=>`<button class="theme-btn ${state.filter===f.id?'active':''}" onclick="GE.setFilter('${f.id}')">${f.label}</button>`).join('');
+}
+
+/* ---------- cabeçalho: chamado pelo runtime a cada render ---------- */
+function onPracticeRender(state){
+  const t=state.topic;
+  document.getElementById('hdrSub').textContent = t ? (t.name+(t.level?' · '+t.level:'')) : '';
+  document.getElementById('poolCount').textContent =
+    state.shown + (state.shown===1?' exercise':' exercises');
+  renderFilters(state);
+}
+
+function goHome(){ window.location.href='index.html'; }
+
+/* ---------- init ---------- */
+renderStuBar();
+renderTopics();
+if(current) GE.start(ENGINE_TOPICS[current],'gePractice');
+
+/* ===========================================================================
+   LEGADO — NÃO RENDERIZADO
+   ---------------------------------------------------------------------------
+   Este era o banco próprio desta página, usado quando um tópico ainda não
+   existia no engine. Hoje os 18 tópicos têm equivalente em
+   engine/grammar-topics.js, então nada aqui é lido. Preservado para não
+   perder conteúdo; pode ser apagado depois do piloto.
+   =========================================================================== */
+const LEGACY_TENSES = [
 {
   eid:"verb-to-be",
   name:"Verb to be — Present", short:"Verb to be", level:"A1",
@@ -540,311 +642,6 @@ const tenses = [
   speaking:["What will you do if it rains this weekend?","If you have a holiday next month, where will you go?","If you win some money, what will you buy?","Finish: 'If I study English every day, ...'"]
 }
 ];
-
-// ============ RENDER ============
-let current = 0;
-
-function renderSelector(){
-  document.getElementById('tenseSelector').innerHTML =
-    tenses.map((t,i)=>`<button class="tense-btn ${i===current?'active':''}" onclick="selectTense(${i})">${t.eid&&window.ENGINE_TOPICS&&ENGINE_TOPICS[t.eid]?'⚡ ':''}${t.short}</button>`).join('');
-}
-function selectTense(i){current=i;renderSelector();renderLesson();window.scrollTo({top:0,behavior:'smooth'});}
-
-function speak(txt){
-  if(!('speechSynthesis' in window)){alert('Audio not supported in this browser');return;}
-  const u=new SpeechSynthesisUtterance(txt);u.lang='en-US';u.rate=0.9;
-  speechSynthesis.cancel();speechSynthesis.speak(u);
-}
-function toggleAnswer(id){document.getElementById(id).classList.toggle('show');}
-
-function revealRule(){
-  document.getElementById('ruleWrap').classList.remove('hide-rule');
-  document.getElementById('ruleReveal').style.display='none';
-}
-
-function stageBlock(color,title,inner){
-  return `<div class="stage" style="border-left-color:${color}"><h3 class="text-xl font-bold text-white mb-3">${title}</h3>${inner}</div>`;
-}
-
-function renderLesson(){
-  const t=tenses[current];
-  const engine=t.eid&&window.ENGINE_TOPICS&&ENGINE_TOPICS[t.eid];
-  document.getElementById('lessonTitle').innerHTML=`
-    <div class="flex items-center gap-3 mb-1">
-      <span class="text-xs bg-[#0B3B46] text-[#FFFFFF] px-2 py-1 rounded font-bold">GRAMMAR</span>
-      <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${t.level}</span>
-      ${engine?'<span class="text-xs px-2 py-1 rounded font-bold" style="background:linear-gradient(135deg,#0B3B46,#FF6B6B);color:#fff">⚡ Grammar Engine v1</span>':''}
-    </div>
-    <h2 class="text-2xl md:text-3xl font-bold text-white">${t.name}</h2>`;
-
-  // Tópicos migrados usam o motor (GRAMMAR-ENGINE.md); os demais, o renderer legado abaixo.
-  if(engine){ renderStuBar(); GE.start(ENGINE_TOPICS[t.eid]); return; }
-
-  let h='';
-
-  // 0 WARM-UP — review queue: the student's past ✗ items return as retrieval (Grammar Engine §2 · SLF G4)
-  wuJudge={};
-  wuItems=getQueue().slice(0,4);
-  if(wuItems.length){
-    h+=stageBlock('#22C55E','0 · Warm-up — '+stuName()+'’s review queue',
-      `<p class="text-slate-400 text-sm mb-2">Review — items from ${stuName()}'s queue.</p>`+
-      wuItems.map((it,i)=>`
-        <div class="ex-line" style="display:block">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-            <span><span class="chip" style="margin:0 6px 0 0">${it.topic||'review'}</span>${it.q}</span>
-            <span style="display:flex;gap:6px;flex-shrink:0">
-              ${it.a?`<button onclick="toggleAnswer('wua-${i}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">answer</button>`:''}
-              <button onclick="judgeWU(${i},true)" id="wuy-${i}" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓</button>
-              <button onclick="judgeWU(${i},false)" id="wun-${i}" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗</button>
-            </span>
-          </div>
-          ${it.a?`<div id="wua-${i}" class="answer">✓ ${it.a}</div>`:''}
-        </div>`).join('')+`<div id="wuVerdict" style="margin-top:8px"></div>`);
-  }
-
-  // 1 NOTICE — the student discovers the pattern BEFORE seeing the rule (Grammar Engine §3)
-  h+=stageBlock('#22C55E','1 · Notice the pattern (listen & discover)',
-    t.examples.map(e=>`<div class="ex-line"><span>${e}</span><button class="speak-btn" onclick="speak('${e.replace(/'/g,"\\'")}')">►</button></div>`).join('')+
-    `<div style="margin-top:12px">
-       <span class="chip">🔍 What repeats in every sentence?</span>
-       <span class="chip">🔍 What changes — and when?</span>
-       <span class="chip">🗣️ Say the rule in YOUR words</span>
-     </div>`);
-
-  // 2 RULE — só é revelada quando a professora clica (o aluno tenta descobrir antes).
-  h+=`<div id="ruleReveal" style="text-align:center;margin:4px 0 14px">
-        <button onclick="revealRule()" class="theme-btn font-bold py-3 px-6 rounded-lg" style="font-size:15px">👁 Reveal the rule</button>
-      </div>
-      <div id="ruleWrap" class="hide-rule">`;
-  h+=stageBlock('#F59E0B','2 · When to use',`<p class="text-slate-300">${t.use}</p>`);
-  h+=stageBlock('#0EA5E9','Structure',
-    `<div class="form-box"><div class="label" style="color:#22C55E">Affirmative</div>${t.form.aff.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#EF4444">Negative</div>${t.form.neg.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>
-     <div class="form-box"><div class="label" style="color:#0EA5E9">Question</div>${t.form.q.map(x=>`<p class="text-slate-200 text-sm mb-1">${x}</p>`).join('')}</div>`);
-  if(t.list){
-    h+=stageBlock('#0B3B46','Common irregular verbs',
-      `<div class="grid grid-cols-2 md:grid-cols-3 gap-2">${t.list.map(v=>`<div class="form-box" style="margin:0;padding:10px"><span class="text-white font-semibold text-sm">${v}</span></div>`).join('')}</div>`);
-  }
-  h+=stageBlock('#F59E0B','Signal words',
-    `<div>${t.signals.map(s=>`<span class="chip">${s}</span>`).join('')}</div>`);
-  h+=`</div>`;
-
-  // 5 ERROS COMUNS
-  h+=stageBlock('#EF4444','Common mistakes',
-    t.mistakes.map(m=>`<div class="mistake text-slate-200 text-sm">${m}</div>`).join(''));
-
-  // 3 PRACTICE — a resposta só aparece quando a professora clica em "show answer".
-  //   IMPORTANTE: o botão "💡 hint" foi removido intencionalmente — na aula ao vivo,
-  //   ele começava com a primeira letra da resposta (revelava tudo antes da tentativa).
-  //   Os dados (grammar-topics.js) continuam preservados; só a renderização mudou.
-  prJudge={};
-  h+=stageBlock('#FF6B6B','3 · Practice',
-    `<div id="prScore" class="text-slate-300 text-sm font-bold mb-2">0 / ${t.practice.length} checked · gate: ≥80%</div>`+
-    t.practice.map((p,idx)=>{
-      const id=`ans-${current}-${idx}`;
-      return `<div class="ex-line" style="display:block" id="pr-${idx}">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-          <span>${idx+1}. ${p.q}</span>
-          <span style="display:flex;gap:6px;flex-shrink:0">
-            <button onclick="toggleAnswer('${id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">show answer</button>
-          </span>
-        </div>
-        <div id="${id}" class="answer">✓ ${p.a}
-          <span style="margin-left:8px">
-            <button onclick="judgePr(${idx},true)" id="pry-${idx}" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓ got it</button>
-            <button onclick="judgePr(${idx},false)" id="prn-${idx}" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗ missed</button>
-          </span>
-          <div class="text-xs" style="color:#0B3B46;margin-top:5px">↳ follow-up: ${FOLLOWUPS[idx%FOLLOWUPS.length]}</div>
-        </div>
-      </div>`;
-    }).join('')+`<div id="prVerdict" style="margin-top:10px"></div>`);
-
-  // 4 FALE AGORA
-  h+=stageBlock('#16B1A9','4 · Speak now (use the tense)',
-    t.speaking.map(q=>`<div class="ex-line"><span>${q}</span></div>`).join(''));
-
-  // 5 EXIT TICKET — auto-built evidence gate (Grammar Engine §10)
-  etJudge={};
-  const et=buildExit(t);
-  h+=stageBlock('#0B3B46','5 · Exit Ticket — ≥80% (5/6) completes the week',
-    et.map((it,i)=>`
-      <div class="ex-line" style="display:block">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-          <span><span class="chip" style="margin:0 6px 0 0">${it.tag}</span>${it.q}</span>
-          <span style="display:flex;gap:6px;flex-shrink:0">
-            ${it.a?`<button onclick="toggleAnswer('eta-${i}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded">answer</button>`:''}
-            <button onclick="judgeET(${i},true)" id="ety-${i}" class="text-xs px-3 py-1 rounded" style="background:#DCFCE7;color:#166534;font-weight:700;border:1px solid #22C55E">✓</button>
-            <button onclick="judgeET(${i},false)" id="etn-${i}" class="text-xs px-3 py-1 rounded" style="background:#FEE2E2;color:#991B1B;font-weight:700;border:1px solid #EF4444">✗</button>
-          </span>
-        </div>
-        ${it.a?`<div id="eta-${i}" class="answer">✓ ${it.a}</div>`:''}
-      </div>`).join('')+`<div id="etVerdict" style="margin-top:10px"></div>`);
-
-  document.getElementById('lessonBody').innerHTML=h;
-  renderStuBar();
-}
-
-// ============ EVIDENCE & ERROR QUEUE (Grammar Engine §7/§10 · SLF G3/G4) ============
-const FOLLOWUPS=['Why?','And you? Make it about YOU.','Say it again — faster and natural.','Make one more sentence like this one.','Why not the other form?','Now turn it into a question.'];
-let prJudge={},etJudge={},wuJudge={},wuItems=[];
-
-function getQueue(){
-  if(!curStu)return[];
-  try{
-    const arr=JSON.parse(localStorage.getItem('errq|'+curStu)||'[]');
-    return arr.map((e,idx)=>Object.assign({},e,{_i:idx})).filter(e=>!e.rv);
-  }catch(e){return[];}
-}
-function judgeWU(i,ok){
-  if(wuJudge[i]!==undefined)return;
-  wuJudge[i]=ok;
-  document.getElementById('wuy-'+i).style.opacity=ok?'1':'.35';
-  document.getElementById('wun-'+i).style.opacity=ok?'.35':'1';
-  try{
-    const k='errq|'+curStu;
-    const arr=JSON.parse(localStorage.getItem(k)||'[]');
-    const it=arr[wuItems[i]._i];
-    if(it){ if(ok)it.rv=1; else it.d=new Date().toISOString().slice(0,10); }
-    localStorage.setItem(k,JSON.stringify(arr));
-  }catch(e){}
-  const n=Object.keys(wuJudge).length,c=Object.values(wuJudge).filter(Boolean).length;
-  if(n===wuItems.length){
-    const left=getQueue().length;
-    document.getElementById('wuVerdict').innerHTML=
-      `<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">${c}/${n} recovered · ${left} item${left===1?'':'s'} still in ${stuName()}'s queue. Now let's discover something new ↓</div>`;
-  }
-}
-
-function buildExit(t){
-  const sp=t.speaking.slice(-2);
-  const sg=t.signals.slice(0,2).map(s=>String(s).split(':').pop().split(',')[0].trim());
-  const strip=s=>String(s).replace(/<[^>]*>/g,'');
-  const mk=strip(t.mistakes[0]||'').split('→');
-  const items=[];
-  sp.forEach(q=>items.push({tag:'🗣 speak',q}));
-  sg.forEach(w=>items.push({tag:'✏ create',q:`Make your own sentence with: “${w}”`}));
-  if(mk.length>1)items.push({tag:'⚠ fix it',q:mk[0].replace('✗','').trim(),a:mk[1].replace('✓','').trim()});
-  else items.push({tag:'⚠ fix it',q:'Say one WRONG sentence with this tense — then fix it.'});
-  items.push({tag:'💭 concept',q:`When do we use ${t.short} — and when NOT? Give one example.`});
-  return items;
-}
-
-function judgePr(i,ok){
-  if(prJudge[i]!==undefined)return;
-  prJudge[i]=ok;
-  document.getElementById('pry-'+i).style.opacity=ok?'1':'.35';
-  document.getElementById('prn-'+i).style.opacity=ok?'.35':'1';
-  const t=tenses[current];
-  if(!ok)logError('practice',t.practice[i].q,t.practice[i].a);
-  const n=Object.keys(prJudge).length,c=Object.values(prJudge).filter(Boolean).length;
-  document.getElementById('prScore').textContent=`${c} correct / ${n} checked of ${t.practice.length} · gate: ≥80%`;
-  if(n===t.practice.length){
-    const pct=Math.round(c/n*100);
-    document.getElementById('prVerdict').innerHTML=pct>=80
-      ?`<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">✅ ${pct}% — gate passed. Go to Speak now.</div>`
-      :`<div class="mistake" style="font-weight:700">⚠ ${pct}% — below the gate. Revisit the rule together, then retry the missed ones (misses saved to ${stuName()}'s review queue).</div>`;
-  }
-}
-
-function judgeET(i,ok){
-  if(etJudge[i]!==undefined)return;
-  etJudge[i]=ok;
-  document.getElementById('ety-'+i).style.opacity=ok?'1':'.35';
-  document.getElementById('etn-'+i).style.opacity=ok?'.35':'1';
-  const t=tenses[current];
-  if(!ok)logError('exit',buildExit(t)[i].q,buildExit(t)[i].a||'');
-  const n=Object.keys(etJudge).length,c=Object.values(etJudge).filter(Boolean).length;
-  if(n===6){
-    document.getElementById('etVerdict').innerHTML=c>=5
-      ?`<div class="mistake" style="background:#DCFCE7 !important;border-color:#22C55E !important;color:#166534 !important;font-weight:700">🏆 ${c}/6 — great job!</div>`
-      :`<div class="mistake" style="font-weight:700">↩ ${c}/6 — let's review this topic again.</div>`;
-  }
-}
-
-// ---- shared student store (managed in students.html) ----
-/* ---------- student store — fonte única: platform-students.js ----------
-   O bloco DEFAULT_STUDENTS/loadStudents que existia aqui foi centralizado.
-   Estes aliases mantêm o restante desta página inalterado. -------------- */
-const STU_KEY = TeacherLu.Students.KEY;
-const DEFAULT_STUDENTS = TeacherLu.Students.DEFAULTS;
-function loadStudents(){ return TeacherLu.Students.load(); }
-const STUDENTS_DATA=loadStudents();
-let curStu=localStorage.getItem('sabatovicz_current_student');
-if(!STUDENTS_DATA.some(s=>s.id===curStu))curStu=STUDENTS_DATA.length?STUDENTS_DATA[0].id:null;
-function stuName(){const s=STUDENTS_DATA.find(x=>x.id===curStu);return s?s.name:'the student';}
-function pickStu(id){curStu=id;localStorage.setItem('sabatovicz_current_student',id);renderLesson();}
-function renderStuBar(){
-  const el=document.getElementById('stuBar');if(!el)return;
-  el.innerHTML=`<span class="text-slate-300 text-sm font-bold" style="margin-right:8px">Class with:</span>`+
-    STUDENTS_DATA.map(s=>`<button onclick="pickStu('${s.id}')" class="theme-btn text-xs font-bold py-2 px-3 rounded-lg" style="margin:2px;${s.id===curStu?'background:linear-gradient(135deg,#0B3B46,#FF6B6B) !important;color:#fff !important':''}">${s.emoji||''} ${s.name}</button>`).join('');
-}
-function logError(kind,q,a){
-  if(!curStu)return;
-  try{
-    const k='errq|'+curStu;
-    const arr=JSON.parse(localStorage.getItem(k)||'[]');
-    arr.push({m:'grammar',topic:tenses[current].short,kind,q:String(q),a:String(a),d:new Date().toISOString().slice(0,10)});
-    localStorage.setItem(k,JSON.stringify(arr));
-  }catch(e){}
-}
-
-// ============ PDF ============
-function exportLesson(){
-  const t=tenses[current];
-  // Tópicos migrados ao engine exportam o CONTEÚDO DO ENGINE (não o legado)
-  if(t.eid&&window.ENGINE_TOPICS&&ENGINE_TOPICS[t.eid]){exportEngineLesson(ENGINE_TOPICS[t.eid]);return;}
-  const pa=document.getElementById('printArea');
-  const strip=s=>s.replace(/<b>/g,'').replace(/<\/b>/g,'');
-  let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #F59E0B;padding-bottom:12px">Grammar — ${t.name}</h1>
-    <p style="text-align:center;color:#666">Level ${t.level}</p>
-    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">When to use</h2><p>${t.use}</p>
-    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Structure</h2>
-    <p><b>Affirmative:</b></p>${t.form.aff.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
-    <p><b>Negative:</b></p>${t.form.neg.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}
-    <p><b>Question:</b></p>${t.form.q.map(x=>`<p style="margin-left:15px">${strip(x)}</p>`).join('')}`;
-  if(t.list){h+=`<h2 style="border-left:4px solid #F59E0B;padding-left:10px">Irregular verbs</h2><p>${t.list.join(' · ')}</p>`;}
-  h+=`<h2 style="border-left:4px solid #F59E0B;padding-left:10px">Examples</h2>${t.examples.map(e=>`<p style="margin-left:15px">• ${e}</p>`).join('')}
-    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Signal words</h2><p>${t.signals.join(' · ')}</p>
-    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Common mistakes</h2>${t.mistakes.map(m=>`<p style="margin-left:15px">${strip(m)}</p>`).join('')}
-    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Practice (with answer key)</h2>${t.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${p.q} &nbsp; <b style="color:#22C55E">(${p.a})</b></p>`).join('')}
-    <h2 style="border-left:4px solid #F59E0B;padding-left:10px">Speak now</h2>${t.speaking.map(q=>`<p style="margin-left:15px">• ${q}</p>`).join('')}
-    </div>`;
-  pa.innerHTML=h;
-  printDoc(document.getElementById('printArea').innerHTML,'Sabatovicz');
-}
-
-function exportEngineLesson(T){
-  const nm=stuName();
-  const cl=s=>String(s==null?'':s).replace(/\{name\}/g,nm).replace(/<[^>]*>/g,'');
-  const h2=t=>`<h2 style="border-left:4px solid #0B3B46;padding-left:10px">${t}</h2>`;
-  let h=`<div style="font-family:Arial;color:#222;padding:30px;line-height:1.6">
-    <h1 style="text-align:center;border-bottom:3px solid #0B3B46;padding-bottom:12px">Grammar — ${cl(T.name)}</h1>
-    <p style="text-align:center;color:#666">Level ${T.level} · ${nm}</p>
-    ${h2('Goal')}<p>By the end of this lesson, ${nm} can ${cl(T.goal.can)}.</p>
-    ${h2('Rule')}<p>${cl(T.rule.text)}</p>
-    <p><b>When YES:</b> ${T.slots.use.yes.map(cl).join(' · ')}</p>
-    <p><b>When NO:</b> ${T.slots.use.no.map(cl).join(' · ')}</p>
-    <p><b>Pronunciation:</b> ${cl(T.rule.pron)}</p>
-    ${T.rule.pt?`<p><b>Contraste com o português:</b> ${cl(T.rule.pt)}</p>`:''}
-    ${h2('Watch out — common mistakes')}
-    ${T.watchout.map(w=>`<p style="margin-left:15px">✗ ${cl(w.bad)} → ✓ ${cl(w.good)} <span style="color:#888">(${cl(w.why)})</span></p>`).join('')}
-    ${h2('Examples (Notice)')}${T.notice.examples.map(e=>`<p style="margin-left:15px">• ${cl(e)}</p>`).join('')}
-    ${h2('Practice (with answer key)')}
-    ${T.practice.map((p,i)=>`<p style="margin-left:15px">${i+1}. ${cl(p.q)}${p.opts?' ['+p.opts.map(cl).join(' / ')+']':''} &nbsp;<b style="color:#22C55E">(${cl(p.a)})</b></p>`).join('')}
-    ${h2('Make it yours')}${T.makeit.map(m=>`<p style="margin-left:15px">• ${cl(m)}</p>`).join('')}
-    ${h2('Task — '+cl(T.task.title))}<p>${cl(T.task.mission)}</p>
-    ${h2('Exit Ticket')}${T.exit.map((e,i)=>`<p style="margin-left:15px">${i+1}. [${cl(e.tag)}] ${cl(e.q)}${e.a?` &nbsp;<b style="color:#22C55E">(${cl(e.a)})</b>`:''}</p>`).join('')}
-    </div>`;
-  printDoc(h,'Sabatovicz — '+cl(T.name));
-}
-
-function printDoc(html,title){ TeacherLu.printDoc(html, title); }
-
-function goHome(){window.location.href='index.html';}
-
-renderSelector();
-renderLesson();
 </script>
 </body>
 </html>
