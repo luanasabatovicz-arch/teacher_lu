@@ -24,30 +24,6 @@
     .home .section-head h2 { font-size: var(--tl-fs-h4); font-weight: var(--tl-fw-bold); color: var(--tl-text); letter-spacing: var(--tl-tracking-wide); text-transform: uppercase; }
     .home .section-head .hint { font-size: var(--tl-fs-caption); color: var(--tl-text-tertiary); }
 
-    /* HERO — Today's Lesson */
-    .home .hero {
-      display: flex; flex-direction: column; gap: var(--tl-space-3);
-      background: linear-gradient(135deg, var(--tl-primary) 0%, #0F5561 55%, var(--tl-secondary) 100%);
-      color: var(--tl-text-inverse);
-      border-radius: var(--tl-radius-xl);
-      padding: var(--tl-space-7);
-      box-shadow: var(--tl-shadow-md);
-      text-decoration: none;
-      transition: transform var(--tl-dur-fast) var(--tl-ease), box-shadow var(--tl-dur-fast) var(--tl-ease);
-    }
-    .home .hero:hover { transform: translateY(-2px); box-shadow: var(--tl-shadow-lg); }
-    .home .hero .eyebrow { font-size: var(--tl-fs-caption); font-weight: var(--tl-fw-bold); letter-spacing: var(--tl-tracking-wide); text-transform: uppercase; opacity: .85; }
-    .home .hero h1 { font-size: var(--tl-fs-h1); font-weight: var(--tl-fw-bold); line-height: var(--tl-lh-tight); color: var(--tl-text-inverse); }
-    .home .hero p  { font-size: var(--tl-fs-body); line-height: var(--tl-lh-relaxed); color: rgba(255,255,255,.88); max-width: 62ch; }
-    .home .hero .cta {
-      display: inline-flex; align-items: center; gap: 6px;
-      align-self: flex-start;
-      margin-top: var(--tl-space-3);
-      background: var(--tl-surface); color: var(--tl-primary);
-      font-weight: var(--tl-fw-bold); font-size: var(--tl-fs-small);
-      padding: 10px 18px; border-radius: var(--tl-radius-pill);
-    }
-
     /* Grid dos módulos de aula (Lesson Tools) — cards compactos */
     .home .grid-primary   { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--tl-space-4); }
     .home .grid-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--tl-space-3); }
@@ -117,17 +93,10 @@
 
     <img class="home-banner" src="assets/banner-home.png" alt="Teacher Lu Platform">
 
-    <!-- 1 · TODAY'S LESSON — o CTA principal da Studio -->
-    <section class="section">
-      <a class="hero" href="builder.html">
-        <span class="eyebrow">Today's Lesson</span>
-        <h1>Build Today's Lesson</h1>
-        <p>Pick a student, pick a duration, start the class.</p>
-        <span class="cta">Build the lesson →</span>
-      </a>
-    </section>
-
-    <!-- 2 · LESSON TOOLS — ferramentas usadas durante a aula -->
+    <!-- 1 · LESSON TOOLS — ferramentas usadas durante a aula.
+         O hero "Build Today's Lesson" saiu da Home: não faz parte do fluxo
+         real de aula. builder.html e platform-lesson-builder.js continuam
+         no repositório, acessíveis pela URL. -->
     <section class="section">
       <div class="section-head">
         <h2>Lesson Tools</h2>
@@ -187,7 +156,7 @@
       </div>
     </section>
 
-    <!-- 3 · STUDENTS & PLANNING — preparação e acompanhamento -->
+    <!-- 2 · STUDENTS & PLANNING — preparação e acompanhamento -->
     <section class="section">
       <div class="section-head">
         <h2>Students &amp; Planning</h2>
@@ -219,7 +188,7 @@
       </div>
     </section>
 
-    <!-- 4 · MANAGEMENT — módulos administrativos, usados fora da aula -->
+    <!-- 3 · MANAGEMENT — módulos administrativos, usados fora da aula -->
     <section class="section">
       <div class="section-head">
         <h2>Management</h2>
@@ -234,7 +203,7 @@
       </div>
     </section>
 
-    <!-- 5 · DUTCH — módulo especial, isolado do fluxo de inglês -->
+    <!-- 4 · DUTCH — módulo especial, isolado do fluxo de inglês -->
     <section class="section">
       <div class="section-head">
         <h2>Dutch</h2>

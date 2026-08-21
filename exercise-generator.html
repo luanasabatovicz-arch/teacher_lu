@@ -383,10 +383,19 @@
    Cada formato marca no PracticeLog no seu estado terminal — nunca ao
    renderizar, nunca só no reveal, nunca só no Next. Errar conta como uso.
 
-   FILTRO DE CONCLUÍDOS: DESLIGADO
-   -------------------------------
-   Ainda estamos no piloto. Um exercício já feito continua aparecendo
-   normalmente; o PracticeLog só grava e mostra o contador.
+   FILTRO DE CONCLUÍDOS: LIGADO
+   ----------------------------
+   Ao escolher um aluno, o pool oferece só o que ELE ainda não fez:
+
+       pool bruto (topic + type)
+         → PracticeLog.available(studentId, pool)
+         → fora os conjuntos já fechados (Reading por groupId,
+            Make a Sentence quando todos os verbos foram gastos)
+         → Next/Random trabalha só com o que sobrou.
+
+   Nunca é global: é sempre por studentId. Sem aluno selecionado, nada é
+   filtrado. Quando o filtro esvazia o pool, a tela diz que acabou e NÃO
+   reinicia sozinha.
    =========================================================================== */
 
 const PB = TeacherLu.PracticeBank;
@@ -396,8 +405,10 @@ let TOPICS = PB.topics();
 let curTopic = TOPICS.length ? (TOPICS.find(t=>t.key==='past') ? 'past' : TOPICS[0].key) : null;
 let curType  = 'all';
 let pool = [];
+let poolTotal = 0;    // tamanho do pool ANTES do filtro por aluno
 let idx  = 0;
 let ui   = {};        // estado transitório da tela, por id de exercício
+let reviewing = false; // sessão de revisão manual (não altera o PracticeLog)
 
 /* ---------- aluno ---------- */
 const STUDENTS_DATA = TeacherLu.Students.load();
@@ -408,7 +419,8 @@ function pickStu(id){
   curStu=id;
   localStorage.setItem('sabatovicz_current_student',id);
   clearSaveWarning();
-  renderStuBar(); renderUsedCount();
+  renderStuBar();
+  loadPool();          // o pool é do aluno: trocar de aluno recarrega
 }
 function renderStuBar(){
   const el=document.getElementById('stuSelect'); if(!el) return;
@@ -416,11 +428,12 @@ function renderStuBar(){
   el.innerHTML=STUDENTS_DATA.map(s=>
     `<option value="${s.id}" ${s.id===curStu?'selected':''}>${s.emoji||''} ${s.name}</option>`).join('');
 }
+/* Contador discreto do conjunto atual: "13 / 40 completed". */
 function renderUsedCount(){
   const el=document.getElementById('usedCount'); if(!el) return;
-  if(!curStu){ el.textContent='—'; return; }
-  const n=PL.countDone(curStu);
-  el.textContent = n + (n===1?' exercise used':' exercises used');
+  if(!curStu || !poolTotal){ el.textContent='—'; return; }
+  const left = reviewing ? 0 : pool.length;
+  el.textContent = (poolTotal - left) + ' / ' + poolTotal + ' completed';
 }
 
 /* ---------- aviso de gravação ----------
@@ -515,18 +528,50 @@ function renderTypes(){
   }).join('');
 }
 
+/* O que este aluno ainda NÃO fez, dentro do pool bruto.
+   Três perguntas, nesta ordem:
+     1. o exercício em si já foi feito?
+     2. ele pertence a um Reading cujo texto inteiro já foi concluído?
+     3. é um conjunto (Make a Sentence) cujas unidades já foram todas gastas?
+   Sem aluno selecionado, nada é escondido. */
+function availableFor(raw){
+  if(!curStu || !PL) return raw.slice();
+  return PL.available(curStu, raw).filter(function(it){
+    if(it.groupId && PL.isDone(curStu, it.groupId)) return false;
+    const units = (PB.unitsOf ? PB.unitsOf(it) : []) || [];
+    if(units.length && units.every(function(id){ return PL.isDone(curStu,id); })) return false;
+    const members = (it.groupId && PB.groupMembers) ? (PB.groupMembers(it.topic)||[]) : [];
+    if(members.length && members.every(function(id){ return PL.isDone(curStu,id); })) return false;
+    return true;
+  });
+}
+
 function loadPool(){
-  pool = PB.query({topic:curTopic, type:curType});   // sem filtro de concluídos (piloto)
+  const raw = PB.query({topic:curTopic, type:curType});
+  poolTotal = raw.length;
+  reviewing = false;
+  pool = availableFor(raw);                 // filtro por aluno — LIGADO
   idx = 0; ui = {};
   const t = TOPICS.find(x=>x.key===curTopic);
   document.getElementById('hdrSub').textContent = t ? (t.label + (t.level?' · '+t.level:'')) : '';
-  renderTopics(); renderTypes(); renderExercise();
+  renderTopics(); renderTypes(); renderUsedCount(); renderExercise();
+}
+
+/* Revisão manual: vale só para esta sessão, não apaga nada do PracticeLog
+   e nunca é o comportamento padrão — a professora precisa pedir. */
+function reviewCompleted(){
+  const raw = PB.query({topic:curTopic, type:curType});
+  const doneOnes = curStu ? raw.filter(function(x){ return !availableFor([x]).length; }) : [];
+  if(!doneOnes.length) return;
+  reviewing = true;
+  pool = doneOnes; idx = 0; ui = {};
+  renderUsedCount(); renderExercise();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* ---------- navegação ---------- */
 function nextEx(){ if(idx < pool.length){ idx++; renderExercise(); window.scrollTo({top:0,behavior:'smooth'}); } }
 function prevEx(){ if(idx > 0){ idx--; renderExercise(); } }
-function restartPool(){ idx=0; ui={}; renderExercise(); }
 
 /* ---------- helpers ---------- */
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
@@ -539,14 +584,7 @@ function st(item){ return ui[item.id] || (ui[item.id]={}); }
 /* ---------- render ---------- */
 function renderExercise(){
   const el=document.getElementById('exerciseArea');
-  if(!pool.length){ el.innerHTML='<div class="card rounded-xl p-8" style="text-align:center"><p class="text-slate-400">Nothing here yet.</p></div>'; return; }
-  if(idx>=pool.length){
-    el.innerHTML='<div class="card rounded-xl p-8" style="text-align:center">'+
-      '<p class="text-white font-bold" style="font-size:20px;margin-bottom:6px">Finished.</p>'+
-      `<p class="text-slate-400 text-sm" style="margin-bottom:16px">${pool.length} exercises in this set.</p>`+
-      '<button onclick="restartPool()" class="theme-btn font-bold py-2 px-5 rounded-lg">↺ Start again</button></div>';
-    return;
-  }
+  if(!pool.length || idx>=pool.length){ el.innerHTML=doneScreen(); return; }
   const item=pool[idx];
   const s=st(item);
 
@@ -568,6 +606,21 @@ function renderExercise(){
   '</div>';
 
   el.innerHTML=html;
+}
+
+/* Pool esgotado. Nada reinicia sozinho; a revisão é um pedido explícito. */
+function doneScreen(){
+  if(!poolTotal){
+    return '<div class="card rounded-xl p-8" style="text-align:center"><p class="text-slate-400">Nothing here yet.</p></div>';
+  }
+  const canReview = !!curStu && !reviewing && poolTotal > pool.length;
+  return '<div class="card rounded-xl p-8" style="text-align:center">'+
+    '<p class="text-white font-bold" style="font-size:20px;margin-bottom:6px">All exercises completed.</p>'+
+    `<p class="text-slate-400 text-sm" style="margin-bottom:16px">${poolTotal} / ${poolTotal} completed</p>`+
+    (canReview
+      ? '<button onclick="reviewCompleted()" class="theme-btn font-bold py-2 px-5 rounded-lg">Review completed exercises</button>'
+      : '')+
+    '</div>';
 }
 
 /* ---------- corpo por formato ---------- */
@@ -677,16 +730,23 @@ function bodyOf(item){
       const s2=st(item);
       if(!s2.pol) s2.pol='+';
       const POL=['+','–','?'];
-      const sel=s2.verbId ? (item.verbs||[]).find(v=>v.id===s2.verbId) : null;
+      // Verbos gastos em aulas anteriores saem da grade deste aluno. O que
+      // foi julgado AGORA continua visível com ✓ até a próxima abertura.
+      const verbs=(item.verbs||[]).filter(v=>{
+        if(reviewing || !curStu) return true;
+        const judgedNow = s2.judgedVerbs && s2.judgedVerbs[v.id]!==undefined;
+        return judgedNow || !PL.isDone(curStu, v.id);
+      });
+      const sel=s2.verbId ? verbs.find(v=>v.id===s2.verbId) : null;
       return `<p class="q-big text-white font-semibold mb-1">${esc(item.instruction)}</p>
         <div style="display:flex;gap:8px;align-items:center;margin-top:14px">
           ${POL.map(p=>`<button class="pol ${s2.pol===p?'on':''}" onclick="setPol('${p}')">${p}</button>`).join('')}
           <button class="theme-btn font-bold py-2 px-4 rounded-lg" style="margin-left:6px" onclick="randomPol()">🎲 Random</button>
           ${sel?`<span style="margin-left:auto;font-size:22px;font-weight:800;color:var(--tl-primary)">${esc(sel.v)} &nbsp;${s2.pol}</span>`:''}
         </div>
-        <div class="verb-grid">${(item.verbs||[]).map(v=>{
+        <div class="verb-grid">${verbs.map(v=>{
           const on   = s2.verbId===v.id;
-          const done = !!(s2.judgedVerbs && s2.judgedVerbs[v.id]);
+          const done = !!(s2.judgedVerbs && s2.judgedVerbs[v.id]!==undefined);
           return `<div class="verb-card ${on?'on':''} ${done?'used':''}" onclick="pickVerb('${v.id}')">${esc(v.v)}${done?'<span class="vmark">✓</span>':''}</div>`;
         }).join('')}</div>`;
     }
