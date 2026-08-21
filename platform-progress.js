@@ -309,10 +309,10 @@
      *   addCustomItem('reading', 'Cool English — Unlucky Lottery Winner')
      *   addCustomItem('reading', 'Unlucky Lottery Winner', '', 'Cool English')
      *
-     * `source` é texto livre opcional (Cool English, Canva, material próprio…)
-     * e vira o subtítulo do item. Assim nenhum rótulo interno aparece no
-     * relatório do aluno. Itens gravados antes deste campo simplesmente
-     * não têm source — o subtítulo fica vazio.
+     * `source` é texto livre opcional (Cool English, Canva, material
+     * próprio…) — a PROCEDÊNCIA do material. Fica guardado no item e não
+     * é exposto como subtitle: veja o comentário do provider no fim deste
+     * arquivo. Itens gravados antes deste campo continuam válidos.
      */
     addCustomItem: function (skillId, title, level, source) {
       title = String(title || '').trim();
@@ -462,10 +462,17 @@
         map: function (i, idx) {
           return {
             key: i.key, title: i.title, level: i.level || '',
-            // O subtítulo é lido por telas voltadas ao ALUNO (categoria de
-            // vocabulário e temas de speaking no relatório mensal). Por isso
-            // ele carrega a fonte do material — nunca um rótulo interno.
-            subtitle: i.source || '', order: i.order != null ? i.order : 1000 + idx
+            /* subtitle FICA VAZIO DE PROPÓSITO.
+               Ele não é um rótulo livre: o Monthly Report interpreta
+               subtitle como CATEGORIA de vocabulário, TEMA de speaking e
+               pista de competência (engine/competencies.js). Nada disso
+               vale para conteúdo adicionado à mão — nem o rótulo interno
+               "added by you", nem a fonte do material ("Cool English"),
+               que é procedência e não competência pedagógica.
+               A fonte continua guardada em item.source e disponível para
+               a interface; o que o aluno vê é o título humano, que já
+               pode trazer a fonte: "Cool English — Unlucky Lottery Winner". */
+            subtitle: '', order: i.order != null ? i.order : 1000 + idx
           };
         }
       });

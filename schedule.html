@@ -709,13 +709,42 @@ function lpIsCustomId(itemId){
   return String(itemId).indexOf(':custom-') !== -1;
 }
 
-/** Some do catálogo um custom que não está em nenhuma aula de nenhum aluno. */
+/**
+ * Quantos alunos ainda referenciam este conteúdo.
+ *   > 0  → em uso
+ *   0    → ninguém usa
+ *   null → NÃO FOI POSSÍVEL VERIFICAR (nada deve ser apagado)
+ *
+ * Varre as chaves de Progress direto no storage, e não a lista de alunos da
+ * tela: assim um aluno removido da lista — ou qualquer registro que a tela
+ * não conheça — continua contando como uso. Um item de catálogo sem uso é
+ * inofensivo; apagar um item que outro aluno ainda usa não é.
+ */
+function lpUsageCount(itemId){
+  const PROGRESS_PREFIX = 'sabatovicz_progress_';   // dono: platform-progress.js
+  let n = 0;
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(!k || k.indexOf(PROGRESS_PREFIX) !== 0) continue;
+      const raw = localStorage.getItem(k);
+      if(!raw) continue;
+      let rec;
+      try{ rec = JSON.parse(raw); }
+      catch(e){ return null; }        // registro ilegível → não dá para afirmar nada
+      if(rec && rec.items && rec.items[itemId]) n++;
+    }
+  }catch(e){ return null; }
+  return n;
+}
+
+/** Some do catálogo um custom que não está em nenhuma aula de NENHUM aluno. */
 function lpCleanupCustom(itemId){
   if(!lpIsCustomId(itemId) || !LP_Progress) return;
+  const used = lpUsageCount(itemId);
+  if(used === null || used > 0) return;   // na dúvida, preserva o catálogo
   const parts = String(itemId).split(':');
-  const skill = parts[0], key = parts.slice(1).join(':');
-  const stillUsed = STUDENTS.some(id => LP_Progress.isCovered(id, itemId));
-  if(!stillUsed) LP_Progress.removeCustomItem(skill, key);
+  LP_Progress.removeCustomItem(parts[0], parts.slice(1).join(':'));
 }
 
 function lpToggleCustom(open){
