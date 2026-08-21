@@ -304,7 +304,17 @@
       return Array.isArray(v) ? v : [];
     },
 
-    addCustomItem: function (skillId, title, level) {
+    /**
+     * Conteúdo adicionado pela professora.
+     *   addCustomItem('reading', 'Cool English — Unlucky Lottery Winner')
+     *   addCustomItem('reading', 'Unlucky Lottery Winner', '', 'Cool English')
+     *
+     * `source` é texto livre opcional (Cool English, Canva, material próprio…)
+     * e vira o subtítulo do item. Assim nenhum rótulo interno aparece no
+     * relatório do aluno. Itens gravados antes deste campo simplesmente
+     * não têm source — o subtítulo fica vazio.
+     */
+    addCustomItem: function (skillId, title, level, source) {
       title = String(title || '').trim();
       if (!skillId || !title) return null;
       var list = Progress.customItems();
@@ -313,6 +323,7 @@
         skill: skillId,
         title: title,
         level: level || '',
+        source: String(source || '').trim(),
         order: 1000 + list.length
       };
       list.push(item);
@@ -451,7 +462,10 @@
         map: function (i, idx) {
           return {
             key: i.key, title: i.title, level: i.level || '',
-            subtitle: 'added by you', order: i.order != null ? i.order : 1000 + idx
+            // O subtítulo é lido por telas voltadas ao ALUNO (categoria de
+            // vocabulário e temas de speaking no relatório mensal). Por isso
+            // ele carrega a fonte do material — nunca um rótulo interno.
+            subtitle: i.source || '', order: i.order != null ? i.order : 1000 + idx
           };
         }
       });
