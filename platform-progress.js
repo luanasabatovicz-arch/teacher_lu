@@ -304,7 +304,17 @@
       return Array.isArray(v) ? v : [];
     },
 
-    addCustomItem: function (skillId, title, level) {
+    /**
+     * Conteúdo adicionado pela professora.
+     *   addCustomItem('reading', 'Cool English — Unlucky Lottery Winner')
+     *   addCustomItem('reading', 'Unlucky Lottery Winner', '', 'Cool English')
+     *
+     * `source` é texto livre opcional (Cool English, Canva, material
+     * próprio…) — a PROCEDÊNCIA do material. Fica guardado no item e não
+     * é exposto como subtitle: veja o comentário do provider no fim deste
+     * arquivo. Itens gravados antes deste campo continuam válidos.
+     */
+    addCustomItem: function (skillId, title, level, source) {
       title = String(title || '').trim();
       if (!skillId || !title) return null;
       var list = Progress.customItems();
@@ -313,6 +323,7 @@
         skill: skillId,
         title: title,
         level: level || '',
+        source: String(source || '').trim(),
         order: 1000 + list.length
       };
       list.push(item);
@@ -451,7 +462,17 @@
         map: function (i, idx) {
           return {
             key: i.key, title: i.title, level: i.level || '',
-            subtitle: 'added by you', order: i.order != null ? i.order : 1000 + idx
+            /* subtitle FICA VAZIO DE PROPÓSITO.
+               Ele não é um rótulo livre: o Monthly Report interpreta
+               subtitle como CATEGORIA de vocabulário, TEMA de speaking e
+               pista de competência (engine/competencies.js). Nada disso
+               vale para conteúdo adicionado à mão — nem o rótulo interno
+               "added by you", nem a fonte do material ("Cool English"),
+               que é procedência e não competência pedagógica.
+               A fonte continua guardada em item.source e disponível para
+               a interface; o que o aluno vê é o título humano, que já
+               pode trazer a fonte: "Cool English — Unlucky Lottery Winner". */
+            subtitle: '', order: i.order != null ? i.order : 1000 + idx
           };
         }
       });

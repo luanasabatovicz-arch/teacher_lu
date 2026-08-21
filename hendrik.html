@@ -218,6 +218,7 @@
     transition: all var(--tl-dur-fast) var(--tl-ease);
   }
   .ex-opt:hover { border-color: var(--tl-secondary); }
+  .ex-opt.em { font-size: 40px; line-height: 1.2; padding: 10px; }  /* opções só com emoji */
   .ex-opt.sel { background: var(--tl-primary); border-color: var(--tl-primary); color: var(--tl-text-inverse); }
   .ex-opt.ok  { background: var(--tl-success-soft); border-color: var(--tl-success); color: var(--tl-success-text); }
   .ex-opt.no  { background: var(--tl-danger-soft);  border-color: var(--tl-danger);  color: var(--tl-danger-text); }
@@ -251,6 +252,44 @@
   }
   .ex-sel.ok { border-color: var(--tl-success); background: var(--tl-success-soft); }
   .ex-sel.no { border-color: var(--tl-danger);  background: var(--tl-danger-soft); }
+
+  /* Unscramble — chips da frase */
+  .sc-ans {
+    min-height: 56px;
+    background: var(--tl-surface);
+    border: 2px dashed var(--tl-border);
+    border-radius: var(--tl-radius-md);
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .sc-ans.ok { border-color: var(--tl-success); background: var(--tl-success-soft); border-style: solid; }
+  .sc-ans.no { border-color: var(--tl-danger);  background: var(--tl-danger-soft);  border-style: solid; }
+  .sc-chip {
+    background: var(--tl-primary);
+    color: var(--tl-text-inverse);
+    border-radius: var(--tl-radius-pill);
+    padding: 6px 14px;
+    font-family: 'Baloo 2';
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  /* Botão de áudio dentro do exercício */
+  .ex-say {
+    background: var(--tl-warning);
+    color: var(--tl-warning-text);
+    border: none;
+    border-radius: var(--tl-radius-pill);
+    padding: 2px 10px;
+    font-size: 17px;
+    cursor: pointer;
+    vertical-align: middle;
+  }
 
   .mrow { display: flex; gap: 10px; align-items: center; margin: 8px 0; }
   .mrow .ml { flex: 1; font-family: 'Baloo 2'; font-size: 20px; font-weight: 800; color: var(--tl-primary); }
@@ -356,9 +395,15 @@
   </div>
 </div>
 
+<!-- Banco de conteúdo (vocabulário + frases + exercícios).
+     Se o arquivo não carregar, o conteúdo original embutido abaixo
+     continua funcionando como fallback. -->
+<script src="engine/hendrik-content.js"></script>
 <script>
-/* ================= CONTENT ================= */
-const LESSONS=[
+/* ================= CONTENT =================
+   LESSONS_FALLBACK = conteúdo original embutido (rede de segurança).
+   O conteúdo em uso vem de engine/hendrik-content.js.                 */
+const LESSONS_FALLBACK=[
  {id:'people', name:'Mensen', icon:'👦', frame:'Dit is mijn ___', words:[
    {w:'mama',e:'👩',pt:'mãe'},{w:'papa',e:'👨',pt:'pai'},{w:'oma',e:'👵',pt:'vovó'},{w:'opa',e:'👴',pt:'vovô'},
    {w:'broer',e:'👦',pt:'irmão'},{w:'zus',e:'👧',pt:'irmã'},{w:'vriend',e:'🧒',pt:'amigo'},{w:'juf',e:'👩‍🏫',pt:'professora'}],
@@ -410,6 +455,17 @@ const LESSONS=[
   say:[{nl:'Dit is mijn huis.',pt:'Esta é a minha casa.'},{nl:'Ik slaap in mijn bed.',pt:'Eu durmo na minha cama.'},{nl:'Doe de deur open!',pt:'Abre a porta!'},{nl:'Dit is mijn kamer.',pt:'Este é o meu quarto.'}]}
 ];
 
+/* Conteúdo em uso: banco externo quando disponível, senão o fallback. */
+const LESSONS = (window.HENDRIK_CONTENT && window.HENDRIK_CONTENT.themes && window.HENDRIK_CONTENT.themes.length===LESSONS_FALLBACK.length)
+  ? window.HENDRIK_CONTENT.themes
+  : LESSONS_FALLBACK;
+
+/* Helpers de conteúdo — sempre devolvem array (nunca undefined). */
+function LWords(L){ return (L&&L.words)||[]; }
+function LSay(L){ return (L&&L.say)||[]; }
+function LItems(L){ return (L&&L.items)||[]; }
+function LItemsOf(L,type){ return LItems(L).filter(q=>q.t===type); }
+
 const GAMES=[
  {id:'words', name:'👂 Woorden'},
  {id:'match', name:'🎯 Verbinden'},
@@ -417,6 +473,40 @@ const GAMES=[
  {id:'sentence', name:'💬 Zinnen'},
  {id:'say', name:'🗣️ Zeggen'}
 ];
+
+/* ================= RANDOMIZAÇÃO (shuffle bag por tema+jogo) =================
+   - não repete enquanto houver item não usado na rodada;
+   - ao esvaziar, embaralha de novo;
+   - o último item do ciclo anterior nunca abre o ciclo seguinte;
+   - apenas em memória (sessão), sem histórico permanente.            */
+const BAGS={};
+function bagReset(key){ delete BAGS[key]; }
+function bagDraw(key,pool,n){
+  pool=pool||[];
+  if(!pool.length)return [];
+  const target=Math.min(n,pool.length);
+  let b=BAGS[key];
+  if(!b||b.size!==pool.length){ b={size:pool.length,queue:[],last:null}; BAGS[key]=b; }
+  const out=[]; const used={}; let guard=0;
+  while(out.length<target && guard++ < pool.length*4){
+    if(!b.queue.length){
+      // novo ciclo: embaralha tudo (nenhum item se perde) e joga para o fim
+      // os que já saíram nesta rodada, para não repetirem agora
+      const q=shuffle(pool.map((_,i)=>i));
+      q.sort((a,c)=>(used[a]?1:0)-(used[c]?1:0)); // sort estável: mantém o embaralhamento
+      // o último item do ciclo anterior nunca abre o ciclo seguinte
+      if(b.last!==null && q.length>1 && q[0]===b.last && !used[q[1]]){
+        const t=q[0]; q[0]=q[1]; q[1]=t;
+      }
+      b.queue=q;
+    }
+    const idx=b.queue.shift();
+    b.last=idx;
+    if(used[idx])continue;      // só acontece se o pool < n pedido
+    used[idx]=1; out.push(pool[idx]);
+  }
+  return out;
+}
 
 
 /* ================= EXERCISE GENERATOR (NL target, PT support) ================= */
@@ -434,34 +524,66 @@ function renderExTabs(){
     `<button class="tab ${l.id===exTheme?'active':''}" onclick="buildEx('${l.id}')">${l.icon} ${l.name}</button>`).join('');
 }
 
+/* Etiquetas por formato (só rótulo visual, não é "nível") */
+const EX_TAGS={cloze:'Maak de zin af',qa:'Vraag en antwoord',sent:'Welke zin is goed?',
+  odd:'Wat hoort er niet bij?',guess:'Raad het woord',scramble:'Maak de zin',
+  make:'Zeg of schrijf zelf',tf:'Waar of niet waar'};
+
+/* Converte um item do banco para um formato que o renderer já entende. */
+function normItem(q){
+  if(q.t==='cloze'||q.t==='qa'||q.t==='sent'||q.t==='odd'){
+    return {t:'mc',tag:EX_TAGS[q.t],src:q.t,
+      ask:q.ask||'Welke zin is goed?',correct:q.correct,opts:shuffle(q.opts),
+      audio:q.audio||q.correct};
+  }
+  if(q.t==='guess')    return {t:'fill',tag:EX_TAGS.guess,src:'guess',ask:q.ask,correct:q.correct};
+  if(q.t==='scramble') return {t:'scramble',tag:EX_TAGS.scramble,src:'scramble',
+                               ask:'Zet de woorden in de goede volgorde:',
+                               bag:shuffle(q.bag),correct:q.correct,audio:q.correct};
+  if(q.t==='make')     return {t:'make',tag:EX_TAGS.make,src:'make',ask:q.ask,
+                               example:q.example,audio:q.example};
+  if(q.t==='tf')       return {t:'tf',tag:EX_TAGS.tf,src:'tf',ask:q.ask,
+                               correct:q.correct,right:'',audio:q.ask};
+  return Object.assign({},q);
+}
+
 function buildEx(id){
   exTheme=id; exAns={}; exChecked=false;
   const L=LESSONS.find(x=>x.id===id);
-  const W=L.words;
+  const W=LWords(L);
   const pick=(not,n)=>shuffle(W.filter(x=>x.w!==not)).slice(0,n);
   exList=[];
 
-  // A) 6x emoji -> Dutch word (4 options)
-  shuffle(W).slice(0,6).forEach(q=>{
-    exList.push({t:'mc',e:q.e,ask:'Wat is dit?',correct:q.w,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.w)});
+  // A) 4x emoji -> Dutch word (4 options)
+  bagDraw('ex:'+id+':mc',W,4).forEach(q=>{
+    exList.push({t:'mc',e:q.e,ask:'Wat is dit?',correct:q.w,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.w),audio:q.w});
   });
-  // B) 4x Dutch word -> emoji (4 options)
-  shuffle(W).slice(0,4).forEach(q=>{
-    exList.push({t:'mce',word:q.w,ask:'Waar is "'+q.w+'"?',correct:q.e,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.e)});
+  // B) 2x Dutch word -> emoji (4 options)
+  bagDraw('ex:'+id+':mce',W,2).forEach(q=>{
+    exList.push({t:'mce',word:q.w,ask:'Waar is "'+q.w+'"?',correct:q.e,opts:shuffle([q,...pick(q.w,3)]).map(x=>x.e),audio:q.w});
   });
-  // C) 5x type the word
-  shuffle(W).slice(0,5).forEach(q=>{
-    exList.push({t:'fill',e:q.e,ask:'Schrijf het woord:',correct:q.w});
+  // C) 2x type the word
+  bagDraw('ex:'+id+':fill',W,2).forEach(q=>{
+    exList.push({t:'fill',e:q.e,ask:'Schrijf het woord:',correct:q.w,audio:q.w});
   });
-  // D) 6x true / false
-  shuffle(W).slice(0,6).forEach(q=>{
+  // D) 2x true / false sobre o vocabulário
+  bagDraw('ex:'+id+':tf',W,2).forEach(q=>{
     const lie=Math.random()<0.5;
-    const shown=lie?pick(q.w,1)[0].w:q.w;
-    exList.push({t:'tf',e:q.e,ask:'Is dit "'+shown+'"?',correct:!lie,right:q.w});
+    const other=pick(q.w,1)[0];
+    const shown=(lie&&other)?other.w:q.w;
+    exList.push({t:'tf',e:q.e,ask:'Is dit "'+shown+'"?',correct:!(lie&&other),right:q.w,audio:q.w});
   });
-  // E) 5x matching emoji -> Dutch word
-  const mp=shuffle(W).slice(0,5);
-  exList.push({t:'match',ask:'Verbind het plaatje met het woord:',pairs:mp.map(x=>({nlw:x.w,e:x.e})),bag:shuffle(mp.map(x=>x.w))});
+  // E) 9x do banco de frases/exercícios (camadas 2 a 5)
+  bagDraw('ex:'+id+':items',LItems(L),9).forEach(q=>exList.push(normItem(q)));
+
+  // mistura tudo (o "verbinden" fica sempre no fim, como antes)
+  exList=shuffle(exList);
+
+  // F) 1x matching emoji -> Dutch word
+  const mp=bagDraw('ex:'+id+':match',W,5);
+  if(mp.length>=2){
+    exList.push({t:'match',ask:'Verbind het plaatje met het woord:',pairs:mp.map(x=>({nlw:x.w,e:x.e})),bag:shuffle(mp.map(x=>x.w))});
+  }
 
   renderExTabs();
   document.getElementById('exScore').innerHTML='';
@@ -488,25 +610,58 @@ function renderEx(){
     n++;
     let inner='';
     if(q.t==='mc'||q.t==='mce'){
-      inner=`<div class="ex-opts">${q.opts.map((o,oi)=>`<button class="ex-opt" id="eo-${i}-${oi}" onclick="pickEx(${i},${oi})">${o}</button>`).join('')}</div>`;
+      const one=q.opts.some(o=>String(o).length>18);
+      const emo=q.t==='mce'?' em':'';
+      inner=`<div class="ex-opts"${one?' style="grid-template-columns:1fr"':''}>${q.opts.map((o,oi)=>`<button class="ex-opt${emo}" id="eo-${i}-${oi}" onclick="pickEx(${i},${oi})">${o}</button>`).join('')}</div>`;
     }
     if(q.t==='fill'){
       inner=`<input class="ex-inp" id="ef-${i}" placeholder="..." oninput="exAns[${i}]=this.value">
-             <div id="eh-${i}" style="text-align:center;font-weight:800;color:#22C55E;margin-top:6px"></div>`;
+             <div id="eh-${i}" style="text-align:center;font-weight:800;color:var(--tl-success);margin-top:6px"></div>`;
     }
     if(q.t==='tf'){
       inner=`<div class="tf-row">
         <button class="ex-opt" id="et-${i}-yes" onclick="pickEx(${i},true)">✓ Ja</button>
         <button class="ex-opt" id="et-${i}-no" onclick="pickEx(${i},false)">✗ Nee</button></div>`;
     }
+    if(q.t==='scramble'){
+      inner=`<div class="sc-ans" id="sc-${i}"></div>
+             <div class="ex-opts" style="grid-template-columns:repeat(auto-fill,minmax(100px,1fr))" id="scb-${i}"></div>
+             <div class="center" style="margin-top:8px"><button class="btn gray" onclick="scReset(${i})">↺ Opnieuw</button></div>
+             <div id="sch-${i}" style="text-align:center;font-weight:800;color:var(--tl-success);margin-top:6px"></div>`;
+    }
+    if(q.t==='make'){
+      inner=`<input class="ex-inp" id="em-${i}" placeholder="Schrijf of zeg je zin..." oninput="exAns[${i}]=this.value">
+             <div id="emh-${i}" style="text-align:center;font-weight:800;color:var(--tl-text-secondary);margin-top:6px"></div>`;
+    }
+    const tag=q.tag||((q.t==='mc'||q.t==='mce')?'Kies':q.t==='fill'?'Schrijf':'Ja of nee');
     return `<div class="ex-item" id="ei-${i}">
-      <div class="ex-tag">${(q.t==='mc'||q.t==='mce')?'Kies':q.t==='fill'?'Schrijf':'Ja of nee'}</div>
-      <div class="ex-q">${n}. ${q.ask}</div>
+      <div class="ex-tag">${tag}</div>
+      <div class="ex-q">${n}. ${q.ask}${q.audio?` <button class="ex-say" onclick="exSay(${i})" title="Luister">🔊</button>`:''}</div>
       ${q.e?`<div style="font-size:64px;text-align:center;line-height:1">${q.e}</div>`:''}
       ${inner}
     </div>`;
   }).join('');
+  exList.forEach((q,i)=>{ if(q.t==='scramble')scRender(i); });
 }
+
+function exSay(i){ const q=exList[i]; if(q&&q.audio)speak(q.audio); }
+
+/* ---- Unscramble ---- */
+function scRender(i){
+  const q=exList[i], a=exAns[i]||[];
+  const ans=document.getElementById('sc-'+i), bag=document.getElementById('scb-'+i);
+  if(!ans||!bag)return;
+  ans.innerHTML=a.length
+    ? a.map((wi,k)=>`<span class="sc-chip" onclick="scDrop(${i},${k})">${q.bag[wi]}</span>`).join('')
+    : '<span style="color:var(--tl-text-secondary);font-size:18px">...</span>';
+  bag.innerHTML=q.bag.map((w,wi)=>
+    `<button class="ex-opt"${a.indexOf(wi)>=0?' style="opacity:.3"':''} onclick="scPick(${i},${wi})">${w}</button>`).join('');
+}
+function scPick(i,wi){ if(exChecked)return; if(!exAns[i])exAns[i]=[]; if(exAns[i].indexOf(wi)<0)exAns[i].push(wi); scRender(i); }
+function scDrop(i,k){ if(exChecked)return; if(exAns[i])exAns[i].splice(k,1); scRender(i); }
+function scReset(i){ if(exChecked)return; exAns[i]=[]; scRender(i); }
+function scText(i){ const q=exList[i],a=exAns[i]||[]; return a.map(wi=>q.bag[wi]).join(' '); }
+function normSent(s){ return String(s||'').toLowerCase().replace(/[.?!,]/g,'').replace(/\s+/g,' ').trim(); }
 
 function pickEx(i,v){
   if(exChecked)return;
@@ -551,6 +706,22 @@ function checkEx(){
       if(sel===q.correct)correct++;
       else document.getElementById('ei-'+i).classList.add('wrong');
     }
+    if(q.t==='scramble'){
+      total++;
+      const el=document.getElementById('sc-'+i);
+      const ok=normSent(scText(i))===normSent(q.correct);
+      if(ok){correct++;document.getElementById('ei-'+i).classList.add('right');if(el)el.classList.add('ok');}
+      else{
+        document.getElementById('ei-'+i).classList.add('wrong');
+        if(el)el.classList.add('no');
+        const h=document.getElementById('sch-'+i); if(h)h.textContent='→ '+q.correct;
+      }
+    }
+    if(q.t==='make'){
+      // produção livre: a juf kijkt. Não conta voor de score.
+      const h=document.getElementById('emh-'+i);
+      if(h)h.innerHTML='Bijvoorbeeld: <b style="color:var(--tl-success)">'+q.example+'</b>';
+    }
     if(q.t==='match'){
       q.pairs.forEach((p,pi)=>{
         total++;
@@ -562,7 +733,7 @@ function checkEx(){
       });
     }
   });
-  const pct=Math.round(correct/total*100);
+  const pct=total?Math.round(correct/total*100):0;
   const face=pct>=80?'🏆':pct>=50?'😃':'💪';
   document.getElementById('exScore').innerHTML=`<div class="score-box">
     <div style="font-size:40px">${face}</div>
@@ -585,8 +756,10 @@ function exportEx(){
     }
     n++;
     if(q.t==='mc'||q.t==='mce')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e?q.e:''}<br>${q.opts.map(o=>o===q.correct?'<b>'+o+' ✔</b>':o).join(' · ')}</p>`;
-    if(q.t==='fill')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e} &nbsp; <b style="color:#22C55E">${q.correct}</b></p>`;
-    if(q.t==='tf')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> &nbsp; <b>${q.correct?'JA':'NEE'}</b> (${q.right})</p>`;
+    if(q.t==='fill')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.e||''} &nbsp; <b style="color:#22C55E">${q.correct}</b></p>`;
+    if(q.t==='tf')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> &nbsp; <b>${q.correct?'JA':'NEE'}</b>${q.right?' ('+q.right+')':''}</p>`;
+    if(q.t==='scramble')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> ${q.bag.join(' / ')} &nbsp; → &nbsp; <b style="color:#22C55E">${q.correct}</b></p>`;
+    if(q.t==='make')h+=`<p style="margin-top:12px"><b>${n}. ${q.ask}</b> _________________________ <i>(${q.example})</i></p>`;
   });
   var w=window.open('','_blank');
   if(!w){alert('Sta pop-ups toe om de PDF te maken.');return;}
@@ -651,7 +824,7 @@ function goHome(){
 /* ================= LESSON ================= */
 function openLesson(id){
   curLesson=LESSONS.find(l=>l.id===id);
-  curGame='words';
+  curGame='words'; qi=0; locked=false; qOrder=[];
   document.getElementById('home').classList.add('hide');
   document.getElementById('lesson').classList.remove('hide');
   document.getElementById('lTitle').textContent=curLesson.icon+' '+curLesson.name;
@@ -663,7 +836,20 @@ function renderTabs(){
   document.getElementById('tabs').innerHTML=GAMES.map(x=>
     `<button class="tab ${x.id===curGame?'active':''} ${g[x.id]?'ok':''}" onclick="pickGame('${x.id}')">${x.name}${g[x.id]?' ✓':''}</button>`).join('');
 }
-function pickGame(id){curGame=id;qi=0;locked=false;qOrder=shuffle(curLesson.words);renderTabs();renderGame();}
+/* Monta a rodada do jogo atual a partir do shuffle bag do tema. */
+const ROUND={match:8,listen:8,sentence:8,say:6};
+function buildRound(){
+  const id=curLesson.id, n=ROUND[curGame]||8;
+  if(curGame==='say'){ qOrder=bagDraw('g:'+id+':say',LSay(curLesson),n); return; }
+  if(curGame==='sentence'){
+    const cl=LItemsOf(curLesson,'cloze');
+    qOrder = cl.length ? bagDraw('g:'+id+':sentence',cl,n)
+                       : bagDraw('g:'+id+':sentence-w',LWords(curLesson),n);
+    return;
+  }
+  qOrder=bagDraw('g:'+id+':'+curGame,LWords(curLesson),n);
+}
+function pickGame(id){curGame=id;qi=0;locked=false;buildRound();renderTabs();renderGame();}
 
 function renderGame(){
   ({words:gWords,match:gMatch,listen:gListen,sentence:gSentence,say:gSay})[curGame]();
@@ -672,31 +858,32 @@ function renderGame(){
 /* ---- 1. WORDS ---- */
 function gWords(){
   const st=P.lessons[curLesson.id];
-  const all=st.heard.length===curLesson.words.length;
+  const all=st.heard.length>=LWords(curLesson).length;
   document.getElementById('panel').innerHTML=`
     <p class="prompt">Klik op elk woord en luister! 👂</p>
-    <div class="wgrid">${curLesson.words.map((x,i)=>`
+    <div class="wgrid">${LWords(curLesson).map((x,i)=>`
       <div class="wcard ${st.heard.includes(x.w)?'heard':''}" id="wc-${i}" onclick="hearWord(${i})">
         <div class="e">${x.e}</div><div class="w">${x.w}</div>
       </div>`).join('')}</div>
     <div class="feedback" id="fb">${all?'Alles gehoord! ⭐ Speel nu 🎯 Verbinden!':''}</div>`;
 }
 function hearWord(i){
-  const x=curLesson.words[i];
+  const x=LWords(curLesson)[i];
+  if(!x)return;
   speak(x.w);
   const st=P.lessons[curLesson.id];
   if(!st.heard.includes(x.w)){st.heard.push(x.w);addXP(2);save();
     document.getElementById('wc-'+i).classList.add('heard');
-    if(st.heard.length===curLesson.words.length){document.getElementById('fb').textContent='Alles gehoord! ⭐ Speel nu 🎯 Verbinden!';}
+    if(st.heard.length>=LWords(curLesson).length){document.getElementById('fb').textContent='Alles gehoord! ⭐ Speel nu 🎯 Verbinden!';}
   }
 }
 
 /* ---- 2. MATCH (emoji -> word) ---- */
 function gMatch(){
-  if(!qOrder.length)qOrder=shuffle(curLesson.words);
+  if(!qOrder.length)buildRound();
   if(qi>=qOrder.length){return finishGame('match');}
   const q=qOrder[qi];
-  const wrong=shuffle(curLesson.words.filter(x=>x.w!==q.w)).slice(0,3);
+  const wrong=shuffle(LWords(curLesson).filter(x=>x.w!==q.w)).slice(0,3);
   const opts=shuffle([q,...wrong]);
   document.getElementById('panel').innerHTML=`
     <div class="prog">${qi+1} / ${qOrder.length}</div>
@@ -719,10 +906,10 @@ function ansMatch(pick,right){
 
 /* ---- 3. LISTEN (word -> emoji) ---- */
 function gListen(){
-  if(!qOrder.length)qOrder=shuffle(curLesson.words);
+  if(!qOrder.length)buildRound();
   if(qi>=qOrder.length){return finishGame('listen');}
   const q=qOrder[qi];
-  const wrong=shuffle(curLesson.words.filter(x=>x.w!==q.w)).slice(0,3);
+  const wrong=shuffle(LWords(curLesson).filter(x=>x.w!==q.w)).slice(0,3);
   const opts=shuffle([q,...wrong]);
   document.getElementById('panel').innerHTML=`
     <div class="prog">${qi+1} / ${qOrder.length}</div>
@@ -744,13 +931,30 @@ function ansListen(pick,right){
 }
 
 /* ---- 4. SENTENCE ---- */
+let curOpts=[], curCorrect='', curFull='';
 function gSentence(){
-  if(!qOrder.length)qOrder=shuffle(curLesson.words);
+  if(!qOrder.length)buildRound();
   if(qi>=qOrder.length){return finishGame('sentence');}
   const q=qOrder[qi];
-  const wrong=shuffle(curLesson.words.filter(x=>x.w!==q.w)).slice(0,2);
+
+  /* Frases do banco (camadas 2-5) */
+  if(q&&q.t==='cloze'){
+    curOpts=shuffle(q.opts); curCorrect=q.correct;
+    curFull=q.audio||String(q.ask).replace('___',q.correct);
+    const sent=String(q.ask).replace('___','<span style="color:var(--tl-danger)">_____</span>');
+    document.getElementById('panel').innerHTML=`
+      <div class="prog">${qi+1} / ${qOrder.length}</div>
+      <p class="prompt">Maak de zin af! 💬</p>
+      <div class="word" style="font-size:30px;margin:10px 0 16px">${sent}</div>
+      <div class="opts" style="grid-template-columns:1fr 1fr 1fr">${curOpts.map((o,oi)=>`<button class="opt" id="os-${oi}" onclick="ansSent2(${oi})">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>`;
+    return;
+  }
+
+  /* Fallback: molde do tema + vocabulário */
+  const wrong=shuffle(LWords(curLesson).filter(x=>x.w!==q.w)).slice(0,2);
   const opts=shuffle([q,...wrong]);
-  const sent=curLesson.frame.replace('___','<span style="color:#FF6B6B">_____</span>');
+  const sent=curLesson.frame.replace('___','<span style="color:var(--tl-danger)">_____</span>');
   document.getElementById('panel').innerHTML=`
     <div class="prog">${qi+1} / ${qOrder.length}</div>
     <p class="prompt">Maak de zin af! 💬</p>
@@ -758,6 +962,17 @@ function gSentence(){
     <div class="word" style="font-size:30px;margin-bottom:14px">${sent}</div>
     <div class="opts" style="grid-template-columns:1fr 1fr 1fr">${opts.map(o=>`<button class="opt" id="os-${o.w}" onclick="ansSent('${o.w}','${q.w}')">${o.w}</button>`).join('')}</div>
     <div class="feedback" id="fb"></div>`;
+}
+function ansSent2(oi){
+  if(locked)return;locked=true;
+  const ok=curOpts[oi]===curCorrect;
+  const ci=curOpts.indexOf(curCorrect);
+  const right=document.getElementById('os-'+ci); if(right)right.classList.add('right');
+  if(!ok){const el=document.getElementById('os-'+oi); if(el)el.classList.add('wrong');}
+  document.getElementById('fb').textContent=ok?'Perfect! 🎈':curFull;
+  if(ok)addXP(10);
+  speak(curFull);
+  setTimeout(()=>{qi++;locked=false;gSentence();},1800);
 }
 function ansSent(pick,right){
   if(locked)return;locked=true;
@@ -772,27 +987,36 @@ function ansSent(pick,right){
 }
 
 /* ---- 5. SAY IT ---- */
+let sayDone={};
 function gSay(){
-  const said=(P.lessons[curLesson.id].said||[]);
+  if(!qOrder.length)buildRound();
+  sayDone={};
   document.getElementById('panel').innerHTML=`
     <p class="prompt">Zeg het hardop! 🗣️</p>
-    <p class="center" style="color:#6B7280;font-weight:700;margin-bottom:12px">Klik op 🔊, luister en zeg het na. De juf klikt op ✓ als je het zegt!</p>
-    ${curLesson.say.map((s,i)=>`
-      <div class="say-row ${said.includes(i)?'ok':''}" id="sr-${i}">
+    <p class="center" style="color:var(--tl-text-secondary);font-weight:700;margin-bottom:12px">Klik op 🔊, luister en zeg het na. De juf klikt op ✓ als je het zegt!</p>
+    ${qOrder.map((s,i)=>`
+      <div class="say-row" id="sr-${i}">
         <span class="e">${curLesson.icon}</span>
         <span class="t">${s.nl}</span>
         <button class="btn orange" onclick="speakSay(${i})">🔊</button>
         <button class="btn green" onclick="saidIt(${i})">✓</button>
       </div>`).join('')}
+    <div class="center" style="margin-top:14px"><button class="btn orange" onclick="pickGame('say')">🔄 Andere zinnen</button></div>
     <div class="feedback" id="fb"></div>`;
 }
-function speakSay(i){ speak(curLesson.say[i].nl); }
+function speakSay(i){ const s=qOrder[i]; if(s)speak(s.nl); }
 
 function saidIt(i){
+  const s=qOrder[i]; if(!s)return;
   const st=P.lessons[curLesson.id];
   if(!st.said)st.said=[];
-  if(!st.said.includes(i)){st.said.push(i);addXP(10);save();document.getElementById('sr-'+i).classList.add('ok');}
-  if(st.said.length>=curLesson.say.length)finishGame('say');
+  if(!sayDone[i]){
+    sayDone[i]=1; addXP(10);
+    if(st.said.indexOf(s.nl)<0)st.said.push(s.nl);
+    save();
+    const row=document.getElementById('sr-'+i); if(row)row.classList.add('ok');
+  }
+  if(Object.keys(sayDone).length>=qOrder.length)finishGame('say');
 }
 
 /* ---- FINISH ---- */

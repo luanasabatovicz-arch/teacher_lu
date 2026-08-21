@@ -43,6 +43,30 @@
   .today-hero h2 { color: var(--tl-text-inverse); font-size: var(--tl-fs-h3); margin-bottom: 4px; }
   .today-hero p { color: rgba(255,255,255,.85); font-size: var(--tl-fs-small); margin: 0; }
   .today-empty { padding: var(--tl-space-5); text-align:center; color:var(--tl-text-tertiary); font-size: var(--tl-fs-small); }
+
+  /* Conteúdo externo da aula — ação discreta, sem card */
+  .lp-add-link {
+    background: none; border: none; padding: 6px 0 0;
+    color: var(--tl-primary); font-weight: 600; font-size: 12px;
+    cursor: pointer; text-align: left;
+  }
+  .lp-add-link:hover { text-decoration: underline; }
+  .lp-custom {
+    border: 1px dashed var(--tl-border-strong);
+    border-radius: var(--tl-radius-md);
+    padding: 9px; margin-top: 6px;
+    background: var(--tl-surface-alt, transparent);
+  }
+  .lp-custom .inp { margin-bottom: 6px; font-size: 13px; }
+  .lp-custom-row { display: flex; gap: 6px; }
+  .lp-custom-row .inp { flex: 1; min-width: 0; }
+  .lp-custom-actions { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+  .lp-custom-actions .tl-caption { margin-right: auto; text-align: left; }
+  .lp-list-item .lp-tag {
+    margin-left: auto; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .04em;
+    color: var(--tl-text-tertiary); white-space: nowrap;
+  }
 </style>
 </head>
 <body>
@@ -153,6 +177,30 @@
       <div id="lpSuggest"></div>
       <input class="inp" id="lpSearch" placeholder="Search vocabulary, grammar, speaking…" style="margin-bottom:8px">
       <div id="lpList" style="max-height:190px;overflow-y:auto;border:1px solid var(--tl-border);border-radius:var(--tl-radius-md);padding:6px"></div>
+
+      <!-- Conteúdo externo trabalhado na aula (Cool English, Canva, material próprio…) -->
+      <button type="button" class="lp-add-link" id="lpAddToggle" onclick="lpToggleCustom()">+ Add custom content</button>
+      <div id="lpCustomForm" class="lp-custom" style="display:none">
+        <input class="inp" id="lpccName" placeholder="Content name — e.g. Cool English — Unlucky Lottery Winner"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();lpAddCustom();}">
+        <div class="lp-custom-row">
+          <select class="inp" id="lpccSkill" aria-label="Category"></select>
+          <input class="inp" id="lpccSource" list="lpccSources" placeholder="Source (optional)"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();lpAddCustom();}">
+          <datalist id="lpccSources">
+            <option value="Cool English"></option>
+            <option value="Canva"></option>
+            <option value="Teacher material"></option>
+          </datalist>
+        </div>
+        <div class="lp-custom-actions">
+          <span class="tl-caption" id="lpccHint"></span>
+          <button type="button" class="btn gray sm" onclick="lpToggleCustom(false)">Cancel</button>
+          <button type="button" class="btn primary sm" onclick="lpAddCustom()">Add to this lesson</button>
+        </div>
+      </div>
+      <div id="lpCustomMsg" class="tl-caption" style="display:none;margin-top:6px;color:var(--tl-success-text)"></div>
+      <div id="lpNoLesson" class="tl-caption" style="display:none;margin-top:6px;color:var(--tl-warning-text)"></div>
     </div>
 
     <label class="lbl" id="mNoteLabel">Note (homework, absence reason...)</label>
@@ -419,7 +467,19 @@ function openDaySession(date, studentId, tabIndex){
   paintFieldsFromTab(rec, sess, isDouble);
 
   document.getElementById('ov').classList.add('show');
+  lpResetCustomForm();
   renderLessonProgress();
+}
+
+/** Fecha e limpa o formulário de conteúdo externo ao abrir outra aula. */
+function lpResetCustomForm(){
+  const form = document.getElementById('lpCustomForm');
+  if(!form) return;
+  form.style.display = 'none';
+  const link = document.getElementById('lpAddToggle'); if(link) link.style.display = '';
+  ['lpccName','lpccSource'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const hint = document.getElementById('lpccHint'); if(hint) hint.textContent = '';
+  const msg = document.getElementById('lpCustomMsg'); if(msg){ msg.textContent=''; msg.style.display='none'; }
 }
 function updateTabDots(rec){
   const s0 = (rec.sessions&&rec.sessions[0])?.status || '';
@@ -581,19 +641,190 @@ function renderLessonProgress(){
       <label class="lp-list-item ${r.on?'on':''}">
         <input type="checkbox" ${r.on?'checked':''} onchange="lpMark('${r.it.id}')">
         <span style="font-size:13px;color:var(--tl-text)">${r.sk.icon} ${lpEsc(r.it.title)}</span>
-        ${r.it.level?`<span class="lvl-badge" style="margin-left:auto">${lpEsc(r.it.level)}</span>`:''}
+        ${r.it.level?`<span class="lvl-badge" style="margin-left:auto">${lpEsc(r.it.level)}</span>`
+                    :(lpIsCustomId(r.it.id)?'<span class="lp-tag">added by you</span>':'')}
       </label>`).join('')
     : '<div class="empty">No content matches.</div>';
+
+  // O relatório mensal lê aulas registradas. Se a professora marcou conteúdo
+  // num dia sem status, avisa — em vez de mudar o status por conta própria.
+  const warn = document.getElementById('lpNoLesson');
+  if(warn){
+    const rec = getRec(sid, selKey);
+    const show = covered.length && !rollupStatus(rec);
+    warn.style.display = show ? '' : 'none';
+    warn.textContent = show
+      ? 'Marque a aula como "Lesson done" (ou salve uma nota) para ela entrar no relatório mensal.'
+      : '';
+  }
 }
 
 function lpMark(itemId){
   const sid = lpStudentId();
   if(!sid || !selKey || !LP_Progress) return;
   const r = LP_Progress.toggle(sid, itemId, selKey);
+  // Desmarcar um conteúdo externo que não sobrou em nenhuma aula é um
+  // "adicionei por engano": some também do catálogo, para não acumular
+  // títulos errados na lista. Conteúdo nativo nunca é tocado.
+  if(r && r.ok !== false && r.on === false) lpCleanupCustom(itemId);
   renderLessonProgress();
   renderCal();
   if(r && r.ok === false){
     alert('Could not save — the browser storage may be full. Nothing was changed.');
+  }
+}
+
+/* ================================================================
+   CONTEÚDO EXTERNO DA AULA  (Cool English, Canva, material próprio…)
+   ----------------------------------------------------------------
+   Reutiliza a arquitetura de custom content que já existe:
+     Progress.addCustomItem(skill, title)  → catálogo ('sabatovicz_custom_content')
+     → o provider 'custom-<skill>' do Content Registry publica o item
+     → Progress.record(student, [id], selKey) marca a DATA DA AULA
+     → o Monthly Report lê pelo caminho normal, sem saber que é externo.
+   Nenhum store novo, nenhuma alteração no PracticeLog.
+   ================================================================ */
+
+/** Título final mostrado em todo lugar: "Cool English — Unlucky Lottery Winner". */
+function lpComposeTitle(name, source){
+  name = String(name || '').trim().replace(/\s+/g,' ');
+  source = String(source || '').trim().replace(/\s+/g,' ');
+  if(!source) return name;
+  // Não repete a fonte se a professora já digitou no nome.
+  if(name.toLowerCase().indexOf(source.toLowerCase()) === 0) return name;
+  return source + ' — ' + name;
+}
+
+/** Item de catálogo já existente com este título (evita duplicar). */
+function lpFindCustom(title, preferredSkill){
+  if(!LP_Progress) return null;
+  const t = String(title).trim().toLowerCase();
+  const all = LP_Progress.customItems();
+  return all.find(i => i.skill === preferredSkill && String(i.title).trim().toLowerCase() === t)
+      || all.find(i => String(i.title).trim().toLowerCase() === t)
+      || null;
+}
+
+function lpIsCustomId(itemId){
+  return String(itemId).indexOf(':custom-') !== -1;
+}
+
+/**
+ * Quantos alunos ainda referenciam este conteúdo.
+ *   > 0  → em uso
+ *   0    → ninguém usa
+ *   null → NÃO FOI POSSÍVEL VERIFICAR (nada deve ser apagado)
+ *
+ * Varre as chaves de Progress direto no storage, e não a lista de alunos da
+ * tela: assim um aluno removido da lista — ou qualquer registro que a tela
+ * não conheça — continua contando como uso. Um item de catálogo sem uso é
+ * inofensivo; apagar um item que outro aluno ainda usa não é.
+ */
+function lpUsageCount(itemId){
+  const PROGRESS_PREFIX = 'sabatovicz_progress_';   // dono: platform-progress.js
+  let n = 0;
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(!k || k.indexOf(PROGRESS_PREFIX) !== 0) continue;
+      const raw = localStorage.getItem(k);
+      if(!raw) continue;
+      let rec;
+      try{ rec = JSON.parse(raw); }
+      catch(e){ return null; }        // registro ilegível → não dá para afirmar nada
+      if(rec && rec.items && rec.items[itemId]) n++;
+    }
+  }catch(e){ return null; }
+  return n;
+}
+
+/** Some do catálogo um custom que não está em nenhuma aula de NENHUM aluno. */
+function lpCleanupCustom(itemId){
+  if(!lpIsCustomId(itemId) || !LP_Progress) return;
+  const used = lpUsageCount(itemId);
+  if(used === null || used > 0) return;   // na dúvida, preserva o catálogo
+  const parts = String(itemId).split(':');
+  LP_Progress.removeCustomItem(parts[0], parts.slice(1).join(':'));
+}
+
+function lpToggleCustom(open){
+  const form = document.getElementById('lpCustomForm');
+  const link = document.getElementById('lpAddToggle');
+  const show = (open === undefined) ? form.style.display === 'none' : !!open;
+  form.style.display = show ? '' : 'none';
+  link.style.display = show ? 'none' : '';
+  document.getElementById('lpccHint').textContent = '';
+  if(show){
+    lpFillSkillOptions();
+    document.getElementById('lpccName').focus();
+  } else {
+    document.getElementById('lpccName').value = '';
+    document.getElementById('lpccSource').value = '';
+  }
+}
+
+/** Categorias = as skills que o sistema já usa. Nenhuma categoria nova. */
+function lpFillSkillOptions(){
+  const sel = document.getElementById('lpccSkill');
+  if(sel.options.length || !LP_Content) return;
+  sel.innerHTML = LP_Content.SKILLS
+    .map(s => `<option value="${s.id}">${s.icon} ${lpEsc(s.label)}</option>`).join('');
+  sel.value = 'vocabulary';
+}
+
+function lpAddCustom(){
+  const sid = lpStudentId();
+  const hint = document.getElementById('lpccHint');
+  if(!sid || !selKey || !LP_Progress || !LP_Content){
+    hint.textContent = 'Open a lesson first.';
+    return;
+  }
+  const name = document.getElementById('lpccName').value;
+  const source = document.getElementById('lpccSource').value;
+  const skill = document.getElementById('lpccSkill').value || 'vocabulary';
+  const title = lpComposeTitle(name, source);
+
+  if(!title){
+    hint.textContent = 'Type the content name.';
+    document.getElementById('lpccName').focus();
+    return;
+  }
+
+  // 1. catálogo — reaproveita o mesmo contentId se o título já existe
+  let item = lpFindCustom(title, skill);
+  let reused = !!item;
+  if(!item){
+    item = LP_Progress.addCustomItem(skill, title, '', source.trim());
+    if(!item){
+      hint.textContent = 'Could not save — the browser storage may be full.';
+      return;
+    }
+  }
+  const itemId = item.skill + ':' + item.key;
+
+  // 2. progresso — sempre na DATA DA AULA aberta (selKey), nunca em "hoje"
+  if(LP_Progress.ofLesson(sid, selKey).indexOf(itemId) !== -1){
+    hint.textContent = 'Already added to this lesson.';
+    return;
+  }
+  const saved = LP_Progress.record(sid, [itemId], selKey);
+  if(saved === false){
+    if(!reused) lpCleanupCustom(itemId);   // não deixa lixo no catálogo
+    hint.textContent = 'Could not save — the browser storage may be full.';
+    return;
+  }
+
+  const skillLabel = (LP_Content.skill(item.skill) || {}).label || item.skill;
+  lpToggleCustom(false);
+  document.getElementById('lpccHint').textContent = '';
+  renderLessonProgress();
+  renderCal();
+
+  const msg = document.getElementById('lpCustomMsg');
+  if(msg){
+    msg.textContent = (reused ? 'Reused' : 'Added') + ' · ' + title +
+      ' (' + skillLabel + ') · ' + pretty(selKey);
+    msg.style.display = '';
   }
 }
 
