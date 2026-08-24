@@ -7,6 +7,59 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design-system/theme.css">
 <script src="design-system/icons.js" defer></script>
+<style>
+  /* Learning History — só tokens do Design System, nenhum componente novo.
+     A seção é uma lista de consulta rápida: linha baixa, sem gráfico, sem
+     percentual, legível de relance no meio da aula. */
+  .hist-badge { background: var(--tl-surface-2); color: var(--tl-text-secondary); }
+  .hist-panel {
+    background: var(--tl-surface-2);
+    border-radius: var(--tl-radius-md);
+    padding: var(--tl-space-3) var(--tl-space-4);
+    margin: -4px 0 6px;
+  }
+  .hist-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .hist-search, .hist-select {
+    font: inherit; font-size: 13px;
+    padding: 5px 9px;
+    border: 1px solid var(--tl-border);
+    border-radius: var(--tl-radius-sm);
+    background: var(--tl-surface);
+    color: var(--tl-text);
+  }
+  .hist-search { flex: 1; min-width: 150px; }
+  .hist-total { font-size: 12px; color: var(--tl-text-tertiary); margin-left: auto; }
+
+  .hist-item { border-top: 1px solid var(--tl-border); }
+  .hist-item:first-of-type { border-top: 0; }
+  .hist-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 0; cursor: pointer; font-size: 13px;
+  }
+  .hist-head:hover { background: var(--tl-surface); }
+  .hist-icon { font-size: 14px; }
+  .hist-title { font-weight: var(--tl-fw-bold); color: var(--tl-text); }
+  .hist-skill {
+    font-size: 11px; color: var(--tl-text-tertiary);
+    border: 1px solid var(--tl-border); border-radius: 999px; padding: 1px 7px;
+  }
+  .hist-studied { font-size: 12px; color: var(--tl-success-text); font-weight: var(--tl-fw-bold); }
+  .hist-when { margin-left: auto; font-size: 12px; color: var(--tl-text-secondary); }
+  .hist-caret { font-size: 11px; color: var(--tl-text-tertiary); width: 10px; }
+
+  .hist-dates { padding: 2px 0 9px 22px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .hist-dates-lbl { font-size: 12px; color: var(--tl-text-tertiary); }
+  .hist-date {
+    font-size: 12px; background: var(--tl-surface); color: var(--tl-text-secondary);
+    border-radius: var(--tl-radius-sm); padding: 2px 8px;
+  }
+  .hist-note { flex-basis: 100%; font-size: 12px; color: var(--tl-text-secondary); margin-top: 4px; }
+
+  @media (max-width: 640px) {
+    .hist-head { flex-wrap: wrap; }
+    .hist-when { margin-left: 0; flex-basis: 100%; }
+  }
+</style>
 </head>
 <body>
 <div class="topbar">
@@ -111,7 +164,18 @@
   </div>
 </div>
 
+<!-- O perfil precisa do catálogo para dar TÍTULO aos ids do histórico, e dos
+     arquivos de conteúdo para esse catálogo não vir vazio. Antes esta página
+     carregava só o store de alunos: não tinha como ler Progress, e por isso
+     o histórico pedagógico simplesmente não existia aqui. Tudo abaixo é
+     leitura — nenhum destes arquivos grava nada a partir desta página. -->
+<script src="engine/grammar-topics.js?v=4"></script>
+<script src="engine/speaking-activities.js?v=4"></script>
+<script src="engine/structures-content.js?v=1"></script>
 <script src="platform-students.js?v=1"></script>
+<script src="platform-content.js?v=1"></script>
+<script src="engine/conversation-lessons.js?v=1"></script>
+<script src="platform-progress.js?v=1"></script>
 <script>
 /* ---------- shared student store (used by annual-plan.html and schedule.html) ---------- */
 /* ---------- student store — fonte única: platform-students.js ----------
@@ -148,13 +212,133 @@ function render(){
           ${s.age?`<span>${s.age} years old</span>`:''}
           ${range?`<span class="time-range ${dbl?'double':''}"><i data-lucide="clock" class="tl-icon-xs"></i>${range}${dbl?' <span aria-label="two lessons">·×2</span>':''}</span>`:''}
           ${pend?`<button onclick="toggleQueue('${s.id}')" class="badge danger" style="cursor:pointer;border:0">📝 ${pend} to review ${openQ===s.id?'▴':'▾'}</button>`:''}
+          ${(()=>{const n=historyCount(s.id);return `<button onclick="toggleHistory('${s.id}')" class="badge hist-badge" style="cursor:pointer;border:0" title="Content already studied">📚 ${n?`${n} studied`:'No history yet'} ${openH===s.id?'▴':'▾'}</button>`;})()}
         </div>
       </div>
       <button class="icon-btn" title="Edit" onclick="openModal('${s.id}')" aria-label="Edit"><i data-lucide="pencil" class="tl-icon-sm"></i></button>
       <button class="icon-btn del" title="Remove" onclick="removeStudent('${s.id}')" aria-label="Remove"><i data-lucide="trash-2" class="tl-icon-sm"></i></button>
     </div>
-    ${openQ===s.id?queuePanel(s.id):''}`;
+    ${openQ===s.id?queuePanel(s.id):''}
+    ${openH===s.id?historyPanel(s.id):''}`;
   }).join('');
+}
+
+/* ================================================================
+   LEARNING HISTORY
+   ----------------------------------------------------------------
+   "Já ensinei isso para esse aluno? Quando foi a última vez? Quantas
+   vezes?" — a pergunta que se faz no meio da aula, não um dashboard.
+
+   FONTE
+   -----
+   Progress.learningHistory(studentId) e nada mais. Esta página NÃO
+   grava histórico, não cria chave de storage e não mantém cache: o
+   painel é remontado a partir do Progress a cada abertura, então
+   marcar/desmarcar no Calendar aparece aqui sem sincronizar nada.
+
+   Conteúdo externo (Cool English, Canva…) entra pelo mesmo caminho e
+   na mesma lista — para o histórico pedagógico, externo e nativo são
+   ambos conteúdo estudado.
+   ================================================================ */
+let openH=null;                     // qual aluno está com o histórico aberto
+let hFilter={};                     // { studentId: {q, skill, sort} }
+
+function toggleHistory(id){ openH = openH===id ? null : id; render(); }
+
+function hState(id){
+  return hFilter[id] || (hFilter[id]={ q:'', skill:'all', sort:'recent' });
+}
+function hSet(id, field, value){
+  hState(id)[field] = value;
+  render();
+  const el=document.getElementById('hq-'+id);
+  if(el && field==='q'){ el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+}
+
+/** dd MMM yyyy — curto, do jeito que se lê em voz alta. */
+const H_MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function hDate(iso){
+  if(!iso) return '';
+  const p=String(iso).split('-');
+  if(p.length!==3) return String(iso);
+  return `${parseInt(p[2],10)} ${H_MONTHS[parseInt(p[1],10)-1]||''} ${p[0]}`;
+}
+
+function historyCount(id){
+  try{ return TeacherLu.Progress ? TeacherLu.Progress.learningHistory(id).length : 0; }
+  catch(e){ return 0; }
+}
+
+function historyPanel(id){
+  const P=TeacherLu.Progress;
+  if(!P) return '';
+  let rows=[];
+  try{ rows=P.learningHistory(id); }catch(e){ rows=[]; }
+
+  if(!rows.length){
+    return `<div class="hist-panel">
+      <div class="empty" style="padding:14px 0;font-size:13px">
+        Nothing recorded yet. Contents ticked in the
+        <a href="schedule.html">Lesson Calendar</a> show up here.
+      </div></div>`;
+  }
+
+  const st=hState(id);
+  const skills=[...new Set(rows.map(r=>r.skill))];
+  const q=st.q.trim().toLowerCase();
+  let view=rows.filter(r=>
+    (st.skill==='all' || r.skill===st.skill) &&
+    (!q || r.title.toLowerCase().includes(q) || r.skillLabel.toLowerCase().includes(q)));
+  if(st.sort==='az') view=view.slice().sort((a,b)=>a.title<b.title?-1:1);
+
+  const skillName=s=>{
+    const sk=TeacherLu.Content&&TeacherLu.Content.skill?TeacherLu.Content.skill(s):null;
+    return sk?sk.label:P.humanizeId(s);
+  };
+
+  return `<div class="hist-panel">
+    <div class="hist-tools">
+      <input id="hq-${id}" class="hist-search" type="search" placeholder="Search content…"
+             value="${esc(st.q)}" oninput="hSet('${id}','q',this.value)">
+      <select class="hist-select" onchange="hSet('${id}','skill',this.value)">
+        <option value="all"${st.skill==='all'?' selected':''}>All skills</option>
+        ${skills.map(s=>`<option value="${esc(s)}"${st.skill===s?' selected':''}>${esc(skillName(s))}</option>`).join('')}
+      </select>
+      <select class="hist-select" onchange="hSet('${id}','sort',this.value)">
+        <option value="recent"${st.sort==='recent'?' selected':''}>Most recent</option>
+        <option value="az"${st.sort==='az'?' selected':''}>A–Z</option>
+      </select>
+      <span class="hist-total">${view.length} of ${rows.length}</span>
+    </div>
+    ${view.length?view.map(r=>historyRow(id,r)).join(''):'<div class="empty" style="padding:12px 0;font-size:13px">No content matches.</div>'}
+  </div>`;
+}
+
+function historyRow(sid,r){
+  const open = hState(sid).open===r.id;
+  const when = r.undated ? 'date not recorded' : `Last: ${hDate(r.lastAt)}`;
+  const many = r.times===1 ? '1 lesson' : `${r.times} lessons`;
+  return `<div class="hist-item">
+    <div class="hist-head" onclick="hToggleRow('${sid}','${esc(r.id)}')">
+      <span class="hist-icon" style="color:${esc(r.color)}">${r.icon}</span>
+      <span class="hist-title">${esc(r.title)}</span>
+      <span class="hist-skill">${esc(r.skillLabel)}</span>
+      <span class="hist-studied">✓ Studied</span>
+      <span class="hist-when">${esc(when)} · ${many}</span>
+      <span class="hist-caret">${open?'▴':'▾'}</span>
+    </div>
+    ${open?`<div class="hist-dates"><span class="hist-dates-lbl">Studied on:</span>
+      ${r.lessons.slice().reverse().map(d=>
+        `<span class="hist-date">${d==='1970-01-01'?'before the calendar':esc(hDate(d))}</span>`).join('')}
+      ${r.note?`<div class="hist-note">📝 ${esc(r.note)}</div>`:''}
+    </div>`:''}
+  </div>`;
+}
+
+function hToggleRow(sid,itemId){
+  const st=hState(sid);
+  st.open = st.open===itemId ? null : itemId;
+  render();
 }
 
 /* ---------- review queue (fed by ✗ marks during class) ---------- */
