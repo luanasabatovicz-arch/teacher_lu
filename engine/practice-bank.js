@@ -175,8 +175,8 @@ var TOPICS = {
     {id:"frequency-mc-001",type:"multiple_choice",question:"'100% of the time' = ___.",options:["never","always","rarely","sometimes"],correct:1},
     {id:"frequency-mc-002",type:"multiple_choice",question:"'0% of the time' = ___.",options:["always","never","often","usually"],correct:1},
     {id:"frequency-mc-003",type:"multiple_choice",question:"I ___ drink coffee (about 90%).",options:["never","usually","rarely","sometimes"],correct:1},
-    {id:"frequency-mc-004",type:"multiple_choice",question:"She is ___ late (rarely).",options:["rarely","always","often","usually"],correct:0},
-    {id:"frequency-mc-005",type:"multiple_choice",question:"Correct: 'I ___ go to the gym.'",options:["always","go always","am always go","go to always"],correct:0},
+    {id:"frequency-mc-004",type:"multiple_choice",question:"She is ___ late (about 10%).",options:["rarely","always","often","usually"],correct:0},
+    {id:"frequency-mc-005",type:"multiple_choice",question:"Which sentence is correct?",options:["I always go to the gym.","I go always to the gym.","Always I go to the gym.","I go to the gym always."],correct:0},
     {id:"frequency-mc-006",type:"multiple_choice",question:"'Once a week' means ___.",options:["one time every week","every day","never","always"],correct:0},
     {id:"frequency-complete-007",type:"fill_blank",question:"I ___ eat breakfast.",correct:"always"},
     {id:"frequency-complete-008",type:"fill_blank",question:"He ___ smokes.",correct:"never"},
@@ -767,6 +767,80 @@ var TOPICS = {
     byId: function (id) {
       var hit = flatten().filter(function (x) { return x.id === id; });
       return hit.length ? hit[0] : null;
+    },
+
+    /* ====================================================================
+       EMBARALHAMENTO DE ALTERNATIVAS
+       --------------------------------------------------------------------
+       O banco declara as opções numa ordem fixa e a resposta correta numa
+       posição fixa (`correct: 0` no banco próprio, `"B — is"` no Grammar).
+       Renderizar nessa ordem faz a resposta cair sempre no mesmo lugar.
+
+       A ordem declarada passa a ser só armazenamento. Quem decide a ordem
+       exibida é mcView(), UMA vez por exercício por sessão.
+
+       INVARIANTES
+       -----------
+       · o id do exercício NUNCA muda — A/B/C/D é posição de tela, não
+         identidade. O PracticeLog registra o exercício;
+       · nenhuma opção some, nenhuma é duplicada: é uma permutação;
+       · a resposta correta viaja junto com a sua opção.
+       ==================================================================== */
+
+    /** Fisher-Yates. Devolve um array novo; não toca no original. */
+    shuffle: function (arr, rnd) {
+      var a = (arr || []).slice();
+      var r = rnd || Math.random;
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(r() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    },
+
+    /**
+     * Em que posição está a resposta correta, no dado BRUTO?
+     *   banco próprio -> correctIndex numérico
+     *   Grammar       -> a letra de `a` ("B — is")
+     * Devolve -1 quando o item não sabe dizer.
+     */
+    answerIndexOf: function (item) {
+      if (!item) return -1;
+      if (typeof item.correctIndex === 'number') return item.correctIndex;
+      var m = String(item.a || '').match(/^\s*([A-Z])\s*[—\-–]\s*(.+)$/);
+      if (!m) return -1;
+      var i = m[1].charCodeAt(0) - 65;
+      return (i >= 0 && i < (item.options || []).length) ? i : -1;
+    },
+
+    /**
+     * A visão embaralhada de um Multiple Choice.
+     *   { options, correctIndex, answerText, answerLabel }
+     *
+     * `answerLabel` é a string que a professora lê em voz alta, recalculada
+     * para a NOVA posição — o "B — is" do banco vira "D — is" se a opção
+     * foi para a posição D. A alternativa de origem continua a mesma.
+     */
+    mcView: function (item, rnd) {
+      var opts = (item && item.options) ? item.options.slice() : [];
+      var src  = PracticeBank.answerIndexOf(item);
+      if (opts.length < 2 || src < 0) {
+        return { options: opts, correctIndex: src, answerText: opts[src] || '', answerLabel: (item && item.a) || '' };
+      }
+      // Embaralha PARES (opção, era-a-correta) — assim a resposta não pode
+      // se perder no caminho.
+      var pairs = PracticeBank.shuffle(opts.map(function (o, i) {
+        return { o: o, correct: i === src };
+      }), rnd);
+      var idx = 0;
+      for (var i = 0; i < pairs.length; i++) if (pairs[i].correct) idx = i;
+      var text = pairs[idx].o;
+      return {
+        options:      pairs.map(function (p) { return p.o; }),
+        correctIndex: idx,
+        answerText:   text,
+        answerLabel:  String.fromCharCode(65 + idx) + ' — ' + text
+      };
     },
 
     /** A unidade de uso de um tópico: o groupId, quando existe. */

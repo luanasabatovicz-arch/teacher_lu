@@ -404,8 +404,8 @@ const PL = TeacherLu.PracticeLog;
 let TOPICS = PB.topics();
 let curTopic = TOPICS.length ? (TOPICS.find(t=>t.key==='past') ? 'past' : TOPICS[0].key) : null;
 let curType  = 'all';
-let pool = [];
-let poolTotal = 0;    // tamanho do pool ANTES do filtro por aluno
+let poolRaw = [];     // pool bruto do filtro atual (topic+type), sem o aluno
+let pool = [];        // fila DESTA sessão: o que faltava quando o pool abriu
 let idx  = 0;
 let ui   = {};        // estado transitório da tela, por id de exercício
 let reviewing = false; // sessão de revisão manual (não altera o PracticeLog)
@@ -428,12 +428,32 @@ function renderStuBar(){
   el.innerHTML=STUDENTS_DATA.map(s=>
     `<option value="${s.id}" ${s.id===curStu?'selected':''}>${s.emoji||''} ${s.name}</option>`).join('');
 }
-/* Contador discreto do conjunto atual: "13 / 40 completed". */
+/* ---------- contador: FONTE ÚNICA DE VERDADE ----------
+   Todo número de conclusão da tela sai daqui — o do topo e o da tela de
+   fim. Ninguém mais calcula "completed" por conta própria.
+
+   A conta é sempre:
+       completed = total do filtro atual − o que este aluno ainda não fez
+
+   e o "ainda não fez" é relido do PracticeLog a cada chamada. Guardar o
+   tamanho do pool no momento em que ele foi carregado era o bug: marcar um
+   exercício não encolhe a fila da sessão (`pool`), então o topo continuava
+   dizendo "0 / 18" enquanto o aluno já tinha feito os 18.
+
+   `left` é o que RESTA de verdade; `pool.length` é só o tamanho da fila
+   aberta nesta sessão. São coisas diferentes e não podem ser confundidas. */
+function practiceStats(){
+  const total = poolRaw.length;
+  if(!curStu || !total) return { total, completed:0, left: total };
+  const left = availableFor(poolRaw).length;
+  return { total, completed: total - left, left };
+}
+
 function renderUsedCount(){
   const el=document.getElementById('usedCount'); if(!el) return;
-  if(!curStu || !poolTotal){ el.textContent='—'; return; }
-  const left = reviewing ? 0 : pool.length;
-  el.textContent = (poolTotal - left) + ' / ' + poolTotal + ' completed';
+  const s = practiceStats();
+  if(!curStu || !s.total){ el.textContent='—'; return; }
+  el.textContent = s.completed + ' / ' + s.total + ' completed';
 }
 
 /* ---------- aviso de gravação ----------
@@ -547,10 +567,9 @@ function availableFor(raw){
 }
 
 function loadPool(){
-  const raw = PB.query({topic:curTopic, type:curType});
-  poolTotal = raw.length;
+  poolRaw = PB.query({topic:curTopic, type:curType});
   reviewing = false;
-  pool = availableFor(raw);                 // filtro por aluno — LIGADO
+  pool = availableFor(poolRaw);             // filtro por aluno — LIGADO
   idx = 0; ui = {};
   const t = TOPICS.find(x=>x.key===curTopic);
   document.getElementById('hdrSub').textContent = t ? (t.label + (t.level?' · '+t.level:'')) : '';
@@ -560,8 +579,7 @@ function loadPool(){
 /* Revisão manual: vale só para esta sessão, não apaga nada do PracticeLog
    e nunca é o comportamento padrão — a professora precisa pedir. */
 function reviewCompleted(){
-  const raw = PB.query({topic:curTopic, type:curType});
-  const doneOnes = curStu ? raw.filter(function(x){ return !availableFor([x]).length; }) : [];
+  const doneOnes = curStu ? poolRaw.filter(function(x){ return !availableFor([x]).length; }) : [];
   if(!doneOnes.length) return;
   reviewing = true;
   pool = doneOnes; idx = 0; ui = {};
@@ -580,6 +598,16 @@ function typeLabel(item){
   return 'Practice';
 }
 function st(item){ return ui[item.id] || (ui[item.id]={}); }
+
+/* A visão embaralhada de um MC, estável enquanto o exercício estiver aberto.
+   O embaralhamento acontece UMA vez, na primeira renderização; re-renderizar
+   (escolher uma alternativa, voltar com ←) reusa a mesma ordem. O id do
+   exercício não entra nessa conta e nunca muda. */
+function mcOf(item){
+  const s=st(item);
+  if(!s.mc) s.mc = PB.mcView(item);
+  return s.mc;
+}
 
 /* ---------- render ---------- */
 function renderExercise(){
@@ -608,15 +636,34 @@ function renderExercise(){
   el.innerHTML=html;
 }
 
-/* Pool esgotado. Nada reinicia sozinho; a revisão é um pedido explícito. */
+/* Fim da fila. Nada reinicia sozinho; a revisão é um pedido explícito.
+
+   DUAS SITUAÇÕES DIFERENTES — e era daqui que vinha a contradição:
+   chegar ao fim da fila NÃO é o mesmo que ter concluído tudo. Passar de
+   Next sem responder esvazia a fila com zero exercícios marcados. A tela
+   antiga chamava os dois casos de "All exercises completed" e ainda
+   imprimia "18 / 18" fixo, contra o "0 / 18" do topo.
+
+   Agora os dois números saem de practiceStats(). */
 function doneScreen(){
-  if(!poolTotal){
+  const s = practiceStats();
+  if(!s.total){
     return '<div class="card rounded-xl p-8" style="text-align:center"><p class="text-slate-400">Nothing here yet.</p></div>';
   }
-  const canReview = !!curStu && !reviewing && poolTotal > pool.length;
+
+  // Ainda há exercícios não feitos: a fila acabou, o tópico não.
+  if(!reviewing && s.left > 0){
+    return '<div class="card rounded-xl p-8" style="text-align:center">'+
+      '<p class="text-white font-bold" style="font-size:20px;margin-bottom:6px">End of this round.</p>'+
+      `<p class="text-slate-400 text-sm" style="margin-bottom:16px">${s.completed} / ${s.total} completed · ${s.left} still available</p>`+
+      '<button onclick="loadPool()" class="theme-btn active font-bold py-2 px-5 rounded-lg">Continue with the remaining ' + s.left + '</button>'+
+      '</div>';
+  }
+
+  const canReview = !!curStu && !reviewing && s.completed > 0;
   return '<div class="card rounded-xl p-8" style="text-align:center">'+
     '<p class="text-white font-bold" style="font-size:20px;margin-bottom:6px">All exercises completed.</p>'+
-    `<p class="text-slate-400 text-sm" style="margin-bottom:16px">${poolTotal} / ${poolTotal} completed</p>`+
+    `<p class="text-slate-400 text-sm" style="margin-bottom:16px">${s.completed} / ${s.total} completed</p>`+
     (canReview
       ? '<button onclick="reviewCompleted()" class="theme-btn font-bold py-2 px-5 rounded-lg">Review completed exercises</button>'
       : '')+
@@ -629,22 +676,28 @@ function bodyOf(item){
   switch(item.format){
 
     case 'multiple_choice': {
-      const opts=item.options||[];
+      // A ordem exibida vem de mcView() — embaralhada uma vez e guardada em
+      // `s.mc`, para que reabrir a mesma tela (picked, prev/next dentro da
+      // fila) não remexa as alternativas debaixo do aluno.
+      const v = mcOf(item);
+      const opts = v.options;
+
       // Duas origens, dois comportamentos:
-      //  · banco próprio  -> correctIndex numérico: a professora clica na
-      //    alternativa que o aluno disse e o feedback é imediato;
-      //  · Grammar        -> a resposta vem como texto ("B — went"), então
-      //    as alternativas são só leitura e o veredicto é ✓/✗.
+      //  · banco próprio  -> a professora clica na alternativa que o aluno
+      //    disse e o feedback é imediato;
+      //  · Grammar        -> alternativas só de leitura, veredicto ✓/✗ no
+      //    rodapé. A resposta lida em voz alta é recalculada para a nova
+      //    posição por mcView().
       if(item.correctIndex===null||item.correctIndex===undefined){
         return `<p class="q-big text-white font-semibold mb-3">${item.q}</p>`+
           `<div>`+opts.map((o,i)=>`<div class="opt" style="cursor:default"><span class="letter">${String.fromCharCode(65+i)}</span>${o}</div>`).join('')+`</div>`+
-          answerBlock(item, item.a);
+          answerBlock(item, v.answerLabel);
       }
       return `<p class="q-big text-white font-semibold mb-4">${item.q}</p><div>`+
         opts.map((o,i)=>{
           let cls='opt';
           if(s.picked!==undefined){
-            if(i===item.correctIndex) cls+=' right';
+            if(i===v.correctIndex) cls+=' right';
             else if(i===s.picked) cls+=' wrong';
             else cls+=' dim';
           }
@@ -669,7 +722,9 @@ function bodyOf(item){
 
     case 'matching': {
       const pairs=item.pairs||[];
-      if(!s.opts) s.opts = pairs.map(p=>p.right).sort(()=>Math.random()-0.5);
+      // Fisher-Yates do banco — `sort(()=>Math.random()-0.5)` não é uma
+      // permutação uniforme e concentra os itens perto da posição original.
+      if(!s.opts) s.opts = PB.shuffle(pairs.map(p=>p.right));
       return `<p class="q-big text-white font-semibold mb-3">${item.q}</p>`+
         `<div class="legend">${s.opts.map((r,i)=>`<p><b>${String.fromCharCode(65+i)}</b>${r}</p>`).join('')}</div>`+
         `<div class="space-y-2">`+pairs.map((p,pi)=>{
