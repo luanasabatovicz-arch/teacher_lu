@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sabatovicz - Grammar Practice</title>
+  <!-- Camada de nuvem: config -> supabase-js -> auth guard -> sync.
+       Precisa vir ANTES de qualquer outro script: o guard decide sobre a
+       sessao antes do primeiro pixel, e o engine de sync instala o
+       interceptor de localStorage antes de qualquer store ler dado. -->
+  <script src="platform-cloud-config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="platform-auth.js"></script>
+  <script src="platform-cloud.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="engine/grammar-topics.js?v=4"></script>
 <script src="engine/grammar-engine.js?v=4"></script>

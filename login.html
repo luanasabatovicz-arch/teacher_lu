@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu Studio — Sign in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-system/theme.css">
+
+  <script src="platform-cloud-config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="platform-auth.js"></script>
+
+  <style>
+    /* Tela de entrada. Só Design System: Deep Teal no fundo e no botão,
+       Turquoise no foco, Coral apenas como acento fino da marca. */
+    body.login {
+      background: var(--tl-primary);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: var(--tl-space-5);
+    }
+    .login-card {
+      width: 100%; max-width: 380px;
+      background: var(--tl-surface);
+      border-radius: var(--tl-radius-lg);
+      box-shadow: 0 18px 48px rgba(8, 45, 54, .28);
+      padding: var(--tl-space-8) var(--tl-space-7) var(--tl-space-7);
+    }
+    .login-brand { text-align: center; margin-bottom: var(--tl-space-7); }
+    .login-brand .mark {
+      width: 40px; height: 4px; border-radius: 999px;
+      background: var(--tl-accent);
+      margin: 0 auto var(--tl-space-4);
+    }
+    .login-brand h1 {
+      font-size: var(--tl-fs-h3); font-weight: var(--tl-fw-bold);
+      color: var(--tl-primary); letter-spacing: -.01em;
+    }
+    .login-field { margin-bottom: var(--tl-space-4); }
+    .login-field label {
+      display: block; font-size: var(--tl-fs-label); font-weight: 600;
+      color: var(--tl-text-secondary); margin-bottom: var(--tl-space-2);
+    }
+    .login-field input {
+      width: 100%; box-sizing: border-box;
+      padding: 11px 13px;
+      font: 400 var(--tl-fs-body)/1.4 var(--tl-font-sans);
+      color: var(--tl-text);
+      background: var(--tl-surface);
+      border: 1px solid var(--tl-border-strong);
+      border-radius: var(--tl-radius-md);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .login-field input:focus {
+      outline: none;
+      border-color: var(--tl-border-focus);
+      box-shadow: 0 0 0 3px var(--tl-secondary-soft);
+    }
+    .login-submit {
+      width: 100%; margin-top: var(--tl-space-2);
+      padding: 12px 16px;
+      font: 600 var(--tl-fs-button)/1 var(--tl-font-sans);
+      color: var(--tl-text-on-primary);
+      background: var(--tl-primary);
+      border: none; border-radius: var(--tl-radius-md);
+      cursor: pointer; transition: background .15s;
+    }
+    .login-submit:hover:not(:disabled) { background: var(--tl-primary-hover); }
+    .login-submit:disabled { opacity: .6; cursor: default; }
+    .login-msg {
+      margin-top: var(--tl-space-4);
+      font-size: var(--tl-fs-small); line-height: 1.45;
+      padding: 10px 12px; border-radius: var(--tl-radius-md);
+      display: none;
+    }
+    .login-msg[data-kind="error"] {
+      display: block;
+      background: var(--tl-danger-soft); color: var(--tl-danger-text);
+    }
+    .login-msg[data-kind="info"] {
+      display: block;
+      background: var(--tl-warning-soft); color: var(--tl-warning-text);
+    }
+  </style>
+</head>
+<body class="login">
+
+  <main class="login-card">
+    <div class="login-brand">
+      <div class="mark"></div>
+      <h1>Teacher Lu Studio</h1>
+    </div>
+
+    <form id="loginForm" autocomplete="on" novalidate>
+      <div class="login-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="username"
+               required autofocus>
+      </div>
+
+      <div class="login-field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password"
+               autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="login-submit" id="submitBtn">Sign in</button>
+    </form>
+
+    <div class="login-msg" id="msg" role="alert"></div>
+  </main>
+
+  <script>
+  (function () {
+    'use strict';
+    var NS = window.TeacherLu, CFG = NS.CloudConfig, Auth = NS.Auth;
+    var form = document.getElementById('loginForm');
+    var btn  = document.getElementById('submitBtn');
+    var msg  = document.getElementById('msg');
+
+    function say(text, kind) {
+      msg.textContent = text || '';
+      if (text) msg.setAttribute('data-kind', kind || 'error');
+      else msg.removeAttribute('data-kind');
+    }
+
+    /* Para onde ir depois de entrar: de volta à página que pediu login. */
+    function nextPage() {
+      try {
+        var m = location.search.match(/[?&]next=([^&]+)/);
+        if (!m) return CFG.HOME_PAGE || 'index.html';
+        var p = decodeURIComponent(m[1]);
+        // Só caminho relativo dentro da própria Studio — nunca um destino
+        // externo vindo da URL.
+        if (/^https?:|^\/\//i.test(p) || p.indexOf('..') !== -1) {
+          return CFG.HOME_PAGE || 'index.html';
+        }
+        return p;
+      } catch (e) { return CFG.HOME_PAGE || 'index.html'; }
+    }
+
+    if (!CFG.isConfigured()) {
+      say('A Studio ainda não está ligada ao Supabase. Preencha SUPABASE_URL e ' +
+          'SUPABASE_ANON_KEY em platform-cloud-config.js — o passo a passo está ' +
+          'em supabase/SETUP.md.', 'info');
+      btn.disabled = true;
+    } else if (Auth.isSignedIn()) {
+      location.replace(nextPage());
+    }
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      say('');
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+      if (!email || !password) { say('Preencha e-mail e senha.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+
+      Auth.signIn(email, password).then(function (res) {
+        if (!res.ok) {
+          say(res.message);
+          btn.disabled = false;
+          btn.textContent = 'Sign in';
+          return;
+        }
+        location.replace(nextPage());
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

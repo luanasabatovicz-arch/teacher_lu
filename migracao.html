@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu Studio — Migração para a nuvem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-system/theme.css">
+
+  <script src="platform-cloud-config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="platform-auth.js"></script>
+  <script src="platform-cloud.js"></script>
+  <script src="platform-students.js"></script>
+  <script src="platform-cloud-migrate.js"></script>
+
+  <style>
+    body { background: var(--tl-bg); }
+    .wrap { max-width: 780px; margin: 0 auto; padding: var(--tl-space-7) var(--tl-space-5) var(--tl-space-8); }
+    h1 { font-size: var(--tl-fs-h2); color: var(--tl-primary); font-weight: var(--tl-fw-bold); margin-bottom: var(--tl-space-2); }
+    .lede { color: var(--tl-text-secondary); font-size: var(--tl-fs-body); line-height: 1.55; margin-bottom: var(--tl-space-6); }
+    .step { background: var(--tl-surface); border: 1px solid var(--tl-border); border-radius: var(--tl-radius-lg); padding: var(--tl-space-5); margin-bottom: var(--tl-space-4); }
+    .step[data-state="done"] { border-color: var(--tl-secondary); }
+    .step[data-state="blocked"] { opacity: .55; }
+    .step h2 { font-size: var(--tl-fs-h4); color: var(--tl-text); font-weight: 700; margin-bottom: var(--tl-space-2); display: flex; align-items: center; gap: 8px; }
+    .step h2 .n { width: 22px; height: 22px; border-radius: 50%; background: var(--tl-primary-soft); color: var(--tl-primary); font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+    .step[data-state="done"] h2 .n { background: var(--tl-secondary); color: #fff; }
+    .step p { color: var(--tl-text-secondary); font-size: var(--tl-fs-small); line-height: 1.55; margin-bottom: var(--tl-space-3); }
+    button { font: 600 var(--tl-fs-button)/1 var(--tl-font-sans); padding: 10px 16px; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-primary); background: var(--tl-primary); color: #fff; cursor: pointer; }
+    button.ghost { background: var(--tl-surface); color: var(--tl-primary); }
+    button:disabled { opacity: .5; cursor: default; }
+    table { width: 100%; border-collapse: collapse; margin-top: var(--tl-space-3); font-size: var(--tl-fs-small); }
+    th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--tl-border-subtle); }
+    th { color: var(--tl-text-tertiary); font-weight: 600; font-size: var(--tl-fs-caption); text-transform: uppercase; letter-spacing: .04em; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .ok { color: var(--tl-success-text); font-weight: 600; }
+    .bad { color: var(--tl-danger-text); font-weight: 600; }
+    .note { border-radius: var(--tl-radius-md); padding: 11px 13px; font-size: var(--tl-fs-small); line-height: 1.5; margin-top: var(--tl-space-3); }
+    .note.warn { background: var(--tl-warning-soft); color: var(--tl-warning-text); }
+    .note.err { background: var(--tl-danger-soft); color: var(--tl-danger-text); }
+    .note.good { background: var(--tl-success-soft); color: var(--tl-success-text); }
+    .note ul { margin: 6px 0 0 18px; }
+    code { font-family: var(--tl-font-mono); font-size: 12px; background: var(--tl-surface-alt); padding: 1px 5px; border-radius: 4px; }
+    .bar { height: 6px; background: var(--tl-primary-soft); border-radius: 999px; overflow: hidden; margin-top: 10px; }
+    .bar > i { display: block; height: 100%; background: var(--tl-secondary); width: 0; transition: width .2s; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Migração para a nuvem</h1>
+  <p class="lede">
+    Leva os dados que já estão neste computador para o Supabase, uma vez só.
+    Nada é apagado daqui — nem agora, nem depois. Se algo der errado no meio,
+    o localStorage continua intacto e você pode simplesmente fechar esta página.
+  </p>
+
+  <section class="step" id="s0">
+    <h2><span class="n">1</span> Backup</h2>
+    <p>Antes de tudo, baixe uma cópia completa em JSON — alunos, aulas, progresso,
+       exercícios, conteúdo externo e também o Finance. Este arquivo é a sua
+       rede de segurança e continua valendo mesmo depois da nuvem existir.</p>
+    <button id="btnBackup">Export Backup (JSON)</button>
+    <div id="backupMsg"></div>
+  </section>
+
+  <section class="step" id="s1">
+    <h2><span class="n">2</span> Analisar os dados locais</h2>
+    <p>Só leitura. Nada sai deste computador nesta etapa.</p>
+    <button id="btnAnalyze">Analisar</button>
+    <div id="analysisOut"></div>
+  </section>
+
+  <section class="step" id="s2" data-state="blocked">
+    <h2><span class="n">3</span> Conferir o que já existe na nuvem</h2>
+    <p>Se o banco já tiver dados, você vê o quê antes de decidir. Nada é
+       sobrescrito em silêncio.</p>
+    <button id="btnCloud" disabled>Consultar o banco</button>
+    <div id="cloudOut"></div>
+  </section>
+
+  <section class="step" id="s3" data-state="blocked">
+    <h2><span class="n">4</span> Importar</h2>
+    <p>Envia linha a linha. Rodar de novo por engano não duplica nada: cada
+       aluno, aula, ocorrência de conteúdo e exercício tem chave própria no
+       banco.</p>
+    <button id="btnRun" disabled>Importar para o Supabase</button>
+    <div class="bar" id="bar" hidden><i></i></div>
+    <div id="runOut"></div>
+  </section>
+
+  <section class="step" id="s4" data-state="blocked">
+    <h2><span class="n">5</span> Verificar contagens</h2>
+    <button id="btnVerify" disabled>Conferir</button>
+    <div id="verifyOut"></div>
+  </section>
+
+  <section class="step" id="s5" data-state="blocked">
+    <h2><span class="n">6</span> Ligar a sincronização</h2>
+    <p>Só depois que as contagens conferirem. A partir daqui o Supabase passa a
+       ser a fonte oficial e o localStorage vira cache.</p>
+    <button id="btnFinish" disabled>Marcar migração como concluída</button>
+    <div id="finishOut"></div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var NS = window.TeacherLu, M = NS.CloudMigrate, Cloud = NS.Cloud;
+  var analysis = null, cloudBefore = null;
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]; }); }
+  function open(id) { $(id).removeAttribute('data-state'); }
+  function done(id) { $(id).setAttribute('data-state', 'done'); }
+
+  function table(rows, head) {
+    return '<table><tr>' + head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>' +
+      rows.join('') + '</table>';
+  }
+
+  /* ---- 1. backup ---- */
+  $('btnBackup').addEventListener('click', function () {
+    try {
+      var n = M.downloadBackup();
+      $('backupMsg').innerHTML = '<div class="note good">Backup baixado — ' + n +
+        ' chaves salvas. Guarde o arquivo antes de seguir.</div>';
+      done('s0');
+    } catch (e) {
+      $('backupMsg').innerHTML = '<div class="note err">Não foi possível gerar o backup: ' + esc(e.message) + '</div>';
+    }
+  });
+
+  /* ---- 2. analisar ---- */
+  $('btnAnalyze').addEventListener('click', function () {
+    analysis = M.analyze();
+    var c = analysis.counts;
+    var rows = [
+      ['Alunos', c.students], ['Aulas (Calendar)', c.lessons],
+      ['Conteúdo por aula', c.content], ['Notas de conteúdo', c.notes],
+      ['Conteúdo externo', c.custom], ['Exercícios usados', c.practice]
+    ].map(function (r) { return '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td></tr>'; });
+
+    var html = table(rows, ['O quê', 'Linhas']);
+    html += '<div class="note">' + analysis.ids.students.length + ' ids de aluno, ' +
+            analysis.ids.contents.length + ' ids de conteúdo e ' +
+            analysis.ids.exercises.length + ' ids de exercício — todos preservados exatamente como estão.</div>';
+
+    if (analysis.duplicates.length) {
+      html += '<div class="note warn"><strong>Duplicatas encontradas (' + analysis.duplicates.length +
+        '), ignoradas na importação:</strong><ul>' +
+        analysis.duplicates.slice(0, 12).map(function (d) { return '<li>' + esc(d) + '</li>'; }).join('') +
+        (analysis.duplicates.length > 12 ? '<li>…</li>' : '') + '</ul></div>';
+    }
+    if (analysis.warnings.length) {
+      html += '<div class="note warn"><strong>Avisos (' + analysis.warnings.length + '):</strong><ul>' +
+        analysis.warnings.slice(0, 12).map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('') +
+        (analysis.warnings.length > 12 ? '<li>…</li>' : '') + '</ul></div>';
+    }
+    if (!analysis.total) {
+      html += '<div class="note warn">Não há nada para migrar neste computador.</div>';
+    }
+
+    $('analysisOut').innerHTML = html;
+    done('s1'); open('s2');
+    $('btnCloud').disabled = false;
+  });
+
+  /* ---- 3. nuvem ---- */
+  $('btnCloud').addEventListener('click', function () {
+    $('btnCloud').disabled = true;
+    $('cloudOut').innerHTML = '<div class="note">Consultando…</div>';
+    M.cloudCounts().then(function (cc) {
+      cloudBefore = cc;
+      var rows = [
+        ['Alunos', cc.students], ['Aulas', cc.lessons], ['Conteúdo por aula', cc.content],
+        ['Notas', cc.notes], ['Conteúdo externo', cc.custom], ['Exercícios', cc.practice]
+      ].map(function (r) { return '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td></tr>'; });
+      var total = cc.students + cc.lessons + cc.content + cc.notes + cc.custom + cc.practice;
+      var html = table(rows, ['No banco agora', 'Linhas']);
+      html += total
+        ? '<div class="note warn">O banco já tem ' + total + ' linhas. A importação é aditiva: ' +
+          'linhas com a mesma chave são atualizadas, nenhuma é apagada. Confira acima se ' +
+          'isso é o que você espera antes de seguir.</div>'
+        : '<div class="note good">Banco vazio — importação limpa.</div>';
+      $('cloudOut').innerHTML = html;
+      done('s2'); open('s3');
+      $('btnRun').disabled = !analysis || !analysis.total;
+      $('btnCloud').disabled = false;
+    }).catch(function (e) {
+      $('cloudOut').innerHTML = '<div class="note err">Não deu para consultar o banco: ' +
+        esc(e.message || e) + '<br>Verifique login, internet e se o <code>schema.sql</code> já foi executado.</div>';
+      $('btnCloud').disabled = false;
+    });
+  });
+
+  /* ---- 4. importar ---- */
+  $('btnRun').addEventListener('click', function () {
+    $('btnRun').disabled = true;
+    $('bar').hidden = false;
+    $('runOut').innerHTML = '';
+    var fill = $('bar').firstElementChild;
+
+    M.run(analysis, function (d, t) {
+      fill.style.width = Math.round(d / t * 100) + '%';
+    }).then(function (res) {
+      fill.style.width = '100%';
+      $('runOut').innerHTML = '<div class="note good">' + res.sent +
+        ' operações enviadas. Nada foi apagado deste computador.</div>';
+      done('s3'); open('s4');
+      $('btnVerify').disabled = false;
+    }).catch(function (e) {
+      $('runOut').innerHTML = '<div class="note err">A importação parou: ' + esc(e.message || e) +
+        '<br>Os dados locais estão intactos. Pode corrigir e rodar de novo — ' +
+        'o que já subiu não duplica.</div>';
+      $('btnRun').disabled = false;
+    });
+  });
+
+  /* ---- 5. verificar ---- */
+  $('btnVerify').addEventListener('click', function () {
+    $('btnVerify').disabled = true;
+    M.verify(analysis).then(function (v) {
+      var rows = v.rows.map(function (r) {
+        return '<tr><td>' + r.label + '</td><td class="num">' + r.local + '</td><td class="num">' +
+          r.cloud + '</td><td class="' + (r.ok ? 'ok' : 'bad') + '">' + (r.ok ? 'ok' : 'faltando') + '</td></tr>';
+      });
+      var html = table(rows, ['O quê', 'Local', 'Nuvem', '']);
+      html += v.ok
+        ? '<div class="note good">Todas as contagens conferem.</div>'
+        : '<div class="note err">Alguma coisa não chegou. Não ligue a sincronização ainda — ' +
+          'rode a importação de novo (é idempotente) e confira outra vez.</div>';
+      $('verifyOut').innerHTML = html;
+      $('btnVerify').disabled = false;
+      if (v.ok) { done('s4'); open('s5'); $('btnFinish').disabled = false; }
+    }).catch(function (e) {
+      $('verifyOut').innerHTML = '<div class="note err">' + esc(e.message || e) + '</div>';
+      $('btnVerify').disabled = false;
+    });
+  });
+
+  /* ---- 6. ligar ---- */
+  $('btnFinish').addEventListener('click', function () {
+    $('btnFinish').disabled = true;
+    Cloud.markMigrated().then(function () {
+      $('finishOut').innerHTML = '<div class="note good">Sincronização ligada. ' +
+        'A partir de agora o Supabase é a fonte oficial e este navegador é um cache. ' +
+        'No segundo computador, basta fazer login: os dados descem sozinhos.</div>';
+      done('s5');
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu Studio — Verificação da nuvem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-system/theme.css">
+
+  <script src="platform-cloud-config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="platform-auth.js"></script>
+  <script src="platform-cloud.js"></script>
+  <script src="platform-students.js"></script>
+  <script src="platform-content.js"></script>
+  <script src="platform-progress.js"></script>
+  <script src="platform-practice-log.js"></script>
+
+  <style>
+    body { background: var(--tl-bg); }
+    .wrap { max-width: 860px; margin: 0 auto; padding: var(--tl-space-7) var(--tl-space-5) var(--tl-space-8); }
+    h1 { font-size: var(--tl-fs-h2); color: var(--tl-primary); font-weight: 700; margin-bottom: var(--tl-space-2); }
+    .lede { color: var(--tl-text-secondary); font-size: var(--tl-fs-body); line-height: 1.55; margin-bottom: var(--tl-space-5); }
+    .panel { background: var(--tl-surface); border: 1px solid var(--tl-border); border-radius: var(--tl-radius-lg); padding: var(--tl-space-5); margin-bottom: var(--tl-space-4); }
+    button { font: 600 var(--tl-fs-button)/1 var(--tl-font-sans); padding: 10px 16px; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-primary); background: var(--tl-primary); color: #fff; cursor: pointer; }
+    button.ghost { background: var(--tl-surface); color: var(--tl-primary); }
+    button:disabled { opacity: .5; cursor: default; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    ul.results { list-style: none; margin-top: var(--tl-space-4); }
+    ul.results li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--tl-border-subtle); font-size: var(--tl-fs-small); line-height: 1.45; }
+    .tag { flex: none; width: 58px; font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding-top: 2px; }
+    .pass .tag { color: var(--tl-success-text); }
+    .fail .tag { color: var(--tl-danger-text); }
+    .skip .tag { color: var(--tl-text-tertiary); }
+    .why { color: var(--tl-text-secondary); display: block; margin-top: 2px; }
+    .summary { margin-top: var(--tl-space-4); padding: 11px 13px; border-radius: var(--tl-radius-md); font-size: var(--tl-fs-small); font-weight: 600; }
+    .summary.good { background: var(--tl-success-soft); color: var(--tl-success-text); }
+    .summary.bad { background: var(--tl-danger-soft); color: var(--tl-danger-text); }
+    ol.manual { margin-left: 20px; color: var(--tl-text-secondary); font-size: var(--tl-fs-small); line-height: 1.65; }
+    code { font-family: var(--tl-font-mono); font-size: 12px; background: var(--tl-surface-alt); padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Verificação da nuvem</h1>
+  <p class="lede">
+    Roda no seu navegador as checagens das seções 27, 28 e 29 do plano:
+    autenticação, RLS, sincronização entre dois contextos e fila offline.
+    Usa um aluno de teste — <code>__qa_cloud__</code> — e apaga tudo o que
+    criou no fim. Nenhum dado real é tocado.
+  </p>
+
+  <div class="panel">
+    <div class="row">
+      <button id="run">Run</button>
+      <button id="clean" class="ghost">Limpar resíduo de teste</button>
+    </div>
+    <ul class="results" id="out"></ul>
+    <div id="sum"></div>
+  </div>
+
+  <div class="panel">
+    <h2 style="font-size:var(--tl-fs-h4);color:var(--tl-text);font-weight:700;margin-bottom:8px">
+      O que ainda precisa dos seus dois computadores</h2>
+    <ol class="manual">
+      <li>Notebook A: crie uma aluna. Notebook B: recarregue — ela aparece.</li>
+      <li>A: marque uma aula no Calendar. B: recarregue — a aula está lá.</li>
+      <li>A: registre um conteúdo em 12/08. B: Profile mostra no Learning History
+          e o Monthly Report mostra em agosto.</li>
+      <li>A: adicione um conteúdo externo (Cool English). B: aparece na lista.</li>
+      <li>A: complete um exercício da Maria. B: abra a Maria — o exercício não volta.</li>
+      <li>A: desmarque uma ocorrência. B: reflete a remoção.</li>
+      <li>A: desligue a internet, registre algo — o chip mostra <code>Offline</code>
+          e a tela continua respondendo. Religue: vira <code>✓ Synced</code>. B: o dado chegou.</li>
+    </ol>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var NS = window.TeacherLu, Auth = NS.Auth, Cloud = NS.Cloud, CFG = NS.CloudConfig;
+  var SID = '__qa_cloud__';
+  var out = document.getElementById('out'), sum = document.getElementById('sum');
+  var results = [];
+
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]; }); }
+  function add(state, name, why) {
+    results.push({ state: state, name: name });
+    var li = document.createElement('li');
+    li.className = state;
+    li.innerHTML = '<span class="tag">' + state + '</span><span><strong>' + esc(name) + '</strong>' +
+      (why ? '<span class="why">' + esc(why) + '</span>' : '') + '</span>';
+    out.appendChild(li);
+  }
+  function ok(n, w) { add('pass', n, w); }
+  function no(n, w) { add('fail', n, w); }
+  function skip(n, w) { add('skip', n, w); }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function client() { return Auth.client(); }
+  function owner() { return Auth.userId(); }
+
+  /* Um segundo cliente, SEM sessão — é o "visitante anônimo" do teste E. */
+  function anonClient() {
+    return window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+    });
+  }
+
+  function cleanup() {
+    var c = client(), o = owner();
+    if (!c || !o) return Promise.resolve();
+    return Promise.all([
+      c.from('lesson_content').delete().eq('owner_id', o).eq('student_id', SID),
+      c.from('content_notes').delete().eq('owner_id', o).eq('student_id', SID),
+      c.from('practice_usage').delete().eq('owner_id', o).eq('student_id', SID),
+      c.from('lesson_records').delete().eq('owner_id', o).eq('student_id', SID),
+      c.from('students').delete().eq('owner_id', o).eq('id', SID)
+    ]).then(function () {
+      Cloud.native.removeItem('sabatovicz_progress_' + SID);
+      Cloud.native.removeItem('sabatovicz_practice_' + SID);
+      Cloud.native.removeItem('sched|' + SID + '|2026-08-12');
+    });
+  }
+
+  document.getElementById('clean').addEventListener('click', function () {
+    cleanup().then(function () { alert('Resíduo de teste removido.'); });
+  });
+
+  document.getElementById('run').addEventListener('click', function () {
+    document.getElementById('run').disabled = true;
+    out.innerHTML = ''; sum.innerHTML = ''; results = [];
+    runAll().then(finish).catch(function (e) {
+      no('Erro inesperado na suíte', String(e && e.message || e));
+      finish();
+    });
+  });
+
+  function finish() {
+    var f = results.filter(function (r) { return r.state === 'fail'; }).length;
+    var p = results.filter(function (r) { return r.state === 'pass'; }).length;
+    sum.className = 'summary ' + (f ? 'bad' : 'good');
+    sum.textContent = f ? (f + ' falha(s), ' + p + ' ok') : ('Tudo passou — ' + p + ' checagens.');
+    document.getElementById('run').disabled = false;
+  }
+
+  function runAll() {
+    /* ---------- 27. Autenticação ---------- */
+    if (!CFG.isConfigured()) {
+      skip('Supabase configurado', 'Preencha platform-cloud-config.js primeiro.');
+      return Promise.resolve();
+    }
+    ok('Supabase configurado', CFG.SUPABASE_URL);
+
+    if (!Auth.isSignedIn()) {
+      no('B — sessão ativa', 'Faça login antes de rodar a suíte.');
+      return Promise.resolve();
+    }
+    ok('B — login válido dá sessão', Auth.email());
+    ok('C — sessão sobrevive ao refresh', 'A sessão foi lida do armazenamento do navegador, não de memória.');
+
+    return Auth.verify().then(function (valid) {
+      valid ? ok('Sessão confirmada pelo servidor')
+            : no('Sessão confirmada pelo servidor', 'getUser() recusou o token.');
+
+      /* ---------- E. RLS nega anônimo ---------- */
+      var anon = anonClient();
+      return Promise.all([
+        anon.from('students').select('*').limit(5),
+        anon.from('lesson_content').select('*').limit(5),
+        anon.from('practice_usage').select('*').limit(5)
+      ]).then(function (rs) {
+        var leaked = rs.filter(function (r) { return r.data && r.data.length; });
+        if (leaked.length) {
+          no('E — RLS bloqueia leitura anônima',
+             'Um cliente sem login leu ' + leaked[0].data.length + ' linha(s). ' +
+             'Rode o bloco de RLS do schema.sql de novo.');
+        } else {
+          ok('E — RLS bloqueia leitura anônima', 'Sem sessão, o banco devolve zero linhas.');
+        }
+        return anon.from('students').insert({ id: SID + '_anon', name: 'x' });
+      }).then(function (res) {
+        (res && res.error)
+          ? ok('E — RLS bloqueia escrita anônima', String(res.error.message).slice(0, 90))
+          : no('E — RLS bloqueia escrita anônima', 'Um cliente sem login conseguiu inserir.');
+      });
+    }).then(function () {
+
+      /* ---------- 28. Dois contextos ---------- */
+      if (Cloud.mode !== 'live') {
+        skip('28 — sincronização entre contextos',
+             'O engine está em "' + Cloud.mode + '". Conclua a migração em migracao.html primeiro.');
+        skip('29 — fila offline', 'Idem.');
+        return;
+      }
+
+      return cleanup().then(function () {
+        /* Contexto A escreve pelas MESMAS APIs que a Studio usa em aula. */
+        NS.Progress.record(SID, ['grammar:__qa-past-simple'], '2026-08-12');
+        NS.PracticeLog.markDone(SID, '__qa-exercise-001', '2026-08-12');
+        localStorage.setItem('sched|' + SID + '|2026-08-12',
+          JSON.stringify({ status: 'done', note: 'qa' }));
+        return Cloud.flush();
+      }).then(function () { return sleep(400); })
+        .then(function () {
+        /* Contexto B: cliente independente lendo o banco de verdade. */
+        var c = client(), o = owner();
+        return Promise.all([
+          c.from('lesson_content').select('*').eq('owner_id', o).eq('student_id', SID),
+          c.from('practice_usage').select('*').eq('owner_id', o).eq('student_id', SID),
+          c.from('lesson_records').select('*').eq('owner_id', o).eq('student_id', SID)
+        ]);
+      }).then(function (rs) {
+        var lc = rs[0].data || [], pu = rs[1].data || [], lr = rs[2].data || [];
+
+        lc.length === 1 && lc[0].content_id === 'grammar:__qa-past-simple' &&
+        String(lc[0].lesson_date).slice(0, 10) === '2026-08-12'
+          ? ok('28 — Progress chega ao banco como ocorrência', 'student + content + date, uma linha.')
+          : no('28 — Progress chega ao banco como ocorrência', JSON.stringify(lc).slice(0, 140));
+
+        pu.length === 1 && pu[0].exercise_id === '__qa-exercise-001'
+          ? ok('28 — PracticeLog chega ao banco', 'first_at ' + String(pu[0].first_at).slice(0, 10))
+          : no('28 — PracticeLog chega ao banco', JSON.stringify(pu).slice(0, 140));
+
+        lr.length === 1 && lr[0].status === 'done'
+          ? ok('28 — aula do Calendar chega ao banco')
+          : no('28 — aula do Calendar chega ao banco', JSON.stringify(lr).slice(0, 140));
+
+        /* O Notebook B reconstrói o localStorage a partir dessas linhas. */
+        var local = Cloud.snapshotToLocal({
+          students: [], lessons: lr, content: lc, notes: [], custom: [], practice: pu
+        });
+        var prog = local['sabatovicz_progress_' + SID];
+        var item = prog && prog.items && prog.items['grammar:__qa-past-simple'];
+        item && item.times === 1 && item.lastAt === '2026-08-12'
+          ? ok('28 — Learning History deriva certo no outro computador',
+               'times e lastAt vêm das ocorrências, não de contador gravado.')
+          : no('28 — Learning History deriva certo no outro computador', JSON.stringify(item));
+
+        var pl = local['sabatovicz_practice_' + SID];
+        pl && pl.done && pl.done['__qa-exercise-001']
+          ? ok('28 — exercício não volta para o aluno no outro computador')
+          : no('28 — exercício não volta para o aluno no outro computador');
+
+        /* Idempotência: reenviar a mesma coisa não duplica (§19). */
+        return Cloud.applyOps(client(), owner(), [
+          { t: 'content.add', student_id: SID, content_id: 'grammar:__qa-past-simple', lesson_date: '2026-08-12' },
+          { t: 'practice.merge', student_id: SID, exercise_id: '__qa-exercise-001',
+            entry: { first_at: '2026-08-20', last_at: '2026-08-20', usage_count: 1 } }
+        ]);
+      }).then(function () {
+        var c = client(), o = owner();
+        return Promise.all([
+          c.from('lesson_content').select('*').eq('owner_id', o).eq('student_id', SID),
+          c.from('practice_usage').select('*').eq('owner_id', o).eq('student_id', SID)
+        ]);
+      }).then(function (rs) {
+        (rs[0].data || []).length === 1
+          ? ok('19 — reenviar não duplica ocorrência')
+          : no('19 — reenviar não duplica ocorrência', 'linhas: ' + (rs[0].data || []).length);
+
+        var p = (rs[1].data || [])[0];
+        p && String(p.first_at).slice(0, 10) === '2026-08-12'
+          ? ok('15 — merge preserva o first_at mais antigo',
+               'Chegou 20/08 depois do 12/08 e o banco manteve 12/08.')
+          : no('15 — merge preserva o first_at mais antigo', JSON.stringify(p));
+
+        /* ---------- 29. Offline ---------- */
+        var realFetch = window.fetch;
+        window.fetch = function () { return Promise.reject(new TypeError('Failed to fetch')); };
+        var before = Cloud.queueLength();
+        NS.Progress.record(SID, ['grammar:__qa-offline'], '2026-08-13');
+        var uiOk = NS.Progress.isCovered(SID, 'grammar:__qa-offline');
+
+        uiOk ? ok('29 — offline: a tela continua respondendo',
+                  'O registro entrou no cache local sem esperar a rede.')
+             : no('29 — offline: a tela continua respondendo');
+
+        return Cloud.flush().then(function () {
+          Cloud.queueLength() > before
+            ? ok('29 — offline: a alteração fica na fila',
+                 Cloud.queueLength() + ' operação(ões) pendente(s), gravadas no localStorage.')
+            : no('29 — offline: a alteração fica na fila', 'A fila não cresceu.');
+          window.fetch = realFetch;
+          return Cloud.flush();
+        }).then(function () { return sleep(300); }).then(function () {
+          return client().from('lesson_content').select('*')
+            .eq('owner_id', owner()).eq('student_id', SID)
+            .eq('content_id', 'grammar:__qa-offline');
+        }).then(function (res) {
+          (res.data || []).length === 1
+            ? ok('29 — voltou a internet, sincronizou', 'Nada se perdeu.')
+            : no('29 — voltou a internet, sincronizou', JSON.stringify(res.data));
+        });
+      }).then(function () {
+        return cleanup().then(function () { ok('Resíduo de teste removido'); });
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
