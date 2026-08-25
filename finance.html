@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sabatovicz — Finance</title>
+  <!-- Auth guard. Finance continua com o armazenamento local de sempre:
+       platform-cloud.js NAO e carregado aqui de proposito, para nenhum dado
+       financeiro passar perto da camada de sincronizacao. So a sessao. -->
+  <script src="platform-cloud-config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="platform-auth.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design-system/theme.css">
 <script src="design-system/icons.js" defer></script>

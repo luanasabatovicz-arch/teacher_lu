@@ -9,11 +9,13 @@
 -- PRINCÍPIOS
 --   1. UMA conta administrativa. Não há tabela de perfis, roles ou planos.
 --      A identidade vem de auth.users; `owner_id` é sempre auth.uid().
---   2. NADA de blob gigante. Cada aluno, cada aula, cada ocorrência de
---      conteúdo e cada exercício é UMA LINHA. Dois computadores editando
---      coisas diferentes nunca se sobrescrevem.
+--   2. NADA de blob gigante, e NENHUM contador como fonte da verdade.
+--      Cada aluno, cada aula, cada ocorrência de conteúdo numa data e cada
+--      DIA de uso de exercício é UMA LINHA, com a data dentro da chave
+--      primária. Dois computadores editando coisas diferentes nunca se
+--      sobrescrevem, e nenhum evento se perde na ordem da sincronização.
 --   3. IDs preservados. `students.id`, `custom_content.content_key`,
---      `practice_usage.exercise_id` e `lesson_content.content_id` guardam
+--      `practice_usage_days.exercise_id` e `lesson_content.content_id` guardam
 --      exatamente as strings que já existem no localStorage ('isa',
 --      'grammar:past-simple', 'custom-mf3k2a', 'past-complete-001').
 --      Nenhum id novo é gerado para dado existente.
@@ -176,71 +178,126 @@ create trigger custom_content_touch before update on public.custom_content
 
 
 -- ==========================================================================
--- practice_usage  —  qual exercício este aluno já gastou
+-- practice_usage_days  —  UM DIA DE USO = UMA LINHA
 -- --------------------------------------------------------------------------
--- Unique exigido pelo briefing: (owner_id, student_id, exercise_id).
--- Semântica preservada de platform-practice-log.js:
---   first_at    = data da PRIMEIRA conclusão, nunca muda
---   last_at     = data da última reutilização (só em repetições)
---   usage_count = em quantos DIAS DIFERENTES o exercício foi usado
+-- POR QUE NÃO UM CONTADOR
+-- -----------------------
+-- A primeira versão deste schema guardava `usage_count` e resolvia conflito
+-- com greatest(). Isso PERDE evento:
+--
+--   nuvem: 2 usos
+--   Notebook A offline usa em 24/08  -> local 3
+--   Notebook B offline usa em 25/08  -> local 3
+--   A sincroniza, B sincroniza -> greatest(3,3) = 3
+--   Resposta correta: 4.
+--
+-- Contador não é comutativo; conjunto de datas é. Com a data DENTRO da chave
+-- primária, A grava 24/08, B grava 25/08, e a contagem sai de
+-- COUNT(DISTINCT usage_date). Nenhuma ordem de sincronização erra.
+--
+-- E dois notebooks marcando o MESMO dia colidem na PK e viram uma linha só —
+-- que é exatamente a semântica de markDone (idempotente por dia).
+--
+-- O cliente deriva daqui o formato que platform-practice-log.js já espera:
+--   at      = MIN(usage_date)
+--   lastAt  = MAX(usage_date), só quando houve repetição
+--   n       = COUNT(DISTINCT usage_date) + extra_count (ver tabela abaixo)
 -- ==========================================================================
-create table if not exists public.practice_usage (
+create table if not exists public.practice_usage_days (
   owner_id    uuid        not null default auth.uid()
                           references auth.users (id) on delete cascade,
   student_id  text        not null,
   exercise_id text        not null,
-  first_at    date        not null,
-  last_at     date,
-  usage_count integer     not null default 1 check (usage_count >= 1),
+  usage_date  date        not null,
+  created_at  timestamptz not null default now(),
+  primary key (owner_id, student_id, exercise_id, usage_date)
+);
+
+create index if not exists practice_usage_days_by_student
+  on public.practice_usage_days (owner_id, student_id, exercise_id);
+
+
+-- ==========================================================================
+-- practice_usage_legacy  —  as utilizações antigas SEM data conhecida
+-- --------------------------------------------------------------------------
+-- O localStorage guardava `{ at, n, lastAt }`: sabe QUANTOS dias o exercício
+-- foi usado, mas só conhece duas datas — a primeira e a última. Para um
+-- registro com n = 5, três dias nunca foram gravados em lugar nenhum.
+--
+-- A migração põe `at` e `lastAt` em practice_usage_days (datas reais) e o que
+-- sobra de `n` aqui. Este número CONTA para o total, mas não vira data:
+-- fabricar dias só para bater o contador criaria histórico que a professora
+-- nunca registrou — e ele apareceria como fato no Learning History.
+--
+-- LIMITAÇÃO HISTÓRICA, EXPLÍCITA: para registros antigos com n > 2 as datas
+-- intermediárias são irrecuperáveis. O contador fica certo; as datas, não.
+-- Daqui para a frente todo uso novo é evento real com data real, e esta
+-- tabela nunca mais cresce.
+-- ==========================================================================
+create table if not exists public.practice_usage_legacy (
+  owner_id    uuid        not null default auth.uid()
+                          references auth.users (id) on delete cascade,
+  student_id  text        not null,
+  exercise_id text        not null,
+  extra_count integer     not null default 0 check (extra_count >= 0),
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now(),
   primary key (owner_id, student_id, exercise_id)
 );
 
-create index if not exists practice_usage_by_student
-  on public.practice_usage (owner_id, student_id);
-
-drop trigger if exists practice_usage_touch on public.practice_usage;
-create trigger practice_usage_touch before update on public.practice_usage
+drop trigger if exists practice_usage_legacy_touch on public.practice_usage_legacy;
+create trigger practice_usage_legacy_touch before update on public.practice_usage_legacy
   for each row execute function public.touch_updated_at();
 
-
--- ==========================================================================
--- MERGE ADITIVO DO PRACTICE LOG
--- --------------------------------------------------------------------------
--- Notebook A e Notebook B podem marcar exercícios diferentes para a mesma
--- aluna offline. Um upsert comum faria o último a sincronizar sobrescrever
--- o first_at do outro. Esta função resolve no servidor, de forma atômica:
---   first_at    = a MENOR das duas datas   (a primeira vez é a primeira vez)
---   last_at     = a MAIOR das duas
---   usage_count = o MAIOR dos dois         (nunca regride)
--- Chamada pelo cliente via rpc('merge_practice_usage', ...).
--- ==========================================================================
-create or replace function public.merge_practice_usage(
+-- Só a migração chama isto. greatest() para que rodar a migração duas vezes
+-- por engano não reduza nem duplique o resto legado.
+create or replace function public.merge_practice_legacy(
   p_student_id  text,
   p_exercise_id text,
-  p_first_at    date,
-  p_last_at     date default null,
-  p_usage_count integer default 1
+  p_extra_count integer
 )
 returns void
 language plpgsql
-security invoker            -- roda como o usuário: a RLS abaixo continua valendo
+security invoker            -- roda como o usuário: a RLS continua valendo
 set search_path = public
 as $$
 begin
-  insert into public.practice_usage
-    (owner_id, student_id, exercise_id, first_at, last_at, usage_count)
+  insert into public.practice_usage_legacy
+    (owner_id, student_id, exercise_id, extra_count)
   values
-    (auth.uid(), p_student_id, p_exercise_id, p_first_at, p_last_at,
-     greatest(coalesce(p_usage_count, 1), 1))
+    (auth.uid(), p_student_id, p_exercise_id, greatest(coalesce(p_extra_count, 0), 0))
   on conflict (owner_id, student_id, exercise_id) do update set
-    first_at    = least(public.practice_usage.first_at, excluded.first_at),
-    last_at     = greatest(
-                    coalesce(public.practice_usage.last_at, excluded.last_at),
-                    coalesce(excluded.last_at, public.practice_usage.last_at)),
-    usage_count = greatest(public.practice_usage.usage_count, excluded.usage_count),
+    extra_count = greatest(public.practice_usage_legacy.extra_count, excluded.extra_count),
     updated_at  = now();
+end;
+$$;
+
+
+-- ==========================================================================
+-- LIMPEZA DA v1 DO SCHEMA
+-- --------------------------------------------------------------------------
+-- Se você já tinha rodado a primeira versão deste arquivo, a tabela
+-- practice_usage e a função merge_practice_usage() existem e não são mais
+-- usadas por nada. Como a migração real ainda não foi executada, elas estão
+-- vazias — e por isso saem sem perda.
+--
+-- Se por qualquer motivo houver linha lá, o DROP abaixo NÃO roda e você vê
+-- um aviso: nesse caso, fale comigo antes de apagar.
+-- ==========================================================================
+do $$
+declare
+  n bigint := 0;
+begin
+  if to_regclass('public.practice_usage') is not null then
+    execute 'select count(*) from public.practice_usage' into n;
+    if n = 0 then
+      drop function if exists public.merge_practice_usage(text, text, date, date, integer);
+      drop table public.practice_usage;
+      raise notice 'practice_usage (v1, vazia) removida.';
+    else
+      raise warning 'practice_usage tem % linha(s) — NAO removida. Confira antes de apagar.', n;
+    end if;
+  end if;
 end;
 $$;
 
@@ -255,30 +312,19 @@ $$;
 -- Não existe nenhuma policy pública, nem para select. Um visitante anônimo
 -- que chame a API recebe uma lista vazia (leitura) ou erro (escrita).
 -- ==========================================================================
-alter table public.students       enable row level security;
-alter table public.lesson_records enable row level security;
-alter table public.lesson_content enable row level security;
-alter table public.content_notes  enable row level security;
-alter table public.custom_content enable row level security;
-alter table public.practice_usage enable row level security;
-
--- Blindagem extra: nem o dono da tabela escapa da RLS.
-alter table public.students       force row level security;
-alter table public.lesson_records force row level security;
-alter table public.lesson_content force row level security;
-alter table public.content_notes  force row level security;
-alter table public.custom_content force row level security;
-alter table public.practice_usage force row level security;
-
 do $$
 declare
   t text;
 begin
   foreach t in array array[
-    'students', 'lesson_records', 'lesson_content',
-    'content_notes', 'custom_content', 'practice_usage'
+    'students', 'lesson_records', 'lesson_content', 'content_notes',
+    'custom_content', 'practice_usage_days', 'practice_usage_legacy'
   ]
   loop
+    execute format('alter table public.%I enable row level security', t);
+    -- Blindagem extra: nem o dono da tabela escapa da RLS.
+    execute format('alter table public.%I force row level security', t);
+
     execute format('drop policy if exists %I on public.%I', t || '_select', t);
     execute format('drop policy if exists %I on public.%I', t || '_insert', t);
     execute format('drop policy if exists %I on public.%I', t || '_update', t);
@@ -308,7 +354,7 @@ $$;
 -- ==========================================================================
 -- VERIFICAÇÃO RÁPIDA
 -- --------------------------------------------------------------------------
--- Rode depois do schema. Todas as 6 tabelas devem aparecer com rls = true
+-- Rode depois do schema. Todas as 7 tabelas devem aparecer com rls = true
 -- e policies = 4.
 -- ==========================================================================
 -- select c.relname as tabela,
@@ -319,5 +365,6 @@ $$;
 --   join pg_namespace n on n.oid = c.relnamespace
 --  where n.nspname = 'public'
 --    and c.relname in ('students','lesson_records','lesson_content',
---                      'content_notes','custom_content','practice_usage')
+--                      'content_notes','custom_content',
+--                      'practice_usage_days','practice_usage_legacy')
 --  order by 1;

@@ -27,10 +27,28 @@
    recente daquela linha — e só daquela linha.
 
    Para dados aditivos por natureza — conteúdo coberto numa data e
-   exercício gasto — não existe sobrescrita nenhuma:
-     • lesson_content usa `insert ... on conflict do nothing`;
-     • practice_usage passa pela função merge_practice_usage(), que resolve
-       no servidor com least(first_at) / greatest(usage_count).
+   exercício gasto — não existe sobrescrita nenhuma: os dois são gravados
+   como EVENTOS POR DIA, com a data dentro da chave primária.
+     • lesson_content       → (aluno, conteúdo, data)
+     • practice_usage_days  → (aluno, exercício, data)
+
+   POR QUE O PRACTICE LOG VIRA EVENTO POR DIA
+   ------------------------------------------
+   A primeira versão guardava um contador e resolvia conflito com
+   greatest(usage_count). Isso PERDE evento:
+
+     nuvem: 2 usos · Notebook A offline usa em 24/08 → 3
+                   · Notebook B offline usa em 25/08 → 3
+     greatest(3,3) = 3, quando a resposta certa é 4.
+
+   Contador não é comutativo; conjunto de datas é. Com uma linha por dia, A
+   grava 24/08, B grava 25/08, e a contagem sai de COUNT(DISTINCT usage_date)
+   — 4, sem combinação nenhuma de ordem de sincronização que erre. Dois
+   notebooks no MESMO dia colidem na chave primária e viram uma linha só,
+   que é exatamente a semântica do markDone (idempotente por dia).
+
+   O formato que platform-practice-log.js lê ({ at, n, lastAt }) continua
+   idêntico: ele é DERIVADO das datas na hidratação. Nenhuma API mudou.
 
    MODOS
    -----
@@ -252,23 +270,65 @@
 
   /* -------- practice -------- */
 
-  function practiceEntries(rec) {
+  /**
+   * As DATAS que o registro local realmente expõe para cada exercício.
+   *
+   * `{ at, n, lastAt }` só carrega duas datas de verdade — a primeira e a
+   * última. É o suficiente: markDone só consegue criar uma data nova por
+   * chamada, e essa data sempre aparece em `at` (primeira vez) ou em
+   * `lastAt` (repetição). Comparar este conjunto antes/depois da gravação
+   * dá exatamente o dia que acabou de ser usado.
+   *
+   * Os dias intermediários de um registro legado não estão aqui porque
+   * nunca foram gravados em lugar nenhum — viram `extra_count`, e não
+   * datas inventadas.
+   */
+  function practiceDays(rec) {
     var done = (rec && rec.done) || {};
     var out = {};
     Object.keys(done).forEach(function (eid) {
-      var e = done[eid] || {};
-      out[eid] = {
-        first_at: isDate(e.at) ? e.at : null,
-        last_at: isDate(e.lastAt) ? e.lastAt : null,
-        usage_count: Math.max(1, parseInt(e.n, 10) || 1)
-      };
+      var e = done[eid] || {}, days = {};
+      if (isDate(e.at)) days[e.at] = true;
+      if (isDate(e.lastAt)) days[e.lastAt] = true;
+      out[eid] = days;
     });
     return out;
   }
 
   /* ======================================================================
      INTERCEPTOR
+     ------------------------------------------------------------------------
+     PROTEÇÃO CONTRA LAÇO DE HIDRATAÇÃO
+     ----------------------------------
+     O risco: hidratar grava no localStorage → o interceptor vê a gravação →
+     enfileira exatamente o que acabou de descer → empurra de volta → puxa de
+     novo. Um ciclo que nunca fecha.
+
+     São DUAS barreiras independentes, e qualquer uma sozinha já basta:
+
+     1. `NATIVE` — as funções originais de localStorage, capturadas ANTES de
+        instalar o interceptor. Toda escrita interna do engine (hidratação,
+        fila, estado) chama NATIVE.setItem, que não passa pelo interceptor.
+        A escrita simplesmente não é observada.
+
+     2. `hydrating` — um contador explícito. Enquanto ele for > 0, o
+        interceptor atualiza a sombra e volta sem enfileirar nada, mesmo que
+        alguma escrita escape para o caminho público (um código futuro, uma
+        extensão do navegador, um teste).
+
+     Além disso, `applySnapshotLocally` atualiza `shadow` com o valor que
+     desceu. Mesmo que uma gravação idêntica passasse pelo interceptor
+     depois, o diff daria vazio — não há linha diferente para enfileirar.
      ====================================================================== */
+
+  var hydrating = 0;
+
+  /** Roda `fn` sem que o interceptor enfileire nada do que ela gravar. */
+  function withoutSync(fn) {
+    hydrating++;
+    try { return fn(); }
+    finally { hydrating--; }
+  }
 
   function installInterceptor() {
     if (localStorage.setItem === interceptSet) return;
@@ -281,7 +341,10 @@
     try {
       var meta = classify(key);
       if (!meta) return;
-      if (Cloud.mode !== 'live') { shadow[key] = parse(value, null); return; }
+      if (hydrating > 0 || Cloud.mode !== 'live') {
+        shadow[key] = parse(value, null);
+        return;
+      }
       diffAndQueue(meta, key, shadow[key], parse(value, null));
       shadow[key] = parse(value, null);
     } catch (e) {
@@ -294,7 +357,7 @@
     try {
       var meta = classify(key);
       if (!meta) return;
-      if (Cloud.mode !== 'live') { delete shadow[key]; return; }
+      if (hydrating > 0 || Cloud.mode !== 'live') { delete shadow[key]; return; }
       diffAndQueue(meta, key, shadow[key], null);
       delete shadow[key];
     } catch (e) {
@@ -377,13 +440,21 @@
 
     if (meta.kind === 'practice') {
       var psid = meta.studentId;
-      var eB = practiceEntries(before), eA = practiceEntries(after);
+      var eB = practiceDays(before), eA = practiceDays(after);
       Object.keys(eA).forEach(function (eid) {
-        if (JSON.stringify(eB[eid] || null) === JSON.stringify(eA[eid])) return;
-        enqueue({ t: 'practice.merge', student_id: psid, exercise_id: eid, entry: eA[eid] });
+        var was = eB[eid] || {};
+        Object.keys(eA[eid]).forEach(function (d) {
+          if (was[d]) return;
+          enqueue({ t: 'practice.day.add', student_id: psid,
+                    exercise_id: eid, usage_date: d });
+        });
       });
       Object.keys(eB).forEach(function (eid) {
-        if (!eA[eid]) enqueue({ t: 'practice.delete', student_id: psid, exercise_id: eid });
+        // O exercício sumiu do registro: PracticeLog.undo() ou reset().
+        // Some da nuvem inteiro — dias e resto legado.
+        if (!eA[eid]) {
+          enqueue({ t: 'practice.forget', student_id: psid, exercise_id: eid });
+        }
       });
       return;
     }
@@ -516,22 +587,35 @@
             .eq('content_id', op.content_id).then(must);
         }
 
-        if (op.t === 'practice.merge') {
-          // Merge no SERVIDOR — least(first_at) / greatest(usage_count).
-          // É isto que impede o Notebook B de rebaixar o first_at gravado
-          // pelo Notebook A quando os dois estiveram offline.
-          return c.rpc('merge_practice_usage', {
+        if (op.t === 'practice.day.add') {
+          // Um dia = uma linha. A chave primária resolve o conflito sozinha:
+          // dois notebooks no mesmo dia colidem e viram uma linha; em dias
+          // diferentes, viram duas. Nenhum contador é comparado.
+          return c.from('practice_usage_days')
+            .upsert({
+              owner_id: owner, student_id: op.student_id,
+              exercise_id: op.exercise_id, usage_date: op.usage_date
+            }, { onConflict: 'owner_id,student_id,exercise_id,usage_date',
+                 ignoreDuplicates: true }).then(must);
+        }
+        if (op.t === 'practice.legacy.set') {
+          // Só a migração emite isto. greatest() no servidor para que rodar
+          // a migração duas vezes não some o resto legado.
+          return c.rpc('merge_practice_legacy', {
             p_student_id: op.student_id,
             p_exercise_id: op.exercise_id,
-            p_first_at: op.entry.first_at,
-            p_last_at: op.entry.last_at,
-            p_usage_count: op.entry.usage_count
+            p_extra_count: op.extra_count
           }).then(must);
         }
-        if (op.t === 'practice.delete') {
-          return c.from('practice_usage').delete()
+        if (op.t === 'practice.forget') {
+          return c.from('practice_usage_days').delete()
             .eq('owner_id', owner).eq('student_id', op.student_id)
-            .eq('exercise_id', op.exercise_id).then(must);
+            .eq('exercise_id', op.exercise_id).then(must)
+            .then(function () {
+              return c.from('practice_usage_legacy').delete()
+                .eq('owner_id', owner).eq('student_id', op.student_id)
+                .eq('exercise_id', op.exercise_id).then(must);
+            });
         }
 
         if (op.t === 'lesson.upsert') {
@@ -585,11 +669,13 @@
       fetchAll(c, 'lesson_content', owner),
       fetchAll(c, 'content_notes', owner),
       fetchAll(c, 'custom_content', owner),
-      fetchAll(c, 'practice_usage', owner)
+      fetchAll(c, 'practice_usage_days', owner),
+      fetchAll(c, 'practice_usage_legacy', owner)
     ]).then(function (r) {
       return {
         students: r[0], lessons: r[1], content: r[2],
-        notes: r[3], custom: r[4], practice: r[5]
+        notes: r[3], custom: r[4],
+        practiceDays: r[5], practiceLegacy: r[6]
       };
     });
   }
@@ -642,16 +728,41 @@
       out[PREFIX_PROGRESS + sid] = byStudent[sid];
     });
 
-    /* practice */
-    var practice = {};
-    (snap.practice || []).forEach(function (r) {
-      var rec = practice[r.student_id] || (practice[r.student_id] = { done: {} });
-      var e = { at: String(r.first_at).slice(0, 10), n: r.usage_count || 1 };
-      if (r.last_at) e.lastAt = String(r.last_at).slice(0, 10);
-      rec.done[r.exercise_id] = e;
+    /* ------------------------------------------------------------------
+       practice — DERIVADO dos dias, no formato que o frontend já espera
+       ------------------------------------------------------------------
+         at      = MIN(usage_date)
+         lastAt  = MAX(usage_date), só quando houve repetição
+         n       = COUNT(DISTINCT usage_date) + extra_count legado
+
+       `extra_count` são utilizações antigas cujas DATAS nunca existiram no
+       localStorage (o formato guardava só `at` e `n`). Elas contam, mas não
+       viram data: inventar dia para bater contador seria fabricar histórico.
+       ------------------------------------------------------------------ */
+    var pdays = {};
+    (snap.practiceDays || []).forEach(function (r) {
+      var byStu = pdays[r.student_id] || (pdays[r.student_id] = {});
+      (byStu[r.exercise_id] || (byStu[r.exercise_id] = []))
+        .push(String(r.usage_date).slice(0, 10));
     });
-    Object.keys(practice).forEach(function (sid) {
-      out[PREFIX_PRACTICE + sid] = practice[sid];
+    var pextra = {};
+    (snap.practiceLegacy || []).forEach(function (r) {
+      var byStu = pextra[r.student_id] || (pextra[r.student_id] = {});
+      byStu[r.exercise_id] = Math.max(0, r.extra_count || 0);
+    });
+
+    Object.keys(pdays).forEach(function (sid) {
+      var rec = { done: {} };
+      Object.keys(pdays[sid]).forEach(function (eid) {
+        var days = pdays[sid][eid].slice().sort();
+        var extra = (pextra[sid] || {})[eid] || 0;
+        var e = { at: days[0], n: days.length + extra };
+        // `lastAt` só existe quando o exercício foi reutilizado — é assim
+        // que platform-practice-log.js grava, e markDone compara com ele.
+        if (days.length > 1) e.lastAt = days[days.length - 1];
+        rec.done[eid] = e;
+      });
+      out[PREFIX_PRACTICE + sid] = rec;
     });
 
     /* lesson records */
@@ -671,6 +782,10 @@
    * de outro domínio (Finance, flags de migração, backups) é tocada.
    */
   function applySnapshotLocally(local) {
+    return withoutSync(function () { return applySnapshotInner(local); });
+  }
+
+  function applySnapshotInner(local) {
     var changed = 0;
     var seen = {};
 
@@ -795,6 +910,10 @@
     hasLocalData: hasLocalData,
     flush: flush,
     applyOps: applyOps,
+    applySnapshotLocally: applySnapshotLocally,
+    /** Barreira de hidratação ativa? Usado pelo teste M da verificação. */
+    isHydrating: function () { return hydrating > 0; },
+    interceptorInstalled: function () { return localStorage.setItem === interceptSet; },
 
     /** Reconsulta o banco e reescreve o cache. Retorna quantas chaves mudaram. */
     pull: function () {
@@ -900,6 +1019,14 @@
   };
 
   NS.Cloud = Cloud;
+
+  /* O interceptor é instalado AGORA, no parse deste arquivo — antes de
+     platform-students.js / progress / practice-log serem carregados. Se
+     esperasse o DOMContentLoaded, as gravações que esses arquivos fazem no
+     próprio load (semear DEFAULTS, migrateScheduleKeys, ensureMigrated)
+     escapariam sem serem observadas. Em modo 'off' ou 'pending-migration'
+     ele só mantém a sombra em dia e não enfileira nada. */
+  installInterceptor();
 
   /* Rede voltou → tenta esvaziar a fila. */
   try {

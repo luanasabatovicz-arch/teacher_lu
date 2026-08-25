@@ -50,7 +50,7 @@
   function analyze() {
     var r = {
       students: [], lessons: [], content: [], notes: [],
-      custom: [], practice: [],
+      custom: [], practice: [], practiceLegacy: [],
       counts: {}, ids: { students: [], contents: [], exercises: [] },
       duplicates: [], warnings: []
     };
@@ -89,7 +89,7 @@
     });
 
     /* -- varredura das chaves por aluno -- */
-    var contentSeen = {}, exSeen = {}, occSeen = {}, lessonSeen = {};
+    var contentSeen = {}, exSeen = {}, occSeen = {}, lessonSeen = {}, occSeenEx = {};
     for (var i = 0; i < localStorage.length; i++) {
       var k = localStorage.key(i);
       if (!k) continue;
@@ -122,21 +122,63 @@
       }
 
       if (k.indexOf(PREFIX_PRACTICE) === 0) {
+        /* ----------------------------------------------------------------
+           PRACTICE LOG — o ponto delicado da migração
+           ----------------------------------------------------------------
+           O formato antigo guarda `{ at, n, lastAt }`. Ou seja: sabe QUANTOS
+           dias o exercício foi usado, mas só conhece DUAS das datas — a
+           primeira e, quando houve repetição, a última. As datas do meio
+           nunca existiram em lugar nenhum.
+
+           Então:
+             • `at` e `lastAt` viram ocorrências reais em practice_usage_days;
+             • o que sobra de `n` vira `extra_count` em practice_usage_legacy.
+
+           `extra_count` conta, mas não vira data. Fabricar dias para bater o
+           contador criaria histórico que a professora nunca registrou — e
+           esse histórico apareceria como fato no Learning History.
+
+           LIMITAÇÃO HISTÓRICA, EXPLÍCITA: para registros antigos com n > 2,
+           as datas intermediárias são irrecuperáveis. O contador fica certo;
+           as datas, incompletas. Dali para a frente, todo uso novo é evento
+           real com data real.
+           ---------------------------------------------------------------- */
         var psid = k.slice(PREFIX_PRACTICE.length);
         var done = (get(k, {}) || {}).done || {};
         Object.keys(done).forEach(function (eid) {
           var e = done[eid] || {};
           exSeen[eid] = true;
-          if (!isDate(e.at)) {
+
+          var days = [];
+          if (isDate(e.at)) days.push(e.at);
+          if (isDate(e.lastAt) && e.lastAt !== e.at) days.push(e.lastAt);
+
+          if (!days.length) {
             r.warnings.push('Exercício "' + eid + '" de ' + psid +
-              ' sem data válida — migrado com a data de hoje para não sumir.');
+              ' não tem nenhuma data válida. Vai como uso sem data ' +
+              '(extra_count) — continua contando como gasto, e nenhuma data ' +
+              'foi inventada.');
           }
-          r.practice.push({
-            student_id: psid, exercise_id: eid,
-            first_at: isDate(e.at) ? e.at : today(),
-            last_at: isDate(e.lastAt) ? e.lastAt : null,
-            usage_count: Math.max(1, parseInt(e.n, 10) || 1)
+
+          days.forEach(function (d) {
+            var dkey = psid + '|' + eid + '|' + d;
+            if (occSeenEx[dkey]) return;
+            occSeenEx[dkey] = true;
+            r.practice.push({ student_id: psid, exercise_id: eid, usage_date: d });
           });
+
+          var n = Math.max(1, parseInt(e.n, 10) || 1);
+          var extra = n - days.length;
+          if (extra > 0) {
+            r.practiceLegacy.push({
+              student_id: psid, exercise_id: eid, extra_count: extra
+            });
+            if (days.length) {
+              r.warnings.push('Exercício "' + eid + '" de ' + psid + ': ' + extra +
+                ' utilização(ões) antiga(s) sem data conhecida — preservadas ' +
+                'no contador, sem data inventada.');
+            }
+          }
         });
         continue;
       }
@@ -176,10 +218,12 @@
       content: r.content.length,
       notes: r.notes.length,
       custom: r.custom.length,
-      practice: r.practice.length
+      practice: r.practice.length,
+      practiceLegacy: r.practiceLegacy.length
     };
     r.total = r.counts.students + r.counts.lessons + r.counts.content +
-              r.counts.notes + r.counts.custom + r.counts.practice;
+              r.counts.notes + r.counts.custom + r.counts.practice +
+              r.counts.practiceLegacy;
     return r;
   }
 
@@ -202,7 +246,8 @@
         content:  (snap.content  || []).length,
         notes:    (snap.notes    || []).length,
         custom:   (snap.custom   || []).length,
-        practice: (snap.practice || []).length,
+        practice: (snap.practiceDays   || []).length,
+        practiceLegacy: (snap.practiceLegacy || []).length,
         _snap: snap
       };
     });
@@ -227,10 +272,12 @@
                  content_id: o.content_id, note: o.note });
     });
     a.practice.forEach(function (o) {
-      ops.push({ t: 'practice.merge', student_id: o.student_id,
-                 exercise_id: o.exercise_id,
-                 entry: { first_at: o.first_at, last_at: o.last_at,
-                          usage_count: o.usage_count } });
+      ops.push({ t: 'practice.day.add', student_id: o.student_id,
+                 exercise_id: o.exercise_id, usage_date: o.usage_date });
+    });
+    a.practiceLegacy.forEach(function (o) {
+      ops.push({ t: 'practice.legacy.set', student_id: o.student_id,
+                 exercise_id: o.exercise_id, extra_count: o.extra_count });
     });
     return ops;
   }
@@ -273,7 +320,8 @@
         ['Conteúdo por aula',   analysis.counts.content,  cc.content],
         ['Notas de conteúdo',   analysis.counts.notes,    cc.notes],
         ['Conteúdo externo',    analysis.counts.custom,   cc.custom],
-        ['Exercícios usados',   analysis.counts.practice, cc.practice]
+        ['Uso de exercício por dia', analysis.counts.practice, cc.practice],
+        ['Uso antigo sem data',      analysis.counts.practiceLegacy, cc.practiceLegacy]
       ].map(function (r) {
         return {
           label: r[0], local: r[1], cloud: r[2],

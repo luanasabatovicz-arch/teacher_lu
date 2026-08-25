@@ -39,13 +39,16 @@ select c.relname as tabela,
   join pg_namespace n on n.oid = c.relnamespace
  where n.nspname = 'public'
    and c.relname in ('students','lesson_records','lesson_content',
-                     'content_notes','custom_content','practice_usage')
+                     'content_notes','custom_content',
+                     'practice_usage_days','practice_usage_legacy')
  order by 1;
 ```
 
-As 6 tabelas precisam aparecer com **rls = true** e **policies = 4**. Se alguma vier com `rls = false`, rode o `schema.sql` de novo — sem RLS, os dados ficariam abertos.
+As 7 tabelas precisam aparecer com **rls = true** e **policies = 4**. Se alguma vier com `rls = false`, rode o `schema.sql` de novo — sem RLS, os dados ficariam abertos.
 
 O `schema.sql` pode ser rodado quantas vezes você quiser: ele não apaga dado nenhum.
+
+> **Se você já rodou uma versão anterior deste arquivo:** rode de novo. A tabela `practice_usage` (que guardava um contador) foi substituída por `practice_usage_days`, com uma linha por dia de uso — um contador perdia utilização quando dois computadores ficavam offline em dias diferentes. O script remove a tabela antiga **só se ela estiver vazia**; se tiver qualquer linha, ele avisa e não apaga nada.
 
 ---
 
@@ -101,7 +104,7 @@ Salve, faça commit e publique como você já publica a Studio.
 
 Fica — **e tudo bem, é assim que ela foi feita para funcionar.**
 
-A `anon key` identifica o *projeto*, não *você*. Sozinha, ela não lê nem escreve nada: todas as 6 tabelas têm Row Level Security ligada, e todas as policies exigem um usuário autenticado cujo `auth.uid()` seja igual ao `owner_id` da linha. Sem login, o banco devolve lista vazia na leitura e erro na escrita — isso é testável na página `verificacao-cloud.html`.
+A `anon key` identifica o *projeto*, não *você*. Sozinha, ela não lê nem escreve nada: todas as 7 tabelas têm Row Level Security ligada, e todas as policies exigem um usuário autenticado cujo `auth.uid()` seja igual ao `owner_id` da linha. Sem login, o banco devolve lista vazia na leitura e erro na escrita — isso é testável na página `verificacao-cloud.html`.
 
 O que **nunca** pode ficar público é a `service_role`, porque ela passa por cima da RLS.
 
@@ -114,7 +117,7 @@ A segurança dos seus dados está no login + RLS, não em esconder a URL.
 1. Abra `login.html`.
 2. E-mail e senha do passo 3 → **Sign in**.
 
-Qualquer página que você abrir sem sessão manda você para cá automaticamente.
+Qualquer página que você abrir sem sessão manda você para cá automaticamente — inclusive o **Finance**. Os dados do Finance continuam no armazenamento local de sempre; o que mudou é só que a página passou a exigir sessão.
 
 ---
 
@@ -140,7 +143,10 @@ Abra **`verificacao-cloud.html`** e clique em **Run**. A página testa sozinha:
 - Progress, PracticeLog e Calendar chegam ao banco como linhas independentes;
 - o outro computador reconstrói o Learning History corretamente;
 - reenviar a mesma operação não duplica;
-- o `first_at` mais antigo do PracticeLog vence o merge;
+- **dois computadores offline em dias diferentes somam** (o caso que o contador errava);
+- dois computadores no mesmo dia não duplicam a utilização;
+- `firstAt`, `lastAt` e `n` do PracticeLog saem certos;
+- a hidratação não gera laço de sincronização;
 - ficar offline não perde alteração, e voltar a internet sincroniza.
 
 Ela usa um aluno de teste (`__qa_cloud__`) e apaga tudo que criou no fim.
@@ -156,5 +162,6 @@ Ela usa um aluno de teste (`__qa_cloud__`) e apaga tudo que criou no fim.
 | O chip mostra `Local — migração pendente` | falta rodar `migracao.html` neste computador |
 | O chip fica em `Offline` com internet boa | a `SUPABASE_URL` está errada, ou o `schema.sql` não foi executado |
 | `verificacao-cloud.html` acusa leitura anônima | o bloco de RLS do `schema.sql` não rodou — rode de novo |
+| `finance.html` abre sem pedir login | os `<script>` da camada de nuvem não estão no `<head>` dessa página |
 
 O `Export Backup` em `migracao.html` continua funcionando em qualquer um desses casos. Ele não depende da nuvem.

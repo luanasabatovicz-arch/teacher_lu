@@ -73,6 +73,10 @@
       <li>A: desmarque uma ocorrência. B: reflete a remoção.</li>
       <li>A: desligue a internet, registre algo — o chip mostra <code>Offline</code>
           e a tela continua respondendo. Religue: vira <code>✓ Synced</code>. B: o dado chegou.</li>
+      <li><strong>Finance (A, B, C):</strong> deslogue e abra <code>finance.html</code> —
+          tem que cair no login. Faça login e abra de novo — tem que funcionar igual a
+          antes, com os mesmos números. O Finance continua no armazenamento local: nada
+          dele foi migrado nem alterado.</li>
     </ol>
   </div>
 
@@ -116,7 +120,9 @@
     return Promise.all([
       c.from('lesson_content').delete().eq('owner_id', o).eq('student_id', SID),
       c.from('content_notes').delete().eq('owner_id', o).eq('student_id', SID),
-      c.from('practice_usage').delete().eq('owner_id', o).eq('student_id', SID),
+      c.from('practice_usage_days').delete().eq('owner_id', o).eq('student_id', SID),
+      c.from('practice_usage_days').delete().eq('owner_id', o).eq('student_id', SID + '_b'),
+      c.from('practice_usage_legacy').delete().eq('owner_id', o).eq('student_id', SID),
       c.from('lesson_records').delete().eq('owner_id', o).eq('student_id', SID),
       c.from('students').delete().eq('owner_id', o).eq('id', SID)
     ]).then(function () {
@@ -189,13 +195,34 @@
       });
     }).then(function () {
 
-      /* ---------- 28. Dois contextos ---------- */
+      /* ---------- 28 / 29 / concorrencia ---------- */
       if (Cloud.mode !== 'live') {
         skip('28 — sincronização entre contextos',
              'O engine está em "' + Cloud.mode + '". Conclua a migração em migracao.html primeiro.');
         skip('29 — fila offline', 'Idem.');
+        skip('M — hidratação sem laço', 'Idem.');
         return;
       }
+
+      /* M — a hidratação NAO pode reenfileirar o que acabou de descer.
+         Testado antes de tudo, porque um laço aqui polui o resto. */
+      var qBefore = Cloud.queueLength();
+      var hydrated = Cloud.applySnapshotLocally(Cloud.snapshotToLocal({
+        students: [], lessons: [], notes: [], custom: [],
+        content: [{ student_id: SID, content_id: 'grammar:__qa-hydrate', lesson_date: '2026-08-01' }],
+        practiceDays: [{ student_id: SID, exercise_id: '__qa-hyd-001', usage_date: '2026-08-01' }],
+        practiceLegacy: []
+      }));
+      Cloud.queueLength() === qBefore
+        ? ok('M — hidratação não gera laço de sincronização',
+             hydrated + ' chave(s) escritas pela hidratação, 0 operações enfileiradas. ' +
+             'Barreiras: NATIVE.setItem (não observado) + contador hydrating.')
+        : no('M — hidratação não gera laço de sincronização',
+             'A fila cresceu de ' + qBefore + ' para ' + Cloud.queueLength() + '.');
+
+      Cloud.interceptorInstalled()
+        ? ok('Interceptor instalado no parse', 'antes de students/progress/practice-log carregarem')
+        : no('Interceptor instalado no parse');
 
       return cleanup().then(function () {
         /* Contexto A escreve pelas MESMAS APIs que a Studio usa em aula. */
@@ -206,11 +233,10 @@
         return Cloud.flush();
       }).then(function () { return sleep(400); })
         .then(function () {
-        /* Contexto B: cliente independente lendo o banco de verdade. */
         var c = client(), o = owner();
         return Promise.all([
           c.from('lesson_content').select('*').eq('owner_id', o).eq('student_id', SID),
-          c.from('practice_usage').select('*').eq('owner_id', o).eq('student_id', SID),
+          c.from('practice_usage_days').select('*').eq('owner_id', o).eq('student_id', SID),
           c.from('lesson_records').select('*').eq('owner_id', o).eq('student_id', SID)
         ]);
       }).then(function (rs) {
@@ -221,53 +247,125 @@
           ? ok('28 — Progress chega ao banco como ocorrência', 'student + content + date, uma linha.')
           : no('28 — Progress chega ao banco como ocorrência', JSON.stringify(lc).slice(0, 140));
 
-        pu.length === 1 && pu[0].exercise_id === '__qa-exercise-001'
-          ? ok('28 — PracticeLog chega ao banco', 'first_at ' + String(pu[0].first_at).slice(0, 10))
-          : no('28 — PracticeLog chega ao banco', JSON.stringify(pu).slice(0, 140));
+        pu.length === 1 && pu[0].exercise_id === '__qa-exercise-001' &&
+        String(pu[0].usage_date).slice(0, 10) === '2026-08-12'
+          ? ok('D — uso de exercício numa data sincroniza', 'uma linha em practice_usage_days')
+          : no('D — uso de exercício numa data sincroniza', JSON.stringify(pu).slice(0, 140));
 
         lr.length === 1 && lr[0].status === 'done'
           ? ok('28 — aula do Calendar chega ao banco')
           : no('28 — aula do Calendar chega ao banco', JSON.stringify(lr).slice(0, 140));
 
-        /* O Notebook B reconstrói o localStorage a partir dessas linhas. */
-        var local = Cloud.snapshotToLocal({
-          students: [], lessons: lr, content: lc, notes: [], custom: [], practice: pu
+        /* E — mesmo exercício, mesmo dia: markDone é no-op e nao duplica. */
+        NS.PracticeLog.markDone(SID, '__qa-exercise-001', '2026-08-12');
+        return Cloud.flush().then(function () {
+          return client().from('practice_usage_days').select('*')
+            .eq('owner_id', owner()).eq('student_id', SID)
+            .eq('exercise_id', '__qa-exercise-001');
         });
-        var prog = local['sabatovicz_progress_' + SID];
-        var item = prog && prog.items && prog.items['grammar:__qa-past-simple'];
-        item && item.times === 1 && item.lastAt === '2026-08-12'
-          ? ok('28 — Learning History deriva certo no outro computador',
-               'times e lastAt vêm das ocorrências, não de contador gravado.')
-          : no('28 — Learning History deriva certo no outro computador', JSON.stringify(item));
+      }).then(function (res) {
+        (res.data || []).length === 1
+          ? ok('E — mesmo exercício no mesmo dia não duplica')
+          : no('E — mesmo exercício no mesmo dia não duplica', 'linhas: ' + (res.data || []).length);
 
-        var pl = local['sabatovicz_practice_' + SID];
-        pl && pl.done && pl.done['__qa-exercise-001']
-          ? ok('28 — exercício não volta para o aluno no outro computador')
-          : no('28 — exercício não volta para o aluno no outro computador');
+        /* F — data diferente soma. */
+        NS.PracticeLog.markDone(SID, '__qa-exercise-001', '2026-08-19');
+        return Cloud.flush().then(function () {
+          return client().from('practice_usage_days').select('*')
+            .eq('owner_id', owner()).eq('student_id', SID)
+            .eq('exercise_id', '__qa-exercise-001');
+        });
+      }).then(function (res) {
+        (res.data || []).length === 2
+          ? ok('F — mesmo exercício em datas diferentes soma', '2 dias, 2 linhas')
+          : no('F — mesmo exercício em datas diferentes soma', 'linhas: ' + (res.data || []).length);
 
-        /* Idempotência: reenviar a mesma coisa não duplica (§19). */
-        return Cloud.applyOps(client(), owner(), [
-          { t: 'content.add', student_id: SID, content_id: 'grammar:__qa-past-simple', lesson_date: '2026-08-12' },
-          { t: 'practice.merge', student_id: SID, exercise_id: '__qa-exercise-001',
-            entry: { first_at: '2026-08-20', last_at: '2026-08-20', usage_count: 1 } }
-        ]);
-      }).then(function () {
+        /* ---------------------------------------------------------------
+           G — O CASO QUE O CONTADOR ERRAVA
+           ---------------------------------------------------------------
+           Nuvem tem X em 20/08. A offline usa em 24/08, B offline usa em
+           25/08. Os dois sincronizam. Com greatest(usage_count) o resultado
+           dava 3; com uma linha por dia dá 4 — aqui, partindo de 20/08
+           sozinho, o esperado e n = 3.
+           --------------------------------------------------------------- */
+        var EX = '__qa-concur-001';
         var c = client(), o = owner();
-        return Promise.all([
-          c.from('lesson_content').select('*').eq('owner_id', o).eq('student_id', SID),
-          c.from('practice_usage').select('*').eq('owner_id', o).eq('student_id', SID)
-        ]);
-      }).then(function (rs) {
-        (rs[0].data || []).length === 1
-          ? ok('19 — reenviar não duplica ocorrência')
-          : no('19 — reenviar não duplica ocorrência', 'linhas: ' + (rs[0].data || []).length);
+        return c.from('practice_usage_days').upsert({
+          owner_id: o, student_id: SID, exercise_id: EX, usage_date: '2026-08-20'
+        }, { onConflict: 'owner_id,student_id,exercise_id,usage_date', ignoreDuplicates: true })
+        .then(function () {
+          // Notebook A (offline em 24/08) e Notebook B (offline em 25/08),
+          // sincronizando um depois do outro.
+          return Cloud.applyOps(c, o, [
+            { t: 'practice.day.add', student_id: SID, exercise_id: EX, usage_date: '2026-08-24' },
+            { t: 'practice.day.add', student_id: SID, exercise_id: EX, usage_date: '2026-08-25' }
+          ]);
+        }).then(function () {
+          return c.from('practice_usage_days').select('*')
+            .eq('owner_id', o).eq('student_id', SID).eq('exercise_id', EX);
+        });
+      }).then(function (res) {
+        var days = (res.data || []).map(function (r) { return String(r.usage_date).slice(0, 10); }).sort();
+        var local = Cloud.snapshotToLocal({
+          students: [], lessons: [], content: [], notes: [], custom: [],
+          practiceDays: res.data || [], practiceLegacy: []
+        });
+        var e = ((local['sabatovicz_practice_' + SID] || {}).done || {})['__qa-concur-001'] || {};
 
-        var p = (rs[1].data || [])[0];
-        p && String(p.first_at).slice(0, 10) === '2026-08-12'
-          ? ok('15 — merge preserva o first_at mais antigo',
-               'Chegou 20/08 depois do 12/08 e o banco manteve 12/08.')
-          : no('15 — merge preserva o first_at mais antigo', JSON.stringify(p));
+        days.length === 3
+          ? ok('G — dois dispositivos offline em datas diferentes fazem merge',
+               'dias: ' + days.join(', ') + ' — nenhum evento perdido')
+          : no('G — dois dispositivos offline em datas diferentes fazem merge', 'dias: ' + days.join(', '));
 
+        e.at === '2026-08-20' ? ok('I — firstAt correto', e.at) : no('I — firstAt correto', String(e.at));
+        e.lastAt === '2026-08-25' ? ok('J — lastAt correto', e.lastAt) : no('J — lastAt correto', String(e.lastAt));
+        e.n === 3 ? ok('K — n correto', 'n = 3 (era 3 tambem no modelo antigo, mas por sorte da ordem)')
+                  : no('K — n correto', 'n = ' + e.n);
+
+        /* H — os dois no MESMO dia. */
+        var EX2 = '__qa-concur-002';
+        var c = client(), o = owner();
+        return Cloud.applyOps(c, o, [
+          { t: 'practice.day.add', student_id: SID, exercise_id: EX2, usage_date: '2026-08-24' },
+          { t: 'practice.day.add', student_id: SID, exercise_id: EX2, usage_date: '2026-08-24' }
+        ]).then(function () {
+          return c.from('practice_usage_days').select('*')
+            .eq('owner_id', o).eq('student_id', SID).eq('exercise_id', EX2);
+        });
+      }).then(function (res) {
+        (res.data || []).length === 1
+          ? ok('H — dois dispositivos offline na mesma data não duplicam', 'uma ocorrência, n sobe uma vez')
+          : no('H — dois dispositivos offline na mesma data não duplicam', 'linhas: ' + (res.data || []).length);
+
+        /* Legado: extra_count conta sem inventar data. */
+        var local = Cloud.snapshotToLocal({
+          students: [], lessons: [], content: [], notes: [], custom: [],
+          practiceDays: [{ student_id: SID, exercise_id: '__qa-legacy', usage_date: '2026-07-01' },
+                         { student_id: SID, exercise_id: '__qa-legacy', usage_date: '2026-07-20' }],
+          practiceLegacy: [{ student_id: SID, exercise_id: '__qa-legacy', extra_count: 2 }]
+        });
+        var e = local['sabatovicz_practice_' + SID].done['__qa-legacy'];
+        (e.n === 4 && e.at === '2026-07-01' && e.lastAt === '2026-07-20')
+          ? ok('Legado — extra_count conta sem inventar data',
+               'n = 4 com apenas 2 datas reais; nenhum dia fictício foi criado.')
+          : no('Legado — extra_count conta sem inventar data', JSON.stringify(e));
+
+        /* L — aluno A != aluno B. */
+        var OTHER = SID + '_b';
+        return Cloud.applyOps(client(), owner(), [
+          { t: 'practice.day.add', student_id: OTHER, exercise_id: '__qa-exercise-001', usage_date: '2026-08-12' }
+        ]).then(function () {
+          return client().from('practice_usage_days').select('*')
+            .eq('owner_id', owner()).eq('student_id', SID)
+            .eq('exercise_id', '__qa-exercise-001');
+        }).then(function (r2) {
+          (r2.data || []).length === 2
+            ? ok('L — aluno A independente do aluno B', 'o uso do outro aluno não entrou aqui')
+            : no('L — aluno A independente do aluno B', 'linhas: ' + (r2.data || []).length);
+          return client().from('practice_usage_days').delete()
+            .eq('owner_id', owner()).eq('student_id', OTHER);
+        });
+      }).then(function () {
         /* ---------- 29. Offline ---------- */
         var realFetch = window.fetch;
         window.fetch = function () { return Promise.reject(new TypeError('Failed to fetch')); };
@@ -281,9 +379,9 @@
 
         return Cloud.flush().then(function () {
           Cloud.queueLength() > before
-            ? ok('29 — offline: a alteração fica na fila',
+            ? ok('N — offline: a alteração fica na fila',
                  Cloud.queueLength() + ' operação(ões) pendente(s), gravadas no localStorage.')
-            : no('29 — offline: a alteração fica na fila', 'A fila não cresceu.');
+            : no('N — offline: a alteração fica na fila', 'A fila não cresceu.');
           window.fetch = realFetch;
           return Cloud.flush();
         }).then(function () { return sleep(300); }).then(function () {
@@ -296,6 +394,14 @@
             : no('29 — voltou a internet, sincronizou', JSON.stringify(res.data));
         });
       }).then(function () {
+        /* O — ids intactos: nada foi reescrito em nenhum momento. */
+        return client().from('practice_usage_days').select('exercise_id')
+          .eq('owner_id', owner()).eq('student_id', SID);
+      }).then(function (res) {
+        var ids = (res.data || []).map(function (r) { return r.exercise_id; });
+        ids.indexOf('__qa-exercise-001') !== -1
+          ? ok('O — ids existentes intactos', 'gravados e lidos exatamente como vieram')
+          : no('O — ids existentes intactos', ids.join(', '));
         return cleanup().then(function () { ok('Resíduo de teste removido'); });
       });
     });
