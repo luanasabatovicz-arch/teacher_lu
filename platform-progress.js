@@ -145,6 +145,198 @@
       return out.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
     },
 
+    /* ==================================================================
+       HISTÓRICO PEDAGÓGICO — uma linha por conteúdo estudado
+       ------------------------------------------------------------------
+       "Que conteúdo esse aluno já estudou, quando foi a última vez e
+       quantas aulas?" — a pergunta que a professora faz no meio da aula.
+
+       DERIVADO, NUNCA GRAVADO. Não existe 'student_history' nem qualquer
+       chave paralela: cada linha é montada a partir de items[id], que já
+       guarda firstAt / lastAt / times / lessons. Esta função só junta isso
+       com o título do catálogo. Se o Calendar desmarcar uma ocorrência, a
+       próxima chamada já reflete — não há nada para invalidar.
+
+       PORQUE O ÍNDICE DO CATÁLOGO É MONTADO UMA VEZ
+       ---------------------------------------------
+       Content.byId() reconstrói o catálogo inteiro da skill a cada chamada.
+       Chamar por item seria O(n²) — com centenas de conteúdos e milhares de
+       registros isso trava a página. Aqui o catálogo é indexado UMA vez por
+       chamada e consultado em O(1).
+
+       TÍTULO
+       ------
+       O aluno nunca vê id técnico. Quando o catálogo não resolve o id — um
+       conteúdo externo removido do catálogo, um módulo não carregado nesta
+       página, registro legado — o id vira texto humano por humanizeId() e a
+       linha é marcada com `resolved:false`, para a interface poder mostrá-la
+       de forma discreta em vez de sumir com o histórico.
+       ================================================================== */
+
+    /** 'vocabulary:w12' -> 'Week 12'; 'grammar:past-simple' -> 'Past simple'. */
+    humanizeId: function (itemId) {
+      var parts = String(itemId || '').split(':');
+      var key = parts.length > 1 ? parts.slice(1).join(':') : parts[0];
+      var wk = key.match(/^w(\d+)$/i);
+      if (wk) return 'Week ' + wk[1];
+      var t = key.replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+      if (!t) return String(itemId || '');
+      return t.charAt(0).toUpperCase() + t.slice(1);
+    },
+
+    /** id -> item do catálogo, montado uma vez. */
+    catalogIndex: function () {
+      var Content = NS.Content, ix = {};
+      if (!Content) return ix;
+      try {
+        Content.SKILLS.forEach(function (s) {
+          Content.items(s.id).forEach(function (it) { ix[it.id] = it; });
+        });
+      } catch (e) { console.warn('[progress] could not index the catalogue', e); }
+      return ix;
+    },
+
+    /* ==================================================================
+       contentId -> TÍTULO HUMANO  (resolução única da plataforma)
+       ------------------------------------------------------------------
+       Calendar, Student Profile e Monthly Report fazem a MESMA pergunta:
+       "como é que este id se chama para o aluno?". Antes cada um respondia
+       do seu jeito, e o Report não respondia — devolvia o id cru
+       ('grammar:custom-mf3k2a') direto no relatório do aluno.
+
+       Um conteúdo registrado no Progress pode não estar mais no catálogo:
+       externo removido, módulo não carregado nesta página, registro antigo.
+       O histórico continua verdadeiro; só o nome se perdeu.
+
+       ORDEM DE RESOLUÇÃO
+       ------------------
+         1. título do Content Registry (a verdade atual);
+         2. título do custom content ainda gravado em storage;
+         3. forma humana do id, SOMENTE quando ela significa alguma coisa
+            ('vocabulary:w7' -> 'Week 7');
+         4. fallback neutro.
+
+       O passo 3 é onde mora o cuidado: humanizar 'custom-mf3k2a' devolveria
+       'Custom mf3k2a', que é o id disfarçado, não um título. Nesse caso vale
+       mais dizer "Previously recorded content" do que fabricar um nome
+       pedagógico que ninguém pode comprovar.
+       ================================================================== */
+
+    NEUTRAL_TITLE: 'Previously recorded content',
+
+    /** O "nome" derivado do id ainda é um identificador disfarçado? */
+    looksOpaque: function (key) {
+      var k = String(key || '');
+      if (!k) return true;
+      if (/^w\d+$/i.test(k)) return false;                            // w7 -> Week 7
+      if (/^custom-/i.test(k)) return true;                           // custom-mf3k2a
+      if (/^(content|item|entry|node|rec|obj)[-_]?\d+$/i.test(k)) return true;
+      if (/^[a-z]*\d[a-z0-9]{4,}$/i.test(k)) return true;             // hash / timestamp
+      return false;
+    },
+
+    /**
+     * O título que o ALUNO vê para um contentId.
+     * `index` e `customs` são opcionais — passe-os (via titleResolver) para
+     * resolver uma lista inteira sem reconstruir o catálogo a cada item.
+     */
+    titleOf: function (itemId, index, customs) {
+      if (!itemId) return Progress.NEUTRAL_TITLE;
+
+      // 1. catálogo atual
+      var it = index ? index[itemId]
+                     : ((NS.Content && NS.Content.byId) ? NS.Content.byId(itemId) : null);
+      if (it && it.title) return it.title;
+
+      var parts = String(itemId).split(':');
+      var key = parts.length > 1 ? parts.slice(1).join(':') : parts[0];
+
+      // 2. conteúdo externo que ainda existe no storage, mesmo fora do catálogo
+      var c = null;
+      if (customs) c = customs[key] || null;
+      else {
+        try {
+          c = Progress.customItems().filter(function (x) { return x.key === key; })[0] || null;
+        } catch (e) { c = null; }
+      }
+      if (c && c.title) return c.title;
+
+      // 3. forma humana, só quando significa algo
+      if (!Progress.looksOpaque(key)) return Progress.humanizeId(itemId);
+
+      // 4. neutro — nunca o id
+      return Progress.NEUTRAL_TITLE;
+    },
+
+    /**
+     * Resolver com o catálogo já indexado. Use ao converter uma LISTA:
+     *   var title = Progress.titleResolver();
+     *   ids.map(title)
+     * Content.byId() reconstrói o catálogo da skill a cada chamada; resolver
+     * item a item num relatório de um mês inteiro seria O(n²).
+     */
+    titleResolver: function () {
+      var ix = Progress.catalogIndex();
+      var customs = {};
+      try {
+        Progress.customItems().forEach(function (c) { if (c && c.key) customs[c.key] = c; });
+      } catch (e) { /* segue com o catálogo */ }
+      return function (itemId) { return Progress.titleOf(itemId, ix, customs); };
+    },
+
+    /**
+     * O histórico do aluno, uma entrada por conteúdo, mais recente primeiro.
+     *   [{ id, title, skill, skillLabel, icon, color, level, firstAt,
+     *      lastAt, times, lessons[], resolved, undated }]
+     *
+     * `undated` marca a data-sentinela '1970-01-01' usada pela migração do
+     * plano anual: o conteúdo foi estudado antes do Progress existir, então
+     * a data não é real e a interface não deve exibi-la.
+     */
+    learningHistory: function (studentId) {
+      if (!studentId) return [];
+      var items = Progress.of(studentId).items || {};
+      var ix = Progress.catalogIndex();
+      var title = Progress.titleResolver();      // mesma resolução do Report
+      var Content = NS.Content;
+
+      var out = Object.keys(items).map(function (id) {
+        var e = items[id] || {};
+        var lessons = (e.lessons || []).filter(Boolean).slice().sort();
+        var real = lessons.filter(function (d) { return d !== '1970-01-01'; });
+        var meta = ix[id] || null;
+        var skillId = String(id).split(':')[0];
+        var sk = (Content && Content.skill) ? Content.skill(skillId) : null;
+
+        return {
+          id:         id,
+          title:      title(id),
+          resolved:   !!meta,
+          skill:      skillId,
+          skillLabel: sk ? sk.label : Progress.humanizeId(skillId),
+          icon:       sk ? sk.icon : '•',
+          color:      sk ? sk.color : '#64748b',
+          level:      meta ? (meta.level || '') : '',
+          note:       e.note || '',
+          // times sai do tamanho real de lessons: é a lista que o Calendar
+          // edita. Um `times` gravado torto não contamina a contagem.
+          times:      lessons.length || 0,
+          lessons:    lessons,
+          firstAt:    real.length ? real[0] : '',
+          lastAt:     real.length ? real[real.length - 1] : '',
+          undated:    lessons.length > 0 && real.length === 0
+        };
+      });
+
+      // Mais recente primeiro; sem data real (legado) vai para o fim, em A–Z.
+      return out.sort(function (a, b) {
+        if (a.lastAt && b.lastAt) return a.lastAt < b.lastAt ? 1 : (a.lastAt > b.lastAt ? -1 : (a.title < b.title ? -1 : 1));
+        if (a.lastAt) return -1;
+        if (b.lastAt) return 1;
+        return a.title < b.title ? -1 : 1;
+      });
+    },
+
     /* ------------------------------------------------------------------
        Writing
        ------------------------------------------------------------------ */

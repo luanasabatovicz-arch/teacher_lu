@@ -628,12 +628,31 @@ function renderLessonProgress(){
     : '';
 
   const rows = [];
+  const inCatalog = {};
   LP_Content.SKILLS.forEach(sk => {
     LP_Content.items(sk.id).forEach(it => {
+      inCatalog[it.id] = true;
       if(lpFilterText && it.title.toLowerCase().indexOf(lpFilterText.toLowerCase()) === -1) return;
       rows.push({ it, sk, on: covered.indexOf(it.id) !== -1 });
     });
   });
+
+  // CONTEÚDO REGISTRADO NESTA DATA QUE O CATÁLOGO NÃO CONHECE MAIS.
+  // A lista acima nasce do catálogo, então um conteúdo marcado neste dia que
+  // saiu do catálogo — externo removido, módulo não carregado nesta página,
+  // registro antigo — sumia da aula: o contador dizia "2 marked" e aparecia
+  // um checkbox só, sem como desmarcar o que sobrou. Abrir uma aula antiga
+  // dava a impressão de que menos coisa tinha sido trabalhada.
+  // Estes itens entram pelo que o Progress sabe, com título humano.
+  covered.forEach(id => {
+    if(inCatalog[id]) return;
+    const skillId = String(id).split(':')[0];
+    const sk = LP_Content.skill(skillId) || { icon:'•', label:LP_Progress.humanizeId(skillId) };
+    const title = LP_Progress.titleOf(id);        // mesma resolução do Profile e do Report
+    if(lpFilterText && title.toLowerCase().indexOf(lpFilterText.toLowerCase()) === -1) return;
+    rows.push({ it:{ id:id, title:title, level:'' }, sk, on:true, orphan:true });
+  });
+
   rows.sort((a,b) => (b.on?1:0)-(a.on?1:0));
 
   document.getElementById('lpList').innerHTML = rows.length
@@ -642,7 +661,8 @@ function renderLessonProgress(){
         <input type="checkbox" ${r.on?'checked':''} onchange="lpMark('${r.it.id}')">
         <span style="font-size:13px;color:var(--tl-text)">${r.sk.icon} ${lpEsc(r.it.title)}</span>
         ${r.it.level?`<span class="lvl-badge" style="margin-left:auto">${lpEsc(r.it.level)}</span>`
-                    :(lpIsCustomId(r.it.id)?'<span class="lp-tag">added by you</span>':'')}
+                    :(r.orphan?'<span class="lp-tag">no longer in the catalogue</span>'
+                    :(lpIsCustomId(r.it.id)?'<span class="lp-tag">added by you</span>':''))}
       </label>`).join('')
     : '<div class="empty">No content matches.</div>';
 
