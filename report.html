@@ -248,9 +248,13 @@ function render(model) {
   const compKeys = Object.keys(model.competencies);
   if (compKeys.length) {
     let inner = '';
+    // Mesma resolução do Perfil, do Calendar e do collectLessons: um conteúdo
+    // que saiu do catálogo aparece com título humano, nunca com o id.
+    const titleOf = TeacherLu.Progress && TeacherLu.Progress.titleResolver
+      ? TeacherLu.Progress.titleResolver()
+      : (id => { const x = TeacherLu.Content.byId(id); return x ? x.title : 'Previously recorded content'; });
     compKeys.forEach(itemId => {
-      const it = TeacherLu.Content.byId(itemId);
-      const title = it ? it.title : itemId;
+      const title = titleOf(itemId);
       const phrases = model.competencies[itemId];
       inner += `<div class="rp-card">
         <div class="rp-card-title">${escapeHtml(title)}</div>

@@ -195,12 +195,22 @@
   function collectLessons(ctx) {
     var Cal = NS.Calendar; if (!Cal) return { rows: [] };
     var lessons = Cal.lessons({ student: ctx.studentId, month: ctx.month });
+
+    // O relatório vai para o ALUNO. Um conteúdo registrado no Progress que
+    // saiu do catálogo — externo removido, módulo ausente, registro antigo —
+    // caía aqui como id cru ('grammar:custom-mf3k2a') no meio das aulas.
+    // titleResolver() é a mesma resolução usada pelo Perfil e pelo Calendar,
+    // com o catálogo indexado uma vez para o mês inteiro.
+    var titleOf = (ctx.Progress && ctx.Progress.titleResolver)
+      ? ctx.Progress.titleResolver()
+      : function (id) {
+          var it = ctx.Content ? ctx.Content.byId(id) : null;
+          return (it && it.title) ? it.title : 'Previously recorded content';
+        };
+
     var rows = lessons.map(function (l) {
       var contentIds = ctx.Progress ? ctx.Progress.ofLesson(ctx.studentId, l.date) : [];
-      var contentTitles = contentIds.map(function (id) {
-        var it = ctx.Content ? ctx.Content.byId(id) : null;
-        return it ? it.title : id;
-      });
+      var contentTitles = contentIds.map(titleOf);
       var homework = '';
       if (l.sessions) {
         homework = l.sessions.map(function (s) { return s.homework; }).filter(Boolean).join(' · ');
@@ -256,8 +266,19 @@
     var out = {};
     var themes = [];
     if (!NS.Competencies) return { byItem: out, themes: [] };
+
+    // Competência é uma AFIRMAÇÃO sobre o aluno ("você consegue ler textos
+    // curtos nesse tema"). Quando nem o título do conteúdo é recuperável, a
+    // frase cairia para o nível da skill e o relatório afirmaria algo sobre
+    // um conteúdo que ninguém consegue identificar. Melhor não afirmar:
+    // a aula continua listada na seção de aulas, com título neutro.
+    var P = ctx.Progress;
+    var titleOf = (P && P.titleResolver) ? P.titleResolver() : null;
+    var NEUTRAL = (P && P.NEUTRAL_TITLE) || 'Previously recorded content';
+
     ctx.allItemIds.forEach(function (id) {
       var it = ctx.Content ? ctx.Content.byId(id) : null;
+      if (!it && titleOf && titleOf(id) === NEUTRAL) return;   // não identificável
       var comps = NS.Competencies.of(id, it);
       if (comps.length) out[id] = comps;
       var theme = NS.Competencies.themeOf(id, it);

@@ -196,6 +196,94 @@
       return ix;
     },
 
+    /* ==================================================================
+       contentId -> TÍTULO HUMANO  (resolução única da plataforma)
+       ------------------------------------------------------------------
+       Calendar, Student Profile e Monthly Report fazem a MESMA pergunta:
+       "como é que este id se chama para o aluno?". Antes cada um respondia
+       do seu jeito, e o Report não respondia — devolvia o id cru
+       ('grammar:custom-mf3k2a') direto no relatório do aluno.
+
+       Um conteúdo registrado no Progress pode não estar mais no catálogo:
+       externo removido, módulo não carregado nesta página, registro antigo.
+       O histórico continua verdadeiro; só o nome se perdeu.
+
+       ORDEM DE RESOLUÇÃO
+       ------------------
+         1. título do Content Registry (a verdade atual);
+         2. título do custom content ainda gravado em storage;
+         3. forma humana do id, SOMENTE quando ela significa alguma coisa
+            ('vocabulary:w7' -> 'Week 7');
+         4. fallback neutro.
+
+       O passo 3 é onde mora o cuidado: humanizar 'custom-mf3k2a' devolveria
+       'Custom mf3k2a', que é o id disfarçado, não um título. Nesse caso vale
+       mais dizer "Previously recorded content" do que fabricar um nome
+       pedagógico que ninguém pode comprovar.
+       ================================================================== */
+
+    NEUTRAL_TITLE: 'Previously recorded content',
+
+    /** O "nome" derivado do id ainda é um identificador disfarçado? */
+    looksOpaque: function (key) {
+      var k = String(key || '');
+      if (!k) return true;
+      if (/^w\d+$/i.test(k)) return false;                            // w7 -> Week 7
+      if (/^custom-/i.test(k)) return true;                           // custom-mf3k2a
+      if (/^(content|item|entry|node|rec|obj)[-_]?\d+$/i.test(k)) return true;
+      if (/^[a-z]*\d[a-z0-9]{4,}$/i.test(k)) return true;             // hash / timestamp
+      return false;
+    },
+
+    /**
+     * O título que o ALUNO vê para um contentId.
+     * `index` e `customs` são opcionais — passe-os (via titleResolver) para
+     * resolver uma lista inteira sem reconstruir o catálogo a cada item.
+     */
+    titleOf: function (itemId, index, customs) {
+      if (!itemId) return Progress.NEUTRAL_TITLE;
+
+      // 1. catálogo atual
+      var it = index ? index[itemId]
+                     : ((NS.Content && NS.Content.byId) ? NS.Content.byId(itemId) : null);
+      if (it && it.title) return it.title;
+
+      var parts = String(itemId).split(':');
+      var key = parts.length > 1 ? parts.slice(1).join(':') : parts[0];
+
+      // 2. conteúdo externo que ainda existe no storage, mesmo fora do catálogo
+      var c = null;
+      if (customs) c = customs[key] || null;
+      else {
+        try {
+          c = Progress.customItems().filter(function (x) { return x.key === key; })[0] || null;
+        } catch (e) { c = null; }
+      }
+      if (c && c.title) return c.title;
+
+      // 3. forma humana, só quando significa algo
+      if (!Progress.looksOpaque(key)) return Progress.humanizeId(itemId);
+
+      // 4. neutro — nunca o id
+      return Progress.NEUTRAL_TITLE;
+    },
+
+    /**
+     * Resolver com o catálogo já indexado. Use ao converter uma LISTA:
+     *   var title = Progress.titleResolver();
+     *   ids.map(title)
+     * Content.byId() reconstrói o catálogo da skill a cada chamada; resolver
+     * item a item num relatório de um mês inteiro seria O(n²).
+     */
+    titleResolver: function () {
+      var ix = Progress.catalogIndex();
+      var customs = {};
+      try {
+        Progress.customItems().forEach(function (c) { if (c && c.key) customs[c.key] = c; });
+      } catch (e) { /* segue com o catálogo */ }
+      return function (itemId) { return Progress.titleOf(itemId, ix, customs); };
+    },
+
     /**
      * O histórico do aluno, uma entrada por conteúdo, mais recente primeiro.
      *   [{ id, title, skill, skillLabel, icon, color, level, firstAt,
@@ -209,6 +297,7 @@
       if (!studentId) return [];
       var items = Progress.of(studentId).items || {};
       var ix = Progress.catalogIndex();
+      var title = Progress.titleResolver();      // mesma resolução do Report
       var Content = NS.Content;
 
       var out = Object.keys(items).map(function (id) {
@@ -221,7 +310,7 @@
 
         return {
           id:         id,
-          title:      meta ? meta.title : Progress.humanizeId(id),
+          title:      title(id),
           resolved:   !!meta,
           skill:      skillId,
           skillLabel: sk ? sk.label : Progress.humanizeId(skillId),

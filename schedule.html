@@ -648,7 +648,7 @@ function renderLessonProgress(){
     if(inCatalog[id]) return;
     const skillId = String(id).split(':')[0];
     const sk = LP_Content.skill(skillId) || { icon:'•', label:LP_Progress.humanizeId(skillId) };
-    const title = LP_Progress.humanizeId(id);
+    const title = LP_Progress.titleOf(id);        // mesma resolução do Profile e do Report
     if(lpFilterText && title.toLowerCase().indexOf(lpFilterText.toLowerCase()) === -1) return;
     rows.push({ it:{ id:id, title:title, level:'' }, sk, on:true, orphan:true });
   });
