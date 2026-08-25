@@ -109,7 +109,7 @@
 
   /* Um segundo cliente, SEM sessão — é o "visitante anônimo" do teste E. */
   function anonClient() {
-    return window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+    return window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_PUBLISHABLE_KEY, {
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
     });
   }
@@ -172,26 +172,76 @@
       valid ? ok('Sessão confirmada pelo servidor')
             : no('Sessão confirmada pelo servidor', 'getUser() recusou o token.');
 
-      /* ---------- E. RLS nega anônimo ---------- */
+      /* ---------- Chave e segredos ---------- */
+      var key = String(CFG.SUPABASE_PUBLISHABLE_KEY || '');
+      /^sb_publishable_/.test(key)
+        ? ok('Publishable key aceita pelo client', 'sb_publishable_… (chave moderna)')
+        : (/^eyJ/.test(key)
+            ? skip('Publishable key', 'Está usando a legacy anon key (eyJ…). Funciona, mas o ' +
+                                      'SETUP.md pede a Publishable key desta aplicação nova.')
+            : no('Publishable key aceita pelo client', 'formato inesperado'));
+
+      (CFG.looksLikeSecret && !CFG.looksLikeSecret(key))
+        ? ok('Nenhum secret no frontend', 'não é sb_secret_ nem service_role')
+        : no('Nenhum secret no frontend', 'A chave configurada parece ser um SECRET. Troque JÁ.');
+
+      /* ---------- E. anon sem CRUD nas 7 tabelas ---------- */
+      var TABLES = ['students', 'lesson_records', 'lesson_content', 'content_notes',
+                    'custom_content', 'practice_usage_days', 'practice_usage_legacy'];
       var anon = anonClient();
-      return Promise.all([
-        anon.from('students').select('*').limit(5),
-        anon.from('lesson_content').select('*').limit(5),
-        anon.from('practice_usage').select('*').limit(5)
-      ]).then(function (rs) {
-        var leaked = rs.filter(function (r) { return r.data && r.data.length; });
-        if (leaked.length) {
-          no('E — RLS bloqueia leitura anônima',
-             'Um cliente sem login leu ' + leaked[0].data.length + ' linha(s). ' +
-             'Rode o bloco de RLS do schema.sql de novo.');
-        } else {
-          ok('E — RLS bloqueia leitura anônima', 'Sem sessão, o banco devolve zero linhas.');
-        }
-        return anon.from('students').insert({ id: SID + '_anon', name: 'x' });
-      }).then(function (res) {
-        (res && res.error)
-          ? ok('E — RLS bloqueia escrita anônima', String(res.error.message).slice(0, 90))
-          : no('E — RLS bloqueia escrita anônima', 'Um cliente sem login conseguiu inserir.');
+
+      function denied(res) {
+        // Com os GRANTs revogados o esperado é erro ("permission denied").
+        // Uma lista vazia também é aceitável — significa que a RLS barrou —
+        // mas o erro é o sinal de que a camada de GRANT está no lugar.
+        if (res && res.error) return 'erro';
+        if (res && res.data && res.data.length === 0) return 'vazio';
+        return null;
+      }
+
+      return Promise.all(TABLES.map(function (t) {
+        return anon.from(t).select('*').limit(1).then(function (r) {
+          return { t: t, how: denied(r), msg: r.error && String(r.error.message).slice(0, 60) };
+        });
+      })).then(function (rs) {
+        var leaked = rs.filter(function (r) { return !r.how; });
+        var byGrant = rs.filter(function (r) { return r.how === 'erro'; }).length;
+
+        leaked.length
+          ? no('E — anon não lê nenhuma das 7 tabelas',
+               'vazou em: ' + leaked.map(function (r) { return r.t; }).join(', '))
+          : ok('E — anon não lê nenhuma das 7 tabelas',
+               byGrant + '/7 barradas já no GRANT (permission denied), o resto pela RLS.');
+
+        byGrant === 7
+          ? ok('GRANTs aplicados: anon sem privilégio de tabela',
+               'as 7 respondem permission denied antes da RLS')
+          : skip('GRANTs aplicados: anon sem privilégio de tabela',
+                 byGrant + '/7 responderam permission denied. Se for menos que 7, ' +
+                 'o bloco de GRANTs do schema.sql não rodou — a RLS ainda protege, ' +
+                 'mas a segunda camada está faltando.');
+
+        return Promise.all([
+          anon.from('students').insert({ id: SID + '_anon', name: 'x' }),
+          anon.from('practice_usage_days').delete().eq('student_id', SID),
+          anon.rpc('merge_practice_legacy', {
+            p_student_id: SID, p_exercise_id: 'x', p_extra_count: 1
+          })
+        ]);
+      }).then(function (rs) {
+        (rs[0] && rs[0].error)
+          ? ok('E — anon não insere', String(rs[0].error.message).slice(0, 70))
+          : no('E — anon não insere', 'um cliente sem login conseguiu inserir.');
+
+        (rs[1] && rs[1].error)
+          ? ok('E — anon não apaga', String(rs[1].error.message).slice(0, 70))
+          : no('E — anon não apaga', 'um cliente sem login conseguiu apagar.');
+
+        (rs[2] && rs[2].error)
+          ? ok('merge_practice_legacy não é chamável por anon',
+               String(rs[2].error.message).slice(0, 70))
+          : no('merge_practice_legacy não é chamável por anon',
+               'EXECUTE não foi revogado de PUBLIC/anon.');
       });
     }).then(function () {
 

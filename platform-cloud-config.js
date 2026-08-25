@@ -2,25 +2,41 @@
    Teacher Lu Studio — configuração da nuvem
    --------------------------------------------------------------------------
    Os DOIS únicos valores que você precisa preencher. Estão em
-   Supabase → seu projeto → Project Settings → API.
+   Supabase → seu projeto → Project Settings → API Keys.
 
    Passo a passo com telas: supabase/SETUP.md
 
-   POR QUE A ANON KEY PODE FICAR AQUI, NO CÓDIGO PÚBLICO
-   -----------------------------------------------------
-   A anon key é PÚBLICA POR DESIGN. Ela identifica o projeto, não a pessoa.
-   Sozinha ela não lê nem escreve nada: toda tabela tem Row Level Security
-   ligada, e toda policy exige um usuário autenticado cujo `auth.uid()`
-   bata com o `owner_id` da linha. Sem login, a API devolve lista vazia na
-   leitura e erro na escrita.
+   POR QUE A PUBLISHABLE KEY PODE FICAR AQUI, NO CÓDIGO PÚBLICO
+   -----------------------------------------------------------
+   A publishable key (`sb_publishable_...`) foi feita exatamente para isto:
+   viver no frontend, à vista de todo mundo. Ela identifica o PROJETO, não a
+   pessoa — é o endereço da porta, não a chave dela.
+
+   Sozinha, ela não lê nem escreve nada nas tabelas da Studio. São três
+   camadas antes do dado:
+
+     1. Autenticação — sem login não existe `auth.uid()`;
+     2. GRANTs       — o papel `anon` (quem chega sem login) não tem
+                       privilégio NENHUM nas 7 tabelas. Nem SELECT;
+     3. RLS          — para quem está autenticado, cada policy exige
+                       `owner_id = auth.uid()`.
+
+   Um visitante com esta chave na mão bate na camada 2 e recebe
+   "permission denied" antes mesmo de a RLS entrar na conversa.
+
+   Esta é uma aplicação nova, então usa a publishable key moderna e não a
+   legacy `anon` key (o JWT longo começado em `eyJ...`). As duas funcionam,
+   mas a legacy está em caminho de descontinuação no Supabase.
 
    O que NUNCA pode entrar neste arquivo — nem em nenhum outro do repositório:
-     • a service_role key (essa ignora RLS e daria acesso total);
-     • sua senha;
+     • a secret key (`sb_secret_...`) ou a legacy `service_role`
+       — essas ignoram a RLS e dariam acesso total ao banco;
+     • a senha do banco de dados;
+     • a sua senha de login;
      • qualquer token administrativo.
 
-   Se algum dia a service_role vazar para cá, o repositório inteiro vira
-   chave-mestra do banco. A anon key, não.
+   Se uma secret key vazar para cá, o repositório inteiro vira chave-mestra.
+   A publishable key, não.
    ========================================================================== */
 
 (function (global) {
@@ -33,8 +49,8 @@
     /* Project URL — algo como 'https://abcdefghijklm.supabase.co' */
     SUPABASE_URL: '',
 
-    /* anon / public key — o JWT longo que começa com 'eyJ...' */
-    SUPABASE_ANON_KEY: '',
+    /* Publishable key — começa com 'sb_publishable_' */
+    SUPABASE_PUBLISHABLE_KEY: '',
 
     /* Página de login. Trocar só se você renomear o arquivo. */
     LOGIN_PAGE: 'login.html',
@@ -51,8 +67,18 @@
     /** Config preenchida? Usado pelas telas para dar um aviso honesto. */
     isConfigured: function () {
       var c = NS.CloudConfig;
-      return !!(c.SUPABASE_URL && c.SUPABASE_ANON_KEY &&
+      return !!(c.SUPABASE_URL && c.SUPABASE_PUBLISHABLE_KEY &&
                 c.SUPABASE_URL.indexOf('http') === 0);
+    },
+
+    /**
+     * Guarda-costas contra o erro mais caro possível: colar aqui uma chave
+     * que NÃO pode ser pública. Não impede nada sozinho — só grita bem alto
+     * no console em vez de deixar passar em silêncio.
+     */
+    looksLikeSecret: function (key) {
+      var k = String(key || '');
+      return /^sb_secret_/i.test(k) || /service_role/i.test(k);
     }
   };
 

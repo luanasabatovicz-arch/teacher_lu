@@ -305,8 +305,8 @@ $$;
 -- ==========================================================================
 -- ROW LEVEL SECURITY
 -- --------------------------------------------------------------------------
--- Sem isto, a anon key publicada no frontend daria leitura ao mundo inteiro.
--- Com isto, a anon key sozinha não lê UMA linha sequer: toda policy exige
+-- Sem isto, a publishable key que vive no frontend daria leitura ao mundo
+-- inteiro. Com isto, ela sozinha não lê UMA linha sequer: toda policy exige
 -- `to authenticated` E `owner_id = auth.uid()`.
 --
 -- Não existe nenhuma policy pública, nem para select. Um visitante anônimo
@@ -330,25 +330,94 @@ begin
     execute format('drop policy if exists %I on public.%I', t || '_update', t);
     execute format('drop policy if exists %I on public.%I', t || '_delete', t);
 
+    -- (select auth.uid()) em vez de auth.uid() puro: o planejador trata a
+    -- subquery como InitPlan e avalia UMA vez por consulta, não uma vez por
+    -- linha. Mesma semântica, mesma autorização — só não recalcula a função
+    -- milhares de vezes num Monthly Report.
     execute format(
       'create policy %I on public.%I for select to authenticated
-         using (owner_id = auth.uid())', t || '_select', t);
+         using (owner_id = (select auth.uid()))', t || '_select', t);
 
     execute format(
       'create policy %I on public.%I for insert to authenticated
-         with check (owner_id = auth.uid())', t || '_insert', t);
+         with check (owner_id = (select auth.uid()))', t || '_insert', t);
 
     execute format(
       'create policy %I on public.%I for update to authenticated
-         using (owner_id = auth.uid())
-         with check (owner_id = auth.uid())', t || '_update', t);
+         using (owner_id = (select auth.uid()))
+         with check (owner_id = (select auth.uid()))', t || '_update', t);
 
     execute format(
       'create policy %I on public.%I for delete to authenticated
-         using (owner_id = auth.uid())', t || '_delete', t);
+         using (owner_id = (select auth.uid()))', t || '_delete', t);
   end loop;
 end;
 $$;
+
+
+-- ==========================================================================
+-- GRANTS — a camada que vem ANTES da RLS
+-- --------------------------------------------------------------------------
+-- RLS decide QUAIS LINHAS um papel enxerga. GRANT decide se o papel pode
+-- tocar na tabela. São coisas diferentes, e o Supabase concede privilégio de
+-- tabela a `anon` e `authenticated` por default nas tabelas novas do schema
+-- public — ou seja, sem o bloco abaixo, `anon` teria permissão de tabela e
+-- estaria sendo barrada só pela RLS.
+--
+-- Uma camada só é o suficiente até o dia em que não é: uma policy criada
+-- errada no futuro, um `alter table ... disable row level security` por
+-- engano, e a permissão de tabela vira a única coisa entre a Studio e o
+-- mundo. Aqui `anon` simplesmente não tem privilégio nenhum: o erro passa a
+-- ser "permission denied for table", antes de a RLS entrar na conversa.
+--
+-- Divisão final:
+--   anon           nada. Nem select. (só precisa de auth para fazer login)
+--   authenticated  SELECT, INSERT, UPDATE, DELETE — e a RLS diz quais linhas
+--   service_role   tudo — é o papel administrativo do Supabase, usado por
+--                  dashboard/Edge Functions e NUNCA pelo frontend
+-- ==========================================================================
+do $$
+declare
+  t text;
+begin
+  foreach t in array array[
+    'students', 'lesson_records', 'lesson_content', 'content_notes',
+    'custom_content', 'practice_usage_days', 'practice_usage_legacy'
+  ]
+  loop
+    -- PUBLIC é o pseudo-papel que todo mundo herda; anon é o visitante
+    -- sem login. Nenhum dos dois tem o que fazer nestas tabelas.
+    execute format('revoke all on table public.%I from public', t);
+    execute format('revoke all on table public.%I from anon', t);
+
+    execute format(
+      'grant select, insert, update, delete on table public.%I to authenticated', t);
+
+    -- service_role é o papel administrativo padrão do Supabase.
+    execute format('grant all on table public.%I to service_role', t);
+  end loop;
+end;
+$$;
+
+-- --------------------------------------------------------------------------
+-- Funções
+-- --------------------------------------------------------------------------
+-- No PostgreSQL toda função nasce com EXECUTE para PUBLIC. Sem revogar,
+-- `anon` poderia CHAMAR merge_practice_legacy(). Ela não conseguiria gravar
+-- nada útil — é `security invoker`, então a RLS continuaria valendo e o
+-- insert falharia por auth.uid() nulo — mas função administrativa exposta a
+-- visitante anônimo é superfície que não precisa existir.
+revoke all on function public.merge_practice_legacy(text, text, integer) from public;
+revoke all on function public.merge_practice_legacy(text, text, integer) from anon;
+grant execute on function public.merge_practice_legacy(text, text, integer)
+  to authenticated, service_role;
+
+-- touch_updated_at() só é chamada por trigger, nunca pela API. O PostgreSQL
+-- não exige EXECUTE do usuário para disparar um trigger, então revogar de
+-- PUBLIC não quebra nada — só tira a função da superfície pública.
+revoke all on function public.touch_updated_at() from public;
+revoke all on function public.touch_updated_at() from anon;
+grant execute on function public.touch_updated_at() to authenticated, service_role;
 
 
 -- ==========================================================================

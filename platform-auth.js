@@ -140,7 +140,14 @@
       if (!CFG.isConfigured || !CFG.isConfigured()) return null;
       var lib = global.supabase;
       if (!lib || !lib.createClient) return null;
-      _client = lib.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+      if (CFG.looksLikeSecret && CFG.looksLikeSecret(CFG.SUPABASE_PUBLISHABLE_KEY)) {
+        console.error('[auth] A chave em platform-cloud-config.js parece ser uma ' +
+          'SECRET key (sb_secret_ / service_role). Ela ignora a RLS e não pode ' +
+          'ficar no frontend. Use a Publishable key (sb_publishable_...). ' +
+          'Cliente NÃO criado.');
+        return null;
+      }
+      _client = lib.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_PUBLISHABLE_KEY, {
         auth: {
           persistSession: true,
           autoRefreshToken: true,

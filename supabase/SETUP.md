@@ -2,7 +2,7 @@
 
 Sete passos. Leva uns 15 minutos, e você só precisa fazer **uma vez**.
 
-Nenhum passo aqui pede senha no código. Nenhum passo pede a `service_role`.
+Nenhum passo aqui pede senha no código. Nenhum passo pede a Secret key (`sb_secret_` / `service_role`).
 
 ---
 
@@ -76,16 +76,18 @@ Com isso, mesmo alguém que descubra a URL do projeto não consegue criar conta.
 
 ## 4. Pegar os dois valores
 
-Menu lateral → **Project Settings** (a engrenagem) → **API**.
+Menu lateral → **Project Settings** (a engrenagem) → **API Keys**.
 
 Copie:
 
 | Onde está na tela | O que é |
 |---|---|
-| **Project URL** | algo como `https://abcdefghijklm.supabase.co` |
-| **Project API keys → `anon` `public`** | um texto longo começando com `eyJ...` |
+| **Project Settings → API** (ou **Data API**) → **Project URL** | algo como `https://abcdefghijklm.supabase.co` |
+| **Project Settings → API Keys → Publishable key** | um texto começando com `sb_publishable_...` |
 
-**Não copie a `service_role`.** Ela fica escondida atrás de um "Reveal" nessa mesma tela. Essa chave ignora as regras de segurança e daria acesso total ao banco — ela nunca deve entrar em nenhum arquivo deste repositório.
+A **Publishable key** é a chave moderna, feita para viver no frontend. Se a tela também mostrar uma aba de **Legacy API keys** com uma `anon` `public` (aquele JWT longo começando em `eyJ...`), **ignore** — ela ainda funciona, mas está em caminho de descontinuação, e esta é uma aplicação nova.
+
+Na mesma tela existe uma **Secret key** (`sb_secret_...`, a antiga `service_role`), escondida atrás de um **Reveal**. **Não copie.** Ela ignora todas as regras de segurança e daria acesso total ao banco — nunca pode entrar em nenhum arquivo deste repositório. Se você colar uma secret key por engano, a Studio se recusa a criar o cliente e grita no console.
 
 ---
 
@@ -94,21 +96,27 @@ Copie:
 Abra o arquivo **`platform-cloud-config.js`** na raiz do projeto e preencha as duas linhas:
 
 ```js
-SUPABASE_URL:      'https://abcdefghijklm.supabase.co',
-SUPABASE_ANON_KEY: 'eyJhbGciOi...',
+SUPABASE_URL:             'https://abcdefghijklm.supabase.co',
+SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_...',
 ```
 
 Salve, faça commit e publique como você já publica a Studio.
 
 ### "Mas a chave não fica pública no GitHub?"
 
-Fica — **e tudo bem, é assim que ela foi feita para funcionar.**
+Fica — **e tudo bem, é exatamente para isso que ela existe.**
 
-A `anon key` identifica o *projeto*, não *você*. Sozinha, ela não lê nem escreve nada: todas as 7 tabelas têm Row Level Security ligada, e todas as policies exigem um usuário autenticado cujo `auth.uid()` seja igual ao `owner_id` da linha. Sem login, o banco devolve lista vazia na leitura e erro na escrita — isso é testável na página `verificacao-cloud.html`.
+A publishable key identifica o *projeto*, não *você*. É o endereço da porta, não a chave dela. Entre ela e os seus dados há três camadas:
 
-O que **nunca** pode ficar público é a `service_role`, porque ela passa por cima da RLS.
+1. **Autenticação** — sem login não existe `auth.uid()`;
+2. **GRANTs** — o papel `anon` (quem chega sem login) **não tem privilégio nenhum** nas 7 tabelas, nem `SELECT`;
+3. **RLS** — para quem está autenticado, toda policy exige `owner_id = auth.uid()`.
 
-A segurança dos seus dados está no login + RLS, não em esconder a URL.
+Quem pegar essa chave no GitHub e tentar ler a tabela de alunos recebe `permission denied` na camada 2, antes mesmo de a RLS entrar na conversa. Isso é testável em `verificacao-cloud.html`.
+
+O que **nunca** pode ficar público é a **Secret key**, porque ela passa por cima de tudo isso.
+
+A segurança dos seus dados está em Auth + GRANTs + RLS, não em esconder a URL.
 
 ---
 
@@ -139,7 +147,8 @@ Depois disso, no **segundo computador** é só fazer login: os dados descem sozi
 Abra **`verificacao-cloud.html`** e clique em **Run**. A página testa sozinha:
 
 - a sessão é válida e sobrevive ao refresh;
-- um visitante **sem login** não lê nem escreve **uma linha** (RLS);
+- um visitante **sem login** não lê nem escreve **uma linha** — barrado já nos GRANTs;
+- `merge_practice_legacy` não é chamável sem login;
 - Progress, PracticeLog e Calendar chegam ao banco como linhas independentes;
 - o outro computador reconstrói o Learning History corretamente;
 - reenviar a mesma operação não duplica;
@@ -158,6 +167,8 @@ Ela usa um aluno de teste (`__qa_cloud__`) e apaga tudo que criou no fim.
 | Sintoma | Causa provável |
 |---|---|
 | A tela de login diz que não está conectada | `platform-cloud-config.js` ainda está vazio |
+| Console diz "parece ser uma SECRET key" | você colou `sb_secret_` no lugar da Publishable key |
+| `permission denied for table ...` já logada | os GRANTs não rodaram — rode o `schema.sql` de novo |
 | "E-mail ou senha incorretos" com a senha certa | usuário criado sem **Auto Confirm** |
 | O chip mostra `Local — migração pendente` | falta rodar `migracao.html` neste computador |
 | O chip fica em `Offline` com internet boa | a `SUPABASE_URL` está errada, ou o `schema.sql` não foi executado |
