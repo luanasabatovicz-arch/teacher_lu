@@ -46,11 +46,12 @@
 
   NS.CloudConfig = {
 
-    /* Project URL — algo como 'https://abcdefghijklm.supabase.co' */
-    SUPABASE_URL: '',
+    /* Project URL do projeto real da Teacher Lu Studio. */
+    SUPABASE_URL: 'https://wetagzmpwgmgywkbmulx.supabase.co',
 
-    /* Publishable key — começa com 'sb_publishable_' */
-    SUPABASE_PUBLISHABLE_KEY: '',
+    /* Publishable key — pública por design (ver o cabeçalho deste arquivo).
+       NÃO é a Secret key: nenhuma sb_secret_ / service_role entra aqui. */
+    SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_w_MeJMtZgnD49l3zVkHG1g_d62RwHNG',
 
     /* Página de login. Trocar só se você renomear o arquivo. */
     LOGIN_PAGE: 'login.html',

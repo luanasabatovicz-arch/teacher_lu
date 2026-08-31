@@ -31,6 +31,12 @@
 create or replace function public.touch_updated_at()
 returns trigger
 language plpgsql
+-- search_path fixo: sem isto o Supabase levanta o alerta
+-- `function_search_path_mutable`. O risco real é pg_temp — quando não é
+-- nomeado, o PostgreSQL o procura IMPLICITAMENTE PRIMEIRO para tabelas,
+-- então um objeto temporário poderia sequestrar um nome. Nomeando-o por
+-- último, isso acaba. A lógica da função não mudou.
+set search_path = public, pg_temp
 as $$
 begin
   new.updated_at = now();
@@ -259,7 +265,7 @@ create or replace function public.merge_practice_legacy(
 returns void
 language plpgsql
 security invoker            -- roda como o usuário: a RLS continua valendo
-set search_path = public
+set search_path = public, pg_temp   -- pg_temp nomeado por último, nunca implícito
 as $$
 begin
   insert into public.practice_usage_legacy
@@ -372,7 +378,8 @@ $$;
 --
 -- Divisão final:
 --   anon           nada. Nem select. (só precisa de auth para fazer login)
---   authenticated  SELECT, INSERT, UPDATE, DELETE — e a RLS diz quais linhas
+--   authenticated  SELECT, INSERT, UPDATE, DELETE e MAIS NADA — sem
+--                  TRUNCATE, TRIGGER ou REFERENCES. A RLS diz quais linhas
 --   service_role   tudo — é o papel administrativo do Supabase, usado por
 --                  dashboard/Edge Functions e NUNCA pelo frontend
 -- ==========================================================================
@@ -390,10 +397,18 @@ begin
     execute format('revoke all on table public.%I from public', t);
     execute format('revoke all on table public.%I from anon', t);
 
+    -- Zera antes de conceder. Sem este revoke, o default privileges do
+    -- Supabase deixa `authenticated` com TRUNCATE, TRIGGER e REFERENCES
+    -- além do CRUD — três privilégios que a Studio nunca usa e que, num
+    -- token vazado, permitiriam esvaziar uma tabela inteira de uma vez
+    -- (TRUNCATE não passa por RLS) ou pendurar um trigger próprio.
+    -- Conceder por cima não tira nada: só revoke tira.
+    execute format('revoke all on table public.%I from authenticated', t);
     execute format(
       'grant select, insert, update, delete on table public.%I to authenticated', t);
 
-    -- service_role é o papel administrativo padrão do Supabase.
+    -- service_role é o papel administrativo padrão do Supabase — segue
+    -- com tudo, e continua fora do frontend.
     execute format('grant all on table public.%I to service_role', t);
   end loop;
 end;
