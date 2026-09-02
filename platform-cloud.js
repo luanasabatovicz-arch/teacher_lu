@@ -365,8 +365,21 @@
     }
   }
 
-  /** Traduz "antes -> depois" em operações de linha. */
-  function diffAndQueue(meta, key, before, after) {
+  /**
+   * Traduz "antes -> depois" em operações de linha.
+   *
+   * PURA de propósito: recebe dois objetos JavaScript e devolve um array de
+   * operações. Não lê nem escreve localStorage, não enfileira, não fala com
+   * a rede. Quem enfileira é diffAndQueue(), logo abaixo.
+   *
+   * É essa separação que deixa verificacao-cloud.html testar a lógica REAL
+   * de diff — a mesma que roda em aula — sem precisar do engine em modo
+   * 'live' e sem encostar nos dados da professora.
+   */
+  function computeOps(meta, before, after) {
+    var ops = [];
+    var enqueue = function (op) { ops.push(op); };
+
 
     if (meta.kind === 'students') {
       var prev = {}, next = {};
@@ -388,7 +401,7 @@
       Object.keys(prev).forEach(function (id) {
         if (!next[id]) enqueue({ t: 'students.delete', id: id });
       });
-      return;
+      return ops;
     }
 
     if (meta.kind === 'custom') {
@@ -410,7 +423,7 @@
       Object.keys(pb).forEach(function (k) {
         if (!na[k]) enqueue({ t: 'custom.delete', content_key: k });
       });
-      return;
+      return ops;
     }
 
     if (meta.kind === 'progress') {
@@ -435,7 +448,7 @@
       Object.keys(nB).forEach(function (cid) {
         if (nA[cid] == null) enqueue({ t: 'note.delete', student_id: sid, content_id: cid });
       });
-      return;
+      return ops;
     }
 
     if (meta.kind === 'practice') {
@@ -456,7 +469,7 @@
           enqueue({ t: 'practice.forget', student_id: psid, exercise_id: eid });
         }
       });
-      return;
+      return ops;
     }
 
     if (meta.kind === 'lesson') {
@@ -476,6 +489,14 @@
         }});
       }
     }
+  
+
+    return ops;
+  }
+
+  /** Aplica o diff na fila de sincronização. */
+  function diffAndQueue(meta, key, before, after) {
+    computeOps(meta, before, after).forEach(enqueue);
   }
 
   /* ======================================================================
@@ -911,6 +932,8 @@
     flush: flush,
     applyOps: applyOps,
     applySnapshotLocally: applySnapshotLocally,
+    /** Diff puro (sem fila, sem localStorage) — usado por verificacao-cloud.html. */
+    computeOps: computeOps,
     /** Barreira de hidratação ativa? Usado pelo teste M da verificação. */
     isHydrating: function () { return hydrating > 0; },
     interceptorInstalled: function () { return localStorage.setItem === interceptSet; },

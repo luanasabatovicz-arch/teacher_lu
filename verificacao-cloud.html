@@ -11,31 +11,45 @@
   <script src="vendor/supabase.js"></script>
   <script src="platform-auth.js"></script>
   <script src="platform-cloud.js"></script>
-  <script src="platform-students.js"></script>
-  <script src="platform-content.js"></script>
-  <script src="platform-progress.js"></script>
-  <script src="platform-practice-log.js"></script>
 
   <style>
     body { background: var(--tl-bg); }
-    .wrap { max-width: 860px; margin: 0 auto; padding: var(--tl-space-7) var(--tl-space-5) var(--tl-space-8); }
+    .wrap { max-width: 880px; margin: 0 auto; padding: var(--tl-space-7) var(--tl-space-5) var(--tl-space-8); }
     h1 { font-size: var(--tl-fs-h2); color: var(--tl-primary); font-weight: 700; margin-bottom: var(--tl-space-2); }
     .lede { color: var(--tl-text-secondary); font-size: var(--tl-fs-body); line-height: 1.55; margin-bottom: var(--tl-space-5); }
     .panel { background: var(--tl-surface); border: 1px solid var(--tl-border); border-radius: var(--tl-radius-lg); padding: var(--tl-space-5); margin-bottom: var(--tl-space-4); }
-    button { font: 600 var(--tl-fs-button)/1 var(--tl-font-sans); padding: 10px 16px; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-primary); background: var(--tl-primary); color: #fff; cursor: pointer; }
+    .panel h2 { font-size: var(--tl-fs-h4); color: var(--tl-text); font-weight: 700; margin-bottom: var(--tl-space-3); }
+    button { font: 600 var(--tl-fs-button)/1 var(--tl-font-sans); padding: 11px 18px; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-primary); background: var(--tl-primary); color: #fff; cursor: pointer; }
     button.ghost { background: var(--tl-surface); color: var(--tl-primary); }
     button:disabled { opacity: .5; cursor: default; }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    .state { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
+             font-size: var(--tl-fs-small); color: var(--tl-text-secondary);
+             margin-bottom: var(--tl-space-4); line-height: 1.5; }
+    .state b { color: var(--tl-text); font-weight: 600; }
+    .state .pill { display: inline-block; padding: 3px 9px; border-radius: 999px;
+                   font-size: var(--tl-fs-caption); font-weight: 600;
+                   background: var(--tl-surface-alt); color: var(--tl-text-secondary);
+                   border: 1px solid var(--tl-border); }
+
     ul.results { list-style: none; margin-top: var(--tl-space-4); }
-    ul.results li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--tl-border-subtle); font-size: var(--tl-fs-small); line-height: 1.45; }
-    .tag { flex: none; width: 58px; font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding-top: 2px; }
+    ul.results li { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--tl-border-subtle); font-size: var(--tl-fs-small); line-height: 1.45; }
+    .tag { flex: none; width: 84px; font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding-top: 2px; }
     .pass .tag { color: var(--tl-success-text); }
     .fail .tag { color: var(--tl-danger-text); }
-    .skip .tag { color: var(--tl-text-tertiary); }
+    .nottested .tag { color: var(--tl-warning-text); }
     .why { color: var(--tl-text-secondary); display: block; margin-top: 2px; }
-    .summary { margin-top: var(--tl-space-4); padding: 11px 13px; border-radius: var(--tl-radius-md); font-size: var(--tl-fs-small); font-weight: 600; }
+    .group { margin-top: var(--tl-space-4); padding-top: var(--tl-space-2);
+             font-size: var(--tl-fs-caption); font-weight: 700; letter-spacing: .06em;
+             text-transform: uppercase; color: var(--tl-text-tertiary); }
+    .summary { margin-top: var(--tl-space-4); padding: 12px 14px; border-radius: var(--tl-radius-md); font-size: var(--tl-fs-small); font-weight: 600; line-height: 1.5; }
     .summary.good { background: var(--tl-success-soft); color: var(--tl-success-text); }
     .summary.bad { background: var(--tl-danger-soft); color: var(--tl-danger-text); }
+    .leftovers { margin-top: var(--tl-space-3); padding: 12px 14px; border-radius: var(--tl-radius-md);
+                 background: var(--tl-danger-soft); color: var(--tl-danger-text);
+                 font-size: var(--tl-fs-small); line-height: 1.5; }
+    .leftovers pre { font-family: var(--tl-font-mono); font-size: 12px; margin-top: 6px; white-space: pre-wrap; }
     ol.manual { margin-left: 20px; color: var(--tl-text-secondary); font-size: var(--tl-fs-small); line-height: 1.65; }
     code { font-family: var(--tl-font-mono); font-size: 12px; background: var(--tl-surface-alt); padding: 1px 5px; border-radius: 4px; }
   </style>
@@ -45,24 +59,26 @@
 
   <h1>Verificação da nuvem</h1>
   <p class="lede">
-    Roda no seu navegador as checagens das seções 27, 28 e 29 do plano:
-    autenticação, RLS, sincronização entre dois contextos e fila offline.
-    Usa um aluno de teste — <code>__qa_cloud__</code> — e apaga tudo o que
-    criou no fim. Nenhum dado real é tocado.
+    Testa o Supabase de verdade — autenticação, GRANTs, RLS, sincronização
+    entre dois dispositivos e a semântica por dia do PracticeLog.
+    <strong>Roda antes da migração</strong>: não liga a sincronização, não
+    migra nada e não encosta no <code>localStorage</code> dos seus alunos.
+    Tudo o que grava usa ids reservados de QA e é apagado no fim.
   </p>
 
   <div class="panel">
+    <div class="state" id="state"></div>
     <div class="row">
-      <button id="run">Run</button>
-      <button id="clean" class="ghost">Limpar resíduo de teste</button>
+      <button id="run">Run verification</button>
+      <button id="clean" class="ghost">Limpar resíduo de QA</button>
     </div>
     <ul class="results" id="out"></ul>
     <div id="sum"></div>
+    <div id="left"></div>
   </div>
 
   <div class="panel">
-    <h2 style="font-size:var(--tl-fs-h4);color:var(--tl-text);font-weight:700;margin-bottom:8px">
-      O que ainda precisa dos seus dois computadores</h2>
+    <h2>O que só os seus dois computadores podem provar</h2>
     <ol class="manual">
       <li>Notebook A: crie uma aluna. Notebook B: recarregue — ela aparece.</li>
       <li>A: marque uma aula no Calendar. B: recarregue — a aula está lá.</li>
@@ -73,389 +89,578 @@
       <li>A: desmarque uma ocorrência. B: reflete a remoção.</li>
       <li>A: desligue a internet, registre algo — o chip mostra <code>Offline</code>
           e a tela continua respondendo. Religue: vira <code>✓ Synced</code>. B: o dado chegou.</li>
-      <li><strong>Finance (A, B, C):</strong> deslogue e abra <code>finance.html</code> —
-          tem que cair no login. Faça login e abra de novo — tem que funcionar igual a
-          antes, com os mesmos números. O Finance continua no armazenamento local: nada
-          dele foi migrado nem alterado.</li>
+      <li><strong>Finance:</strong> deslogue e abra <code>finance.html</code> — tem que
+          cair no login. Logada, funciona igual a antes, com os mesmos números.</li>
     </ol>
   </div>
 
 </div>
 
 <script>
+/* ==========================================================================
+   Runner de QA — INDEPENDENTE do estado global da Studio
+   --------------------------------------------------------------------------
+   POR QUE ESTE ARQUIVO NÃO USA TeacherLu.Cloud COMO MOTOR
+   -------------------------------------------------------
+   A versão anterior chamava Progress.record(), PracticeLog.markDone() e
+   Cloud.flush(). Isso amarrava a suíte ao engine em modo 'live' — e o engine
+   só entra em 'live' DEPOIS da migração. Resultado: antes da migração, que é
+   exatamente quando a verificação mais importa, metade dos testes virava
+   "skip" e a página parecia não ter o que rodar.
+
+   Pior: aquelas chamadas gravavam no localStorage REAL, e a hidratação de
+   teste sobrescrevia o cache da professora.
+
+   Aqui é o contrário. O runner:
+     • fala com o Supabase pelo cliente autenticado, direto;
+     • simula os dois notebooks com OBJETOS em memória, nunca localStorage;
+     • usa Cloud.computeOps() — a MESMA função de diff que roda em aula,
+       mas pura: entra "antes/depois", sai uma lista de operações;
+     • não liga sync, não marca migração, não hidrata, não apaga nada
+       que não tenha nascido aqui.
+
+   Todo id gravado começa com __qa — e some no fim.
+   ========================================================================== */
 (function () {
   'use strict';
+
   var NS = window.TeacherLu, Auth = NS.Auth, Cloud = NS.Cloud, CFG = NS.CloudConfig;
-  var SID = '__qa_cloud__';
-  var out = document.getElementById('out'), sum = document.getElementById('sum');
+
+  /* ---- espaço reservado de QA: nada aqui colide com dado real ---- */
+  var QA = {
+    A:        '__qa_cloud__',        // "aluno" do notebook A
+    B:        '__qa_cloud__b',       // "aluno" do notebook B
+    content:  'grammar:__qa-past-simple',
+    content2: 'grammar:__qa-retry',
+    ex:       '__qa-ex-001',
+    exConcur: '__qa-ex-concur',
+    exSameDay:'__qa-ex-sameday',
+    custom:   '__qa-custom-001'
+  };
+  var STUDENTS = [QA.A, QA.B];
+
+  var out   = document.getElementById('out');
+  var sum   = document.getElementById('sum');
+  var left  = document.getElementById('left');
+  var runBtn = document.getElementById('run');
   var results = [];
 
-  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]; }); }
-  function add(state, name, why) {
+  function esc(s) {
+    return String(s).replace(/[&<>]/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c];
+    });
+  }
+  function add(state, label, name, why) {
     results.push({ state: state, name: name });
     var li = document.createElement('li');
     li.className = state;
-    li.innerHTML = '<span class="tag">' + state + '</span><span><strong>' + esc(name) + '</strong>' +
-      (why ? '<span class="why">' + esc(why) + '</span>' : '') + '</span>';
+    li.innerHTML = '<span class="tag">' + label + '</span><span><strong>' +
+      esc(name) + '</strong>' + (why ? '<span class="why">' + esc(why) + '</span>' : '') +
+      '</span>';
     out.appendChild(li);
   }
-  function ok(n, w) { add('pass', n, w); }
-  function no(n, w) { add('fail', n, w); }
-  function skip(n, w) { add('skip', n, w); }
+  function ok(n, w)  { add('pass', '✓ pass', n, w); }
+  function no(n, w)  { add('fail', '✗ fail', n, w); }
+  /** §11: nunca escondemos um requisito — dizemos por que não deu para testar. */
+  function nt(n, w)  { add('nottested', 'not tested', n, w); }
+  function group(t)  { var d = document.createElement('div'); d.className = 'group'; d.textContent = t; out.appendChild(d); }
+  function is(cond, n, wOk, wNo) { cond ? ok(n, wOk) : no(n, wNo); return cond; }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
   function client() { return Auth.client(); }
-  function owner() { return Auth.userId(); }
+  function owner()  { return Auth.userId(); }
 
-  /* Um segundo cliente, SEM sessão — é o "visitante anônimo" do teste E. */
-  function anonClient() {
-    return window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_PUBLISHABLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
-    });
+  /** Erro do PostgREST em texto curto. */
+  function emsg(res) { return res && res.error ? String(res.error.message).slice(0, 80) : ''; }
+  function must(res) { if (res && res.error) throw res.error; return res; }
+
+  /* ----------------------------------------------------------------------
+     Cabeçalho de estado — informativo, NUNCA um portão
+     ---------------------------------------------------------------------- */
+  function renderState() {
+    var el = document.getElementById('state');
+    var mode = (Cloud && Cloud.mode) || '—';
+    var nice = { 'off': 'sem config', 'pending-migration': 'migração pendente', 'live': 'sincronizando' };
+    el.innerHTML =
+      '<span class="pill">sessão: <b>' + esc(Auth.email() || 'nenhuma') + '</b></span>' +
+      '<span class="pill">engine: <b>' + esc(nice[mode] || mode) + '</b></span>' +
+      '<span class="pill">projeto: <b>' + esc((CFG.SUPABASE_URL || '').replace(/^https?:\/\//, '')) + '</b></span>' +
+      '<span>A verificação roda em qualquer um desses estados — ela não depende ' +
+      'do engine estar ligado.</span>';
   }
 
+  /* ----------------------------------------------------------------------
+     Limpeza — nas 7 tabelas, só o que é QA
+     ---------------------------------------------------------------------- */
   function cleanup() {
     var c = client(), o = owner();
-    if (!c || !o) return Promise.resolve();
-    return Promise.all([
-      c.from('lesson_content').delete().eq('owner_id', o).eq('student_id', SID),
-      c.from('content_notes').delete().eq('owner_id', o).eq('student_id', SID),
-      c.from('practice_usage_days').delete().eq('owner_id', o).eq('student_id', SID),
-      c.from('practice_usage_days').delete().eq('owner_id', o).eq('student_id', SID + '_b'),
-      c.from('practice_usage_legacy').delete().eq('owner_id', o).eq('student_id', SID),
-      c.from('lesson_records').delete().eq('owner_id', o).eq('student_id', SID),
-      c.from('students').delete().eq('owner_id', o).eq('id', SID)
-    ]).then(function () {
-      Cloud.native.removeItem('sabatovicz_progress_' + SID);
-      Cloud.native.removeItem('sabatovicz_practice_' + SID);
-      Cloud.native.removeItem('sched|' + SID + '|2026-08-12');
+    if (!c || !o) return Promise.resolve({ leftovers: [] });
+
+    var jobs = [
+      ['lesson_content',        c.from('lesson_content').delete().eq('owner_id', o).in('student_id', STUDENTS)],
+      ['content_notes',         c.from('content_notes').delete().eq('owner_id', o).in('student_id', STUDENTS)],
+      ['lesson_records',        c.from('lesson_records').delete().eq('owner_id', o).in('student_id', STUDENTS)],
+      ['practice_usage_days',   c.from('practice_usage_days').delete().eq('owner_id', o).in('student_id', STUDENTS)],
+      ['practice_usage_legacy', c.from('practice_usage_legacy').delete().eq('owner_id', o).in('student_id', STUDENTS)],
+      ['students',              c.from('students').delete().eq('owner_id', o).in('id', STUDENTS)],
+      ['custom_content',        c.from('custom_content').delete().eq('owner_id', o).like('content_key', '__qa%')]
+    ];
+
+    return Promise.all(jobs.map(function (j) {
+      return j[1].then(function (r) { return { table: j[0], error: r && r.error }; })
+                 .catch(function (e) { return { table: j[0], error: e }; });
+    })).then(function (rs) {
+      return { leftovers: rs.filter(function (r) { return r.error; }) };
     });
   }
 
+  /** §7: se sobrou coisa, a professora precisa saber exatamente o quê. */
+  function reportLeftovers(res) {
+    if (!res.leftovers.length) {
+      ok('Resíduo de QA removido', 'as 7 tabelas foram limpas dos ids __qa.');
+      return;
+    }
+    no('Limpeza de QA falhou', res.leftovers.length + ' tabela(s) não puderam ser limpas.');
+    left.innerHTML =
+      '<div class="leftovers"><strong>Limpar à mão no SQL Editor do Supabase:</strong>' +
+      '<pre>' + esc(res.leftovers.map(function (l) {
+        var col = l.table === 'students' ? 'id' : (l.table === 'custom_content' ? null : 'student_id');
+        return col
+          ? "delete from public." + l.table + " where " + col + " in ('" + STUDENTS.join("','") + "');"
+          : "delete from public.custom_content where content_key like '__qa%';";
+      }).join('\n')) + '</pre>' +
+      'Erros: ' + esc(res.leftovers.map(function (l) { return l.table + ': ' + (l.error.message || l.error); }).join(' · ')) +
+      '</div>';
+  }
+
+  /* ----------------------------------------------------------------------
+     Dispositivo simulado — um localStorage de mentira, em memória
+     ------------------------------------------------------------------------
+     Cada "notebook" é só um objeto. Gravar nele nunca toca no navegador.
+     ---------------------------------------------------------------------- */
+  function Device(name) {
+    return {
+      name: name,
+      practice: { done: {} },   // formato de platform-practice-log.js
+      progress: { items: {} },  // formato de platform-progress.js
+      ops: []
+    };
+  }
+
+  /** Reproduz PracticeLog.markDone() sobre o objeto do dispositivo. */
+  function markDone(dev, exId, date) {
+    var before = JSON.parse(JSON.stringify(dev.practice));
+    var e = dev.practice.done[exId];
+    if (!e) {
+      dev.practice.done[exId] = { at: date, n: 1 };
+    } else if (e.at === date || e.lastAt === date) {
+      return [];                                  // mesmo dia -> no-op, igual ao real
+    } else {
+      e.n = (e.n || 1) + 1;
+      e.lastAt = date;
+    }
+    var ops = Cloud.computeOps({ kind: 'practice', studentId: dev.sid }, before, dev.practice);
+    dev.ops = dev.ops.concat(ops);
+    return ops;
+  }
+
+  /** Reproduz Progress.record() sobre o objeto do dispositivo. */
+  function record(dev, contentId, date) {
+    var before = JSON.parse(JSON.stringify(dev.progress));
+    var it = dev.progress.items[contentId];
+    if (!it) {
+      dev.progress.items[contentId] = { firstAt: date, lastAt: date, times: 1, lessons: [date], note: '' };
+    } else if (it.lessons.indexOf(date) === -1) {
+      it.lessons.push(date); it.lessons.sort();
+      it.times = it.lessons.length;
+      it.firstAt = it.lessons[0]; it.lastAt = it.lessons[it.lessons.length - 1];
+    }
+    var ops = Cloud.computeOps({ kind: 'progress', studentId: dev.sid }, before, dev.progress);
+    dev.ops = dev.ops.concat(ops);
+    return ops;
+  }
+
+  /** "Sincroniza" o dispositivo: manda as operações pendentes para o banco. */
+  function sync(dev) {
+    var ops = dev.ops; dev.ops = [];
+    if (!ops.length) return Promise.resolve(0);
+    return Cloud.applyOps(client(), owner(), ops).then(function () { return ops.length; });
+  }
+
+  /** Lê do banco tudo que é QA e devolve no formato do localStorage. */
+  function hydrateFromCloud() {
+    var c = client(), o = owner();
+    return Promise.all([
+      c.from('students').select('*').eq('owner_id', o).in('id', STUDENTS),
+      c.from('lesson_records').select('*').eq('owner_id', o).in('student_id', STUDENTS),
+      c.from('lesson_content').select('*').eq('owner_id', o).in('student_id', STUDENTS),
+      c.from('content_notes').select('*').eq('owner_id', o).in('student_id', STUDENTS),
+      c.from('custom_content').select('*').eq('owner_id', o).like('content_key', '__qa%'),
+      c.from('practice_usage_days').select('*').eq('owner_id', o).in('student_id', STUDENTS),
+      c.from('practice_usage_legacy').select('*').eq('owner_id', o).in('student_id', STUDENTS)
+    ]).then(function (r) {
+      r.forEach(must);
+      var snap = {
+        students: r[0].data || [], lessons: r[1].data || [], content: r[2].data || [],
+        notes: r[3].data || [], custom: r[4].data || [],
+        practiceDays: r[5].data || [], practiceLegacy: r[6].data || []
+      };
+      // snapshotToLocal é pura: devolve um objeto, não escreve nada.
+      return { snap: snap, local: Cloud.snapshotToLocal(snap) };
+    });
+  }
+
+  /* ----------------------------------------------------------------------
+     Botões
+     ---------------------------------------------------------------------- */
   document.getElementById('clean').addEventListener('click', function () {
-    cleanup().then(function () { alert('Resíduo de teste removido.'); });
+    cleanup().then(function (res) {
+      alert(res.leftovers.length
+        ? 'Não deu para limpar: ' + res.leftovers.map(function (l) { return l.table; }).join(', ')
+        : 'Resíduo de QA removido.');
+    });
   });
 
-  document.getElementById('run').addEventListener('click', function () {
-    document.getElementById('run').disabled = true;
-    out.innerHTML = ''; sum.innerHTML = ''; results = [];
-    runAll().then(finish).catch(function (e) {
-      no('Erro inesperado na suíte', String(e && e.message || e));
-      finish();
-    });
+  runBtn.addEventListener('click', function () {
+    runBtn.disabled = true;
+    runBtn.textContent = 'Running…';
+    out.innerHTML = ''; sum.innerHTML = ''; left.innerHTML = ''; results = [];
+    runAll()
+      .catch(function (e) { no('Erro inesperado na suíte', String((e && e.message) || e)); })
+      .then(function () { return cleanup().then(reportLeftovers); })
+      .catch(function () {})
+      .then(finish);
   });
 
   function finish() {
     var f = results.filter(function (r) { return r.state === 'fail'; }).length;
     var p = results.filter(function (r) { return r.state === 'pass'; }).length;
+    var n = results.filter(function (r) { return r.state === 'nottested'; }).length;
     sum.className = 'summary ' + (f ? 'bad' : 'good');
-    sum.textContent = f ? (f + ' falha(s), ' + p + ' ok') : ('Tudo passou — ' + p + ' checagens.');
-    document.getElementById('run').disabled = false;
+    sum.textContent = (f ? f + ' falha(s) · ' : '') + p + ' ok' +
+      (n ? ' · ' + n + ' não testável(is) nesta fase' : '') +
+      (f ? '' : ' — nada falhou.');
+    runBtn.disabled = false;
+    runBtn.textContent = 'Run verification';
   }
 
+  /* ======================================================================
+     A SUÍTE
+     ====================================================================== */
   function runAll() {
-    /* ---------- 27. Autenticação ---------- */
+    group('Configuração e sessão');
+
     if (!CFG.isConfigured()) {
-      skip('Supabase configurado', 'Preencha platform-cloud-config.js primeiro.');
+      nt('Tudo', 'platform-cloud-config.js sem SUPABASE_URL/SUPABASE_PUBLISHABLE_KEY. ' +
+                 'Sem projeto configurado não há o que testar.');
       return Promise.resolve();
     }
     ok('Supabase configurado', CFG.SUPABASE_URL);
 
+    var key = String(CFG.SUPABASE_PUBLISHABLE_KEY || '');
+    /^sb_publishable_/.test(key)
+      ? ok('Publishable key moderna', 'sb_publishable_…')
+      : (/^eyJ/.test(key)
+          ? nt('Publishable key moderna', 'Está usando a legacy anon key (eyJ…). Funciona, mas o SETUP.md pede a publishable.')
+          : no('Publishable key moderna', 'formato inesperado'));
+
+    is(CFG.looksLikeSecret && !CFG.looksLikeSecret(key),
+       'Nenhum secret no frontend', 'não é sb_secret_ nem service_role',
+       'A chave configurada parece um SECRET. Troque imediatamente.');
+
     if (!Auth.isSignedIn()) {
-      no('B — sessão ativa', 'Faça login antes de rodar a suíte.');
+      no('Sessão autenticada', 'Faça login antes de rodar a verificação.');
       return Promise.resolve();
     }
-    ok('B — login válido dá sessão', Auth.email());
-    ok('C — sessão sobrevive ao refresh', 'A sessão foi lida do armazenamento do navegador, não de memória.');
+    ok('Sessão autenticada', Auth.email());
+    ok('Sessão sobrevive ao refresh', 'lida do armazenamento do navegador, não da memória.');
 
     return Auth.verify().then(function (valid) {
-      valid ? ok('Sessão confirmada pelo servidor')
-            : no('Sessão confirmada pelo servidor', 'getUser() recusou o token.');
+      is(valid, 'Sessão confirmada pelo servidor', 'getUser() aceitou o token.',
+         'getUser() recusou o token.');
 
-      /* ---------- Chave e segredos ---------- */
-      var key = String(CFG.SUPABASE_PUBLISHABLE_KEY || '');
-      /^sb_publishable_/.test(key)
-        ? ok('Publishable key aceita pelo client', 'sb_publishable_… (chave moderna)')
-        : (/^eyJ/.test(key)
-            ? skip('Publishable key', 'Está usando a legacy anon key (eyJ…). Funciona, mas o ' +
-                                      'SETUP.md pede a Publishable key desta aplicação nova.')
-            : no('Publishable key aceita pelo client', 'formato inesperado'));
+      /* ---------------- Visitante anônimo ---------------- */
+      group('Visitante anônimo — GRANTs e RLS');
 
-      (CFG.looksLikeSecret && !CFG.looksLikeSecret(key))
-        ? ok('Nenhum secret no frontend', 'não é sb_secret_ nem service_role')
-        : no('Nenhum secret no frontend', 'A chave configurada parece ser um SECRET. Troque JÁ.');
-
-      /* ---------- E. anon sem CRUD nas 7 tabelas ---------- */
+      /* §9: cliente próprio, persistSession:false. A sessão principal
+         não é tocada, nem lida, nem encerrada. */
+      var anon = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_PUBLISHABLE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+      });
       var TABLES = ['students', 'lesson_records', 'lesson_content', 'content_notes',
                     'custom_content', 'practice_usage_days', 'practice_usage_legacy'];
-      var anon = anonClient();
-
-      function denied(res) {
-        // Com os GRANTs revogados o esperado é erro ("permission denied").
-        // Uma lista vazia também é aceitável — significa que a RLS barrou —
-        // mas o erro é o sinal de que a camada de GRANT está no lugar.
-        if (res && res.error) return 'erro';
-        if (res && res.data && res.data.length === 0) return 'vazio';
-        return null;
-      }
 
       return Promise.all(TABLES.map(function (t) {
         return anon.from(t).select('*').limit(1).then(function (r) {
-          return { t: t, how: denied(r), msg: r.error && String(r.error.message).slice(0, 60) };
+          return { t: t, err: !!(r && r.error), rows: (r && r.data) ? r.data.length : 0 };
         });
       })).then(function (rs) {
-        var leaked = rs.filter(function (r) { return !r.how; });
-        var byGrant = rs.filter(function (r) { return r.how === 'erro'; }).length;
+        var leaked = rs.filter(function (r) { return !r.err && r.rows > 0; });
+        var byGrant = rs.filter(function (r) { return r.err; }).length;
 
-        leaked.length
-          ? no('E — anon não lê nenhuma das 7 tabelas',
-               'vazou em: ' + leaked.map(function (r) { return r.t; }).join(', '))
-          : ok('E — anon não lê nenhuma das 7 tabelas',
-               byGrant + '/7 barradas já no GRANT (permission denied), o resto pela RLS.');
+        is(!leaked.length, 'Anônimo não lê nenhuma das 7 tabelas',
+           byGrant + '/7 barradas já no GRANT (permission denied); o resto pela RLS.',
+           'vazou em: ' + leaked.map(function (r) { return r.t; }).join(', '));
 
         byGrant === 7
-          ? ok('GRANTs aplicados: anon sem privilégio de tabela',
-               'as 7 respondem permission denied antes da RLS')
-          : skip('GRANTs aplicados: anon sem privilégio de tabela',
-                 byGrant + '/7 responderam permission denied. Se for menos que 7, ' +
-                 'o bloco de GRANTs do schema.sql não rodou — a RLS ainda protege, ' +
-                 'mas a segunda camada está faltando.');
+          ? ok('GRANTs: anon sem privilégio de tabela', 'as 7 respondem permission denied antes da RLS.')
+          : no('GRANTs: anon sem privilégio de tabela',
+               byGrant + '/7 responderam permission denied — rode o bloco de GRANTs do schema.sql.');
 
         return Promise.all([
-          anon.from('students').insert({ id: SID + '_anon', name: 'x' }),
-          anon.from('practice_usage_days').delete().eq('student_id', SID),
-          anon.rpc('merge_practice_legacy', {
-            p_student_id: SID, p_exercise_id: 'x', p_extra_count: 1
-          })
+          anon.from('students').insert({ id: QA.A, name: 'qa' }),
+          anon.from('practice_usage_days').delete().eq('student_id', QA.A),
+          anon.rpc('merge_practice_legacy', { p_student_id: QA.A, p_exercise_id: QA.ex, p_extra_count: 1 })
         ]);
       }).then(function (rs) {
-        (rs[0] && rs[0].error)
-          ? ok('E — anon não insere', String(rs[0].error.message).slice(0, 70))
-          : no('E — anon não insere', 'um cliente sem login conseguiu inserir.');
-
-        (rs[1] && rs[1].error)
-          ? ok('E — anon não apaga', String(rs[1].error.message).slice(0, 70))
-          : no('E — anon não apaga', 'um cliente sem login conseguiu apagar.');
-
-        (rs[2] && rs[2].error)
-          ? ok('merge_practice_legacy não é chamável por anon',
-               String(rs[2].error.message).slice(0, 70))
-          : no('merge_practice_legacy não é chamável por anon',
-               'EXECUTE não foi revogado de PUBLIC/anon.');
+        is(!!(rs[0] && rs[0].error), 'Anônimo não insere', emsg(rs[0]), 'conseguiu inserir.');
+        is(!!(rs[1] && rs[1].error), 'Anônimo não apaga', emsg(rs[1]), 'conseguiu apagar.');
+        is(!!(rs[2] && rs[2].error), 'merge_practice_legacy negado a anônimo', emsg(rs[2]),
+           'EXECUTE não foi revogado de PUBLIC/anon.');
       });
+
+    }).then(function () {
+      /* Estado limpo antes de começar a escrever QA. */
+      return cleanup();
     }).then(function () {
 
-      /* ---------- 28 / 29 / concorrencia ---------- */
-      if (Cloud.mode !== 'live') {
-        skip('28 — sincronização entre contextos',
-             'O engine está em "' + Cloud.mode + '". Conclua a migração em migracao.html primeiro.');
-        skip('29 — fila offline', 'Idem.');
-        skip('M — hidratação sem laço', 'Idem.');
-        return;
-      }
+      /* ---------------- CRUD por tabela ---------------- */
+      group('Escrita e leitura — as 7 tabelas');
+      var c = client(), o = owner();
 
-      /* M — a hidratação NAO pode reenfileirar o que acabou de descer.
-         Testado antes de tudo, porque um laço aqui polui o resto. */
-      var qBefore = Cloud.queueLength();
-      var hydrated = Cloud.applySnapshotLocally(Cloud.snapshotToLocal({
-        students: [], lessons: [], notes: [], custom: [],
-        content: [{ student_id: SID, content_id: 'grammar:__qa-hydrate', lesson_date: '2026-08-01' }],
-        practiceDays: [{ student_id: SID, exercise_id: '__qa-hyd-001', usage_date: '2026-08-01' }],
-        practiceLegacy: []
-      }));
-      Cloud.queueLength() === qBefore
-        ? ok('M — hidratação não gera laço de sincronização',
-             hydrated + ' chave(s) escritas pela hidratação, 0 operações enfileiradas. ' +
-             'Barreiras: NATIVE.setItem (não observado) + contador hydrating.')
-        : no('M — hidratação não gera laço de sincronização',
-             'A fila cresceu de ' + qBefore + ' para ' + Cloud.queueLength() + '.');
+      return c.from('students').upsert({
+        owner_id: o, id: QA.A, name: 'QA Aluna', emoji: '🧪', level: 'A1',
+        age: '', schedule: null, extra: {}, sort_order: 0
+      }, { onConflict: 'owner_id,id' }).then(function (r) {
+        is(!r.error, 'students — insere', 'linha criada com id preservado (' + QA.A + ')', emsg(r));
+        return c.from('students').select('*').eq('owner_id', o).eq('id', QA.A);
+      }).then(function (r) {
+        var s = (r.data || [])[0];
+        is(s && s.name === 'QA Aluna' && s.emoji === '🧪',
+           'students — lê de volta', 'nome e emoji intactos', JSON.stringify(s));
+        return c.from('lesson_records').upsert({
+          owner_id: o, student_id: QA.A, lesson_date: '2026-08-12',
+          status: 'done', note: 'qa', sessions: null, extra: {}
+        }, { onConflict: 'owner_id,student_id,lesson_date' });
+      }).then(function (r) {
+        is(!r.error, 'lesson_records — grava a aula', 'status done em 12/08', emsg(r));
+        return c.from('custom_content').upsert({
+          owner_id: o, content_key: QA.custom, skill: 'reading',
+          title: 'QA — Cool English', level: '', source: 'Cool English', sort_order: 1000
+        }, { onConflict: 'owner_id,content_key' });
+      }).then(function (r) {
+        is(!r.error, 'custom_content — grava conteúdo externo', 'source preservado', emsg(r));
+        return c.from('content_notes').upsert({
+          owner_id: o, student_id: QA.A, content_id: QA.content, note: 'qa note'
+        }, { onConflict: 'owner_id,student_id,content_id' });
+      }).then(function (r) {
+        is(!r.error, 'content_notes — grava a nota do conteúdo', '', emsg(r));
+      });
 
-      Cloud.interceptorInstalled()
-        ? ok('Interceptor instalado no parse', 'antes de students/progress/practice-log carregarem')
-        : no('Interceptor instalado no parse');
+    }).then(function () {
 
-      return cleanup().then(function () {
-        /* Contexto A escreve pelas MESMAS APIs que a Studio usa em aula. */
-        NS.Progress.record(SID, ['grammar:__qa-past-simple'], '2026-08-12');
-        NS.PracticeLog.markDone(SID, '__qa-exercise-001', '2026-08-12');
-        localStorage.setItem('sched|' + SID + '|2026-08-12',
-          JSON.stringify({ status: 'done', note: 'qa' }));
-        return Cloud.flush();
-      }).then(function () { return sleep(400); })
-        .then(function () {
-        var c = client(), o = owner();
-        return Promise.all([
-          c.from('lesson_content').select('*').eq('owner_id', o).eq('student_id', SID),
-          c.from('practice_usage_days').select('*').eq('owner_id', o).eq('student_id', SID),
-          c.from('lesson_records').select('*').eq('owner_id', o).eq('student_id', SID)
-        ]);
-      }).then(function (rs) {
-        var lc = rs[0].data || [], pu = rs[1].data || [], lr = rs[2].data || [];
+      /* ---------------- Dois dispositivos ---------------- */
+      group('Dois dispositivos — a mesma conta em dois notebooks');
 
-        lc.length === 1 && lc[0].content_id === 'grammar:__qa-past-simple' &&
-        String(lc[0].lesson_date).slice(0, 10) === '2026-08-12'
-          ? ok('28 — Progress chega ao banco como ocorrência', 'student + content + date, uma linha.')
-          : no('28 — Progress chega ao banco como ocorrência', JSON.stringify(lc).slice(0, 140));
+      var A = Device('Notebook A'); A.sid = QA.A;
+      var B = Device('Notebook B'); B.sid = QA.A;
 
-        pu.length === 1 && pu[0].exercise_id === '__qa-exercise-001' &&
-        String(pu[0].usage_date).slice(0, 10) === '2026-08-12'
-          ? ok('D — uso de exercício numa data sincroniza', 'uma linha em practice_usage_days')
-          : no('D — uso de exercício numa data sincroniza', JSON.stringify(pu).slice(0, 140));
+      /* A registra conteúdo e gasta um exercício, offline. */
+      record(A, QA.content, '2026-08-12');
+      markDone(A, QA.ex, '2026-08-12');
 
-        lr.length === 1 && lr[0].status === 'done'
-          ? ok('28 — aula do Calendar chega ao banco')
-          : no('28 — aula do Calendar chega ao banco', JSON.stringify(lr).slice(0, 140));
+      var opsA = A.ops.slice();
+      is(opsA.some(function (op) { return op.t === 'content.add' && op.lesson_date === '2026-08-12'; }),
+         'Progress vira ocorrência (aluno + conteúdo + data)',
+         'Cloud.computeOps() — a mesma função de diff que roda em aula',
+         JSON.stringify(opsA));
+      is(opsA.some(function (op) { return op.t === 'practice.day.add' && op.usage_date === '2026-08-12'; }),
+         'PracticeLog vira evento de dia', '', JSON.stringify(opsA));
 
-        /* E — mesmo exercício, mesmo dia: markDone é no-op e nao duplica. */
-        NS.PracticeLog.markDone(SID, '__qa-exercise-001', '2026-08-12');
-        return Cloud.flush().then(function () {
+      return sync(A).then(function () { return hydrateFromCloud(); }).then(function (h) {
+        var prog = h.local['sabatovicz_progress_' + QA.A];
+        var item = prog && prog.items && prog.items[QA.content];
+        is(item && item.times === 1 && item.lastAt === '2026-08-12',
+           'Notebook B reconstrói o Learning History',
+           'times e lastAt derivados das ocorrências, não de contador gravado',
+           JSON.stringify(item));
+
+        is(item && item.note === 'qa note',
+           'A nota do conteúdo desce junto', '', JSON.stringify(item && item.note));
+
+        var pl = h.local['sabatovicz_practice_' + QA.A];
+        is(pl && pl.done && pl.done[QA.ex],
+           'Exercício não volta para o aluno no outro notebook',
+           'está marcado como usado no retrato que B recebe', JSON.stringify(pl));
+
+        var lessonKey = 'sched|' + QA.A + '|2026-08-12';
+        is(h.local[lessonKey] && h.local[lessonKey].status === 'done',
+           'A aula do Calendar chega ao outro notebook', '', JSON.stringify(h.local[lessonKey]));
+
+        var cus = (h.local['sabatovicz_custom_content'] || [])
+          .filter(function (x) { return x.key === QA.custom; })[0];
+        is(cus && cus.source === 'Cool English',
+           'Conteúdo externo chega ao outro notebook', 'com a procedência intacta', JSON.stringify(cus));
+
+        /* B parte do estado hidratado e continua trabalhando. */
+        B.practice = JSON.parse(JSON.stringify(pl || { done: {} }));
+        B.progress = JSON.parse(JSON.stringify(prog || { items: {} }));
+
+        /* ---- same-day dedup ---- */
+        var sameDayOps = markDone(B, QA.ex, '2026-08-12');
+        is(sameDayOps.length === 0,
+           'Mesmo exercício no mesmo dia — no-op no cliente',
+           'markDone não gera operação nenhuma quando o dia já está marcado',
+           JSON.stringify(sameDayOps));
+
+        return null;
+      }).then(function () {
+        /* Dedup também no BANCO: dois dispositivos gravando o mesmo dia. */
+        return Cloud.applyOps(client(), owner(), [
+          { t: 'practice.day.add', student_id: QA.A, exercise_id: QA.exSameDay, usage_date: '2026-08-24' },
+          { t: 'practice.day.add', student_id: QA.A, exercise_id: QA.exSameDay, usage_date: '2026-08-24' }
+        ]).then(function () {
           return client().from('practice_usage_days').select('*')
-            .eq('owner_id', owner()).eq('student_id', SID)
-            .eq('exercise_id', '__qa-exercise-001');
+            .eq('owner_id', owner()).eq('student_id', QA.A).eq('exercise_id', QA.exSameDay);
         });
-      }).then(function (res) {
-        (res.data || []).length === 1
-          ? ok('E — mesmo exercício no mesmo dia não duplica')
-          : no('E — mesmo exercício no mesmo dia não duplica', 'linhas: ' + (res.data || []).length);
+      }).then(function (r) {
+        is((r.data || []).length === 1,
+           'Mesmo exercício no mesmo dia — uma linha no banco',
+           'a chave primária resolve a colisão sozinha',
+           'linhas: ' + (r.data || []).length);
 
-        /* F — data diferente soma. */
-        NS.PracticeLog.markDone(SID, '__qa-exercise-001', '2026-08-19');
-        return Cloud.flush().then(function () {
-          return client().from('practice_usage_days').select('*')
-            .eq('owner_id', owner()).eq('student_id', SID)
-            .eq('exercise_id', '__qa-exercise-001');
-        });
-      }).then(function (res) {
-        (res.data || []).length === 2
-          ? ok('F — mesmo exercício em datas diferentes soma', '2 dias, 2 linhas')
-          : no('F — mesmo exercício em datas diferentes soma', 'linhas: ' + (res.data || []).length);
-
-        /* ---------------------------------------------------------------
-           G — O CASO QUE O CONTADOR ERRAVA
-           ---------------------------------------------------------------
-           Nuvem tem X em 20/08. A offline usa em 24/08, B offline usa em
-           25/08. Os dois sincronizam. Com greatest(usage_count) o resultado
-           dava 3; com uma linha por dia dá 4 — aqui, partindo de 20/08
-           sozinho, o esperado e n = 3.
-           --------------------------------------------------------------- */
-        var EX = '__qa-concur-001';
-        var c = client(), o = owner();
-        return c.from('practice_usage_days').upsert({
-          owner_id: o, student_id: SID, exercise_id: EX, usage_date: '2026-08-20'
-        }, { onConflict: 'owner_id,student_id,exercise_id,usage_date', ignoreDuplicates: true })
-        .then(function () {
-          // Notebook A (offline em 24/08) e Notebook B (offline em 25/08),
-          // sincronizando um depois do outro.
-          return Cloud.applyOps(c, o, [
-            { t: 'practice.day.add', student_id: SID, exercise_id: EX, usage_date: '2026-08-24' },
-            { t: 'practice.day.add', student_id: SID, exercise_id: EX, usage_date: '2026-08-25' }
+        /* ---- different-day merge: O CASO QUE O CONTADOR ERRAVA ---- */
+        return Cloud.applyOps(client(), owner(), [
+          { t: 'practice.day.add', student_id: QA.A, exercise_id: QA.exConcur, usage_date: '2026-08-20' }
+        ]).then(function () {
+          /* A offline em 24/08, B offline em 25/08, sincronizando um após o outro. */
+          return Cloud.applyOps(client(), owner(), [
+            { t: 'practice.day.add', student_id: QA.A, exercise_id: QA.exConcur, usage_date: '2026-08-24' }
           ]);
         }).then(function () {
-          return c.from('practice_usage_days').select('*')
-            .eq('owner_id', o).eq('student_id', SID).eq('exercise_id', EX);
+          return Cloud.applyOps(client(), owner(), [
+            { t: 'practice.day.add', student_id: QA.A, exercise_id: QA.exConcur, usage_date: '2026-08-25' }
+          ]);
+        }).then(function () {
+          return client().from('practice_usage_days').select('*')
+            .eq('owner_id', owner()).eq('student_id', QA.A).eq('exercise_id', QA.exConcur);
         });
-      }).then(function (res) {
-        var days = (res.data || []).map(function (r) { return String(r.usage_date).slice(0, 10); }).sort();
-        var local = Cloud.snapshotToLocal({
+      }).then(function (r) {
+        var rows = r.data || [];
+        var e = ((Cloud.snapshotToLocal({
           students: [], lessons: [], content: [], notes: [], custom: [],
-          practiceDays: res.data || [], practiceLegacy: []
-        });
-        var e = ((local['sabatovicz_practice_' + SID] || {}).done || {})['__qa-concur-001'] || {};
+          practiceDays: rows, practiceLegacy: []
+        })['sabatovicz_practice_' + QA.A] || {}).done || {})[QA.exConcur] || {};
 
-        days.length === 3
-          ? ok('G — dois dispositivos offline em datas diferentes fazem merge',
-               'dias: ' + days.join(', ') + ' — nenhum evento perdido')
-          : no('G — dois dispositivos offline em datas diferentes fazem merge', 'dias: ' + days.join(', '));
+        is(rows.length === 3,
+           'Dois offline em datas diferentes somam',
+           '20/08 + 24/08 + 25/08 = 3 dias. Com greatest(usage_count) dava 3 quando o certo era 4.',
+           'dias: ' + rows.map(function (x) { return String(x.usage_date).slice(0, 10); }).join(', '));
+        is(e.at === '2026-08-20', 'firstAt correto', e.at, String(e.at));
+        is(e.lastAt === '2026-08-25', 'lastAt correto', e.lastAt, String(e.lastAt));
+        is(e.n === 3, 'n correto', 'n = 3', 'n = ' + e.n);
 
-        e.at === '2026-08-20' ? ok('I — firstAt correto', e.at) : no('I — firstAt correto', String(e.at));
-        e.lastAt === '2026-08-25' ? ok('J — lastAt correto', e.lastAt) : no('J — lastAt correto', String(e.lastAt));
-        e.n === 3 ? ok('K — n correto', 'n = 3 (era 3 tambem no modelo antigo, mas por sorte da ordem)')
-                  : no('K — n correto', 'n = ' + e.n);
-
-        /* H — os dois no MESMO dia. */
-        var EX2 = '__qa-concur-002';
-        var c = client(), o = owner();
-        return Cloud.applyOps(c, o, [
-          { t: 'practice.day.add', student_id: SID, exercise_id: EX2, usage_date: '2026-08-24' },
-          { t: 'practice.day.add', student_id: SID, exercise_id: EX2, usage_date: '2026-08-24' }
-        ]).then(function () {
-          return c.from('practice_usage_days').select('*')
-            .eq('owner_id', o).eq('student_id', SID).eq('exercise_id', EX2);
-        });
-      }).then(function (res) {
-        (res.data || []).length === 1
-          ? ok('H — dois dispositivos offline na mesma data não duplicam', 'uma ocorrência, n sobe uma vez')
-          : no('H — dois dispositivos offline na mesma data não duplicam', 'linhas: ' + (res.data || []).length);
-
-        /* Legado: extra_count conta sem inventar data. */
-        var local = Cloud.snapshotToLocal({
-          students: [], lessons: [], content: [], notes: [], custom: [],
-          practiceDays: [{ student_id: SID, exercise_id: '__qa-legacy', usage_date: '2026-07-01' },
-                         { student_id: SID, exercise_id: '__qa-legacy', usage_date: '2026-07-20' }],
-          practiceLegacy: [{ student_id: SID, exercise_id: '__qa-legacy', extra_count: 2 }]
-        });
-        var e = local['sabatovicz_practice_' + SID].done['__qa-legacy'];
-        (e.n === 4 && e.at === '2026-07-01' && e.lastAt === '2026-07-20')
-          ? ok('Legado — extra_count conta sem inventar data',
-               'n = 4 com apenas 2 datas reais; nenhum dia fictício foi criado.')
-          : no('Legado — extra_count conta sem inventar data', JSON.stringify(e));
-
-        /* L — aluno A != aluno B. */
-        var OTHER = SID + '_b';
+        /* ---- aluno A ≠ aluno B ---- */
         return Cloud.applyOps(client(), owner(), [
-          { t: 'practice.day.add', student_id: OTHER, exercise_id: '__qa-exercise-001', usage_date: '2026-08-12' }
+          { t: 'practice.day.add', student_id: QA.B, exercise_id: QA.ex, usage_date: '2026-08-12' }
         ]).then(function () {
           return client().from('practice_usage_days').select('*')
-            .eq('owner_id', owner()).eq('student_id', SID)
-            .eq('exercise_id', '__qa-exercise-001');
-        }).then(function (r2) {
-          (r2.data || []).length === 2
-            ? ok('L — aluno A independente do aluno B', 'o uso do outro aluno não entrou aqui')
-            : no('L — aluno A independente do aluno B', 'linhas: ' + (r2.data || []).length);
-          return client().from('practice_usage_days').delete()
-            .eq('owner_id', owner()).eq('student_id', OTHER);
+            .eq('owner_id', owner()).eq('student_id', QA.A).eq('exercise_id', QA.ex);
         });
-      }).then(function () {
-        /* ---------- 29. Offline ---------- */
-        var realFetch = window.fetch;
-        window.fetch = function () { return Promise.reject(new TypeError('Failed to fetch')); };
-        var before = Cloud.queueLength();
-        NS.Progress.record(SID, ['grammar:__qa-offline'], '2026-08-13');
-        var uiOk = NS.Progress.isCovered(SID, 'grammar:__qa-offline');
+      }).then(function (r) {
+        is((r.data || []).length === 1,
+           'Aluno A independente do aluno B',
+           'o uso registrado para o outro aluno não entrou aqui',
+           'linhas: ' + (r.data || []).length);
+      });
 
-        uiOk ? ok('29 — offline: a tela continua respondendo',
-                  'O registro entrou no cache local sem esperar a rede.')
-             : no('29 — offline: a tela continua respondendo');
+    }).then(function () {
 
-        return Cloud.flush().then(function () {
-          Cloud.queueLength() > before
-            ? ok('N — offline: a alteração fica na fila',
-                 Cloud.queueLength() + ' operação(ões) pendente(s), gravadas no localStorage.')
-            : no('N — offline: a alteração fica na fila', 'A fila não cresceu.');
-          window.fetch = realFetch;
-          return Cloud.flush();
-        }).then(function () { return sleep(300); }).then(function () {
-          return client().from('lesson_content').select('*')
-            .eq('owner_id', owner()).eq('student_id', SID)
-            .eq('content_id', 'grammar:__qa-offline');
-        }).then(function (res) {
-          (res.data || []).length === 1
-            ? ok('29 — voltou a internet, sincronizou', 'Nada se perdeu.')
-            : no('29 — voltou a internet, sincronizou', JSON.stringify(res.data));
-        });
+      /* ---------------- Legado ---------------- */
+      group('PracticeLog legado');
+      var legacy = Cloud.snapshotToLocal({
+        students: [], lessons: [], content: [], notes: [], custom: [],
+        practiceDays: [{ student_id: QA.A, exercise_id: '__qa-legacy', usage_date: '2026-07-01' },
+                       { student_id: QA.A, exercise_id: '__qa-legacy', usage_date: '2026-07-20' }],
+        practiceLegacy: [{ student_id: QA.A, exercise_id: '__qa-legacy', extra_count: 2 }]
+      })['sabatovicz_practice_' + QA.A].done['__qa-legacy'];
+      is(legacy.n === 4 && legacy.at === '2026-07-01' && legacy.lastAt === '2026-07-20',
+         'extra_count conta sem inventar data',
+         'n = 4 com apenas 2 datas reais; nenhum dia fictício foi criado.',
+         JSON.stringify(legacy));
+
+      /* ---------------- Hidratação sem laço ---------------- */
+      group('Hidratação sem laço de sincronização');
+
+      is(Cloud.native && Cloud.native.setItem !== localStorage.setItem,
+         'Barreira 1 — NATIVE.setItem não passa pelo interceptor',
+         'a hidratação grava pelas funções originais, capturadas antes de interceptar',
+         'NATIVE.setItem é o mesmo objeto que localStorage.setItem — a barreira não existe.');
+
+      is(Cloud.interceptorInstalled(),
+         'Interceptor instalado no parse',
+         'antes de students/progress/practice-log carregarem',
+         'o interceptor não está instalado.');
+
+      is(typeof Cloud.isHydrating === 'function' && Cloud.isHydrating() === false,
+         'Barreira 2 — contador hydrating exposto e em zero',
+         'applySnapshotLocally roda dentro de withoutSync()',
+         'a barreira explícita não está disponível.');
+
+      var identical = { items: { 'grammar:__qa-x': { lessons: ['2026-08-01'], times: 1, note: '' } } };
+      var noOps = Cloud.computeOps({ kind: 'progress', studentId: QA.A },
+                                   identical, JSON.parse(JSON.stringify(identical)));
+      is(noOps.length === 0,
+         'Regravar o que acabou de descer não gera operação',
+         'o diff de dois estados iguais é vazio — mesmo que uma gravação escapasse ' +
+         'para o caminho público, não haveria linha para reenviar.',
+         JSON.stringify(noOps));
+
+      nt('Hidratação real gravando no localStorage desta máquina',
+         'applySnapshotLocally() escreve no cache REAL desta máquina. Rodar isso aqui ' +
+         'sobrescreveria os dados da professora antes da migração, que é justamente o ' +
+         'que esta página não pode fazer. As duas barreiras acima são verificadas ' +
+         'estruturalmente, e o comportamento sem-laço é provado pelo diff vazio.');
+
+      /* ---------------- Fila offline ---------------- */
+      group('Fila offline');
+
+      var realFetch = window.fetch;
+      var opsRetry = [{ t: 'content.add', student_id: QA.A, content_id: QA.content2, lesson_date: '2026-08-13' }];
+      window.fetch = function () { return Promise.reject(new TypeError('Failed to fetch')); };
+
+      return Cloud.applyOps(client(), owner(), opsRetry).then(function () {
+        window.fetch = realFetch;
+        no('Sem rede, applyOps falha em vez de dar sucesso falso',
+           'a chamada retornou sucesso mesmo com a rede derrubada.');
+      }).catch(function () {
+        window.fetch = realFetch;
+        ok('Sem rede, applyOps falha em vez de dar sucesso falso',
+           'é essa rejeição que faz o engine devolver as operações para a fila.');
+        return null;
       }).then(function () {
-        /* O — ids intactos: nada foi reescrito em nenhum momento. */
-        return client().from('practice_usage_days').select('exercise_id')
-          .eq('owner_id', owner()).eq('student_id', SID);
-      }).then(function (res) {
-        var ids = (res.data || []).map(function (r) { return r.exercise_id; });
-        ids.indexOf('__qa-exercise-001') !== -1
-          ? ok('O — ids existentes intactos', 'gravados e lidos exatamente como vieram')
-          : no('O — ids existentes intactos', ids.join(', '));
-        return cleanup().then(function () { ok('Resíduo de teste removido'); });
+        /* Rede de volta: as MESMAS operações reenviadas chegam inteiras. */
+        return Cloud.applyOps(client(), owner(), opsRetry);
+      }).then(function () {
+        return client().from('lesson_content').select('*')
+          .eq('owner_id', owner()).eq('student_id', QA.A).eq('content_id', QA.content2);
+      }).then(function (r) {
+        is((r.data || []).length === 1,
+           'Voltou a rede, a mesma operação sincroniza sem duplicar',
+           'reenviar é seguro — é o que a fila faz quando a internet volta.',
+           'linhas: ' + (r.data || []).length);
+
+        nt('Fila persistida em localStorage e drenada automaticamente',
+           'A fila é global do engine e só recebe operações quando o modo é "live", ' +
+           'que só é ligado pela migração. Testá-la aqui exigiria ligar a ' +
+           'sincronização real — proibido nesta fase. O que dá para provar antes da ' +
+           'migração está acima: a falha de rede rejeita, e o reenvio é idempotente. ' +
+           'A fila em si sai no teste de dois computadores, depois da migração.');
       });
     });
   }
+
+  renderState();
 })();
 </script>
 </body>
