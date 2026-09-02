@@ -4,6 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Lu Studio — Verificação da nuvem</title>
+
+  <!-- ======================================================================
+       ERROR BOUNDARY — primeiro script da página, de propósito.
+       ----------------------------------------------------------------------
+       Está aqui em cima para pegar erro de QUALQUER script abaixo, inclusive
+       platform-auth.js. E faz uma coisa a mais: se o véu anti-flash do auth
+       guard ficar preso porque algo quebrou no meio, ele tira o véu. Tela
+       branca sem explicação é o pior resultado possível numa página de
+       diagnóstico.
+       ====================================================================== -->
+  <script>
+  (function () {
+    var boot = window.__qaBoot = { state: 'Initializing…', ready: false, problems: [] };
+
+    function paint() {
+      var s = document.getElementById('qa-status');
+      var d = document.getElementById('qa-boot-error');
+      if (s) s.textContent = boot.state;
+      if (d) {
+        if (boot.problems.length) {
+          d.hidden = false;
+          d.textContent = (boot.ready ? 'Erro durante a execução: ' : 'Initialization failed: ')
+                        + boot.problems.join(' | ');
+        } else { d.hidden = true; }
+      }
+    }
+    boot.paint = paint;
+    boot.set = function (st) { boot.state = st; paint(); };
+    boot.fail = function (msg) {
+      boot.problems.push(String(msg));
+      if (!boot.ready) boot.state = 'Initialization failed';
+      try {
+        var v = document.getElementById('tl-auth-veil');
+        if (v && v.parentNode) v.parentNode.removeChild(v);
+        if (document.body) document.body.style.visibility = 'visible';
+      } catch (e) {}
+      paint();
+    };
+
+    window.addEventListener('error', function (ev) {
+      // Falha de RECURSO (fonte, css, imagem) não é falha de inicialização.
+      if (ev.target && ev.target !== window) {
+        console.warn('[qa] recurso não carregou:', ev.target.src || ev.target.href);
+        return;
+      }
+      boot.fail((ev.message || 'erro') +
+        (ev.filename ? ' @ ' + String(ev.filename).split('/').pop() + ':' + ev.lineno : ''));
+      console.error('[qa] erro de script', ev.error || ev.message);
+    }, true);
+
+    window.addEventListener('unhandledrejection', function (ev) {
+      var r = ev.reason;
+      boot.fail('promise rejeitada: ' + ((r && r.message) || r));
+      console.error('[qa] promise rejeitada', r);
+    });
+
+    document.addEventListener('DOMContentLoaded', paint);
+  })();
+  </script>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="design-system/theme.css">
 
@@ -13,73 +73,118 @@
   <script src="platform-cloud.js"></script>
 
   <style>
-    body { background: var(--tl-bg); }
-    .wrap { max-width: 880px; margin: 0 auto; padding: var(--tl-space-7) var(--tl-space-5) var(--tl-space-8); }
-    h1 { font-size: var(--tl-fs-h2); color: var(--tl-primary); font-weight: 700; margin-bottom: var(--tl-space-2); }
-    .lede { color: var(--tl-text-secondary); font-size: var(--tl-fs-body); line-height: 1.55; margin-bottom: var(--tl-space-5); }
-    .panel { background: var(--tl-surface); border: 1px solid var(--tl-border); border-radius: var(--tl-radius-lg); padding: var(--tl-space-5); margin-bottom: var(--tl-space-4); }
-    .panel h2 { font-size: var(--tl-fs-h4); color: var(--tl-text); font-weight: 700; margin-bottom: var(--tl-space-3); }
-    button { font: 600 var(--tl-fs-button)/1 var(--tl-font-sans); padding: 11px 18px; border-radius: var(--tl-radius-md); border: 1px solid var(--tl-primary); background: var(--tl-primary); color: #fff; cursor: pointer; }
-    button.ghost { background: var(--tl-surface); color: var(--tl-primary); }
-    button:disabled { opacity: .5; cursor: default; }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    /* ======================================================================
+       TODAS as classes desta página começam com `qa-`.
+       ----------------------------------------------------------------------
+       Não é preciosismo: `.panel` no Design System é painel de ABA e nasce
+       `display: none` até receber `.active` (components.css). Esta página
+       usava `.panel` no cartão que contém o botão Run — e o cartão inteiro
+       ficava invisível no Chrome, com o resto da página aparecendo normal.
+       `.row`, `.tag` e `.wrap` também existem no DS com outra semântica.
+       Prefixo próprio + `display` explícito em cada container: nenhuma regra
+       futura do DS derruba esta tela outra vez.
+       ====================================================================== */
+    body { background: var(--tl-bg, #F8F9FA); }
 
-    .state { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
-             font-size: var(--tl-fs-small); color: var(--tl-text-secondary);
-             margin-bottom: var(--tl-space-4); line-height: 1.5; }
-    .state b { color: var(--tl-text); font-weight: 600; }
-    .state .pill { display: inline-block; padding: 3px 9px; border-radius: 999px;
-                   font-size: var(--tl-fs-caption); font-weight: 600;
-                   background: var(--tl-surface-alt); color: var(--tl-text-secondary);
-                   border: 1px solid var(--tl-border); }
+    .qa-wrap { display: block; max-width: 880px; margin: 0 auto;
+               padding: 28px 20px 48px; }
+    .qa-h1 { font-size: 24px; color: var(--tl-primary, #0B3B46); font-weight: 700; margin-bottom: 8px; }
+    .qa-lede { color: var(--tl-text-secondary, #6B7280); font-size: 15px; line-height: 1.55; margin-bottom: 20px; }
 
-    ul.results { list-style: none; margin-top: var(--tl-space-4); }
-    ul.results li { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--tl-border-subtle); font-size: var(--tl-fs-small); line-height: 1.45; }
-    .tag { flex: none; width: 84px; font-weight: 700; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding-top: 2px; }
-    .pass .tag { color: var(--tl-success-text); }
-    .fail .tag { color: var(--tl-danger-text); }
-    .nottested .tag { color: var(--tl-warning-text); }
-    .why { color: var(--tl-text-secondary); display: block; margin-top: 2px; }
-    .group { margin-top: var(--tl-space-4); padding-top: var(--tl-space-2);
-             font-size: var(--tl-fs-caption); font-weight: 700; letter-spacing: .06em;
-             text-transform: uppercase; color: var(--tl-text-tertiary); }
-    .summary { margin-top: var(--tl-space-4); padding: 12px 14px; border-radius: var(--tl-radius-md); font-size: var(--tl-fs-small); font-weight: 600; line-height: 1.5; }
-    .summary.good { background: var(--tl-success-soft); color: var(--tl-success-text); }
-    .summary.bad { background: var(--tl-danger-soft); color: var(--tl-danger-text); }
-    .leftovers { margin-top: var(--tl-space-3); padding: 12px 14px; border-radius: var(--tl-radius-md);
-                 background: var(--tl-danger-soft); color: var(--tl-danger-text);
-                 font-size: var(--tl-fs-small); line-height: 1.5; }
-    .leftovers pre { font-family: var(--tl-font-mono); font-size: 12px; margin-top: 6px; white-space: pre-wrap; }
-    ol.manual { margin-left: 20px; color: var(--tl-text-secondary); font-size: var(--tl-fs-small); line-height: 1.65; }
-    code { font-family: var(--tl-font-mono); font-size: 12px; background: var(--tl-surface-alt); padding: 1px 5px; border-radius: 4px; }
+    .qa-card { display: block; background: var(--tl-surface, #fff);
+               border: 1px solid var(--tl-border, #E5E7EB); border-radius: 12px;
+               padding: 20px; margin-bottom: 16px; }
+    .qa-card h2 { font-size: 16px; color: var(--tl-text, #1F2937); font-weight: 700; margin-bottom: 10px; }
+
+    .qa-statusbar { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+    .qa-statusbar .qa-label { font-size: 12px; letter-spacing: .05em; text-transform: uppercase;
+                              color: var(--tl-text-tertiary, #9CA3AF); font-weight: 700; }
+    .qa-statusbar strong { font-size: 14px; color: var(--tl-text, #1F2937); font-weight: 600; }
+
+    .qa-err { display: block; margin-bottom: 12px; padding: 11px 13px; border-radius: 8px;
+              background: var(--tl-danger-soft, #FEE2E2); color: var(--tl-danger-text, #991B1B);
+              font-size: 14px; line-height: 1.5; }
+    .qa-err[hidden] { display: none; }
+
+    .qa-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .qa-btn { display: inline-block; font: 600 14px/1 var(--tl-font-sans, system-ui), sans-serif;
+              padding: 11px 18px; border-radius: 8px; border: 1px solid var(--tl-primary, #0B3B46);
+              background: var(--tl-primary, #0B3B46); color: #fff; cursor: pointer; }
+    .qa-btn-ghost { background: var(--tl-surface, #fff); color: var(--tl-primary, #0B3B46); }
+    .qa-btn:disabled { opacity: .5; cursor: default; }
+
+    .qa-context { display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline;
+                  margin-top: 12px; font-size: 13px; color: var(--tl-text-secondary, #6B7280);
+                  line-height: 1.5; }
+    .qa-pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 12px;
+               font-weight: 600; background: var(--tl-surface-alt, #F2F6F7);
+               color: var(--tl-text-secondary, #6B7280); border: 1px solid var(--tl-border, #E5E7EB); }
+    .qa-pill b { color: var(--tl-text, #1F2937); }
+
+    .qa-results { display: block; list-style: none; margin: 16px 0 0; padding: 0; }
+    .qa-results li { display: flex; gap: 12px; padding: 9px 0;
+                     border-bottom: 1px solid var(--tl-border-subtle, #F1F3F5);
+                     font-size: 14px; line-height: 1.45; }
+    .qa-t { flex: none; width: 84px; font-weight: 700; font-size: 11px; letter-spacing: .04em;
+            text-transform: uppercase; padding-top: 2px; }
+    .qa-pass .qa-t { color: var(--tl-success-text, #166534); }
+    .qa-fail .qa-t { color: var(--tl-danger-text, #991B1B); }
+    .qa-nottested .qa-t { color: var(--tl-warning-text, #92400E); }
+    .qa-why { color: var(--tl-text-secondary, #6B7280); display: block; margin-top: 2px; }
+    .qa-group { display: block; margin-top: 18px; padding-top: 6px; font-size: 12px; font-weight: 700;
+                letter-spacing: .06em; text-transform: uppercase; color: var(--tl-text-tertiary, #9CA3AF); }
+
+    .qa-summary { display: block; margin-top: 16px; padding: 12px 14px; border-radius: 8px;
+                  font-size: 14px; font-weight: 600; line-height: 1.5; }
+    .qa-summary-good { background: var(--tl-success-soft, #DCFCE7); color: var(--tl-success-text, #166534); }
+    .qa-summary-bad { background: var(--tl-danger-soft, #FEE2E2); color: var(--tl-danger-text, #991B1B); }
+    .qa-leftovers { display: block; margin-top: 12px; padding: 12px 14px; border-radius: 8px;
+                    background: var(--tl-danger-soft, #FEE2E2); color: var(--tl-danger-text, #991B1B);
+                    font-size: 14px; line-height: 1.5; }
+    .qa-leftovers pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px;
+                        margin-top: 6px; white-space: pre-wrap; }
+    .qa-manual { margin-left: 20px; color: var(--tl-text-secondary, #6B7280); font-size: 14px; line-height: 1.65; }
+    .qa-code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px;
+               background: var(--tl-surface-alt, #F2F6F7); padding: 1px 5px; border-radius: 4px; }
   </style>
 </head>
 <body>
-<div class="wrap">
+<div class="qa-wrap">
 
-  <h1>Verificação da nuvem</h1>
-  <p class="lede">
-    Testa o Supabase de verdade — autenticação, GRANTs, RLS, sincronização
-    entre dois dispositivos e a semântica por dia do PracticeLog.
-    <strong>Roda antes da migração</strong>: não liga a sincronização, não
-    migra nada e não encosta no <code>localStorage</code> dos seus alunos.
+  <h1 class="qa-h1">Verificação da nuvem</h1>
+  <p class="qa-lede">
+    Testa o Supabase de verdade — autenticação, GRANTs, RLS, sincronização entre
+    dois dispositivos e a semântica por dia do PracticeLog.
+    <strong>Roda antes da migração</strong>: não liga a sincronização, não migra
+    nada e não encosta no <span class="qa-code">localStorage</span> dos seus alunos.
     Tudo o que grava usa ids reservados de QA e é apagado no fim.
   </p>
 
-  <div class="panel">
-    <div class="state" id="state"></div>
-    <div class="row">
-      <button id="run">Run verification</button>
-      <button id="clean" class="ghost">Limpar resíduo de QA</button>
+  <section class="qa-card">
+    <div class="qa-statusbar">
+      <span class="qa-label">Verification status</span>
+      <strong id="qa-status">Initializing…</strong>
     </div>
-    <ul class="results" id="out"></ul>
-    <div id="sum"></div>
-    <div id="left"></div>
-  </div>
 
-  <div class="panel">
+    <div class="qa-err" id="qa-boot-error" hidden></div>
+
+    <!-- Botões ESTÁTICOS. Nenhum script cria, insere ou remove estes nós:
+         o JavaScript só habilita, desabilita e escuta o clique. Se tudo
+         abaixo falhar, eles continuam aqui e o status diz o porquê. -->
+    <div class="qa-actions">
+      <button type="button" id="qa-run" class="qa-btn" disabled>Run verification</button>
+      <button type="button" id="qa-clean" class="qa-btn qa-btn-ghost" disabled>Limpar resíduo de QA</button>
+    </div>
+
+    <div class="qa-context" id="qa-context"></div>
+    <ul class="qa-results" id="qa-out"></ul>
+    <div id="qa-sum"></div>
+    <div id="qa-left"></div>
+  </section>
+
+  <section class="qa-card">
     <h2>O que só os seus dois computadores podem provar</h2>
-    <ol class="manual">
+    <ol class="qa-manual">
       <li>Notebook A: crie uma aluna. Notebook B: recarregue — ela aparece.</li>
       <li>A: marque uma aula no Calendar. B: recarregue — a aula está lá.</li>
       <li>A: registre um conteúdo em 12/08. B: Profile mostra no Learning History
@@ -87,12 +192,13 @@
       <li>A: adicione um conteúdo externo (Cool English). B: aparece na lista.</li>
       <li>A: complete um exercício da Maria. B: abra a Maria — o exercício não volta.</li>
       <li>A: desmarque uma ocorrência. B: reflete a remoção.</li>
-      <li>A: desligue a internet, registre algo — o chip mostra <code>Offline</code>
-          e a tela continua respondendo. Religue: vira <code>✓ Synced</code>. B: o dado chegou.</li>
-      <li><strong>Finance:</strong> deslogue e abra <code>finance.html</code> — tem que
-          cair no login. Logada, funciona igual a antes, com os mesmos números.</li>
+      <li>A: desligue a internet, registre algo — o chip mostra <span class="qa-code">Offline</span>
+          e a tela continua respondendo. Religue: vira <span class="qa-code">✓ Synced</span>.
+          B: o dado chegou.</li>
+      <li><strong>Finance:</strong> deslogue e abra <span class="qa-code">finance.html</span> —
+          tem que cair no login. Logada, funciona igual a antes, com os mesmos números.</li>
     </ol>
-  </div>
+  </section>
 
 </div>
 
@@ -102,34 +208,32 @@
    --------------------------------------------------------------------------
    POR QUE ESTE ARQUIVO NÃO USA TeacherLu.Cloud COMO MOTOR
    -------------------------------------------------------
-   A versão anterior chamava Progress.record(), PracticeLog.markDone() e
-   Cloud.flush(). Isso amarrava a suíte ao engine em modo 'live' — e o engine
-   só entra em 'live' DEPOIS da migração. Resultado: antes da migração, que é
-   exatamente quando a verificação mais importa, metade dos testes virava
-   "skip" e a página parecia não ter o que rodar.
-
-   Pior: aquelas chamadas gravavam no localStorage REAL, e a hidratação de
-   teste sobrescrevia o cache da professora.
-
-   Aqui é o contrário. O runner:
+   A suíte não pode depender do engine estar em 'live': 'live' só é ligado
+   pela migração, e a verificação precisa rodar ANTES dela. Então aqui o
+   runner:
      • fala com o Supabase pelo cliente autenticado, direto;
      • simula os dois notebooks com OBJETOS em memória, nunca localStorage;
      • usa Cloud.computeOps() — a MESMA função de diff que roda em aula,
-       mas pura: entra "antes/depois", sai uma lista de operações;
-     • não liga sync, não marca migração, não hidrata, não apaga nada
-       que não tenha nascido aqui.
+       mas pura: entra "antes/depois", sai a lista de operações;
+     • não liga sync, não marca migração, não hidrata, não apaga nada que
+       não tenha nascido aqui.
+
+   E NÃO CARREGA os stores da Studio (platform-students/progress/practice-log):
+   os side effects de load deles — migrateScheduleKeys, ensureMigrated —
+   mexeriam no localStorage real só por a página abrir.
 
    Todo id gravado começa com __qa — e some no fim.
    ========================================================================== */
 (function () {
   'use strict';
 
-  var NS = window.TeacherLu, Auth = NS.Auth, Cloud = NS.Cloud, CFG = NS.CloudConfig;
+  var boot = window.__qaBoot;
+  var NS = window.TeacherLu || {}, Auth = NS.Auth, Cloud = NS.Cloud, CFG = NS.CloudConfig;
 
   /* ---- espaço reservado de QA: nada aqui colide com dado real ---- */
   var QA = {
-    A:        '__qa_cloud__',        // "aluno" do notebook A
-    B:        '__qa_cloud__b',       // "aluno" do notebook B
+    A:        '__qa_cloud__',
+    B:        '__qa_cloud__b',
     content:  'grammar:__qa-past-simple',
     content2: 'grammar:__qa-retry',
     ex:       '__qa-ex-001',
@@ -139,10 +243,11 @@
   };
   var STUDENTS = [QA.A, QA.B];
 
-  var out   = document.getElementById('out');
-  var sum   = document.getElementById('sum');
-  var left  = document.getElementById('left');
-  var runBtn = document.getElementById('run');
+  var out    = document.getElementById('qa-out');
+  var sum    = document.getElementById('qa-sum');
+  var left   = document.getElementById('qa-left');
+  var runBtn = document.getElementById('qa-run');
+  var cleanBtn = document.getElementById('qa-clean');
   var results = [];
 
   function esc(s) {
@@ -153,40 +258,39 @@
   function add(state, label, name, why) {
     results.push({ state: state, name: name });
     var li = document.createElement('li');
-    li.className = state;
-    li.innerHTML = '<span class="tag">' + label + '</span><span><strong>' +
-      esc(name) + '</strong>' + (why ? '<span class="why">' + esc(why) + '</span>' : '') +
+    li.className = 'qa-' + state;
+    li.innerHTML = '<span class="qa-t">' + label + '</span><span><strong>' +
+      esc(name) + '</strong>' + (why ? '<span class="qa-why">' + esc(why) + '</span>' : '') +
       '</span>';
     out.appendChild(li);
   }
   function ok(n, w)  { add('pass', '✓ pass', n, w); }
   function no(n, w)  { add('fail', '✗ fail', n, w); }
-  /** §11: nunca escondemos um requisito — dizemos por que não deu para testar. */
+  /** Nunca escondemos um requisito — dizemos por que não deu para testar. */
   function nt(n, w)  { add('nottested', 'not tested', n, w); }
-  function group(t)  { var d = document.createElement('div'); d.className = 'group'; d.textContent = t; out.appendChild(d); }
+  function group(t)  { var d = document.createElement('div'); d.className = 'qa-group'; d.textContent = t; out.appendChild(d); }
   function is(cond, n, wOk, wNo) { cond ? ok(n, wOk) : no(n, wNo); return cond; }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
   function client() { return Auth.client(); }
   function owner()  { return Auth.userId(); }
 
-  /** Erro do PostgREST em texto curto. */
   function emsg(res) { return res && res.error ? String(res.error.message).slice(0, 80) : ''; }
   function must(res) { if (res && res.error) throw res.error; return res; }
 
   /* ----------------------------------------------------------------------
-     Cabeçalho de estado — informativo, NUNCA um portão
+     Contexto — informativo, NUNCA um portão
      ---------------------------------------------------------------------- */
-  function renderState() {
-    var el = document.getElementById('state');
+  function renderContext() {
+    var el = document.getElementById('qa-context');
+    if (!el) return;
     var mode = (Cloud && Cloud.mode) || '—';
     var nice = { 'off': 'sem config', 'pending-migration': 'migração pendente', 'live': 'sincronizando' };
     el.innerHTML =
-      '<span class="pill">sessão: <b>' + esc(Auth.email() || 'nenhuma') + '</b></span>' +
-      '<span class="pill">engine: <b>' + esc(nice[mode] || mode) + '</b></span>' +
-      '<span class="pill">projeto: <b>' + esc((CFG.SUPABASE_URL || '').replace(/^https?:\/\//, '')) + '</b></span>' +
-      '<span>A verificação roda em qualquer um desses estados — ela não depende ' +
-      'do engine estar ligado.</span>';
+      '<span class="qa-pill">sessão: <b>' + esc((Auth && Auth.email()) || 'nenhuma') + '</b></span>' +
+      '<span class="qa-pill">engine: <b>' + esc(nice[mode] || mode) + '</b></span>' +
+      '<span class="qa-pill">projeto: <b>' + esc(((CFG && CFG.SUPABASE_URL) || '').replace(/^https?:\/\//, '')) + '</b></span>' +
+      '<span>A verificação roda em qualquer um desses estados — ela não depende do engine estar ligado.</span>';
   }
 
   /* ----------------------------------------------------------------------
@@ -214,7 +318,7 @@
     });
   }
 
-  /** §7: se sobrou coisa, a professora precisa saber exatamente o quê. */
+  /** Se sobrou coisa, a professora precisa saber exatamente o quê. */
   function reportLeftovers(res) {
     if (!res.leftovers.length) {
       ok('Resíduo de QA removido', 'as 7 tabelas foram limpas dos ids __qa.');
@@ -222,12 +326,11 @@
     }
     no('Limpeza de QA falhou', res.leftovers.length + ' tabela(s) não puderam ser limpas.');
     left.innerHTML =
-      '<div class="leftovers"><strong>Limpar à mão no SQL Editor do Supabase:</strong>' +
+      '<div class="qa-leftovers"><strong>Limpar à mão no SQL Editor do Supabase:</strong>' +
       '<pre>' + esc(res.leftovers.map(function (l) {
-        var col = l.table === 'students' ? 'id' : (l.table === 'custom_content' ? null : 'student_id');
-        return col
-          ? "delete from public." + l.table + " where " + col + " in ('" + STUDENTS.join("','") + "');"
-          : "delete from public.custom_content where content_key like '__qa%';";
+        if (l.table === 'custom_content') return "delete from public.custom_content where content_key like '__qa%';";
+        var col = l.table === 'students' ? 'id' : 'student_id';
+        return "delete from public." + l.table + " where " + col + " in ('" + STUDENTS.join("','") + "');";
       }).join('\n')) + '</pre>' +
       'Erros: ' + esc(res.leftovers.map(function (l) { return l.table + ': ' + (l.error.message || l.error); }).join(' · ')) +
       '</div>';
@@ -235,16 +338,9 @@
 
   /* ----------------------------------------------------------------------
      Dispositivo simulado — um localStorage de mentira, em memória
-     ------------------------------------------------------------------------
-     Cada "notebook" é só um objeto. Gravar nele nunca toca no navegador.
      ---------------------------------------------------------------------- */
   function Device(name) {
-    return {
-      name: name,
-      practice: { done: {} },   // formato de platform-practice-log.js
-      progress: { items: {} },  // formato de platform-progress.js
-      ops: []
-    };
+    return { name: name, practice: { done: {} }, progress: { items: {} }, ops: [] };
   }
 
   /** Reproduz PracticeLog.markDone() sobre o objeto do dispositivo. */
@@ -254,7 +350,7 @@
     if (!e) {
       dev.practice.done[exId] = { at: date, n: 1 };
     } else if (e.at === date || e.lastAt === date) {
-      return [];                                  // mesmo dia -> no-op, igual ao real
+      return [];
     } else {
       e.n = (e.n || 1) + 1;
       e.lastAt = date;
@@ -280,14 +376,12 @@
     return ops;
   }
 
-  /** "Sincroniza" o dispositivo: manda as operações pendentes para o banco. */
   function sync(dev) {
     var ops = dev.ops; dev.ops = [];
     if (!ops.length) return Promise.resolve(0);
     return Cloud.applyOps(client(), owner(), ops).then(function () { return ops.length; });
   }
 
-  /** Lê do banco tudo que é QA e devolve no formato do localStorage. */
   function hydrateFromCloud() {
     var c = client(), o = owner();
     return Promise.all([
@@ -305,43 +399,20 @@
         notes: r[3].data || [], custom: r[4].data || [],
         practiceDays: r[5].data || [], practiceLegacy: r[6].data || []
       };
-      // snapshotToLocal é pura: devolve um objeto, não escreve nada.
       return { snap: snap, local: Cloud.snapshotToLocal(snap) };
     });
   }
-
-  /* ----------------------------------------------------------------------
-     Botões
-     ---------------------------------------------------------------------- */
-  document.getElementById('clean').addEventListener('click', function () {
-    cleanup().then(function (res) {
-      alert(res.leftovers.length
-        ? 'Não deu para limpar: ' + res.leftovers.map(function (l) { return l.table; }).join(', ')
-        : 'Resíduo de QA removido.');
-    });
-  });
-
-  runBtn.addEventListener('click', function () {
-    runBtn.disabled = true;
-    runBtn.textContent = 'Running…';
-    out.innerHTML = ''; sum.innerHTML = ''; left.innerHTML = ''; results = [];
-    runAll()
-      .catch(function (e) { no('Erro inesperado na suíte', String((e && e.message) || e)); })
-      .then(function () { return cleanup().then(reportLeftovers); })
-      .catch(function () {})
-      .then(finish);
-  });
 
   function finish() {
     var f = results.filter(function (r) { return r.state === 'fail'; }).length;
     var p = results.filter(function (r) { return r.state === 'pass'; }).length;
     var n = results.filter(function (r) { return r.state === 'nottested'; }).length;
-    sum.className = 'summary ' + (f ? 'bad' : 'good');
+    sum.className = 'qa-summary ' + (f ? 'qa-summary-bad' : 'qa-summary-good');
     sum.textContent = (f ? f + ' falha(s) · ' : '') + p + ' ok' +
-      (n ? ' · ' + n + ' não testável(is) nesta fase' : '') +
-      (f ? '' : ' — nada falhou.');
+      (n ? ' · ' + n + ' não testável(is) nesta fase' : '') + (f ? '' : ' — nada falhou.');
     runBtn.disabled = false;
-    runBtn.textContent = 'Run verification';
+    cleanBtn.disabled = false;
+    boot.set('Finished');
   }
 
   /* ======================================================================
@@ -660,7 +731,70 @@
     });
   }
 
-  renderState();
+
+  /* ======================================================================
+     INICIALIZAÇÃO
+     ------------------------------------------------------------------------
+     O botão já existe no HTML. Aqui ele só é LIGADO — e, se algo estiver
+     faltando, ele fica desabilitado com o motivo no status, nunca some.
+     ====================================================================== */
+  function init() {
+    var faltando = [];
+    if (!window.TeacherLu)        faltando.push('TeacherLu (platform-cloud-config.js não carregou)');
+    if (!window.supabase)         faltando.push('supabase (vendor/supabase.js não carregou)');
+    if (!Auth)                    faltando.push('TeacherLu.Auth (platform-auth.js)');
+    if (!Cloud)                   faltando.push('TeacherLu.Cloud (platform-cloud.js)');
+    if (Cloud && typeof Cloud.computeOps !== 'function') faltando.push('Cloud.computeOps (platform-cloud.js desatualizado)');
+    if (Cloud && typeof Cloud.applyOps !== 'function')   faltando.push('Cloud.applyOps');
+    if (!CFG)                     faltando.push('TeacherLu.CloudConfig');
+
+    if (faltando.length) {
+      boot.fail('faltando ' + faltando.join(', '));
+      return;
+    }
+
+    renderContext();
+
+    /* O engine pode estar em 'off' ou 'pending-migration' — tudo bem, a
+       suíte não depende dele. O único requisito real é sessão. */
+    cleanBtn.disabled = false;
+    cleanBtn.addEventListener('click', function () {
+      cleanBtn.disabled = true;
+      cleanup().then(function (res) {
+        cleanBtn.disabled = false;
+        alert(res.leftovers.length
+          ? 'Não deu para limpar: ' + res.leftovers.map(function (l) { return l.table; }).join(', ')
+          : 'Resíduo de QA removido.');
+      });
+    });
+
+    runBtn.addEventListener('click', function () {
+      runBtn.disabled = true; cleanBtn.disabled = true;
+      boot.set('Running…');
+      out.innerHTML = ''; sum.innerHTML = ''; sum.className = ''; left.innerHTML = ''; results = [];
+      runAll()
+        .catch(function (e) { no('Erro inesperado na suíte', String((e && e.message) || e)); })
+        .then(function () { return cleanup().then(reportLeftovers); })
+        .catch(function () {})
+        .then(finish);
+    });
+
+    runBtn.disabled = false;
+    boot.ready = true;
+    boot.set(Auth.isSignedIn() ? 'Ready' : 'Ready — sem sessão, a suíte vai avisar e parar no começo');
+
+    /* Confirmação de sessão em segundo plano. NUNCA esconde o botão: se a
+       sessão cair, o status avisa e a suíte reporta a falha ao rodar. */
+    Auth.verify().then(function (valid) {
+      if (!valid) boot.set('Ready — a sessão parece inválida; faça login de novo');
+    }).catch(function () {});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
 </body>
