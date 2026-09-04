@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Lu Studio — Diagnóstico Calendar/Report</title>
+
+  <script>
+  (function () {
+    var boot = window.__dxBoot = { problems: [] };
+    function paint() {
+      var d = document.getElementById('dx-boot-error');
+      if (!d) return;
+      if (!boot.problems.length) { d.hidden = true; return; }
+      d.hidden = false;
+      d.textContent = 'A página não carregou por inteiro: ' + boot.problems.join(' | ');
+    }
+    boot.fail = function (m) {
+      boot.problems.push(String(m));
+      try {
+        var v = document.getElementById('tl-auth-veil');
+        if (v && v.parentNode) v.parentNode.removeChild(v);
+        if (document.body) document.body.style.visibility = 'visible';
+      } catch (e) {}
+      paint();
+    };
+    window.addEventListener('error', function (ev) {
+      if (ev.target && ev.target !== window) return;
+      boot.fail(ev.message || 'erro'); console.error('[dx]', ev.error || ev.message);
+    }, true);
+    window.addEventListener('unhandledrejection', function (ev) {
+      boot.fail('promise: ' + ((ev.reason && ev.reason.message) || ev.reason));
+    });
+    document.addEventListener('DOMContentLoaded', paint);
+  })();
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-system/theme.css">
+  <script src="platform-cloud-config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="platform-auth.js"></script>
+  <script src="platform-cloud.js"></script>
+  <script src="platform-students.js"></script>
+  <script src="platform-calendar.js"></script>
+
+  <style>
+    /* Prefixo `dx-` em tudo: `.panel`, `.row`, `.num`, `.step` e `.wrap` já
+       existem no Design System com outra semântica. */
+    body { background: var(--tl-bg, #F8F9FA); }
+    .dx-wrap { display: block; max-width: 900px; margin: 0 auto; padding: 28px 20px 48px; }
+    .dx-h1 { font-size: 24px; color: var(--tl-primary, #0B3B46); font-weight: 700; margin-bottom: 8px; }
+    .dx-lede { color: var(--tl-text-secondary, #6B7280); font-size: 15px; line-height: 1.55; margin-bottom: 20px; }
+    .dx-card { display: block; background: #fff; border: 1px solid var(--tl-border, #E5E7EB);
+               border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .dx-card h2 { font-size: 16px; font-weight: 700; color: var(--tl-text, #1F2937); margin-bottom: 10px; }
+    .dx-btn { display: inline-block; font: 600 14px/1 system-ui, sans-serif; padding: 11px 18px;
+              border-radius: 8px; border: 1px solid var(--tl-primary, #0B3B46);
+              background: var(--tl-primary, #0B3B46); color: #fff; cursor: pointer; }
+    .dx-btn:disabled { opacity: .5; cursor: default; }
+    .dx-err { display: block; margin-bottom: 12px; padding: 11px 13px; border-radius: 8px;
+              background: var(--tl-danger-soft, #FEE2E2); color: var(--tl-danger-text, #991B1B); font-size: 14px; }
+    .dx-err[hidden] { display: none; }
+    .dx-t { display: table; width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+    .dx-t th, .dx-t td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--tl-border-subtle, #F1F3F5); }
+    .dx-t th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+               color: var(--tl-text-tertiary, #9CA3AF); font-weight: 700; }
+    .dx-t td.dx-n { text-align: right; font-variant-numeric: tabular-nums; }
+    .dx-diff { background: var(--tl-warning-soft, #FEF3C7); font-weight: 600; }
+    .dx-note { display: block; margin-top: 12px; padding: 11px 13px; border-radius: 8px; font-size: 14px;
+               line-height: 1.5; background: var(--tl-surface-alt, #F2F6F7); color: var(--tl-text-secondary, #6B7280); }
+    .dx-note.dx-warn { background: var(--tl-warning-soft, #FEF3C7); color: var(--tl-warning-text, #92400E); }
+    .dx-note.dx-good { background: var(--tl-success-soft, #DCFCE7); color: var(--tl-success-text, #166534); }
+    .dx-code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+<div class="dx-wrap">
+  <h1 class="dx-h1">Diagnóstico — Calendar × Monthly Report</h1>
+  <p class="dx-lede">
+    Auditoria <strong>somente leitura</strong> dos seus registros reais de aula.
+    Nada é gravado, alterado ou apagado — nem no navegador, nem no Supabase.
+    Mostra onde a contagem antiga e a corrigida divergem, e por quê.
+  </p>
+
+  <div class="dx-err" id="dx-boot-error" hidden></div>
+
+  <section class="dx-card">
+    <button type="button" class="dx-btn" id="dx-run" disabled>Auditar meus dados</button>
+    <div id="dx-out"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var NS = window.TeacherLu || {}, Cal = NS.Calendar, Students = NS.Students;
+  var out = document.getElementById('dx-out');
+  var btn = document.getElementById('dx-run');
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c];}); }
+  function el(html){ var d=document.createElement('div'); d.innerHTML=html; out.appendChild(d); }
+
+  /* A regra ANTIGA, reproduzida aqui para poder comparar. Não é usada em
+     lugar nenhum do produto — existe só para mostrar o "antes". */
+  function contagemAntiga(raw) {
+    var sessions = Array.isArray(raw.sessions) ? raw.sessions : null;
+    var rollup = raw.status || '';
+    if (sessions && sessions.length) {
+      var hasDone=false, hasSched=false, hasCanc=false;
+      sessions.forEach(function(s){ var st=(s||{}).status||'';
+        if(st==='done')hasDone=true; else if(st==='scheduled')hasSched=true; else if(st==='cancelled')hasCanc=true; });
+      if(hasDone) rollup='done'; else if(hasSched) rollup='scheduled'; else if(hasCanc) rollup='cancelled';
+    }
+    if (!rollup && raw.note) rollup = 'done';          // <- o bug
+    return rollup === 'done' ? 1 : 0;                  // contava DIAS
+  }
+
+  function todosRegistros() {
+    var recs = [];
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (!k || k.indexOf('sched|') !== 0) continue;
+      var p = k.split('|');
+      if (p.length < 3) { recs.push({ key:k, malformada:true }); continue; }
+      var raw = null;
+      try { raw = JSON.parse(localStorage.getItem(k)); } catch (e) {}
+      recs.push({ key:k, studentId:p[1], date:p[2], raw:raw||{},
+                  malformada: !NS.DateOnly.isValid(p[2]) });
+    }
+    return recs;
+  }
+
+  btn.addEventListener('click', function () {
+    btn.disabled = true; out.innerHTML = '';
+    var recs = todosRegistros();
+
+    /* ---------- 18. inventário ---------- */
+    var comSessions=0, parentDoneComSessions=0, semStatusComNota=0, cancelados=0,
+        malformadas=[], divergentes=[];
+    recs.forEach(function (r) {
+      if (r.malformada) { malformadas.push(r.key); return; }
+      var raw = r.raw;
+      var ss = Array.isArray(raw.sessions) ? raw.sessions : null;
+      if (ss && ss.length) comSessions++;
+      if (raw.status === 'done' && ss && ss.length) parentDoneComSessions++;
+      if (!raw.status && raw.note) semStatusComNota++;
+      if (raw.status === 'cancelled') cancelados++;
+
+      var antes = contagemAntiga(raw);
+      var lesson = { status: raw.status || '', sessions: ss };
+      if (ss && ss.length) {
+        var hasDone = ss.some(function(x){return x&&x.status==='done';});
+        lesson.status = hasDone ? 'done' : (raw.status || '');
+      }
+      var depois = Cal.completedLessonCount(lesson);
+      if (antes !== depois) divergentes.push({ key:r.key, date:r.date, student:r.studentId,
+        antes:antes, depois:depois, motivo: (!raw.status && raw.note) ? 'registro só com nota'
+          : (ss && ss.length ? 'aula dupla contada como 1 dia' : 'outro') });
+    });
+
+    el('<h2>Inventário dos registros</h2>' +
+      '<table class="dx-t"><tr><th>o quê</th><th>quantos</th></tr>' +
+      [['Registros de aula (sched|)', recs.length],
+       ['Com sessions[]', comSessions],
+       ['Parent done + sessions[]', parentDoneComSessions],
+       ['Sem status, só com nota', semStatusComNota],
+       ['Cancelados', cancelados],
+       ['Datas fora do formato YYYY-MM-DD', malformadas.length]
+      ].map(function(r){return '<tr><td>'+r[0]+'</td><td class="dx-n">'+r[1]+'</td></tr>';}).join('') +
+      '</table>');
+
+    if (malformadas.length) {
+      el('<div class="dx-note dx-warn"><strong>Datas fora do formato — nada foi alterado:</strong><br>' +
+         '<span class="dx-code">' + malformadas.map(esc).join('<br>') + '</span></div>');
+    } else {
+      el('<div class="dx-note dx-good">Todas as datas estão em YYYY-MM-DD. ' +
+         'Nenhum registro precisa de reparo de data.</div>');
+    }
+
+    /* ---------- 24. Calendar × Report, antes e depois, por mês ---------- */
+    var meses = {};
+    recs.forEach(function (r) {
+      if (r.malformada) return;
+      var ym = NS.DateOnly.month(r.date);
+      (meses[ym] = meses[ym] || []).push(r);
+    });
+    var linhas = Object.keys(meses).sort().reverse().map(function (ym) {
+      var antes = 0;
+      meses[ym].forEach(function (r) { antes += contagemAntiga(r.raw); });
+      var depois = 0;
+      (Students ? Students.load() : []).forEach(function (s) {
+        depois += Cal.completedLessonsForMonth(s.id, ym).count;
+      });
+      var cls = antes !== depois ? ' class="dx-diff"' : '';
+      return '<tr' + cls + '><td>' + esc(ym) + '</td><td class="dx-n">' + depois +
+             '</td><td class="dx-n">' + antes + '</td><td class="dx-n">' + depois + '</td></tr>';
+    }).join('');
+
+    el('<h2 style="margin-top:22px">Calendar × Monthly Report, por mês</h2>' +
+       '<table class="dx-t"><tr><th>mês</th><th>sessões concluídas (Calendar)</th>' +
+       '<th>report antes</th><th>report depois</th></tr>' + (linhas ||
+       '<tr><td colspan="4">Nenhum registro de aula encontrado neste navegador.</td></tr>') + '</table>');
+
+    if (divergentes.length) {
+      el('<div class="dx-note dx-warn"><strong>' + divergentes.length +
+         ' registro(s) em que a contagem muda</strong> — nenhum foi alterado:<br><br>' +
+         divergentes.slice(0, 40).map(function (d) {
+           return '<span class="dx-code">' + esc(d.key) + '</span> — antes ' + d.antes +
+                  ', depois ' + d.depois + ' (' + d.motivo + ')';
+         }).join('<br>') + (divergentes.length > 40 ? '<br>…' : '') +
+         '<br><br>Isto é diferença de <strong>contagem</strong>, não de data: o dado no ' +
+         'armazenamento está correto e não precisa de migração.</div>');
+    } else {
+      el('<div class="dx-note dx-good">Nenhuma divergência: a contagem antiga e a ' +
+         'corrigida dão o mesmo número para todos os seus registros.</div>');
+    }
+
+    btn.disabled = false;
+  });
+
+  if (!Cal || !NS.DateOnly || typeof Cal.completedLessonCount !== 'function') {
+    if (window.__dxBoot) window.__dxBoot.fail('platform-calendar.js desatualizado (sem completedLessonCount/DateOnly)');
+  } else {
+    btn.disabled = false;
+  }
+})();
+</script>
+</body>
+</html>

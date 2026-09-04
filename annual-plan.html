@@ -823,14 +823,18 @@
         .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    /* SOMENTE LEITURA — a data da aula não existe nesta tela.
+       ----------------------------------------------------------------------
+       Esta função chamava Progress.toggle(aluno, item) SEM data. Progress cai
+       em today() quando a data não vem, então todo conteúdo marcado aqui era
+       gravado em HOJE — e não no dia da aula. Revisar em setembro um conteúdo
+       dado em 12/08 jogava esse conteúdo para o relatório de setembro.
+
+       O Annual Plan não tem, e não deveria ter, um seletor de data: quem sabe
+       o dia da aula é o Lesson Calendar. Então aqui a marcação virou consulta,
+       e o registro acontece onde a data é conhecida. */
     function lpToggle(itemId) {
-      if (!Progress) return;
-      const r = Progress.toggle(currentStudent, itemId);
-      renderLearningProgress();
-      // F-2: a UI já reflete o disco no re-render; avisa se não persistiu.
-      if (r && r.ok === false) {
-        alert('Could not save — the browser storage may be full. Nothing was changed.');
-      }
+      alert('O conteúdo é registrado pelo Lesson Calendar, na data da aula.\n\nMarcar por aqui gravaria na data de HOJE — foi assim que conteúdo de agosto acabou aparecendo no relatório de setembro.\n\nAbra o Lesson Calendar, escolha o dia da aula e marque o conteúdo lá.');
     }
 
     function lpSetFilter(f) { lpFilter = f; renderLearningProgress(); }

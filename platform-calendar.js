@@ -101,16 +101,33 @@
         else if (hasCanc) rollup = 'cancelled';
       }
 
-      // A record with a note but no status counts as a lesson that happened.
-      if (!rollup && raw.note) rollup = 'done';
-      if (!rollup && !sessions) return null;
-      if (!rollup) return null;
+      /* REGISTRO ADMINISTRATIVO — a correção do "5 quando foram 4"
+         ------------------------------------------------------------------
+         Aqui existia:
+
+             if (!rollup && raw.note) rollup = 'done';
+
+         Um registro criado só para guardar um lembrete virava uma aula DADA.
+         Ele entrava na contagem do Monthly Report e, porque o Finance fatura
+         por `lessonsDone`, entrava também na cobrança. Era exatamente o mês
+         com 4 aulas aparecendo como 5.
+
+         Nota não é aula. O registro continua existindo e continua aparecendo
+         no histórico — `administrative: true` diz o que ele é — mas com
+         status vazio, e contagem zero. */
+      var administrative = !rollup && !!raw.note;
+
+      var hasSessionContent = sessions && sessions.some(function (x) {
+        return x && (x.status || x.note || x.homework);
+      });
+      if (!rollup && !administrative && !hasSessionContent) return null;
 
       return {
         studentKey: name,          // student.id desde a migração
         studentName: name,         // mantido por compatibilidade
         date: date,
-        status: rollup,            // 'done' | 'scheduled' | 'cancelled'
+        status: rollup,            // 'done' | 'scheduled' | 'cancelled' | ''
+        administrative: administrative,
         note: raw.note || '',
         sessions: sessions ? sessions.map(function (s) {
           return {
@@ -122,6 +139,75 @@
       };
     }
   };
+
+  /* ======================================================================
+     DATE-ONLY — a data de uma aula NUNCA vira timestamp
+     ------------------------------------------------------------------------
+     `lesson_date` é uma DATA, não um instante. `new Date('2026-09-01')` é
+     interpretado como meia-noite UTC e, no Brasil, vira 31/08 às 21h — a
+     aula de setembro cairia em agosto.
+
+     Regra da plataforma: para filtrar, comparar, agrupar, indexar e gravar,
+     usa-se a STRING. Objeto Date só para FORMATAR texto, e sempre construído
+     ao meio-dia local, que sobrevive a qualquer mudança de horário de verão.
+     ====================================================================== */
+  var DateOnly = {
+
+    /** '2026-09-01' -> { year: 2026, month: 9, day: 1 }; null se inválida. */
+    parse: function (dateISO) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateISO || ''));
+      if (!m) return null;
+      var y = +m[1], mo = +m[2], d = +m[3];
+      if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+      return { year: y, month: mo, day: d };
+    },
+
+    /** true quando a string está no formato canônico e é uma data real. */
+    isValid: function (dateISO) {
+      var p = DateOnly.parse(dateISO);
+      if (!p) return false;
+      var d = new Date(p.year, p.month - 1, p.day, 12, 0, 0);
+      return d.getFullYear() === p.year && d.getMonth() === p.month - 1 && d.getDate() === p.day;
+    },
+
+    /** '2026-09-01' -> '2026-09'. Sem Date, sem timezone, sem surpresa. */
+    month: function (dateISO) { return String(dateISO || '').slice(0, 7); },
+
+    /** true se a data pertence ao mês 'YYYY-MM'. */
+    inMonth: function (dateISO, ym) { return DateOnly.month(dateISO) === String(ym || ''); },
+
+    /** Date ao MEIO-DIA local — só para formatar. Nunca para comparar. */
+    toLocalDate: function (dateISO) {
+      var p = DateOnly.parse(dateISO);
+      return p ? new Date(p.year, p.month - 1, p.day, 12, 0, 0) : null;
+    }
+  };
+
+  /* ======================================================================
+     CONTAGEM OFICIAL — uma função, uma resposta
+     ------------------------------------------------------------------------
+     "Aula dada" = SESSÃO concluída. Nada mais conta: scheduled, cancelled,
+     nota solta, conteúdo marcado e registro administrativo valem zero.
+
+     A regra que evita o double count: se o registro tem `sessions`, elas são
+     a verdade daquele dia e o status do pai é apenas o rollup delas — soma-se
+     as sessões, NUNCA pai + sessões. Sem `sessions`, o registro é uma aula
+     única e vale 0 ou 1.
+     ====================================================================== */
+
+  /** Quantas SESSÕES concluídas este registro representa. 0, 1 ou 2. */
+  function completedLessonCount(lesson) {
+    if (!lesson) return 0;
+    var ss = lesson.sessions;
+    if (ss && ss.length) {
+      var n = 0;
+      for (var i = 0; i < ss.length; i++) {
+        if (ss[i] && ss[i].status === STATUS.DONE) n++;
+      }
+      return n;                                   // pai NÃO entra na soma
+    }
+    return lesson.status === STATUS.DONE ? 1 : 0;
+  }
 
   /** Statuses the rest of the platform can rely on. */
   var STATUS = { DONE: 'done', SCHEDULED: 'scheduled', CANCELLED: 'cancelled' };
@@ -181,7 +267,7 @@
 
   var Calendar = {
 
-    VERSION: '1.2.0',
+    VERSION: '1.3.0',
     SOURCE: 'schedule.html',
     STATUS: STATUS,
 
@@ -229,7 +315,7 @@
       var out = [];
       eachRecord(function (l) {
         if (name && l.studentKey !== name) return;
-        if (q.month && l.date.slice(0, 7) !== q.month) return;
+        if (q.month && !DateOnly.inMonth(l.date, q.month)) return;
         if (q.from && l.date < q.from) return;
         if (q.to && l.date > q.to) return;
         if (statuses && statuses.indexOf(l.status) === -1) return;
@@ -246,6 +332,43 @@
     /** How many lessons were done — the number Finance charges for. */
     countDone: function (student, month) {
       return Calendar.lessonsDone(student, month).length;
+    },
+
+    /* ------------------------------------------------------------------
+       A FONTE ÚNICA de "quantas aulas foram dadas neste mês".
+       Header, resumo e tabela do Monthly Report leem daqui — nenhum deles
+       recalcula por conta própria.
+       ------------------------------------------------------------------ */
+
+    DateOnly: DateOnly,
+    completedLessonCount: completedLessonCount,
+
+    /**
+     * completedLessonsForMonth('isa', '2026-08')
+     *   -> { count, occurrences:[{date,sessionIndex}], byDate:{'2026-08-12':2} }
+     *
+     * `count` é o número oficial de aulas dadas. `occurrences` tem uma
+     * entrada por SESSÃO concluída, para a tabela do relatório bater com o
+     * resumo linha a linha.
+     */
+    completedLessonsForMonth: function (student, ym) {
+      var out = { count: 0, occurrences: [], byDate: {} };
+      Calendar.lessons({ student: student, month: ym }).forEach(function (l) {
+        var n = completedLessonCount(l);
+        if (!n) return;
+        out.count += n;
+        out.byDate[l.date] = n;
+        if (l.sessions && l.sessions.length) {
+          l.sessions.forEach(function (s, i) {
+            if (s && s.status === STATUS.DONE) {
+              out.occurrences.push({ date: l.date, sessionIndex: i });
+            }
+          });
+        } else {
+          out.occurrences.push({ date: l.date, sessionIndex: null });
+        }
+      });
+      return out;
     },
 
     /** Counts per status for a month: { done, scheduled, cancelled, total }. */
@@ -273,15 +396,7 @@
     sessionsDoneOn: function (student, date) {
       var lessons = Calendar.lessons({ student: student, from: date, to: date });
       if (!lessons.length) return 0;
-      var l = lessons[0];
-      if (l.sessions && l.sessions.length) {
-        var n = 0;
-        for (var i = 0; i < l.sessions.length; i++) {
-          if (l.sessions[i].status === 'done') n++;
-        }
-        return n;
-      }
-      return l.status === 'done' ? 1 : 0;
+      return completedLessonCount(lessons[0]);   // mesma regra do resto
     },
 
     /** Every month that has data, newest first — handy for reports. */
@@ -297,5 +412,6 @@
   };
 
   NS.Calendar = Calendar;
+  NS.DateOnly = DateOnly;
 
 })(typeof window !== 'undefined' ? window : this);
