@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>⭐ Teacher Lu - Lesson Generator Pro</title>
+  <!-- Camada de nuvem: config -> supabase-js -> auth guard -> sync.
+       Precisa vir ANTES de qualquer outro script: o guard decide sobre a
+       sessao antes do primeiro pixel, e o engine de sync instala o
+       interceptor de localStorage antes de qualquer store ler dado. -->
+  <script src="platform-cloud-config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="platform-auth.js"></script>
+  <script src="platform-cloud.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
