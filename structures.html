@@ -406,27 +406,22 @@ function renderActions(t){
   const entry = TeacherLu.Progress.entry(student, itemIdOf(t));
   el.innerHTML =
     `<button class="btn ${done?'green':'blue'}" onclick="markTaught()">
-       ${done?'✓ Taught':'Mark as taught'}
+       ${done?'✓ Taught':'Registrar no Lesson Calendar'}
      </button>
      <button class="btn gray sm" onclick="window.print()">⬇ PDF</button>
      ${done&&entry?`<span class="taught">recorded ${esc(entry.lastAt)}${entry.times>1?' · '+entry.times+'×':''}</span>`:''}
-     ${done?`<button class="btn gray sm" onclick="markTaught()">undo</button>`:''}`;
+     ${done?`<button class="btn gray sm" onclick="markTaught()">alterar no Calendar</button>`:''}`;
 }
 
+/* SOMENTE LEITURA — mesma razão do Annual Plan.
+   ------------------------------------------------------------------------
+   Isto chamava Progress.toggle(aluno, item) sem data, e Progress cai em
+   today(). Conteúdo marcado aqui ia para o dia de hoje, não para o dia da
+   aula — a origem do "conteúdo no mês errado". Esta tela não conhece a data
+   da aula; o Lesson Calendar conhece. */
 function markTaught(){
-  const t = lessonOf(category);
-  if(!t || !student) return;
-  const r = TeacherLu.Progress.toggle(student, itemIdOf(t));
-  // F-2: se a gravação falhou, não confirma e recarrega o estado real.
-  if(!r.ok){
-    renderCategories(); renderActions(t);
-    toast('Could not save — the browser storage may be full. Nothing was changed.');
-    return;
-  }
-  renderCategories(); renderActions(t);
-  toast(r.on
-    ? 'Recorded in ' + TeacherLu.Students.nameOf(student) + '’s Learning Progress'
-    : 'Removed from Learning Progress');
+  toast('Registre o conteúdo pelo Lesson Calendar, no dia da aula — marcar aqui gravaria na data de hoje.');
+  setTimeout(function(){ window.location.href = 'schedule.html'; }, 2200);
 }
 
 let toastTimer;

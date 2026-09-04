@@ -227,12 +227,21 @@
         dayOfWeek: weekdayOf(l.date),
         contents: contentTitles,
         status: l.status,
+        // Quantas SESSÕES concluídas esta linha vale. É o mesmo helper que
+        // alimenta o resumo — por isso tabela e resumo nunca divergem.
+        completed: Cal.completedLessonCount(l),
+        administrative: !!l.administrative,
         homework: homework,
         note: noteJoined,
         sessions: l.sessions || null
       };
     });
-    return { rows: rows, count: rows.length };
+
+    /* `count` NÃO é rows.length. Uma linha cancelada, agendada ou puramente
+       administrativa aparece na tabela e vale zero; um dia com aula dupla
+       aparece numa linha só e vale dois. */
+    var official = Cal.completedLessonsForMonth(ctx.studentId, ctx.month);
+    return { rows: rows, count: official.count, occurrences: official.occurrences };
   }
 
   /* --- 4. Conteúdos estudados ------------------------------------- */
@@ -347,17 +356,24 @@
   /* --- 11. Frequência -------------------------------------------- */
   function collectAttendance(ctx) {
     var lessons = ctx.lessonsInMonth;
-    var done = 0, scheduled = 0, cancelled = 0;
-    var sessionsDone = 0;
+    var Cal = NS.Calendar;
+
+    /* AULAS DADAS vem de UMA função só — Calendar.completedLessonsForMonth().
+       Antes existiam três números no mesmo modelo (linhas da tabela, dias com
+       status done, sessões concluídas) e a tela mostrava dois deles lado a
+       lado, com valores diferentes. Agora há um número, e a tabela deriva
+       dele. */
+    var official = Cal
+      ? Cal.completedLessonsForMonth(ctx.studentId, ctx.month)
+      : { count: 0, occurrences: [] };
+    var done = official.count;
+    var sessionsDone = done;          // mantido por compatibilidade: mesmo valor
+
+    var scheduled = 0, cancelled = 0, administrative = 0;
     lessons.forEach(function (l) {
-      if (l.status === 'done')      done++;
       if (l.status === 'scheduled') scheduled++;
       if (l.status === 'cancelled') cancelled++;
-      if (l.sessions) {
-        sessionsDone += l.sessions.filter(function (s) { return s.status === 'done'; }).length;
-      } else if (l.status === 'done') {
-        sessionsDone += 1;
-      }
+      if (l.administrative)         administrative++;
     });
     // Aulas previstas: heurística — para aluno com startTime configurado,
     // assume 1 aula por semana (ou 2 sessões/semana para double). Se sem
@@ -373,6 +389,7 @@
     var missed = Math.max(0, planned - (done + cancelled + scheduled));
     var pct = planned ? Math.round((done / Math.max(planned, done+cancelled+scheduled)) * 100) : 0;
     return {
+      administrative: administrative,
       planned: planned,
       done: done,
       scheduled: scheduled,

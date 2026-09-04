@@ -215,9 +215,16 @@ function render(model) {
   /* --------- 3. Aulas realizadas --------- */
   if (model.lessons.length) {
     let rows = model.lessons.map(l => {
-      const stLabel = l.status === 'done' ? '<span class="badge success">✓ dada</span>' :
-                      l.status === 'scheduled' ? '<span class="badge info">◷ agendada</span>' :
-                      l.status === 'cancelled' ? '<span class="badge danger">✗ cancelada</span>' : '—';
+      /* O rótulo diz quantas SESSÕES aquela linha vale, para a tabela fechar
+         com o número do resumo. Uma linha de aula dupla com as duas sessões
+         dadas vale 2; um registro administrativo vale 0 e diz isso. */
+      const nSes = l.sessions && l.sessions.length ? l.sessions.length : 0;
+      const stLabel = l.administrative
+                        ? '<span class="badge neutral">registro administrativo</span>'
+                    : l.status === 'done'
+                        ? `<span class="badge success">✓ dada${nSes ? ' · ' + l.completed + '/' + nSes + ' sessões' : ''}</span>`
+                    : l.status === 'scheduled' ? '<span class="badge info">◷ agendada</span>'
+                    : l.status === 'cancelled' ? '<span class="badge danger">✗ cancelada</span>' : '—';
       return `<tr>
         <td>${escapeHtml(l.date)}</td>
         <td>${escapeHtml(l.dayOfWeek)}</td>
@@ -340,10 +347,9 @@ function render(model) {
   h += section(10, 'Frequência', 'user-check',
     `<div class="rp-attendance">
        <div class="stat"><div class="v">${a.planned}</div><div class="l">Previstas</div></div>
-       <div class="stat"><div class="v">${a.done}</div><div class="l">Realizadas</div></div>
+       <div class="stat"><div class="v">${a.done}</div><div class="l">Aulas dadas</div></div>
        <div class="stat"><div class="v">${a.cancelled}</div><div class="l">Canceladas</div></div>
        <div class="stat"><div class="v">${a.missed}</div><div class="l">Faltas</div></div>
-       <div class="stat"><div class="v">${a.sessionsDone}</div><div class="l">Sessões dadas</div></div>
        <div class="stat"><div class="v">${a.pct}%</div><div class="l">Presença</div></div>
      </div>`);
 
@@ -488,7 +494,7 @@ function buildPrintCSS() {
     .rp-progress-row .track { background: #E6EEF0; height: 8px; border-radius: 999px; overflow: hidden; }
     .rp-progress-row .fill { height: 100%; background: linear-gradient(90deg, #0B3B46, #16B1A9); }
     .rp-progress-row .pct { text-align: right; font-family: monospace; font-size: 12px; color: #6B7280; }
-    .rp-attendance { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .rp-attendance { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
     .rp-attendance .stat { background: #F2F6F7; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #E5E7EB; }
     .rp-attendance .stat .v { font-size: 22px; font-weight: 700; color: #0B3B46; }
     .rp-attendance .stat .l { font-size: 10px; text-transform: uppercase; color: #6B7280; margin-top: 4px; letter-spacing: .05em; }
