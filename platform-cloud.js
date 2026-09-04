@@ -323,6 +323,16 @@
 
   var hydrating = 0;
 
+  /* PORTÃO DE SAÍDA — nada sobe enquanto o bootstrap não termina.
+     ------------------------------------------------------------------------
+     Requisito crítico do computador novo: o cache vazio dele NUNCA pode virar
+     delete ou upsert contra uma nuvem que já tem os dados. `Cloud.mode` sozinho
+     não bastava: no caminho de um device já migrado o modo vira 'live' ANTES do
+     pull terminar, e qualquer semeadura de DEFAULTS nessa janela entraria na
+     fila. Enquanto `bootstrapping` for true, o interceptor observa e atualiza a
+     sombra, mas não enfileira nada. */
+  var bootstrapping = true;
+
   /** Roda `fn` sem que o interceptor enfileire nada do que ela gravar. */
   function withoutSync(fn) {
     hydrating++;
@@ -341,7 +351,7 @@
     try {
       var meta = classify(key);
       if (!meta) return;
-      if (hydrating > 0 || Cloud.mode !== 'live') {
+      if (hydrating > 0 || bootstrapping || Cloud.mode !== 'live') {
         shadow[key] = parse(value, null);
         return;
       }
@@ -357,7 +367,7 @@
     try {
       var meta = classify(key);
       if (!meta) return;
-      if (hydrating > 0 || Cloud.mode !== 'live') { delete shadow[key]; return; }
+      if (hydrating > 0 || bootstrapping || Cloud.mode !== 'live') { delete shadow[key]; return; }
       diffAndQueue(meta, key, shadow[key], null);
       delete shadow[key];
     } catch (e) {
@@ -517,6 +527,7 @@
   function ownerId() { return (NS.Auth && NS.Auth.userId()) || ''; }
 
   function flush() {
+    if (bootstrapping) return Promise.resolve(false);   // nada sai antes de hidratar
     if (flushing || Cloud.mode !== 'live' || !queue.length) return Promise.resolve(true);
     var c = NS.Auth && NS.Auth.client();
     var owner = ownerId();
@@ -705,14 +716,25 @@
   function snapshotToLocal(snap) {
     var out = {};
 
-    /* students */
-    var students = (snap.students || []).slice()
-      .sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); })
-      .map(studentFromRow);
-    out[KEY_STUDENTS] = students;
+    /* students
+       ------------------------------------------------------------------
+       NUNCA escrever uma lista VAZIA por cima da local. `students` e
+       `custom_content` são listas inteiras, não linhas independentes: uma
+       nuvem sem linhas produzia `[]` aqui e apagava a lista da máquina —
+       numa instalação nova, zerava os alunos semeados a cada carga.
 
-    /* custom content */
-    out[KEY_CUSTOM] = (snap.custom || []).slice()
+       O preço é conhecido e aceito: apagar o ÚLTIMO aluno no computador A
+       não esvazia a lista do computador B sozinho (qualquer lista com pelo
+       menos um aluno propaga normalmente). Perder a lista por engano é pior
+       do que manter uma lista velha por mais um ciclo. */
+    if ((snap.students || []).length) {
+      out[KEY_STUDENTS] = snap.students.slice()
+        .sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); })
+        .map(studentFromRow);
+    }
+
+    /* custom content — mesma regra da lista de alunos */
+    if ((snap.custom || []).length) out[KEY_CUSTOM] = (snap.custom || []).slice()
       .sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); })
       .map(function (r) {
         return {
@@ -821,9 +843,13 @@
     syncedKeys().forEach(function (k) {
       if (seen[k]) return;
       var meta = classify(k);
-      // Registro de aula e progresso apagados na nuvem saem do cache.
-      // Students e custom content já vêm inteiros no retrato acima.
       if (!meta) return;
+      /* Só as chaves DERIVADAS de linhas somem quando a linha some da nuvem.
+         `sabatovicz_students` e `sabatovicz_custom_content` são listas
+         inteiras e podem legitimamente não vir no retrato (nuvem sem linhas);
+         removê-las aqui apagaria a lista local — foi assim que a instalação
+         nova ficava sem nenhum aluno. */
+      if (meta.kind !== 'lesson' && meta.kind !== 'progress' && meta.kind !== 'practice') return;
       NATIVE.removeItem(k);
       delete shadow[k];
       changed++;
@@ -874,6 +900,8 @@
     var s, label;
 
     if (Cloud.mode === 'off')                   { s = 'local';   label = 'Local'; }
+    else if (Cloud.mode === 'bootstrapping')    { s = 'saving';  label = 'Loading data…'; }
+    else if (Cloud.mode === 'conflict')         { s = 'offline'; label = 'Setup necessário'; }
     else if (Cloud.mode === 'pending-migration'){ s = 'local';   label = 'Local — migração pendente'; }
     else if (!Cloud.online)                     { s = 'offline'; label = queue.length ? ('Offline · ' + queue.length + ' pendente' + (queue.length > 1 ? 's' : '')) : 'Offline'; }
     else if (flushing || queue.length)          { s = 'saving';  label = 'Saving…'; }
@@ -888,6 +916,25 @@
      BOOT
      ====================================================================== */
 
+  /* Os ids semeados por platform-students.js. Ficam aqui porque hasLocalData()
+     roda em páginas que NÃO carregam platform-students.js — index.html e
+     finance.html, por exemplo. Sem esta lista, NS.Students é undefined ali, a
+     comparação com DEFAULTS falha, e uma lista puramente semeada passaria por
+     "dados da professora", bloqueando a hidratação do computador novo. */
+  var SEED_STUDENT_IDS = ['natali','heitor','joao','maria','lais','regis','isa'];
+
+  function isSeedStudentList(list) {
+    if (!Array.isArray(list) || !list.length) return true;
+    var D = NS.Students && NS.Students.DEFAULTS;
+    if (D && JSON.stringify(list) === JSON.stringify(D)) return true;
+    // Sem NS.Students na página: cai no conjunto de ids conhecido.
+    if (list.length !== SEED_STUDENT_IDS.length) return false;
+    for (var i = 0; i < list.length; i++) {
+      if (SEED_STUDENT_IDS.indexOf(String((list[i] || {}).id)) === -1) return false;
+    }
+    return true;
+  }
+
   /** Há dado de verdade no localStorage desta máquina? */
   function hasLocalData() {
     var keys = syncedKeys();
@@ -898,24 +945,62 @@
       if (meta.kind === 'progress' && v && Object.keys(v.items || {}).length) return true;
       if (meta.kind === 'practice' && v && Object.keys(v.done || {}).length) return true;
       if (meta.kind === 'custom' && Array.isArray(v) && v.length) return true;
-      if (meta.kind === 'students' && Array.isArray(v) && v.length) {
-        // A lista semeada com os DEFAULTS não conta como "dado da professora".
-        var D = (NS.Students && NS.Students.DEFAULTS) || [];
-        if (JSON.stringify(v) !== JSON.stringify(D)) return true;
-      }
+      // A lista semeada pela própria Studio não conta como "dado da professora".
+      if (meta.kind === 'students' && !isSeedStudentList(v)) return true;
     }
     return false;
   }
 
+  /* Toda tabela conta. A versão anterior olhava `snap.practice`, campo que
+     deixou de existir quando o PracticeLog virou evento por dia — uma nuvem que
+     tivesse só prática seria lida como vazia. */
   function cloudIsEmpty(snap) {
-    return !(snap.students || []).length && !(snap.lessons || []).length &&
-           !(snap.content  || []).length && !(snap.custom  || []).length &&
-           !(snap.practice || []).length;
+    return !(snap.students       || []).length &&
+           !(snap.lessons        || []).length &&
+           !(snap.content        || []).length &&
+           !(snap.notes          || []).length &&
+           !(snap.custom         || []).length &&
+           !(snap.practiceDays   || []).length &&
+           !(snap.practiceLegacy || []).length;
+  }
+
+  /* ======================================================================
+     RENDER DEPOIS DA HIDRATAÇÃO — o reload único
+     ------------------------------------------------------------------------
+     A página monta a tela no DOMContentLoaded, a partir do cache. No primeiro
+     acesso de um computador novo esse cache ainda está vazio (ou com os alunos
+     semeados), e o pull da nuvem só termina uns instantes depois. Resultado
+     observado: a Studio mostrava os 7 alunos de exemplo enquanto os 11 reais já
+     estavam gravados no localStorage — bastava um F5 para tudo aparecer.
+
+     Re-renderizar sem F5 exigiria mexer no render de 18 páginas. Um reload
+     único, só na PRIMEIRA hidratação deste dispositivo, resolve sem tocar em
+     nenhuma delas.
+
+     Contra laço: a marca vai no sessionStorage ANTES do reload. Se o
+     sessionStorage não estiver disponível, não recarrega — melhor a tela
+     desatualizada do que um loop.
+     ====================================================================== */
+  var RELOAD_FLAG = 'sabatovicz_cloud_bootstrapped';
+
+  function reloadOnce(motivo) {
+    try {
+      if (sessionStorage.getItem(RELOAD_FLAG)) return false;
+      sessionStorage.setItem(RELOAD_FLAG, '1');
+      console.info('[cloud] ' + motivo + ' — recarregando uma vez para a tela ' +
+                   'mostrar os dados que acabaram de descer.');
+      global.setTimeout(function () { location.reload(); }, 60);
+      return true;
+    } catch (e) {
+      console.warn('[cloud] sessionStorage indisponível — sem reload automático. ' +
+                   'Atualize a página para ver os dados.', e);
+      return false;
+    }
   }
 
   var Cloud = {
 
-    VERSION: '1.0.0',
+    VERSION: '1.1.0',
     mode: 'off',
     online: true,
     lastError: '',
@@ -939,8 +1024,8 @@
     interceptorInstalled: function () { return localStorage.setItem === interceptSet; },
 
     /** Reconsulta o banco e reescreve o cache. Retorna quantas chaves mudaram. */
-    pull: function () {
-      if (Cloud.mode !== 'live') return Promise.resolve(0);
+    pull: function (duranteBoot) {
+      if (!duranteBoot && Cloud.mode !== 'live') return Promise.resolve(0);
       return flush().then(pullSnapshot).then(function (snap) {
         var n = applySnapshotLocally(snapshotToLocal(snap));
         saveState({ hydratedAt: new Date().toISOString() });
@@ -976,68 +1061,107 @@
     },
 
     boot: function () {
+      bootstrapping = true;
+      Cloud.mode = 'bootstrapping';
       loadQueue();
       snapshotAll();
       installInterceptor();
+      render();
 
-      if (!CFG.isConfigured || !CFG.isConfigured()) {
-        Cloud.mode = 'off';
+      /* Todo caminho de saída passa por aqui: libera o portão e pinta o chip. */
+      function done(mode, resultado) {
+        bootstrapping = false;
+        Cloud.mode = mode;
         render();
-        return Promise.resolve('off');
-      }
-      if (!NS.Auth || !NS.Auth.isSignedIn()) {
-        Cloud.mode = 'off';
-        render();
-        return Promise.resolve('no-session');
+        if (mode === 'live' && queue.length) scheduleFlush(200);
+        return resultado || mode;
       }
 
+      if (!CFG.isConfigured || !CFG.isConfigured()) return Promise.resolve(done('off'));
+      if (!NS.Auth) return Promise.resolve(done('off', 'no-session'));
+
+      /* A SESSÃO PODE AINDA NÃO ESTAR PRONTA.
+         --------------------------------------------------------------------
+         isSignedIn() é uma leitura SÍNCRONA do armazenamento. O supabase-js
+         recupera e revalida a sessão de forma assíncrona no carregamento, e
+         há uma janela curta em que a chave não está lá. Quem lesse só o cache
+         concluía "sem sessão", ia para 'off' e NUNCA mais tentava — e num
+         computador novo isso dá exatamente o sintoma "faço login e os dados
+         não aparecem". getSession() é a fonte autoritativa: espera o
+         supabase-js terminar antes de concluir que não há sessão. */
+      return esperarSessao().then(function (temSessao) {
+        if (!temSessao) return done('off', 'no-session');
+        return decidirBootstrap();
+      });
+
+      function esperarSessao() {
+        if (NS.Auth.isSignedIn()) return Promise.resolve(true);
+        var c = NS.Auth.client();
+        if (!c || !c.auth || !c.auth.getSession) return Promise.resolve(false);
+        return c.auth.getSession().then(function (res) {
+          return !!(res && res.data && res.data.session);
+        }).catch(function () { return NS.Auth.isSignedIn(); });
+      }
+
+      function decidirBootstrap() {
       var st = loadState();
 
-      // Conta diferente da que hidratou este navegador: o cache não é dela.
+      // Cache de OUTRA conta neste navegador: não é dado desta professora.
       if (st.ownerId && ownerId() && st.ownerId !== ownerId()) {
         console.warn('[cloud] este navegador tem cache de outra conta — ' +
-                     'sincronização pausada até uma migração explícita');
-        Cloud.mode = 'pending-migration';
-        render();
-        return Promise.resolve('other-owner');
+                     'sincronização pausada até uma decisão explícita');
+        return Promise.resolve(done('conflict', 'other-owner'));
       }
 
+      // Dispositivo já conhecido: só atualiza.
       if (st.migrated) {
-        Cloud.mode = 'live';
-        render();
-        return Cloud.pull().then(function () { return 'live'; });
+        return Cloud.pull(true).then(function () { return done('live'); })
+                               .catch(function () { return done('live'); });
       }
 
-      // Ainda não migrado. Decide sem destruir nada.
+      /* Dispositivo ainda não marcado. Decide sem destruir nada. */
       return pullSnapshot().then(function (snap) {
-        var empty = cloudIsEmpty(snap);
-        var local = hasLocalData();
+        var cloudVazia = cloudIsEmpty(snap);
+        var temLocal   = hasLocalData();
 
-        if (!empty && !local) {
-          // Computador novo consumindo uma nuvem que já existe: pode
-          // hidratar à vontade, não há nada local para perder.
-          applySnapshotLocally(snapshotToLocal(snap));
+        // (B) NOVO DISPOSITIVO — nuvem tem dados, esta máquina não tem nada
+        //     da professora. A nuvem é a autoridade: hidrata e entra no ar.
+        if (!cloudVazia && !temLocal) {
+          var n = applySnapshotLocally(snapshotToLocal(snap));
           saveState({ migrated: true, ownerId: ownerId(),
                       hydratedAt: new Date().toISOString() });
-          Cloud.mode = 'live';
           snapshotAll();
-          render();
-          return 'live';
+          var r = done('live', 'new-device');
+          if (n > 0) reloadOnce('primeira hidratação deste dispositivo (' + n + ' chaves)');
+          return r;
         }
 
-        // Nuvem vazia, ou dados locais ainda não migrados: fica parado.
-        // Nada sobe, nada desce, nada é apagado — a migração é um passo
-        // explícito seu, em migracao.html.
-        Cloud.mode = 'pending-migration';
-        render();
-        return 'pending-migration';
+        // (C) CONFLITO — as duas pontas têm dados e este device nunca foi
+        //     marcado. NÃO sobrescreve nem sobe nada: espera uma decisão.
+        if (!cloudVazia && temLocal) {
+          console.warn('[cloud] esta máquina tem dados locais E a nuvem já tem dados. ' +
+                       'Nada foi enviado nem sobrescrito. Abra migracao.html para decidir.');
+          return done('conflict', 'conflict');
+        }
+
+        // (D) INSTALAÇÃO NOVA — nada dos dois lados. Entra no ar sem inventar
+        //     dado nenhum; o que for criado daqui para frente sincroniza.
+        if (cloudVazia && !temLocal) {
+          saveState({ migrated: true, ownerId: ownerId(),
+                      hydratedAt: new Date().toISOString() });
+          snapshotAll();
+          return done('live', 'fresh-install');
+        }
+
+        // (A) PRIMEIRA MIGRAÇÃO — dados locais, nuvem vazia. Continua parado
+        //     até a professora rodar migracao.html.
+        return done('pending-migration');
       }).catch(function (e) {
         Cloud.online = false;
         Cloud.lastError = String((e && e.message) || e);
-        Cloud.mode = 'pending-migration';
-        render();
-        return 'offline';
+        return done('pending-migration', 'offline');
       });
+      }
     }
   };
 
