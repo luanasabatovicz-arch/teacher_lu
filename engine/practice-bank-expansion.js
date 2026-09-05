@@ -162,7 +162,7 @@
   ]},
 
   "a1-routine":{ label:"Daily Routine", level:"A1", keys:["routine","daily","morning","rotina"], exercises:[
-    {id:"a1-routine-complete-001",type:"fill_blank",question:"I ___ up at six o'clock.",correct:"get"},
+    {id:"a1-routine-complete-001",type:"fill_blank",question:"I wake up at six and I ___ up at ten past six.",correct:"get"},
     {id:"a1-routine-complete-002",type:"fill_blank",question:"She ___ (have) breakfast at seven.",correct:"has"},
     {id:"a1-routine-complete-003",type:"fill_blank",question:"He goes to bed ___ eleven o'clock.",correct:"at"},
     {id:"a1-routine-complete-004",type:"fill_blank",question:"They don't ___ (work) on Sundays.",correct:"work"},
@@ -1732,7 +1732,7 @@
 
   "b1-education":{ label:"Education", level:"B1", keys:["education","study","university","curso","learning"], exercises:[
     {id:"b1-education-complete-001",type:"fill_blank",question:"He failed the exam because he ___ (not/study) enough.",correct:"hadn't studied"},
-    {id:"b1-education-complete-002",type:"fill_blank",question:"I'm thinking ___ doing a postgraduate course.",correct:"of"},
+    {id:"b1-education-complete-002",type:"fill_blank",question:"I'm seriously considering ___ (do) a postgraduate course.",correct:"doing"},
     {id:"b1-education-complete-003",type:"fill_blank",question:"English ___ (teach) in most schools from the age of six.",correct:"is taught"},
     {id:"b1-education-mc-004",type:"multiple_choice",question:"By the time the course finished, I ___ over forty books.",options:["read","had read","have read","was reading"],correct:1},
     {id:"b1-education-mc-005",type:"multiple_choice",question:"She's the teacher ___ changed the way I study.",options:["which","whose","who","what"],correct:2},
