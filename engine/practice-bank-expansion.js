@@ -807,7 +807,7 @@
 
   /* ---- A1 · Reading (um texto = um tema, com groupId) ---- */
 
-  "a1-family-reading":{ label:"Family · Reading", level:"A1", keys:["reading","family"],
+  "a1-family-reading":{ label:"↳ Family · Reading", level:"A1", keys:["reading","family"],
     groupId:"a1-family-reading-group-001",
     passage:{ level:"A1", title:"My Small Family",
       text:"My name is Rita and I live in Porto Alegre with my husband and our daughter. Her name is Cecília and she is six years old. She starts school this year. My husband works in a bank and he leaves home very early. I work from home, so I take Cecília to school every morning. On Sundays my parents come for lunch. My mother always brings a cake. We are not a big family, but we see each other a lot."},
@@ -829,7 +829,7 @@
     ]
   },
 
-  "a1-food-reading":{ label:"Food & Drinks · Reading", level:"A1", keys:["reading","food"],
+  "a1-food-reading":{ label:"↳ Food & Drinks · Reading", level:"A1", keys:["reading","food"],
     groupId:"a1-food-reading-group-001",
     passage:{ level:"A1", title:"Breakfast in Two Countries",
       text:"In Brazil, many people have a small breakfast. They drink coffee with milk and eat bread with butter or cheese. Some people eat fruit, like papaya or banana. In England, breakfast is often bigger. People eat eggs, beans and toast, and they drink tea. Of course, not everybody has time in the morning. My friend Tom lives in London and he only drinks a coffee before work. He says he is never hungry at seven o'clock."},
@@ -847,7 +847,7 @@
     ]
   },
 
-  "a1-school-reading":{ label:"School · Reading", level:"A1", keys:["reading","school"],
+  "a1-school-reading":{ label:"↳ School · Reading", level:"A1", keys:["reading","school"],
     groupId:"a1-school-reading-group-001",
     passage:{ level:"A1", title:"My English Class",
       text:"I study English on Tuesdays and Thursdays. My class is at seven in the evening, after work. There are only four students in the group, so we talk a lot. Our teacher is called Marina. She never speaks Portuguese in class, but she speaks slowly and we understand her. We have homework every week — usually a short text to read. I don't like grammar exercises, but I love the conversation part."},
@@ -865,7 +865,7 @@
     ]
   },
 
-  "a1-weather-reading":{ label:"Weather · Reading", level:"A1", keys:["reading","weather"],
+  "a1-weather-reading":{ label:"↳ Weather · Reading", level:"A1", keys:["reading","weather"],
     groupId:"a1-weather-reading-group-001",
     passage:{ level:"A1", title:"Winter in the South",
       text:"People often think Brazil is always hot, but that is not true. In the south, winter is cold. In Curitiba, mornings in July are grey and wet, and the temperature can be five degrees. It doesn't usually snow, but it is very cold for us. My grandmother lives in the mountains and there it snows one or two days a year. Everybody takes photos when it happens. In summer, of course, it is a different city."},
@@ -887,7 +887,7 @@
     ]
   },
 
-  "a1-places-reading":{ label:"Places in Town · Reading", level:"A1", keys:["reading","places","town"],
+  "a1-places-reading":{ label:"↳ Places in Town · Reading", level:"A1", keys:["reading","places","town"],
     groupId:"a1-places-reading-group-001",
     passage:{ level:"A1", title:"My Street",
       text:"I live on a small street near the centre. There is a bakery on the corner and it opens at six in the morning. Next to the bakery there is a pharmacy, and opposite my building there is a little square with three benches. On Saturdays there is a market in the square. It's noisy, but I like it. There isn't a supermarket on my street, so I take the bus to the big one on Avenida Brasil."},
@@ -1598,7 +1598,7 @@
 
   /* ---- A2 · Reading ---- */
 
-  "a2-airport-reading":{ label:"At the Airport · Reading", level:"A2", keys:["reading","airport"],
+  "a2-airport-reading":{ label:"↳ At the Airport · Reading", level:"A2", keys:["reading","airport"],
     groupId:"a2-airport-reading-group-001",
     passage:{ level:"A2", title:"Four Hours in Guarulhos",
       text:"Our flight to Lisbon was at eleven at night, so we arrived at the airport at eight. Check-in was quick, but at security they opened my bag because of a bottle of water I had forgotten. After that we waited at the gate. At half past ten the screen changed: the flight was delayed until two in the morning. Nobody explained why. Some passengers complained loudly, but the staff had no information either. In the end we took off at half past two and landed in Lisbon in the afternoon, tired but happy."},
@@ -1616,7 +1616,7 @@
     ]
   },
 
-  "a2-technology-reading":{ label:"Technology · Reading", level:"A2", keys:["reading","technology"],
+  "a2-technology-reading":{ label:"↳ Technology · Reading", level:"A2", keys:["reading","technology"],
     groupId:"a2-technology-reading-group-001",
     passage:{ level:"A2", title:"One Week Without a Phone",
       text:"Last month my phone broke and I couldn't repair it for a week. The first two days were terrible. I didn't know the time, I couldn't listen to music on the bus and I felt strange in queues, with nothing in my hands. But then something changed. I started reading again on the way to work. I talked to my neighbour for twenty minutes — we had never done that before. When I got the phone back, I kept the notifications off. I don't want to go back to how it was."},
@@ -1634,7 +1634,7 @@
     ]
   },
 
-  "a2-childhood-reading":{ label:"Childhood · Reading", level:"A2", keys:["reading","childhood"],
+  "a2-childhood-reading":{ label:"↳ Childhood · Reading", level:"A2", keys:["reading","childhood"],
     groupId:"a2-childhood-reading-group-001",
     passage:{ level:"A2", title:"The House with the Blue Gate",
       text:"When I was a child, we lived in a small house with a blue gate. My mother used to work in the mornings, so my grandmother looked after us. She didn't speak much, but she taught me how to make bread. Every Friday we walked to the market together and she let me carry the smallest bag. I didn't like it then — I wanted to play football with the other children. Now I would give anything for one more Friday like that."},
@@ -1652,7 +1652,7 @@
     ]
   },
 
-  "a2-problems-reading":{ label:"Problems & Solutions · Reading", level:"A2", keys:["reading","problems"],
+  "a2-problems-reading":{ label:"↳ Problems & Solutions · Reading", level:"A2", keys:["reading","problems"],
     groupId:"a2-problems-reading-group-001",
     passage:{ level:"A2", title:"The Wrong Address",
       text:"I ordered a birthday present for my sister three weeks before her party. The website said it would arrive in five days. After ten days nothing had arrived, so I wrote to the company. They answered quickly and told me the address was incomplete — the number of my flat was missing. It was my mistake, not theirs. They sent the parcel again the next morning and it arrived two days later, one day before the party. Now I always check the address twice before I pay."},
@@ -1670,7 +1670,7 @@
     ]
   },
 
-  "a2-feelings-reading":{ label:"Feelings · Reading", level:"A2", keys:["reading","feelings"],
+  "a2-feelings-reading":{ label:"↳ Feelings · Reading", level:"A2", keys:["reading","feelings"],
     groupId:"a2-feelings-reading-group-001",
     passage:{ level:"A2", title:"The First Presentation",
       text:"My first presentation at work was six months ago. I prepared for two weeks and I still felt nervous. Ten minutes before, my hands were cold and I wanted to leave the room. Then a colleague said something simple: 'Nobody here wants you to fail.' I remembered that when I started speaking. The presentation wasn't perfect — I forgot two slides — but people asked good questions at the end. I was proud of myself, and a little surprised."},
@@ -2319,7 +2319,7 @@
 
   /* ---- B1 · Reading ---- */
 
-  "b1-work-reading":{ label:"Work Life · Reading", level:"B1", keys:["reading","work"],
+  "b1-work-reading":{ label:"↳ Work Life · Reading", level:"B1", keys:["reading","work"],
     groupId:"b1-work-reading-group-001",
     passage:{ level:"B1", title:"The Four-Day Week Experiment",
       text:"Three years ago a small design studio in Porto decided to test a four-day week. Salaries stayed the same and the team agreed to protect Fridays completely: no meetings, no emails, no exceptions. The first two months were difficult. Projects that used to take five days had to be reorganised, and two clients complained about slower replies. Then something unexpected happened. Meetings became shorter because nobody had time for them, and the studio started refusing work that didn't fit the schedule. Revenue fell by four per cent in the first year, but nobody left the company — in an industry where people usually change jobs every eighteen months, that was worth more than the difference."},
@@ -2337,7 +2337,7 @@
     ]
   },
 
-  "b1-environment-reading":{ label:"Environment · Reading", level:"B1", keys:["reading","environment"],
+  "b1-environment-reading":{ label:"↳ Environment · Reading", level:"B1", keys:["reading","environment"],
     groupId:"b1-environment-reading-group-001",
     passage:{ level:"B1", title:"What Happens to the Bottle",
       text:"Most people put a plastic bottle in the recycling bin and stop thinking about it. In reality, the journey is complicated. The bottle is sorted by machines and by hand, washed, cut into flakes and sold. Whether it becomes another bottle depends almost entirely on price: if new plastic is cheaper than recycled plastic, factories buy new plastic. That is why recycling rates rise and fall with the oil market rather than with public opinion. Campaigns that ask people to separate their rubbish are useful, but they cannot change that basic equation. Some countries have started charging producers for the packaging they put on the market, which shifts the cost to the people who design it."},
@@ -2355,7 +2355,7 @@
     ]
   },
 
-  "b1-culture-reading":{ label:"Cultural Differences · Reading", level:"B1", keys:["reading","culture"],
+  "b1-culture-reading":{ label:"↳ Cultural Differences · Reading", level:"B1", keys:["reading","culture"],
     groupId:"b1-culture-reading-group-001",
     passage:{ level:"B1", title:"The Meeting That Went Wrong",
       text:"When Sofia moved from São Paulo to Helsinki, she thought the hardest part would be the winter. It wasn't. In her first team meeting she did what she had always done: she filled the silences, agreed enthusiastically and made a joke about the coffee. Nobody responded. Afterwards a colleague explained, kindly, that in that office a pause did not mean the conversation was dead — it meant people were still thinking. Sofia had been reading silence as rejection. Six months later she noticed she had started pausing too, and that her Brazilian friends found her strangely quiet on video calls."},
@@ -2373,7 +2373,7 @@
     ]
   },
 
-  "b1-money-reading":{ label:"Money · Reading", level:"B1", keys:["reading","money"],
+  "b1-money-reading":{ label:"↳ Money · Reading", level:"B1", keys:["reading","money"],
     groupId:"b1-money-reading-group-001",
     passage:{ level:"B1", title:"The Spreadsheet That Lasted",
       text:"I have tried at least six budgeting apps and abandoned all of them. What finally worked was embarrassingly simple: one spreadsheet with three columns and one rule — I write down anything I spend over twenty reais on the same day. Small purchases don't go in, which sounds wrong, but it is precisely why I have kept it for two years. Every other system failed because it asked for perfect data, and perfect data takes fifteen minutes a day that nobody has. The point of the spreadsheet is not accuracy. It is that once a month I sit down and look at it, and I always find one subscription I had forgotten about."},
@@ -2391,7 +2391,7 @@
     ]
   },
 
-  "b1-education-reading":{ label:"Education · Reading", level:"B1", keys:["reading","education"],
+  "b1-education-reading":{ label:"↳ Education · Reading", level:"B1", keys:["reading","education"],
     groupId:"b1-education-reading-group-001",
     passage:{ level:"B1", title:"Why the Second Language Is Easier",
       text:"Teachers often notice that students who already speak a second language learn a third one faster. The reason is not intelligence. People who have learned one foreign language have already discovered something important: that being confused is a normal stage, not evidence of failure. Beginners who have never done it before tend to interpret confusion as proof that they are 'not good at languages', and many stop within the first six months. Studies of adult learners suggest that the students who continue are rarely the most talented ones — they are the ones who expected the difficulty."},
@@ -3006,7 +3006,7 @@
 
   /* ---- B2 · Reading ---- */
 
-  "b2-ai-reading":{ label:"Artificial Intelligence · Reading", level:"B2", keys:["reading","ai"],
+  "b2-ai-reading":{ label:"↳ Artificial Intelligence · Reading", level:"B2", keys:["reading","ai"],
     groupId:"b2-ai-reading-group-001",
     passage:{ level:"B2", title:"The Confidence Problem",
       text:"The most discussed weakness of current language models is that they produce fluent text about things that never happened. What makes this dangerous is not the error itself — humans are wrong constantly — but the absence of any signal that an error has occurred. A person who is unsure hesitates, hedges, or asks a question. A model produces the same confident rhythm whether it is quoting a real study or inventing one. Several teams are now working on calibration: making the system express uncertainty in a way that matches how often it is actually right. Until that works reliably, the practical advice is unglamorous. Treat the output as a first draft written by someone who has read everything and remembers nothing precisely."},
@@ -3024,7 +3024,7 @@
     ]
   },
 
-  "b2-remote-reading":{ label:"Remote Work · Reading", level:"B2", keys:["reading","remote"],
+  "b2-remote-reading":{ label:"↳ Remote Work · Reading", level:"B2", keys:["reading","remote"],
     groupId:"b2-remote-reading-group-001",
     passage:{ level:"B2", title:"What the Office Was Actually For",
       text:"When companies sent everyone home, they measured what was easy to measure: tickets closed, calls made, documents delivered. By those numbers, almost nothing changed. What the numbers could not capture was the slower loss — the junior developer who no longer overheard how a senior colleague talked to a difficult client, the half-formed idea that used to survive because someone repeated it in a corridor. Two years later, several of those companies rebuilt parts of the office not as a place to work but as a place to be seen working alongside others. Whether that justifies the rent is a separate argument, and one that finance departments are increasingly unwilling to lose."},
@@ -3042,7 +3042,7 @@
     ]
   },
 
-  "b2-privacy-reading":{ label:"Privacy · Reading", level:"B2", keys:["reading","privacy"],
+  "b2-privacy-reading":{ label:"↳ Privacy · Reading", level:"B2", keys:["reading","privacy"],
     groupId:"b2-privacy-reading-group-001",
     passage:{ level:"B2", title:"Consent, in Theory",
       text:"Consent is the legal foundation of most data protection, and it is close to fictional. A study of the terms attached to a single mid-range phone found that reading them all at normal speed would take longer than a working week. Nobody does this, and the law does not really expect them to. What consent achieves in practice is a transfer of responsibility: once you have clicked, any harm becomes a consequence of your choice. Some regulators have started to treat certain uses as impermissible regardless of consent — the reasoning being that a right you can be asked to sign away every morning is not much of a right."},
@@ -3060,7 +3060,7 @@
     ]
   },
 
-  "b2-success-reading":{ label:"Success & Failure · Reading", level:"B2", keys:["reading","success"],
+  "b2-success-reading":{ label:"↳ Success & Failure · Reading", level:"B2", keys:["reading","success"],
     groupId:"b2-success-reading-group-001",
     passage:{ level:"B2", title:"The Ones Who Are Not Interviewed",
       text:"Business advice has a structural problem: it is written about companies that survived. Ten founders take the same risk; one becomes a case study and the other nine are not asked what they did. The surviving founder describes decisions that felt bold at the time, and readers conclude that boldness works. Had the coin landed differently, the same decisions would be quoted as recklessness. This does not mean judgement is irrelevant — some choices really are better than others — but it does mean that a single success is weak evidence for the method behind it. The uncomfortable version is that the most useful interviews would be with the nine, and nobody wants to read them."},
@@ -3080,10 +3080,35 @@
 
   };
 
+  /* ORDEM DE ENTRADA — o Reading entra logo abaixo do seu tema.
+     -----------------------------------------------------------------------
+     O seletor lista os temas na ordem em que eles existem no objeto TOPICS.
+     Um texto de leitura é um tema próprio por uma razão técnica (o `passage`
+     pertence ao tema, não ao exercício), mas pedagogicamente ele é uma parte
+     do tema — não um tema paralelo. Então "a1-family-reading" é inserido
+     imediatamente depois de "a1-family", e o label leva "↳":
+
+         Family · A1
+         ↳ Family · Reading · A1
+         Home · A1
+
+     Isto é ordem de inserção, não lógica: nenhuma função do engine muda. */
+  function insertionOrder(map) {
+    var keys = Object.keys(map), seen = {}, out = [];
+    function push(k) { if (!seen[k] && map[k]) { seen[k] = 1; out.push(k); } }
+    keys.forEach(function (k) {
+      if (/-reading$/.test(k)) return;      // entra junto do seu tema
+      push(k);
+      push(k + '-reading');
+    });
+    keys.forEach(push);                     // órfão (tema removido) não se perde
+    return out;
+  }
+
   /* Fusão. Só escreve em chave livre — um tema antigo nunca é sobrescrito. */
   var TOPICS = NS.PracticeBank.TOPICS;
   var added = 0, clashes = [];
-  Object.keys(NEW_TOPICS).forEach(function (k) {
+  insertionOrder(NEW_TOPICS).forEach(function (k) {
     if (Object.prototype.hasOwnProperty.call(TOPICS, k)) { clashes.push(k); return; }
     TOPICS[k] = NEW_TOPICS[k];
     added++;
