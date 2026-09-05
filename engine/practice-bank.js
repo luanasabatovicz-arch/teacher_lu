@@ -587,7 +587,13 @@ var TOPICS = {
     make_question:   'question',
     story:           'story',
     dialogue:        'dialogue',
-    make_sentence:   'sentence'
+    make_sentence:   'sentence',
+    /* Os três formatos abaixo já existiam na tela (vinham do Grammar pelo
+       adapter). O banco próprio passa a poder declará-los também — nenhum
+       formato novo é criado, nenhum renderer é tocado. */
+    unscramble:      'unscramble',
+    fix:             'fix',
+    transform:       'transform'
   };
 
   /* type do banco próprio -> format canônico */
@@ -599,7 +605,10 @@ var TOPICS = {
     make_question:   'make_question',
     story:           'story',
     dialogue:        'dialogue',
-    make_sentence:   'make_sentence'
+    make_sentence:   'make_sentence',
+    unscramble:      'unscramble',
+    fix:             'fix',
+    transform:       'transform'
   };
 
   /* Os tipos de prática oferecidos na tela, em três grupos. Cada um sabe
@@ -649,7 +658,7 @@ var TOPICS = {
       format:     FORMAT_OF[ex.type] || ex.type || '',
       topic:      key,
       topicLabel: topic.label || key,
-      level:      (topic.passage && topic.passage.level) || ex.level || '',
+      level:      (topic.passage && topic.passage.level) || topic.level || ex.level || '',
       theme:      topic.theme || '',
       groupId:    topic.groupId || '',
       passage:    topic.passage || null,
