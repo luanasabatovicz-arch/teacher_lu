@@ -748,6 +748,31 @@ main > *{position:relative;z-index:1}
 .km-xmas{font-family:var(--f-display);font-weight:700;color:#4F7A2E;background:#E7F1D8;padding:5px 14px;border-radius:999px}
 .xgoal{grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr) 84px}
 @media (prefers-reduced-motion: reduce){.env-ico{animation:none}}
+
+/* ===== abas por criança, retrato ilustrado, recadinho noturno ===== */
+:root{--cur:#8B6B4A}
+.kids-sw{gap:4px;align-items:flex-end;padding:0 2px;border-bottom:3px solid var(--cur);overflow-y:hidden}
+.chip.ktab{border:0;border-radius:16px 16px 0 0;padding:8px 18px 8px 8px;background:color-mix(in srgb,var(--kid,var(--muted)) 14%,var(--surface));color:var(--ink);font-size:1.02rem;box-shadow:none;margin-bottom:0}
+.chip.ktab.plain{padding:10px 18px}
+.chip.ktab[aria-pressed="true"]{background:var(--kid,#8B6B4A);color:#fff;padding-top:12px;padding-bottom:10px}
+.chip.ktab[aria-pressed="true"] .bal{color:#fff}
+.chip.ktab .ava{--size:36px}
+body.has-tabs main{background:color-mix(in srgb,var(--cur) 9%,transparent);border-radius:0 0 22px 22px;padding:14px 12px 16px;margin-top:-12px}
+@media (max-width:420px){body.has-tabs main{padding:12px 8px 14px}.chip.ktab{padding:6px 12px 6px 6px}}
+.km-tabs{max-width:1100px;margin:0 auto 18px;display:flex;gap:6px;align-items:flex-end;border-bottom:4px solid var(--kmc,#8B6B4A);overflow-x:auto;scrollbar-width:none}
+.km-tab{display:flex;align-items:center;gap:10px;border:0;cursor:pointer;border-radius:20px 20px 0 0;padding:8px 22px 8px 8px;background:color-mix(in srgb,var(--kid,#8B6B4A) 16%,var(--surface));font:700 1.35rem var(--f-display);color:var(--ink);flex:none}
+.km-tab[aria-pressed="true"]{background:var(--kid,#8B6B4A);color:#fff;padding-top:14px}
+.km-tab.fam{--kid:#8B6B4A}
+.km-tabav{width:54px;height:auto;border-radius:12px;box-shadow:0 0 0 3px #fff}
+.km-tabico{font-size:2rem;width:54px;text-align:center}
+@media (max-width:520px){.km-tab{font-size:1.05rem;padding:6px 12px 6px 6px;gap:6px}.km-tab[aria-pressed="true"]{padding-top:10px}.km-tabav{width:38px}.km-tabico{font-size:1.5rem;width:38px}}
+.bd-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.bd-tab{position:relative;display:flex;align-items:center;gap:8px;border:2px solid color-mix(in srgb,var(--kid) 45%,#E6D9C3);background:#FFFCF6;border-radius:999px;padding:5px 16px 5px 5px;font:700 1.05rem "Mali",var(--f-body);color:#4B3A2A;cursor:pointer}
+.bd-tab .ava{--size:34px}
+.bd-tab[aria-pressed="true"]{background:color-mix(in srgb,var(--kid) 85%,#fff);border-color:transparent;color:#fff}
+.bd-dot{position:absolute;top:2px;right:4px;width:11px;height:11px;border-radius:50%;background:#D9534F;box-shadow:0 0 0 2px #FFFCF6}
+.bd-env{width:100%;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 14px;border-radius:18px;background:radial-gradient(ellipse 80% 80% at 50% 0%, color-mix(in srgb,var(--kid) 26%,transparent), transparent 70%), #FFFCF6}
+.bd-env .env-t{font-family:"Mali",var(--f-body);font-size:1.3rem}
 /* hora de dormir: pôster do devocional */
 .bd-date{font-family:"Mali",var(--f-body);font-weight:600;color:#8B6B4A}
 .bd-date::first-letter{text-transform:uppercase}
@@ -853,56 +878,63 @@ function lamps(light){ return `<span class="lamps" aria-hidden="true">${['verde'
 function sign(n){ return n>0 ? '+'+n : n<0 ? '−'+Math.abs(n) : '0' }
 
 
-/* ---------- avatar: catálogo e desenho ---------- */
-const SKINS = {s1:'#FFE4D4', s2:'#F6CBA8', s3:'#E2A97F', s4:'#B87650', s5:'#7B4A2D'};
-const HAIR_COLORS = {loiro:'#F2D27A', mel:'#D9A257', acobreado:'#B8643A', castanho:'#7A4A2A', preto:'#2B211D', rosa:'#FF8FC8', azul:'#62A8FF', roxo:'#A97BFF', verde:'#4CD68A'};
+/* ---------- avatar: catálogo e desenho (retrato ilustrado) ---------- */
+const SKINS = {s1:'#FBE1D0', s2:'#F2C7A5', s3:'#DDA77C', s4:'#B57A52', s5:'#7E4E31'};
+const HAIR_COLORS = {loiro:'#EBCB82', mel:'#D3A05A', acobreado:'#B4643A', castanho:'#7A4A2A', preto:'#2B211D', rosa:'#F29BC4', azul:'#7FA9E8', roxo:'#A98BE0', verde:'#7CC79A'};
+const EYE_COLORS = {castanho:'#5A3A22', azul:'#5B8CC4', verde:'#5A9A64', mel:'#A06C34', preto:'#231A16'};
 const AV_CATS = [
   {id:'top', label:'Roupas'}, {id:'hat', label:'Chapéus'}, {id:'glasses', label:'Óculos'}, {id:'hand', label:'Na mão'},
   {id:'pet', label:'Mascotes'}, {id:'bg', label:'Cenários'}, {id:'look', label:'Visual'}];
 const CATALOG = [
-  // roupas
   {cat:'top', id:'tee', name:'Camiseta'},
+  {cat:'top', id:'sweater', name:'Suéter com gola', need:{stars:15}},
   {cat:'top', id:'stripes', name:'Listrada', need:{stars:25}},
-  {cat:'top', id:'soccer', name:'Uniforme de futebol', need:{stars:40}},
+  {cat:'top', id:'soccer', name:'Camisa de futebol', need:{stars:40}},
   {cat:'top', id:'hoodie', name:'Moletom', need:{stars:60}},
-  {cat:'top', id:'junina', name:'Roupa de festa junina', need:{stars:90}},
+  {cat:'top', id:'junina', name:'Vestido junino', need:{stars:90}, g:'f'},
+  {cat:'top', id:'juninaM', name:'Camisa xadrez junina', need:{stars:90}, g:'m'},
+  {cat:'top', id:'tutu', name:'Roupa de bailarina', need:{stars:110}, g:'f'},
+  {cat:'top', id:'skater', name:'Roupa de skatista', need:{stars:110}, g:'m'},
   {cat:'top', id:'dino', name:'Fantasia de dinossauro', need:{stars:120}},
-  {cat:'top', id:'gown', name:'Vestido de gala', need:{stars:150}},
+  {cat:'top', id:'gown', name:'Vestido de princesa', need:{stars:150}, g:'f'},
+  {cat:'top', id:'ninja', name:'Roupa de ninja', need:{stars:150}, g:'m'},
   {cat:'top', id:'pirate', name:'Roupa de pirata', need:{stars:200}},
   {cat:'top', id:'scientist', name:'Jaleco de cientista', need:{stars:250}},
   {cat:'top', id:'hero', name:'Capa de super-herói', need:{streak:7}},
   {cat:'top', id:'astro', name:'Traje de astronauta', need:{stars:500}},
-  // chapéus
   {cat:'hat', id:'none', name:'Sem chapéu'},
-  {cat:'hat', id:'bow', name:'Laço', need:{stars:15}},
+  {cat:'hat', id:'bow', name:'Laço', need:{stars:15}, g:'f'},
   {cat:'hat', id:'cap', name:'Boné', need:{stars:20}},
-  {cat:'hat', id:'catears', name:'Orelhas de gato', need:{stars:50}},
-  {cat:'hat', id:'unicorn', name:'Chifre de unicórnio', need:{stars:80}},
+  {cat:'hat', id:'catears', name:'Orelhas de gatinho', need:{stars:50}, g:'f'},
+  {cat:'hat', id:'beanie', name:'Gorro', need:{stars:50}, g:'m'},
+  {cat:'hat', id:'unicorn', name:'Chifre de unicórnio', need:{stars:80}, g:'f'},
+  {cat:'hat', id:'viking', name:'Capacete viking', need:{stars:80}, g:'m'},
   {cat:'hat', id:'straw', name:'Chapéu de palha', need:{stars:90}},
+  {cat:'hat', id:'flowers', name:'Coroa de flores', need:{stars:130}, g:'f'},
+  {cat:'hat', id:'headphones', name:'Fone de ouvido', need:{stars:130}, g:'m'},
   {cat:'hat', id:'party', name:'Chapéu de festa', need:{challenge:3}},
   {cat:'hat', id:'wizard', name:'Chapéu de mago', need:{stars:180}},
   {cat:'hat', id:'pirateHat', name:'Chapéu de pirata', need:{stars:200}},
   {cat:'hat', id:'crown', name:'Coroa', need:{perfect:5}},
   {cat:'hat', id:'helmet', name:'Capacete espacial', need:{stars:500}},
-  // óculos
   {cat:'glasses', id:'none', name:'Sem óculos'},
   {cat:'glasses', id:'round', name:'Óculos redondos', need:{stars:25}},
   {cat:'glasses', id:'sun', name:'Óculos escuros', need:{stars:70}},
-  {cat:'glasses', id:'heart', name:'Óculos de coração', need:{streak:3}},
+  {cat:'glasses', id:'heart', name:'Óculos de coração', need:{streak:3}, g:'f'},
+  {cat:'glasses', id:'sport', name:'Óculos de corrida', need:{streak:3}, g:'m'},
   {cat:'glasses', id:'star', name:'Óculos de estrela', need:{stars:140}},
   {cat:'glasses', id:'mask', name:'Máscara de herói', need:{perfect:10}},
-  // na mão
   {cat:'hand', id:'none', name:'Mãos livres'},
   {cat:'hand', id:'balloon', name:'Balão', need:{stars:10}},
   {cat:'hand', id:'ball', name:'Bola de futebol', need:{stars:35}},
   {cat:'hand', id:'book', name:'Livro', need:{stars:45}},
   {cat:'hand', id:'ice', name:'Sorvete', need:{stars:55}},
   {cat:'hand', id:'brush', name:'Pincel', need:{stars:65}},
-  {cat:'hand', id:'wand', name:'Varinha mágica', need:{stars:100}},
+  {cat:'hand', id:'wand', name:'Varinha mágica', need:{stars:100}, g:'f'},
+  {cat:'hand', id:'skate', name:'Skate', need:{stars:100}, g:'m'},
   {cat:'hand', id:'trophy', name:'Troféu', need:{perfect:3}},
   {cat:'hand', id:'guitar', name:'Guitarra', need:{stars:220}},
   {cat:'hand', id:'telescope', name:'Luneta', need:{stars:300}},
-  // mascotes
   {cat:'pet', id:'none', name:'Sem mascote'},
   {cat:'pet', id:'cat', name:'Gatinho', need:{stars:85}},
   {cat:'pet', id:'dog', name:'Cachorro dourado', need:{stars:110}},
@@ -910,8 +942,7 @@ const CATALOG = [
   {cat:'pet', id:'dino', name:'Dinossauro bebê', need:{stars:160}},
   {cat:'pet', id:'owl', name:'Coruja', need:{stars:260}},
   {cat:'pet', id:'dragon', name:'Dragãozinho', need:{stars:400}},
-  {cat:'pet', id:'unipet', name:'Unicórnio', need:{stars:1000}},
-  // cenários
+  {cat:'pet', id:'unipet', name:'Unicórnio', need:{stars:1000}, g:'f'},
   {cat:'bg', id:'plain', name:'Cor favorita'},
   {cat:'bg', id:'sky', name:'Céu azul', need:{stars:5}},
   {cat:'bg', id:'rainbow', name:'Arco-íris', need:{perfect:1}},
@@ -921,24 +952,30 @@ const CATALOG = [
   {cat:'bg', id:'space', name:'Espaço', need:{stars:300}},
   {cat:'bg', id:'castle', name:'Castelo', need:{stars:350}},
   {cat:'bg', id:'sea', name:'Fundo do mar', need:{stars:450}},
-  // visual
-  {cat:'hair', id:'short', name:'Curto'}, {cat:'hair', id:'long', name:'Comprido'}, {cat:'hair', id:'pigtails', name:'Marias-chiquinhas'},
-  {cat:'hair', id:'curly', name:'Cacheado'}, {cat:'hair', id:'quiff', name:'Topete'}, {cat:'hair', id:'bun', name:'Coque'},
+  {cat:'hair', id:'short', name:'Curto com franja', g:'m'}, {cat:'hair', id:'quiff', name:'Topete', g:'m'},
+  {cat:'hair', id:'long', name:'Comprido', g:'f'}, {cat:'hair', id:'pigtails', name:'Marias-chiquinhas', g:'f'}, {cat:'hair', id:'bun', name:'Coque', g:'f'},
+  {cat:'hair', id:'curly', name:'Cacheado'},
   {cat:'hairColor', id:'loiro', name:'Loiro'}, {cat:'hairColor', id:'mel', name:'Mel'}, {cat:'hairColor', id:'acobreado', name:'Acobreado'},
   {cat:'hairColor', id:'castanho', name:'Castanho'}, {cat:'hairColor', id:'preto', name:'Preto'},
-  {cat:'hairColor', id:'rosa', name:'Rosa', need:{stars:70}}, {cat:'hairColor', id:'azul', name:'Azul', need:{stars:160}},
+  {cat:'hairColor', id:'rosa', name:'Rosa', need:{stars:70}, g:'f'}, {cat:'hairColor', id:'azul', name:'Azul', need:{stars:160}},
   {cat:'hairColor', id:'roxo', name:'Roxo', need:{perfect:2}}, {cat:'hairColor', id:'verde', name:'Verde', need:{challenge:4}},
+  {cat:'eyes', id:'castanho', name:'Olhos castanhos'}, {cat:'eyes', id:'azul', name:'Olhos azuis'}, {cat:'eyes', id:'verde', name:'Olhos verdes'}, {cat:'eyes', id:'mel', name:'Olhos cor de mel'}, {cat:'eyes', id:'preto', name:'Olhos pretos'},
   {cat:'face', id:'cheeks', name:'Bochechas'}, {cat:'face', id:'freckles', name:'Sardas'}, {cat:'face', id:'both', name:'Sardas e bochechas'}, {cat:'face', id:'plain', name:'Sem nada'},
   {cat:'skin', id:'s1', name:'Tom 1'}, {cat:'skin', id:'s2', name:'Tom 2'}, {cat:'skin', id:'s3', name:'Tom 3'}, {cat:'skin', id:'s4', name:'Tom 4'}, {cat:'skin', id:'s5', name:'Tom 5'},
 ];
-const DEFAULT_LOOK = {skin:'s1', hair:'short', hairColor:'castanho', face:'cheeks', top:'tee', hat:'none', glasses:'none', hand:'none', pet:'none', bg:'plain'};
+const DEFAULT_LOOK = {skin:'s1', hair:'short', hairColor:'castanho', eyes:'castanho', face:'cheeks', top:'tee', hat:'none', glasses:'none', hand:'none', pet:'none', bg:'plain'};
+const KID_LOOKS = {alice:{hair:'pigtails', hairColor:'loiro', eyes:'azul', face:'cheeks'}, joey:{hair:'short', hairColor:'acobreado', eyes:'castanho', face:'both'}};
+const catFor = k => CATALOG.filter(i => !i.g || i.g === (k && k.g === 'f' ? 'f' : 'm'));
 
 let avN = 0;
-const T_PATH = 'M54 240 C54 188 70 154 100 154 C130 154 146 188 146 240 Z';
 function starD(cx, cy, R, r){ let d = ''; for(let i=0;i<10;i++){ const rr = i%2 ? r : R, a = i*Math.PI/5 - Math.PI/2; d += (i?'L':'M') + (cx+Math.cos(a)*rr).toFixed(1) + ' ' + (cy+Math.sin(a)*rr).toFixed(1) + ' ' } return d + 'Z' }
+
 function heartD(cx, cy, s){ return `M${cx} ${cy+s*.9} C${cx-s*1.5} ${cy} ${cx-s*.9} ${cy-s} ${cx} ${cy-s*.35} C${cx+s*.9} ${cy-s} ${cx+s*1.5} ${cy} ${cx} ${cy+s*.9} Z` }
+
 const cloud = (x, y, s) => `<g fill="#fff" opacity=".95"><ellipse cx="${x}" cy="${y}" rx="${16*s}" ry="${9*s}"/><ellipse cx="${x+12*s}" cy="${y-6*s}" rx="${12*s}" ry="${10*s}"/><ellipse cx="${x-10*s}" cy="${y-3*s}" rx="${9*s}" ry="${7*s}"/></g>`;
+
 const tree = (x, y, s) => `<rect x="${x-4*s}" y="${y}" width="${8*s}" height="${26*s}" fill="#8B5A2B"/><path d="M${x-22*s} ${y+4*s} L${x} ${y-34*s} L${x+22*s} ${y+4*s} Z" fill="#2E9E5B"/><path d="M${x-17*s} ${y-14*s} L${x} ${y-46*s} L${x+17*s} ${y-14*s} Z" fill="#3DBB6B"/>`;
+
 const grad = (id, a, b) => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="200" height="240" fill="url(#${id})"/>`;
 
 const BG = {
@@ -952,66 +989,7 @@ const BG = {
   castle: p => grad(p+'g','#FFD3EA','#FFF0F7') + `<rect x="30" y="150" width="140" height="90" fill="#E8D4FF"/>${[30,52,74,96,118,140,162].map(x => `<rect x="${x}" y="142" width="12" height="10" fill="#E8D4FF"/>`).join('')}<rect x="6" y="104" width="32" height="136" fill="#D5B8FF"/><path d="M2 106 L22 70 L42 106 Z" fill="#9A5BFF"/><rect x="162" y="104" width="32" height="136" fill="#D5B8FF"/><path d="M158 106 L178 70 L198 106 Z" fill="#9A5BFF"/><path d="M22 70 L22 54 L34 59 L22 64" fill="#FF4F79" stroke="#9A5BFF" stroke-width="1.5"/><path d="M178 70 L178 54 L190 59 L178 64" fill="#FF4F79" stroke="#9A5BFF" stroke-width="1.5"/><rect x="16" y="124" width="10" height="14" rx="5" fill="#9A5BFF" opacity=".6"/><rect x="172" y="124" width="10" height="14" rx="5" fill="#9A5BFF" opacity=".6"/>` + cloud(100,40,.9),
   sea: p => grad(p+'g','#7FDBFA','#1D78C1') + `<rect y="214" width="200" height="26" fill="#F2D7A0"/><path d="M16 240 C10 220 24 210 16 190 C10 176 20 168 16 156" stroke="#2FCB6E" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M186 240 C192 222 178 210 186 194 C192 182 182 174 186 162" stroke="#22A85A" stroke-width="6" fill="none" stroke-linecap="round"/>${[[30,60,6],[44,40,4],[170,120,5],[160,96,3],[36,120,3]].map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#fff" stroke-width="1.6" opacity=".8"/>`).join('')}<path d="M160 52 q12 -10 24 0 q-12 10 -24 0 z M184 52 l8 -6 l0 12 z" fill="#FF8A1F"/><circle cx="166" cy="50" r="1.6" fill="#222"/>`,
 };
-const HAIR_BACK = {
-  long: hc => `<path d="M50 88 C44 132 48 172 64 182 C82 190 118 190 136 182 C152 172 156 132 150 88 Z" fill="${hc}"/>`,
-  pigtails: hc => `<circle cx="44" cy="114" r="17" fill="${hc}"/><ellipse cx="40" cy="136" rx="11" ry="14" fill="${hc}"/><circle cx="156" cy="114" r="17" fill="${hc}"/><ellipse cx="160" cy="136" rx="11" ry="14" fill="${hc}"/>`,
-  curly: hc => `<ellipse cx="100" cy="98" rx="60" ry="56" fill="${hc}"/>`,
-};
-const SHINE = '<path d="M74 55 Q88 47 104 47" stroke="#fff" stroke-opacity=".35" stroke-width="4" fill="none" stroke-linecap="round"/>';
-const HAIR_FRONT = {
-  short: hc => `<path d="M54 98 C48 58 76 40 100 40 C126 40 154 58 146 98 C142 82 132 70 118 66 C108 74 90 76 78 70 C68 76 58 86 54 98 Z" fill="${hc}"/>` + SHINE,
-  long: hc => `<path d="M54 106 C46 58 76 40 100 40 C124 40 154 58 146 106 C144 86 134 70 120 62 C112 70 104 72 100 60 C96 72 86 70 78 62 C66 72 56 86 54 106 Z" fill="${hc}"/>` + SHINE,
-  pigtails: (hc, c) => `<path d="M54 100 C48 58 76 40 100 40 C124 40 152 58 146 100 C142 84 132 70 120 64 C112 72 104 72 100 62 C96 72 86 72 80 64 C68 70 58 84 54 100 Z" fill="${hc}"/><circle cx="52" cy="102" r="6" fill="${c}"/><circle cx="148" cy="102" r="6" fill="${c}"/>` + SHINE,
-  curly: hc => `<path d="M56 94 C56 58 78 44 100 44 C122 44 144 58 144 94 C130 78 70 78 56 94 Z" fill="${hc}"/>` + [190,210,230,250,270,290,310,330,350].map(a => { const r = a*Math.PI/180; return `<circle cx="${(100+44*Math.cos(r)).toFixed(1)}" cy="${(90+44*Math.sin(r)).toFixed(1)}" r="14" fill="${hc}"/>` }).join(''),
-  quiff: hc => `<path d="M54 98 C48 58 76 40 100 40 C126 40 154 58 146 98 C142 82 132 70 118 66 C108 74 90 76 78 70 C68 76 58 86 54 98 Z" fill="${hc}"/><path d="M76 62 C72 32 112 22 130 40 C116 36 104 40 98 58 Z" fill="${hc}"/>` + SHINE,
-  bun: (hc, c) => `<circle cx="100" cy="36" r="17" fill="${hc}"/><path d="M54 98 C52 58 78 42 100 42 C122 42 148 58 146 98 C138 76 120 66 100 66 C80 66 62 76 54 98 Z" fill="${hc}"/><ellipse cx="100" cy="51" rx="10" ry="4" fill="${c}"/>` + SHINE,
-};
-const SLEEVE = {tee:'shirt', stripes:'#fff', soccer:'#FFD23F', hoodie:'shirt', junina:'#E63946', dino:'#5CC27C', pirate:'#FAFAFA', scientist:'#FFFFFF', hero:'shirt', astro:'#EEF2F8'};
-const LONG = ['hoodie','dino','pirate','scientist','astro'];
-const TOPS = {
-  tee: (p, c) => `<path d="${T_PATH}" fill="${c}"/><path d="M88 156 Q100 168 112 156" stroke="rgba(0,0,0,.18)" stroke-width="3" fill="none"/><path d="${starD(100,198,11,5)}" fill="#fff" opacity=".9"/>`,
-  stripes: (p, c) => `<defs><clipPath id="${p}t"><path d="${T_PATH}"/></clipPath></defs><path d="${T_PATH}" fill="#fff"/><g clip-path="url(#${p}t)">${[164,186,208,230].map(y => `<rect x="40" y="${y}" width="120" height="10" fill="${c}"/>`).join('')}</g><path d="M88 156 Q100 168 112 156" stroke="rgba(0,0,0,.2)" stroke-width="3" fill="none"/>`,
-  soccer: () => `<path d="${T_PATH}" fill="#FFD23F"/><path d="M88 155 L100 170 L112 155" stroke="#1F9E5A" stroke-width="5" fill="none" stroke-linejoin="round"/><text x="100" y="216" text-anchor="middle" font-family="Fredoka,Arial,sans-serif" font-weight="700" font-size="26" fill="#1F9E5A">10</text><path d="M60 200 L60 240 M140 200 L140 240" stroke="#1F9E5A" stroke-width="5"/>`,
-  hoodie: (p, c) => `<path d="M64 168 C58 138 142 138 136 168 Z" fill="${c}"/><path d="M64 168 C58 138 142 138 136 168 Z" fill="rgba(0,0,0,.18)"/><path d="${T_PATH}" fill="${c}"/><path d="M76 206 L124 206 L118 228 L82 228 Z" fill="rgba(0,0,0,.12)"/><path d="M94 160 L92 186 M106 160 L108 186" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`,
-  junina: p => `<defs><clipPath id="${p}t"><path d="${T_PATH}"/></clipPath><pattern id="${p}x" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#fff"/><rect width="7" height="14" fill="#E63946" opacity=".8"/><rect width="14" height="7" fill="#3B6FD9" opacity=".55"/></pattern></defs><path d="${T_PATH}" fill="#E63946"/><g clip-path="url(#${p}t)"><rect x="40" y="200" width="120" height="40" fill="url(#${p}x)"/></g><path d="M74 162 l6 7 l6 -7 l6 7 l6 -7 l6 7 l6 -7 l6 7 l6 -7 l6 7" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/><rect x="112" y="182" width="12" height="12" fill="#FFC61A" transform="rotate(12 118 188)"/><rect x="74" y="214" width="12" height="12" fill="#FF8FC8" transform="rotate(-10 80 220)"/>`,
-  dino: () => `<path d="${T_PATH}" fill="#5CC27C"/><ellipse cx="100" cy="208" rx="26" ry="30" fill="#C9F2B5"/><path d="M62 180 l6 -14 l7 11 Z M74 168 l8 -13 l6 12 Z M138 180 l-6 -14 l-7 11 Z M126 168 l-8 -13 l-6 12 Z" fill="#FFC61A"/><path d="M84 196 h32 M82 210 h36 M86 224 h28" stroke="#8FD98A" stroke-width="3" stroke-linecap="round"/>`,
-  gown: p => `<path d="M38 240 C50 210 74 190 100 190 C126 190 150 210 162 240 Z" fill="#A9C4FF"/><path d="M74 198 C74 168 84 156 100 156 C116 156 126 168 126 198 Z" fill="#8FB1FF"/><circle cx="72" cy="170" r="13" fill="#C9DAFF"/><circle cx="128" cy="170" r="13" fill="#C9DAFF"/><path d="M88 158 Q100 170 112 158" stroke="#fff" stroke-width="3" fill="none"/>${[[70,222],[100,214],[130,226],[86,234],[116,234]].map(([x,y]) => `<path d="${starD(x,y,4,1.6)}" fill="#fff"/>`).join('')}<path d="${starD(100,180,6,2.6)}" fill="#fff"/>`,
-  pirate: () => `<path d="${T_PATH}" fill="#FAFAFA"/><path d="M54 240 C54 192 68 158 88 156 L90 240 Z" fill="#2F2A3A"/><path d="M146 240 C146 192 132 158 112 156 L110 240 Z" fill="#2F2A3A"/><rect x="58" y="204" width="84" height="11" fill="#E63946"/><circle cx="118" cy="210" r="6" fill="#C2253A"/><circle cx="94" cy="226" r="2.5" fill="#FFC61A"/><circle cx="106" cy="226" r="2.5" fill="#FFC61A"/>`,
-  scientist: () => `<path d="${T_PATH}" fill="#6FA8FF"/><path d="M54 240 C54 190 70 156 92 155 L97 240 Z" fill="#fff"/><path d="M146 240 C146 190 130 156 108 155 L103 240 Z" fill="#fff"/><path d="M92 155 L84 186 M108 155 L116 186" stroke="#D5DCE8" stroke-width="2.5"/><rect x="118" y="194" width="18" height="16" rx="2" fill="#EEF2F8" stroke="#D5DCE8"/><path d="M122 196 v-8 M127 196 v-10 M132 196 v-7" stroke-width="3" stroke-linecap="round" stroke="#3B82FF"/><path d="M127 196 v-10" stroke="#FF4F79" stroke-width="3" stroke-linecap="round"/>`,
-  hero: (p, c) => `<path d="${T_PATH}" fill="${c}"/><circle cx="100" cy="196" r="15" fill="#FFD23F"/><path d="${starD(100,197,10,4.4)}" fill="#E63946"/><rect x="62" y="226" width="76" height="8" fill="rgba(0,0,0,.18)"/>`,
-  astro: () => `<path d="${T_PATH}" fill="#EEF2F8"/><path d="M54 240 C54 188 70 154 100 154 C130 154 146 188 146 240" stroke="#C9D3E3" stroke-width="2" fill="none"/><rect x="84" y="186" width="32" height="22" rx="4" fill="#9AA6BD"/><circle cx="92" cy="197" r="3.2" fill="#FF4F79"/><circle cx="100" cy="197" r="3.2" fill="#2FCB6E"/><circle cx="108" cy="197" r="3.2" fill="#FFC61A"/><rect x="62" y="188" width="14" height="10" fill="#3B82FF"/><ellipse cx="100" cy="156" rx="24" ry="7" fill="#C9D3E3"/>`,
-};
-const CAPE = '<path d="M66 160 C50 200 44 228 36 240 L164 240 C156 228 150 200 134 160 Z" fill="#E63946"/><path d="M76 166 C66 200 62 226 58 240" stroke="#B71C2E" stroke-width="3" fill="none" opacity=".6"/>';
-const GLASSES = {
-  round: () => `<g stroke="#2B2B3A" stroke-width="3" fill="rgba(255,255,255,.18)"><circle cx="83" cy="97" r="12"/><circle cx="117" cy="97" r="12"/></g><path d="M95 96 Q100 92 105 96 M71 95 L56 92 M129 95 L144 92" stroke="#2B2B3A" stroke-width="3" fill="none"/>`,
-  sun: () => `<rect x="68" y="88" width="29" height="19" rx="7" fill="#1F2433"/><rect x="103" y="88" width="29" height="19" rx="7" fill="#1F2433"/><path d="M97 94 L103 94 M68 93 L56 90 M132 93 L144 90" stroke="#1F2433" stroke-width="3"/><path d="M73 92 l8 0" stroke="#fff" stroke-width="2" opacity=".5"/><path d="M108 92 l8 0" stroke="#fff" stroke-width="2" opacity=".5"/>`,
-  heart: () => `<path d="${heartD(83,98,12)}" fill="#FF4F79" fill-opacity=".85" stroke="#C2185B" stroke-width="2"/><path d="${heartD(117,98,12)}" fill="#FF4F79" fill-opacity=".85" stroke="#C2185B" stroke-width="2"/><path d="M95 95 L105 95" stroke="#C2185B" stroke-width="3"/>`,
-  star: () => `<path d="${starD(83,97,15,7)}" fill="#FFC61A" fill-opacity=".85" stroke="#E09A00" stroke-width="2" stroke-linejoin="round"/><path d="${starD(117,97,15,7)}" fill="#FFC61A" fill-opacity=".85" stroke="#E09A00" stroke-width="2" stroke-linejoin="round"/>`,
-  mask: () => `<path fill-rule="evenodd" d="M56 92 C70 82 130 82 144 92 L144 104 C130 112 70 112 56 104 Z M74 97 a9 8 0 1 0 18 0 a9 8 0 1 0 -18 0 Z M108 97 a9 8 0 1 0 18 0 a9 8 0 1 0 -18 0 Z" fill="#E63946"/>`,
-};
-const HATS = {
-  bow: () => `<path d="M132 56 L110 42 L112 70 Z" fill="#FF5FA2"/><path d="M132 56 L154 42 L152 70 Z" fill="#FF5FA2"/><circle cx="132" cy="56" r="7" fill="#E0388A"/>`,
-  cap: (p, c) => `<path d="M52 84 C52 48 76 36 100 36 C124 36 148 48 148 84 Z" fill="${c}"/><path d="M52 84 C52 48 76 36 100 36 C124 36 148 48 148 84 Z" fill="rgba(255,255,255,.12)"/><ellipse cx="100" cy="85" rx="58" ry="9" fill="rgba(0,0,0,.28)"/><ellipse cx="100" cy="84" rx="58" ry="8" fill="${c}"/><circle cx="100" cy="38" r="5" fill="rgba(0,0,0,.25)"/>`,
-  catears: () => `<path d="M58 74 L64 32 L92 54 Z" fill="#2F2A3A"/><path d="M142 74 L136 32 L108 54 Z" fill="#2F2A3A"/><path d="M66 64 L68 44 L82 55 Z" fill="#FF8FC8"/><path d="M134 64 L132 44 L118 55 Z" fill="#FF8FC8"/>`,
-  unicorn: p => `<defs><linearGradient id="${p}h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset="1" stop-color="#F2A93B"/></linearGradient></defs><path d="M90 50 L100 4 L110 50 Z" fill="url(#${p}h)"/><path d="M93 40 L106 34 M95 28 L104 24 M97 16 L102 13" stroke="#E08A1E" stroke-width="2"/><circle cx="124" cy="50" r="7" fill="#FF8FC8"/><circle cx="76" cy="50" r="6" fill="#A97BFF"/><circle cx="124" cy="50" r="2.5" fill="#FFE38A"/>`,
-  straw: () => `<ellipse cx="100" cy="62" rx="68" ry="13" fill="#F4D58D"/><path d="M68 62 C70 30 130 30 132 62 Z" fill="#E9C46A"/><rect x="69" y="50" width="62" height="8" fill="#E63946"/><path d="M40 62 q8 4 16 0 M144 62 q8 4 16 0" stroke="#D4A84A" stroke-width="2" fill="none"/><circle cx="122" cy="44" r="5" fill="#FF8FC8"/><rect x="80" y="36" width="8" height="8" fill="#3B82FF" opacity=".7" transform="rotate(15 84 40)"/>`,
-  party: () => `<g transform="rotate(14 104 30)"><path d="M84 54 L104 0 L124 54 Z" fill="#3B82FF"/><path d="M90 38 L118 38 M95 24 L113 24 M99 12 L109 12" stroke="#FFC61A" stroke-width="5"/><circle cx="104" cy="0" r="7" fill="#FF4F79"/></g>`,
-  wizard: () => `<path d="M60 68 L104 -6 L140 68 Z" fill="#6A4BC4"/><ellipse cx="100" cy="68" rx="60" ry="10" fill="#5638AA"/><path d="${starD(98,40,7,3)}" fill="#FFC61A"/><path d="${starD(116,18,5,2)}" fill="#FFC61A"/><circle cx="84" cy="56" r="3" fill="#FFC61A"/>`,
-  pirateHat: () => `<path d="M42 68 C56 26 144 26 158 68 C130 56 70 56 42 68 Z" fill="#2F2A3A"/><path d="M44 66 C70 55 130 55 156 66" stroke="#FFC61A" stroke-width="3" fill="none"/><circle cx="100" cy="46" r="8" fill="#fff"/><circle cx="97" cy="45" r="1.8" fill="#2F2A3A"/><circle cx="103" cy="45" r="1.8" fill="#2F2A3A"/>`,
-  crown: () => `<path d="M64 62 L62 28 L81 44 L100 18 L119 44 L138 28 L136 62 Z" fill="#FFC61A" stroke="#E09A00" stroke-width="2" stroke-linejoin="round"/><circle cx="81" cy="52" r="4" fill="#FF4F79"/><circle cx="100" cy="50" r="5" fill="#3B82FF"/><circle cx="119" cy="52" r="4" fill="#2FCB6E"/>`,
-  helmet: () => `<circle cx="100" cy="94" r="60" fill="rgba(190,225,255,.28)" stroke="#E2E8F2" stroke-width="7"/><path d="M62 70 Q74 46 100 40" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/><circle cx="148" cy="78" r="5" fill="#FF4F79"/>`,
-};
-const HAND_ITEMS = {
-  balloon: () => `<path d="M146 214 Q160 180 162 152" stroke="#555" stroke-width="1.6" fill="none"/><ellipse cx="164" cy="132" rx="17" ry="20" fill="#FF4F79"/><path d="M160 152 l4 -3 l4 3 z" fill="#FF4F79"/><ellipse cx="158" cy="124" rx="4" ry="6" fill="#fff" opacity=".5"/>`,
-  ball: () => `<circle cx="154" cy="220" r="15" fill="#fff" stroke="#333" stroke-width="2"/><path d="${starD(154,220,6,5)}" fill="#333"/><path d="M154 214 L154 205 M148 222 L141 226 M160 222 L167 226" stroke="#333" stroke-width="2"/>`,
-  book: () => `<g transform="rotate(-12 150 214)"><rect x="134" y="200" width="32" height="26" rx="3" fill="#3B82FF"/><rect x="134" y="222" width="32" height="4" fill="#fff"/><path d="M142 208 h16 M142 214 h12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></g>`,
-  ice: () => `<path d="M139 208 L157 208 L148 234 Z" fill="#E9B872"/><path d="M142 214 L154 214 M144 220 L152 220" stroke="#C98F45" stroke-width="1.5"/><circle cx="143" cy="202" r="8" fill="#FF8FC8"/><circle cx="153" cy="201" r="8" fill="#8FE3C7"/><circle cx="148" cy="192" r="7.5" fill="#8B5A3C"/><circle cx="146" cy="188" r="1.6" fill="#FF4F79"/>`,
-  brush: () => `<path d="M146 220 L170 178" stroke="#E07A2E" stroke-width="5" stroke-linecap="round"/><path d="M168 182 L174 172" stroke="#B0B8C6" stroke-width="6"/><path d="M172 174 Q178 160 182 166 Q180 172 174 176 Z" fill="#9A5BFF"/><circle cx="182" cy="182" r="3" fill="#9A5BFF"/>`,
-  wand: () => `<path d="M146 218 L168 170" stroke="#6B4A2B" stroke-width="4" stroke-linecap="round"/><path d="${starD(170,164,12,5)}" fill="#FFC61A" stroke="#E09A00" stroke-width="1.5"/><path d="M184 150 l3 6 M158 148 l-2 6 M186 172 l6 1" stroke="#FFC61A" stroke-width="2" stroke-linecap="round"/>`,
-  trophy: () => `<path d="M138 186 L162 186 L160 204 Q150 214 140 204 Z" fill="#FFC61A" stroke="#E09A00" stroke-width="1.5"/><path d="M138 190 Q128 190 132 198 Q134 202 140 202 M162 190 Q172 190 168 198 Q166 202 160 202" stroke="#E09A00" stroke-width="2.5" fill="none"/><rect x="146" y="208" width="8" height="10" fill="#E09A00"/><rect x="140" y="216" width="20" height="6" rx="2" fill="#8B5A2B"/><path d="${starD(150,195,4.5,2)}" fill="#fff"/>`,
-  guitar: () => `<g transform="rotate(-38 150 206)"><rect x="146" y="150" width="8" height="46" fill="#6B4A2B"/><rect x="143" y="144" width="14" height="10" rx="2" fill="#2F2A3A"/><circle cx="150" cy="214" r="17" fill="#FF4F79"/><circle cx="150" cy="198" r="12" fill="#FF4F79"/><circle cx="150" cy="210" r="5" fill="#2F2A3A"/><path d="M148 152 V226 M152 152 V226" stroke="#fff" stroke-width=".8" opacity=".8"/></g>`,
-  telescope: () => `<path d="M134 226 L180 176" stroke="#C9A227" stroke-width="10" stroke-linecap="round"/><path d="M172 186 L186 170" stroke="#A8851C" stroke-width="14" stroke-linecap="round"/><path d="M150 210 L156 204" stroke="#2F2A3A" stroke-width="12"/>`,
-};
+
 const PETS = {
   dog: () => `<path d="M58 224 Q70 214 66 204" stroke="#D08A35" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="40" cy="224" rx="21" ry="14" fill="#E0A04A"/><rect x="26" y="228" width="7" height="12" rx="3" fill="#E0A04A"/><rect x="46" y="228" width="7" height="12" rx="3" fill="#E0A04A"/><circle cx="24" cy="204" r="14" fill="#E9B05E"/><ellipse cx="13" cy="206" rx="5" ry="10" fill="#B9772F" transform="rotate(15 13 206)"/><ellipse cx="35" cy="204" rx="5" ry="10" fill="#B9772F" transform="rotate(-15 35 204)"/><ellipse cx="22" cy="211" rx="7" ry="5" fill="#F6D29A"/><circle cx="21" cy="208" r="2.6" fill="#222"/><circle cx="19" cy="200" r="1.8" fill="#222"/><circle cx="28" cy="200" r="1.8" fill="#222"/><path d="M22 214 q-2 5 2 6" stroke="#FF6B8A" stroke-width="3" fill="none" stroke-linecap="round"/>`,
   cat: () => `<path d="M58 230 C74 226 70 204 60 206" stroke="#F4A259" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="40" cy="226" rx="18" ry="13" fill="#F4A259"/><circle cx="30" cy="206" r="13" fill="#F4A259"/><path d="M19 200 L20 186 L30 195 Z M41 200 L40 186 L30 195 Z" fill="#F4A259"/><path d="M22 197 L23 190 L27 195 Z M38 197 L37 190 L33 195 Z" fill="#FF8FC8"/><circle cx="25" cy="205" r="2" fill="#222"/><circle cx="35" cy="205" r="2" fill="#222"/><path d="M30 209 l-2 2 h4 z" fill="#FF6B8A"/><path d="M18 210 h-8 M18 213 l-7 2 M42 210 h8 M42 213 l7 2" stroke="#8A5A2B" stroke-width="1"/><path d="M40 216 v8 M46 217 v7" stroke="#D9853B" stroke-width="2.5"/>`,
@@ -1022,34 +1000,103 @@ const PETS = {
   unipet: () => `<ellipse cx="42" cy="224" rx="20" ry="14" fill="#fff" stroke="#E6E1EE" stroke-width="1.5"/><rect x="28" y="228" width="6" height="12" rx="3" fill="#fff" stroke="#E6E1EE"/><rect x="48" y="228" width="6" height="12" rx="3" fill="#fff" stroke="#E6E1EE"/><path d="M60 218 q12 -4 10 12" stroke="#FF8FC8" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="26" cy="204" rx="11" ry="13" fill="#fff" stroke="#E6E1EE" stroke-width="1.5"/><path d="M32 196 Q44 196 40 214" stroke="#A97BFF" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M34 194 Q42 200 38 212" stroke="#FF8FC8" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M22 192 L26 176 L30 192 Z" fill="#FFC61A"/><circle cx="22" cy="204" r="2" fill="#222"/><circle cx="20" cy="211" r="1.4" fill="#FFB3CC"/>`,
 };
 
+const OL = '#4A3426';
+function shade(hex, f){ const n = parseInt(String(hex).replace('#',''), 16); if(isNaN(n)) return hex; const ch = s => Math.max(0, Math.min(255, Math.round(s * f)));
+  return '#' + [ch(n >> 16), ch((n >> 8) & 255), ch(n & 255)].map(v => v.toString(16).padStart(2,'0')).join('') }
+const ST = `stroke="${OL}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"`;
+const TORSO = 'M24 240 C26 206 50 188 86 180 L114 180 C150 188 174 206 176 240 Z';
+const torso = (fill, extra) => `<path d="${TORSO}" fill="${fill}" ${ST}/>${extra || ''}`;
+const neckV = '<path d="M86 180 Q100 198 114 180" fill="none" ' + ST + '/>';
+
+const PTOP = {
+  tee: (p, c) => torso(c, neckV + `<path d="${starD(132,214,9,4)}" fill="#fff" opacity=".9"/>`),
+  sweater: (p, c) => torso(c, `<path d="M84 180 L100 196 L116 180 L112 174 L100 188 L88 174 Z" fill="#FFFCF6" ${ST}/><path d="M60 228 L60 240 M140 228 L140 240" stroke="${shade(c,.8)}" stroke-width="3"/>`),
+  stripes: (p, c) => `<defs><clipPath id="${p}t"><path d="${TORSO}"/></clipPath></defs>` + torso('#F6F0E6', `<g clip-path="url(#${p}t)">${[192,206,220,234].map(y => `<rect x="20" y="${y}" width="160" height="7" fill="${c}"/>`).join('')}</g><path d="${TORSO}" fill="none" ${ST}/>` + neckV),
+  soccer: () => torso('#F2C94C', `<path d="M86 180 L100 198 L114 180" fill="none" stroke="#2E8B57" stroke-width="5" stroke-linejoin="round"/><text x="100" y="230" text-anchor="middle" font-family="Fredoka,Arial,sans-serif" font-weight="700" font-size="24" fill="#2E8B57">10</text>`),
+  hoodie: (p, c) => torso(c, `<path d="M62 196 C64 172 136 172 138 196 C126 186 74 186 62 196 Z" fill="${shade(c,.85)}" ${ST}/><path d="M90 186 L100 198 L110 186" fill="#FFFCF6" ${ST}/><path d="M92 198 L90 222 M108 198 L110 222" stroke="#FFFCF6" stroke-width="3" stroke-linecap="round"/>`),
+  junina: p => `<defs><pattern id="${p}x" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#F6EFE6"/><rect width="6" height="12" fill="#D9534F" opacity=".75"/><rect width="12" height="6" fill="#4F78C8" opacity=".45"/></pattern></defs>` + torso('#D9534F', `<ellipse cx="44" cy="214" rx="20" ry="16" fill="url(#${p}x)" ${ST}/><ellipse cx="156" cy="214" rx="20" ry="16" fill="url(#${p}x)" ${ST}/><path d="M78 184 q5 8 10 0 q5 8 10 0 q5 8 10 0 q5 8 10 0 q5 8 10 0" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/><rect x="118" y="212" width="11" height="11" fill="#F2C94C" transform="rotate(12 123 217)"/>`),
+  juninaM: p => `<defs><pattern id="${p}x" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#F6EFE6"/><rect width="7" height="14" fill="#C2253A" opacity=".8"/><rect width="14" height="7" fill="#C2253A" opacity=".45"/></pattern></defs>` + torso(`url(#${p}x)`, `<path d="M86 180 L100 196 L114 180 L118 190 L104 200 L100 196 L96 200 L82 190 Z" fill="#B21F33" ${ST}/><path d="M100 198 L100 240" stroke="${OL}" stroke-width="2"/><circle cx="100" cy="214" r="2" fill="${OL}"/><circle cx="100" cy="228" r="2" fill="${OL}"/>`),
+  tutu: () => torso('#F4B6CA', `<path d="M78 182 C84 196 116 196 122 182" fill="none" stroke="#fff" stroke-width="4"/><path d="M74 182 L80 236 M126 182 L120 236" stroke="#E98FAE" stroke-width="5"/>${[[64,218],[86,226],[110,226],[136,218]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#fff" opacity=".8"/>`).join('')}`),
+  skater: (p, c) => torso(c, `<path d="M24 240 C26 206 50 188 86 180 L92 240 Z" fill="#C2253A" ${ST}/><path d="M176 240 C174 206 150 188 114 180 L108 240 Z" fill="#C2253A" ${ST}/><path d="M40 210 L82 214 M36 226 L84 230 M160 210 L118 214 M164 226 L116 230" stroke="#7E1424" stroke-width="2"/><circle cx="100" cy="216" r="10" fill="#F2C94C" ${ST}/>` + neckV),
+  dino: () => torso('#7FB46A', `<ellipse cx="100" cy="230" rx="30" ry="24" fill="#D7EDB5" ${ST}/><path d="M84 180 l5 9 l5 -9 l5 9 l5 -9 l5 9 l5 -9" fill="#F2C94C" ${ST}/>`),
+  gown: () => torso('#A9C4FF', `<ellipse cx="40" cy="208" rx="22" ry="18" fill="#CBDCFF" ${ST}/><ellipse cx="160" cy="208" rx="22" ry="18" fill="#CBDCFF" ${ST}/><path d="M80 184 C88 198 112 198 120 184" fill="none" stroke="#fff" stroke-width="3"/>${[[70,226],[100,216],[130,226],[86,234],[116,234]].map(([x,y]) => `<path d="${starD(x,y,5,2)}" fill="#fff"/>`).join('')}`),
+  ninja: () => torso('#34303F', `<path d="M86 180 L114 214 M114 180 L86 214" stroke="#4B455A" stroke-width="8"/><path d="M40 228 L160 206" stroke="#C2253A" stroke-width="10"/>`),
+  pirate: () => torso('#FAF6EE', `<path d="M24 240 C26 206 50 188 84 180 L94 240 Z" fill="#2F2A3A" ${ST}/><path d="M176 240 C174 206 150 188 116 180 L106 240 Z" fill="#2F2A3A" ${ST}/><path d="M88 180 L100 204 L112 180" fill="none" ${ST}/><path d="M40 232 L160 214" stroke="#D9534F" stroke-width="9"/>`),
+  scientist: () => torso('#7FA9E8', `<path d="M24 240 C26 206 50 188 86 180 L96 240 Z" fill="#FFFFFF" ${ST}/><path d="M176 240 C174 206 150 188 114 180 L104 240 Z" fill="#FFFFFF" ${ST}/><path d="M86 180 L78 206 L90 204 M114 180 L122 206 L110 204" fill="none" ${ST}/><rect x="122" y="214" width="20" height="16" rx="2" fill="#EEF2F8" ${ST}/><path d="M127 214 v-8 M132 214 v-10 M137 214 v-7" stroke-width="3" stroke-linecap="round" stroke="#D9534F"/>`),
+  hero: (p, c) => torso(c, `<circle cx="100" cy="216" r="15" fill="#F2C94C" ${ST}/><path d="${starD(100,217,9,4)}" fill="#D9534F"/>` + neckV),
+  astro: () => torso('#EEF2F8', `<path d="M70 190 C80 178 120 178 130 190" fill="none" stroke="#C9D3E3" stroke-width="8"/><rect x="84" y="208" width="32" height="22" rx="4" fill="#9AA6BD" ${ST}/><circle cx="92" cy="219" r="3" fill="#D9534F"/><circle cx="100" cy="219" r="3" fill="#6A9845"/><circle cx="108" cy="219" r="3" fill="#F2C94C"/><rect x="48" y="210" width="16" height="11" fill="#5B8CC4" ${ST}/>`),
+};
+const PBACK = {
+  hero: () => `<path d="M40 192 L22 240 L178 240 L160 192 Z" fill="#D9534F" ${ST}/>`,
+  dino: () => `<path d="M100 26 l8 14 l-16 0 Z M126 36 l4 15 l-14 -4 Z M74 36 l10 11 l-14 4 Z" fill="#F2C94C" ${ST}/>`,
+};
+function hairBack(style, hc, dk){
+  if(style === 'long') return `<path d="M50 102 C44 58 72 38 100 38 C128 38 156 58 150 102 L158 186 C152 198 130 200 122 188 L120 150 L80 150 L78 188 C70 200 48 198 42 186 Z" fill="${hc}" ${ST}/><path d="M58 130 L54 182 M144 130 L148 182 M64 150 L64 186 M136 150 L136 186" stroke="${dk}" stroke-width="2" fill="none"/>`;
+  if(style === 'pigtails') return `<g ${ST}><ellipse cx="38" cy="104" rx="16" ry="27" transform="rotate(-18 38 104)" fill="${hc}"/><ellipse cx="162" cy="104" rx="16" ry="27" transform="rotate(18 162 104)" fill="${hc}"/></g><path d="M34 90 Q30 106 36 122 M166 90 Q170 106 164 122" stroke="${dk}" stroke-width="2" fill="none"/>`;
+  if(style === 'curly') return `<g fill="${hc}" ${ST}>${[[60,70],[52,98],[56,126],[66,150],[140,70],[148,98],[144,126],[134,150],[78,46],[100,40],[122,46]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="20"/>`).join('')}</g>`;
+  if(style === 'bun') return `<circle cx="100" cy="38" r="20" fill="${hc}" ${ST}/><path d="M88 32 Q100 26 112 34" stroke="${dk}" stroke-width="2" fill="none"/>`;
+  return '';
+}
+function hairFront(style, hc, dk, c){
+  if(style === 'short' || style === 'quiff') return `<path d="M50 104 C44 58 72 36 102 36 C134 36 156 58 150 104 C148 92 144 84 138 78 C136 88 128 92 120 86 C112 94 98 94 92 86 C84 94 72 94 66 86 C60 90 54 96 50 104 Z" fill="${hc}" ${ST}/><path d="M92 44 Q98 62 92 84 M114 42 Q122 60 120 84 M72 56 Q76 70 68 84" stroke="${dk}" stroke-width="2" fill="none"/>` + (style === 'quiff' ? `<path d="M84 44 C84 22 112 14 128 26 C116 28 106 34 100 44 Z" fill="${hc}" ${ST}/>` : '');
+  if(style === 'long' || style === 'pigtails') return `<path d="M52 106 C48 62 72 40 100 40 C128 40 152 62 148 106 C142 86 132 72 118 66 C110 72 102 74 100 64 C98 74 90 72 82 66 C68 72 58 86 52 106 Z" fill="${hc}" ${ST}/><path d="M86 48 Q78 58 70 76 M114 48 Q122 58 130 76" stroke="${dk}" stroke-width="2" fill="none"/>` + (style === 'pigtails' ? `<circle cx="52" cy="84" r="6" fill="${c}" ${ST}/><circle cx="148" cy="84" r="6" fill="${c}" ${ST}/>` : '');
+  if(style === 'bun') return `<path d="M52 102 C50 62 74 44 100 44 C126 44 150 62 148 102 C140 80 122 70 100 70 C78 70 60 80 52 102 Z" fill="${hc}" ${ST}/><rect x="90" y="50" width="20" height="6" rx="3" fill="${c}" ${ST}/>`;
+  if(style === 'curly') return `<g fill="${hc}" ${ST}>${[[70,66],[86,56],[102,54],[118,56],[132,66]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="13"/>`).join('')}</g>`;
+  return '';
+}
+const PHATS = {
+  bow: () => `<path d="M128 54 L106 40 L108 68 Z" fill="#F07AA8" ${ST}/><path d="M128 54 L150 40 L148 68 Z" fill="#F07AA8" ${ST}/><circle cx="128" cy="54" r="7" fill="#D9558A" ${ST}/>`,
+  cap: (p, c) => `<path d="M50 84 C50 46 74 30 100 30 C126 30 150 46 150 84 Z" fill="${c}" ${ST}/><path d="M48 84 C70 92 130 92 152 84 C150 96 52 96 48 84 Z" fill="${shade(c,.8)}" ${ST}/><circle cx="100" cy="31" r="5" fill="${shade(c,.8)}" ${ST}/>`,
+  catears: () => `<path d="M58 72 C70 40 130 40 142 72" fill="none" stroke="#3A3342" stroke-width="6"/><path d="M60 66 L64 34 L88 52 Z M140 66 L136 34 L112 52 Z" fill="#3A3342" ${ST}/><path d="M66 58 L68 44 L80 53 Z M134 58 L132 44 L120 53 Z" fill="#F29BC4"/>`,
+  beanie: (p, c) => `<path d="M48 82 C46 40 74 26 100 26 C126 26 154 40 152 82 Z" fill="${c}" ${ST}/><path d="M46 74 L154 74 L154 90 L46 90 Z" fill="${shade(c,.82)}" ${ST}/><path d="M60 76 v12 M74 76 v12 M88 76 v12 M102 76 v12 M116 76 v12 M130 76 v12 M144 76 v12" stroke="${shade(c,.65)}" stroke-width="2"/><circle cx="100" cy="24" r="10" fill="#FFFCF6" ${ST}/>`,
+  unicorn: p => `<defs><linearGradient id="${p}h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset="1" stop-color="#F2A93B"/></linearGradient></defs><path d="M90 46 L100 6 L110 46 Z" fill="url(#${p}h)" ${ST}/><path d="M93 36 L106 31 M95 24 L104 20" stroke="#D98A1E" stroke-width="2"/><circle cx="124" cy="48" r="7" fill="#F29BC4" ${ST}/><circle cx="76" cy="48" r="6" fill="#A98BE0" ${ST}/>`,
+  viking: () => `<path d="M50 82 C48 42 74 28 100 28 C126 28 152 42 150 82 Z" fill="#AEB7C6" ${ST}/><rect x="48" y="74" width="104" height="12" rx="4" fill="#8B5A2B" ${ST}/><path d="M52 62 C34 58 28 40 34 24 C40 38 48 44 60 46 Z M148 62 C166 58 172 40 166 24 C160 38 152 44 140 46 Z" fill="#F4E9D0" ${ST}/>`,
+  headphones: (p, c) => `<path d="M54 104 C50 44 150 44 146 104" fill="none" stroke="#3A3342" stroke-width="7"/><rect x="40" y="92" width="18" height="30" rx="8" fill="${c}" ${ST}/><rect x="142" y="92" width="18" height="30" rx="8" fill="${c}" ${ST}/>`,
+  straw: () => `<ellipse cx="100" cy="66" rx="70" ry="13" fill="#F4D58D" ${ST}/><path d="M64 66 C64 34 136 34 136 66 Z" fill="#E9C46A" ${ST}/><path d="M66 56 L134 56" stroke="#D9534F" stroke-width="7"/><circle cx="124" cy="46" r="5" fill="#F29BC4" ${ST}/>`,
+  flowers: () => `<path d="M56 70 C70 44 130 44 144 70" fill="none" stroke="#7FB46A" stroke-width="4"/>` + [[58,68,'#F29BC4'],[72,54,'#F2C94C'],[88,46,'#A98BE0'],[104,44,'#F07AA8'],[120,48,'#7FA9E8'],[134,56,'#F2C94C'],[144,68,'#F29BC4']].map(([x,y,c]) => `<circle cx="${x}" cy="${y}" r="8" fill="${c}" ${ST}/><circle cx="${x}" cy="${y}" r="2.5" fill="#fff"/>`).join(''),
+  party: () => `<g transform="rotate(12 104 40)"><path d="M84 56 L104 4 L124 56 Z" fill="#5B8CC4" ${ST}/><path d="M90 40 L118 40 M96 26 L112 26" stroke="#F2C94C" stroke-width="5"/><circle cx="104" cy="6" r="7" fill="#D9534F" ${ST}/></g>`,
+  wizard: () => `<path d="M58 66 L104 2 L142 66 Z" fill="#6A4BC4" ${ST}/><ellipse cx="100" cy="66" rx="62" ry="10" fill="#5638AA" ${ST}/><path d="${starD(98,38,7,3)}" fill="#F2C94C"/><path d="${starD(116,20,5,2)}" fill="#F2C94C"/>`,
+  pirateHat: () => `<path d="M38 70 C52 26 148 26 162 70 C132 58 68 58 38 70 Z" fill="#2F2A3A" ${ST}/><path d="M42 66 C70 56 130 56 158 66" stroke="#F2C94C" stroke-width="3" fill="none"/><circle cx="100" cy="46" r="8" fill="#fff"/><circle cx="97" cy="45" r="1.8" fill="#2F2A3A"/><circle cx="103" cy="45" r="1.8" fill="#2F2A3A"/>`,
+  crown: () => `<path d="M64 62 L62 26 L82 42 L100 16 L118 42 L138 26 L136 62 Z" fill="#F2C94C" ${ST}/><circle cx="82" cy="52" r="4" fill="#D9534F"/><circle cx="100" cy="50" r="5" fill="#5B8CC4"/><circle cx="118" cy="52" r="4" fill="#6A9845"/>`,
+  helmet: () => `<circle cx="100" cy="100" r="66" fill="rgba(190,225,255,.25)" stroke="#E2E8F2" stroke-width="7"/><path d="M60 66 Q72 44 98 38" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".85"/>`,
+};
+const PGLASSES = {
+  round: () => `<g fill="rgba(255,255,255,.18)" ${ST}><circle cx="82" cy="104" r="13"/><circle cx="118" cy="104" r="13"/></g><path d="M95 103 Q100 99 105 103 M69 102 L56 98 M131 102 L144 98" fill="none" ${ST}/>`,
+  sun: () => `<rect x="66" y="94" width="31" height="21" rx="8" fill="#2F2A3A" ${ST}/><rect x="103" y="94" width="31" height="21" rx="8" fill="#2F2A3A" ${ST}/><path d="M97 101 L103 101 M66 100 L56 96 M134 100 L144 96" ${ST}/><path d="M72 99 h9 M109 99 h9" stroke="#fff" stroke-width="2" opacity=".5"/>`,
+  heart: () => `<path d="${heartD(82,105,13)}" fill="#F07AA8" fill-opacity=".85" ${ST}/><path d="${heartD(118,105,13)}" fill="#F07AA8" fill-opacity=".85" ${ST}/><path d="M95 101 L105 101" ${ST}/>`,
+  sport: () => `<path d="M62 98 C80 90 120 90 138 98 L134 112 C116 106 84 106 66 112 Z" fill="#5B8CC4" fill-opacity=".9" ${ST}/><path d="M74 100 L88 98" stroke="#fff" stroke-width="2.5" opacity=".7"/>`,
+  star: () => `<path d="${starD(82,104,16,7)}" fill="#F2C94C" fill-opacity=".9" ${ST}/><path d="${starD(118,104,16,7)}" fill="#F2C94C" fill-opacity=".9" ${ST}/>`,
+  mask: () => `<path fill-rule="evenodd" d="M56 96 C70 86 130 86 144 96 L144 112 C130 120 70 120 56 112 Z M73 104 a9 8 0 1 0 18 0 a9 8 0 1 0 -18 0 Z M109 104 a9 8 0 1 0 18 0 a9 8 0 1 0 -18 0 Z" fill="#D9534F" ${ST}/>`,
+};
+const HAND_EMO = {balloon:'🎈', ball:'⚽', book:'📖', ice:'🍦', brush:'🖌️', wand:'🪄', skate:'🛹', trophy:'🏆', guitar:'🎸', telescope:'🔭'};
+
 function avatarSVG(look, kidColor, cls){
   const L = {...DEFAULT_LOOK, ...(look||{})}, p = 'av' + (avN++);
-  const skin = SKINS[L.skin] || SKINS.s1, hc = HAIR_COLORS[L.hairColor] || HAIR_COLORS.castanho, c = kidColor || '#3B82FF';
-  const top = TOPS[L.top] ? L.top : 'tee';
-  const sleeveC = SLEEVE[top] === 'shirt' ? c : SLEEVE[top];
-  const gloves = top === 'astro' ? '#DDE3EE' : skin;
+  const skin = SKINS[L.skin] || SKINS.s1, hc = HAIR_COLORS[L.hairColor] || HAIR_COLORS.castanho, dk = shade(hc, .7), c = kidColor || '#5B8CC4';
+  const eye = EYE_COLORS[L.eyes] || EYE_COLORS.castanho, girl = L.g === 'f';
   let o = `<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" class="avsvg ${cls||''}" aria-hidden="true">`;
   o += (BG[L.bg] || BG.plain)(p, c);
-  if(top === 'hero') o += CAPE;
-  o += HAIR_BACK[L.hair] ? HAIR_BACK[L.hair](hc) : '';
-  o += `<rect x="91" y="124" width="18" height="36" rx="8" fill="${skin}"/>`;
-  o += `<path d="M72 172 Q58 194 54 214" stroke="${skin}" stroke-width="15" stroke-linecap="round" fill="none"/><path d="M128 172 Q142 194 146 214" stroke="${skin}" stroke-width="15" stroke-linecap="round" fill="none"/>`;
-  o += TOPS[top](p, c);
-  if(top !== 'gown'){
-    o += LONG.includes(top)
-      ? `<path d="M72 172 Q58 194 55 208" stroke="${sleeveC}" stroke-width="17" stroke-linecap="round" fill="none"/><path d="M128 172 Q142 194 145 208" stroke="${sleeveC}" stroke-width="17" stroke-linecap="round" fill="none"/>`
-      : `<path d="M73 170 Q67 181 64 189" stroke="${sleeveC}" stroke-width="18" stroke-linecap="round" fill="none"/><path d="M127 170 Q133 181 136 189" stroke="${sleeveC}" stroke-width="18" stroke-linecap="round" fill="none"/>`;
-  }
-  o += `<circle cx="55" cy="100" r="9" fill="${skin}"/><circle cx="145" cy="100" r="9" fill="${skin}"/><circle cx="100" cy="92" r="46" fill="${skin}"/>`;
-  if(L.face === 'cheeks' || L.face === 'both') o += `<ellipse cx="71" cy="111" rx="7.5" ry="4.5" fill="#FF8FA3" opacity=".5"/><ellipse cx="129" cy="111" rx="7.5" ry="4.5" fill="#FF8FA3" opacity=".5"/>`;
-  if(L.face === 'freckles' || L.face === 'both') o += `<g fill="#C27A55" opacity=".75">${[[74,105],[79,108],[70,109],[126,105],[121,108],[130,109]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.5"/>`).join('')}</g>`;
-  o += `<ellipse cx="83" cy="97" rx="5.5" ry="6.5" fill="#2B211D"/><ellipse cx="117" cy="97" rx="5.5" ry="6.5" fill="#2B211D"/><circle cx="85" cy="95" r="1.9" fill="#fff"/><circle cx="119" cy="95" r="1.9" fill="#fff"/><path d="M89 114 Q100 124 111 114" stroke="#8B3A3A" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-  o += (HAIR_FRONT[L.hair] || HAIR_FRONT.short)(hc, c);
-  o += GLASSES[L.glasses] ? GLASSES[L.glasses](p) : '';
-  o += HATS[L.hat] ? HATS[L.hat](p, c) : '';
-  o += HAND_ITEMS[L.hand] ? HAND_ITEMS[L.hand](p) : '';
-  o += `<circle cx="54" cy="216" r="9.5" fill="${gloves}"/><circle cx="146" cy="216" r="9.5" fill="${gloves}"/>`;
+  const HG = 'transform="translate(100 112) scale(1.06) translate(-100 -100)"';
+  if(L.top === 'hero') o += PBACK.hero(p, c);
+  o += `<g ${HG}>${L.top === 'dino' ? PBACK.dino(p, c) : ''}${hairBack(L.hair, hc, dk)}</g>`;
+  o += `<path d="M88 150 L88 182 L112 182 L112 150 Z" fill="${skin}" ${ST}/><path d="M88 162 Q100 172 112 162 L112 170 Q100 176 88 170 Z" fill="${shade(skin,.88)}"/>`;
+  o += (PTOP[L.top] || PTOP.tee)(p, c);
+  o += `<g ${HG}>`;
+  o += `<ellipse cx="56" cy="106" rx="9" ry="12" fill="${skin}" ${ST}/><ellipse cx="144" cy="106" rx="9" ry="12" fill="${skin}" ${ST}/><path d="M56 101 Q52 106 57 111 M144 101 Q148 106 143 111" fill="none" stroke="${shade(skin,.75)}" stroke-width="2"/>`;
+  o += `<path d="M56 98 C56 66 76 48 100 48 C124 48 144 66 144 98 C144 128 126 150 100 150 C74 150 56 128 56 98 Z" fill="${skin}" ${ST}/>`;
+  if(L.face === 'cheeks' || L.face === 'both') o += `<circle cx="70" cy="121" r="9" fill="#EE9A8C" opacity=".5"/><circle cx="130" cy="121" r="9" fill="#EE9A8C" opacity=".5"/>`;
+  if(L.face === 'freckles' || L.face === 'both') o += `<g fill="#C27A55" opacity=".8">${[[76,114],[82,118],[72,119],[79,123],[124,114],[118,118],[128,119],[121,123]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.6"/>`).join('')}</g>`;
+  o += `<path d="M72 90 Q81 84 90 88 M110 88 Q119 84 128 90" fill="none" stroke="${shade(hc,.55)}" stroke-width="2.8" stroke-linecap="round"/>`;
+  o += [82,118].map(x => `<ellipse cx="${x}" cy="104" rx="7" ry="8" fill="${eye}"/><ellipse cx="${x}" cy="105" rx="4.2" ry="5" fill="#1E1714"/><circle cx="${x+2.6}" cy="100.6" r="2.4" fill="#fff"/><circle cx="${x-2.4}" cy="108" r="1.1" fill="#fff"/>`).join('');
+  if(girl) o += `<path d="M76 98 L70 93 M124 98 L130 93" stroke="#1E1714" stroke-width="2.2" stroke-linecap="round"/>`;
+  o += `<path d="M99 111 Q96 118 102 119" fill="none" stroke="${shade(skin,.6)}" stroke-width="2.2" stroke-linecap="round"/>`;
+  o += `<path d="M89 128 Q100 138 111 128" fill="${girl ? '#E58C86' : 'none'}" stroke="#8B3A32" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  o += hairFront(L.hair, hc, dk, c);
+  o += PGLASSES[L.glasses] ? PGLASSES[L.glasses](p) : '';
+  o += PHATS[L.hat] ? PHATS[L.hat](p, c) : '';
+  o += '</g>';
   o += PETS[L.pet] ? PETS[L.pet](p) : '';
+  if(HAND_EMO[L.hand]) o += `<circle cx="168" cy="210" r="22" fill="#FFFCF6" ${ST}/><text x="168" y="219" text-anchor="middle" font-size="25">${HAND_EMO[L.hand]}</text>`;
   return o + '</svg>';
 }
 
@@ -1057,13 +1104,13 @@ function avatarSVG(look, kidColor, cls){
 let avatars = {}, avatarsLoaded = false, avatarsExists = false, avCat = 'top', avWriteBlocked = false;
 const knownElig = {}, shownFresh = {}, freshCleared = {}, avPending = {};
 const ikey = i => i.cat + ':' + i.id;
-const LOOK_CATS = ['skin','hair','hairColor','face','top','hat','glasses','hand','pet','bg'];
+const LOOK_CATS = ['skin','hair','hairColor','eyes','face','top','hat','glasses','hand','pet','bg'];
 function countType(kid, type){ return (ledger?.counts?.[kid]?.[type] || 0) + liveEntries().filter(e => e.kid===kid && e.type===type).length }
 function kidStats(kid){ return {stars: lifetime(kid), perfect: countType(kid,'bonus'), challenge: countType(kid,'challenge'), streak: streak(kid), good: countType(kid,'good'), chest: countType(kid,'chest'), books: countRefs(kid, bookRefs()), devo: devoDays.size} }
 const meets = (need, st) => Object.entries(need).every(([k,v]) => (st[k]||0) >= v);
-function lookOf(kid){ const a = avatars[kid] || {}; const l = {...DEFAULT_LOOK}; LOOK_CATS.forEach(c => { if(a[c]) l[c] = a[c] }); return l }
+function lookOf(kid){ const a = avatars[kid] || {}, k = kidById(kid); const l = {...DEFAULT_LOOK, ...(KID_LOOKS[kid] || {})}; LOOK_CATS.forEach(c => { if(a[c]) l[c] = a[c] }); l.g = k && k.g === 'f' ? 'f' : 'm'; return l }
 function unlockedSet(kid, st){ st = st || kidStats(kid); const set = new Set(avatars[kid]?.unlocked || []);
-  CATALOG.forEach(i => { if(!i.need || meets(i.need, st)) set.add(ikey(i)) }); return set }
+  catFor(kidById(kid)).forEach(i => { if(!i.need || meets(i.need, st)) set.add(ikey(i)) }); return set }
 function needText(need, st){ const [k,v] = Object.entries(need)[0];
   if(k==='stars') return `faltam ${Math.max(0, v - st.stars)} ⭐`;
   if(k==='perfect') return `${v} Dias Perfeitos (${Math.min(st.perfect,v)}/${v})`;
@@ -1081,7 +1128,7 @@ function syncUnlocks(){
   if(!db || !avatarsLoaded || !logLoaded || !ledgerLoaded || !config) return;
   kids().forEach(k => {
     const st = kidStats(k.id);
-    const elig = CATALOG.filter(i => i.need && meets(i.need, st)).map(ikey).concat(BADGES.filter(b => meets(b.need, st)).map(b => 'badge:'+b.id));
+    const elig = catFor(k).filter(i => i.need && meets(i.need, st)).map(ikey).concat(BADGES.filter(b => meets(b.need, st)).map(b => 'badge:'+b.id));
     if(!knownElig[k.id]) knownElig[k.id] = new Set(elig);
     else { const brandNew = elig.filter(x => !knownElig[k.id].has(x));
       if(brandNew.length){ brandNew.forEach(x => knownElig[k.id].add(x));
@@ -1105,12 +1152,12 @@ function viewAvatar(){
   const st = kidStats(k.id), look = lookOf(k.id), un = unlockedSet(k.id, st);
   const fresh = new Set([...(avatars[k.id]?.fresh || []), ...(shownFresh[k.id] || [])]); shownFresh[k.id] = fresh;
   if((avatars[k.id]?.fresh || []).length && !freshCleared[k.id]){ freshCleared[k.id] = true; setTimeout(() => avWrite(k.id, {fresh: []}, true), 800) }
-  const special = CATALOG.filter(i => i.need), got = special.filter(i => un.has(ikey(i))).length;
+  const special = catFor(k).filter(i => i.need), got = special.filter(i => un.has(ikey(i))).length;
   const next = special.filter(i => i.need.stars && !un.has(ikey(i))).sort((a,b) => a.need.stars - b.need.stars)[0];
   const grid = list => `<div class="avgrid">${list.map(i => avTile(i, k, look, un, st, fresh)).join('')}</div>`;
   let body;
-  if(avCat === 'look') body = [['hair','Cabelo'],['hairColor','Cor do cabelo'],['face','Rosto'],['skin','Tom de pele']].map(([c,t]) => `<div class="label avsub">${t}</div>${grid(CATALOG.filter(i => i.cat===c))}`).join('');
-  else body = grid(CATALOG.filter(i => i.cat===avCat));
+  if(avCat === 'look') body = [['hair','Cabelo'],['hairColor','Cor do cabelo'],['eyes','Cor dos olhos'],['face','Rosto'],['skin','Tom de pele']].map(([c,t]) => `<div class="label avsub">${t}</div>${grid(catFor(k).filter(i => i.cat===c))}`).join('');
+  else body = grid(catFor(k).filter(i => i.cat===avCat));
   return `<section class="avhero" style="--kid:${esc(k.color)}">
       <div class="avbig">${avatarSVG(look, k.color)}</div>
       <div class="avinfo">
@@ -1377,14 +1424,12 @@ function kidPageHTML(k){
   const gTiles = goods.map((b,i) => { const w = waitGood(b.id);
     return `<button class="kp-tile small ${w?'wait':''}" style="--c:${cyc(i+3)}" ${w ? 'disabled' : `data-act="kid-req" data-kind="good" data-kid="${esc(k.id)}" data-id="${esc(b.id)}"`}><span class="kp-emo">${esc(b.emoji)}</span><span class="kp-lbl">${esc(b.label)}</span><span class="kp-st">${w ? '⏳ Esperando' : '+'+b.pts+' ⭐'}</span></button>` }).join('');
   return `<div class="kp">
-    <div class="km-top"><button class="btn small" data-act="km-back">← Voltar</button><h2>${ico('sun')}Página ${k.g==='f'?'da':'do'} ${esc(k.name)}</h2></div>
     <section class="kp-hero" style="--kid:${esc(k.color)}">
       <button class="km-ava" data-act="party" aria-label="Festa!">${avatarSVG(lookOf(k.id), k.color, 'km-av')}${avatar(k, 'km-photo')}</button>
       <div class="kp-info"><div class="km-stars">${STAR}${bal}</div>
         <div class="badges"><span class="lvl">${lv.cur.e} ${esc(lv.cur.n)}</span>${st.streak ? `<span class="fire">🔥 ${st.streak} ${st.streak>1?'dias seguidos':'dia'}</span>` : ''}</div>
         <div class="goal"><div class="goal-row"><span>${lv.nxt ? `Próximo nível: ${lv.nxt.e} ${esc(lv.nxt.n)}` : 'Nível máximo! 👑'}</span><span class="pts">${lv.nxt ? 'faltam '+(lv.nxt.min-lv.lt) : ''}</span></div><div class="bar lvbar"><i style="width:${Math.max(0,Math.min(100,lv.pct))}%"></i></div></div></div>
     </section>
-    ${envelopeCard(k)}
     ${chestCard(k, true)}
     <section class="kp-sec"><h3>${ico('sun')}Minhas tarefas de hoje <small>${done} de ${tasks.length}</small></h3><div class="kp-grid">${tTiles || '<p class="hint">Nenhuma tarefa hoje.</p>'}</div></section>
     ${gTiles ? `<section class="kp-sec"><h3>${ico('star')}Fiz uma coisa legal!</h3><div class="kp-grid">${gTiles}</div></section>` : ''}
@@ -1498,12 +1543,80 @@ const MSG_BIG = [
   ['Mesmo nos dias ruins, eu continuo do seu lado.','Salmo 46:1'],
   ['Descanse. Amanhã é um novo dia, e eu já estou lá.','Mateus 6:34'],
 ];
+const MSG_BY_KID = {
+  alice: [
+    ['Alice, você é a minha princesinha. Filha do Rei dos reis!','1 João 3:1'],
+    ['Eu adoro quando você roda e dança com o seu vestido. Eu também me alegro e canto por você!','Sofonias 3:17'],
+    ['As suas mãozinhas foram feitas para fazer carinho, abraçar e ajudar. Que lindo quando você faz isso!','Efésios 4:32'],
+    ['Quando der vontade de chorar, pode vir no meu colo. E depois conta para a mamãe o que aconteceu.','Salmo 56:8'],
+    ['Sabia que o sono também é um presente meu? Fique na caminha até a hora certa e acorde cheia de energia!','Salmo 127:2'],
+    ['Na cadeirinha do carro você fica protegida, igual quando eu te seguro bem forte.','Salmo 91:11'],
+    ['Experimentar uma comida nova é ser corajosa! Eu fiz cada frutinha com muito capricho.','Gênesis 1:29'],
+    ['As palavras que saem da sua boquinha podem ser doces como mel. Escolha as mais bonitas!','Provérbios 16:24'],
+    ['Você cuida da sua bonequinha com tanto carinho... É assim que eu cuido de você!','Isaías 66:13'],
+    ['O seu irmão Joey é um presente que eu dei para você. Dê um abraço bem apertado nele amanhã!','Salmo 133:1'],
+    ['Quando você guarda os brinquedos, a casa fica feliz. E eu também!','Colossenses 3:23'],
+    ['Eu fiz as borboletas, as flores e as estrelas. E fiz você, uma das coisas mais lindas que eu já criei!','Salmo 139:14'],
+    ['Você é pequenininha, mas tem um coração enorme. Eu adoro morar nele!','Efésios 3:17'],
+    ['Obedecer a mamãe e o papai de primeira é um jeito de dizer "eu te amo".','Efésios 6:1'],
+    ['Quando alguém se machuca, você pode ajudar com carinho, igualzinho eu faço com você.','Salmo 147:3'],
+    ['Os seus olhinhos azuis foram pintados por mim. Olhe para o céu amanhã: eu pintei ele também!','Salmo 19:1'],
+    ['Ler historinha com a mamãe deixa o coração quentinho. Eu também tenho histórias lindas para você.','2 Timóteo 3:15'],
+    ['Desenhos bonitos e do bem deixam o seu coração alegre. Escolha sempre os que a mamãe deixa.','Filipenses 4:8'],
+    ['Amanhã é um dia novinho. Eu já estou lá, esperando você acordar.','Lamentações 3:23'],
+    ['Pedir desculpas é coisa de gente forte. E eu sempre te perdoo!','1 João 1:9'],
+    ['O seu sorriso ilumina a casa inteira. Sorria bastante amanhã!','Números 6:25'],
+    ['Eu ouço todas as suas oraçõezinhas, até as bem baixinhas.','Salmo 4:3'],
+    ['Você está crescendo tão rápido! Eu cuido de você em cada pedacinho do caminho.','Lucas 2:52'],
+    ['Quando ficar brava, respira fundo comigo: cheira a florzinha e sopra a velinha.','Tiago 1:19'],
+    ['Ajudar a mamãe é brincar de ser ajudante do céu!','Gálatas 5:13'],
+    ['Você é uma luzinha. Onde você chega, tudo fica mais alegre!','Mateus 5:14'],
+    ['Eu sei até quantos fios de cabelo tem na sua cabecinha loira. Você é muito importante para mim!','Lucas 12:7'],
+    ['Na festa, na escola ou em casa, eu vou junto com você. Sempre!','Mateus 28:20'],
+    ['Você é muito corajosa! Comigo, não precisa ter medo do escuro.','Salmo 23:4'],
+    ['Banho tomado, dentinho escovado... agora é hora de descansar no meu colo.','Salmo 4:8'],
+    ['Alice, eu te amo do tamanho do céu, do mar e de todas as estrelas juntas!','Romanos 8:39'],
+  ],
+  joey: [
+    ['Joey, eu te escolhi e te amo. Você é meu, e isso nunca muda.','1 João 3:1'],
+    ['Eu vejo o cuidado que você tem com o seu cachorro. É assim que eu cuido de você: todos os dias.','Provérbios 12:10'],
+    ['Ser irmão mais velho é uma missão importante. A Alice aprende muito olhando para você.','1 Timóteo 4:12'],
+    ['Quando der vontade de responder mal, respire. Uma resposta calma mostra a sua força.','Provérbios 15:1'],
+    ['Como num jogo de construir, você está construindo quem vai ser. Construa sobre a rocha!','Mateus 7:24'],
+    ['Lembra quando você pescou aquele peixe? Paciência e calma trazem coisas boas.','Lucas 5:4-6'],
+    ['Esqueceu uma tarefa? Recomece. Eu também te dou uma nova chance todos os dias.','Lamentações 3:22-23'],
+    ['Chegar na hora é um jeito de respeitar as pessoas. Organize o seu tempo, e eu te ajudo.','Eclesiastes 3:1'],
+    ['Ajudar em casa sem ninguém pedir é coisa de líder de verdade.','Marcos 10:45'],
+    ['Eu fiz as árvores, os rios e as trilhas que você gosta de explorar. Aproveite a criação!','Salmo 104:24'],
+    ['Quando a lição de casa estiver difícil, peça sabedoria. Eu adoro ajudar.','Tiago 1:5'],
+    ['Força de verdade é segurar a raiva e não bater. Você é forte desse jeito.','Provérbios 16:32'],
+    ['Ler um livro abre portas para mundos novos. A minha Palavra ilumina o caminho da vida.','Salmo 119:105'],
+    ['Tênis limpos, bagunça organizada: cuidar das suas coisas é ser responsável.','Lucas 16:10'],
+    ['Eu vejo o seu esforço, mesmo quando ninguém mais vê.','Mateus 6:4'],
+    ['Você não precisa ser o melhor em tudo. Precisa ser você, e eu te amo assim.','1 Samuel 16:7'],
+    ['Os seus pais te corrigem porque te amam. Eu também cuido de você assim.','Provérbios 3:12'],
+    ['Telas são legais, mas a vida real é melhor ainda. Saber a hora de parar é ter domínio próprio.','Gálatas 5:22-23'],
+    ['Seja o amigo que você gostaria de ter. Na escola, inclua quem está sozinho.','Lucas 6:31'],
+    ['Falar a verdade, mesmo quando é difícil, é coragem de verdade.','Efésios 4:25'],
+    ['Cada sardinha do seu rosto foi colocada por mim, com carinho. Você é único!','Salmo 139:13-14'],
+    ['Quando estiver preocupado, conversa comigo. Eu carrego esse peso com você.','1 Pedro 5:7'],
+    ['Proteger a sua irmã é uma forma de mostrar o meu amor.','Salmo 133:1'],
+    ['Errou? Não se esconda. Volte para mim e recomece. Estou de braços abertos.','Lucas 15:20'],
+    ['Eu tenho planos de bem para a sua vida, Joey. Coisas grandes te esperam!','Jeremias 29:11'],
+    ['Agradecer muda o jeito como você enxerga o dia. Agradeça três coisas antes de dormir.','1 Tessalonicenses 5:18'],
+    ['Seja corajoso para fazer o certo, mesmo quando os outros não fazem.','Josué 1:9'],
+    ['Alimentar os animais é cuidar da criação que eu fiz. Obrigado por ajudar!','Gênesis 2:15'],
+    ['Você é luz. O seu exemplo ensina quem está olhando para você.','Mateus 5:16'],
+    ['Mesmo nos dias difíceis, eu continuo do seu lado. Sempre.','Salmo 46:1'],
+    ['Descanse, Joey. Amanhã é um novo dia, e eu já estou lá esperando por você.','Mateus 11:28'],
+  ],
+};
 const todaysPrayer = () => PRAYERS[(dayNum() + 11) % PRAYERS.length];
 function fillMsg(txt, k){ return txt.replace(/\{nome\}/g, k.name).replace(/\{o\}/g, k.g === 'f' ? 'a' : 'o') }
 function jesusMsg(k){
   const idx = Math.max(0, kids().findIndex(x => x.id === k.id));
-  const a = age(k.birth), pool = (a != null && a <= 6) ? MSG_SMALL : MSG_BIG;
-  const [txt, ref] = pool[(dayNum() + idx * 13) % pool.length];
+  const a = age(k.birth), own = MSG_BY_KID[k.id], pool = own || ((a != null && a <= 6) ? MSG_SMALL : MSG_BIG);
+  const [txt, ref] = pool[(dayNum() + (own ? 0 : idx * 13)) % pool.length];
   const es = todayEntries(k.id), extra = [];
   if(bdayDays(k.birth) === 0) extra.push(`Hoje é o seu aniversário! Eu me alegro muito por você existir. 🎂`);
   const tasks = tasksFor(k.id), done = tasks.filter(t => isDone(k.id, t)).length;
@@ -1533,11 +1646,15 @@ function envelopeCard(k){
   if(!opened) return `<section class="envelope" style="--kid:${esc(k.color)}"><button class="env-btn" data-act="open-msg" data-kid="${esc(k.id)}"><span class="env-ico">💌</span><span class="env-t">Tem um recadinho de Jesus para você!</span><span class="env-cta">Toque para abrir</span></button></section>`;
   return `<section class="msgcard big" style="--kid:${esc(k.color)}"><div class="msg-h"><span class="msg-env">💌</span><div><span class="label">Recadinho de Jesus</span><h3>Para ${esc(k.name)}</h3></div>${canSpeak ? `<button class="btn small" data-act="say-msg" data-kid="${esc(k.id)}">🔊 Ouvir</button>` : ''}</div>${msgBody(k, m)}</section>`;
 }
+let bedMsgKid = null;
 function bedMsgsHTML(){
   const ks = kids(); if(!ks.length) return '';
-  return `<article class="bd-devo bd-msgs"><div class="bd-devo-head"><span class="bd-kicker">Recadinhos de Jesus para esta noite</span></div>
-    ${ks.map(k => { const m = jesusMsg(k); return `<div class="bd-msg" style="--kid:${esc(k.color)}"><h4>💌 Para ${esc(k.name)}</h4><p class="msg-main">${esc(m.text)}</p>${m.extra.map(x => `<p class="msg-extra">${esc(x)}</p>`).join('')}<p class="msg-sign">Com amor, Jesus 💛 <span>Inspirado em ${esc(m.ref)}</span></p>${canSpeak ? `<button class="bd-btn soft" data-act="say-msg" data-kid="${esc(k.id)}">🔊 Ouvir</button>` : ''}</div>` }).join('')}
-  </article>`;
+  const cur = kidById(bedMsgKid) || ks[0], opened = ls.get(msgOpenKey(cur.id), false), m = jesusMsg(cur);
+  const tabs = ks.map(k => `<button class="bd-tab" style="--kid:${esc(k.color)}" data-act="bed-msgkid" data-id="${esc(k.id)}" aria-pressed="${k.id===cur.id}">${avatar(k)}<span>${esc(k.name)}</span>${ls.get(msgOpenKey(k.id), false) ? '' : '<i class="bd-dot"></i>'}</button>`).join('');
+  const body = opened
+    ? `<div class="bd-msg" style="--kid:${esc(cur.color)}"><h4>💌 Para ${esc(cur.name)}</h4><p class="msg-main">${esc(m.text)}</p>${m.extra.map(x => `<p class="msg-extra">${esc(x)}</p>`).join('')}<p class="msg-sign">Com amor, Jesus 💛 <span>Inspirado em ${esc(m.ref)}</span></p>${canSpeak ? `<button class="bd-btn soft" data-act="say-msg" data-kid="${esc(cur.id)}">🔊 Ouvir de novo</button>` : ''}</div>`
+    : `<button class="bd-env" style="--kid:${esc(cur.color)}" data-act="open-msg" data-kid="${esc(cur.id)}"><span class="env-ico">💌</span><span class="env-t">${esc(cur.name)}, tem um recadinho de Jesus para você!</span><span class="env-cta">Toque para abrir</span></button>`;
+  return `<article class="bd-devo bd-msgs"><div class="bd-devo-head"><span class="bd-kicker">Recadinho de Jesus · a última coisa do dia</span></div><div class="bd-tabs">${tabs}</div>${body}</article>`;
 }
 /* ---------- Super Presente de Natal ---------- */
 const DEFAULT_XMAS_ITEMS = [
@@ -1768,14 +1885,17 @@ function restoreForm(k){
   if(k.focus){ const f = document.getElementById(k.focus); if(f && f.closest('#main')) f.focus({preventScroll:true}) }
 }
 function renderSwitcher(){
+  const curK = tab==='historico' ? (histKid==='all' ? null : kidById(histKid)) : kidById(selKid);
+  document.documentElement.style.setProperty('--cur', curK ? curK.color : '#8B6B4A');
+  document.body.classList.toggle('has-tabs', !!config && tab!=='ajustes');
   const sw = $('#switcher');
   if(!config || tab==='ajustes'){ sw.innerHTML = ''; sw.hidden = true; return }
   sw.hidden = false;
   const items = kids().map(k => {
     const pressed = tab==='historico' ? histKid===k.id : selKid===k.id;
-    return `<button class="chip" style="--kid:${esc(k.color)}" data-act="kid" data-id="${esc(k.id)}" aria-pressed="${pressed}">${avatar(k)}<span>${esc(k.name)}</span><span class="bal">${STAR}${balance(k.id)}</span></button>`
+    return `<button class="chip ktab" style="--kid:${esc(k.color)}" data-act="kid" data-id="${esc(k.id)}" aria-pressed="${pressed}">${avatar(k)}<span>${esc(k.name)}</span><span class="bal">${STAR}${balance(k.id)}</span></button>`
   }).join('');
-  sw.innerHTML = (tab==='historico' ? `<button class="chip plain" data-act="kid" data-id="all" aria-pressed="${histKid==='all'}">Todos</button>` : '') + items;
+  sw.innerHTML = (tab==='historico' ? `<button class="chip ktab plain" data-act="kid" data-id="all" aria-pressed="${histKid==='all'}">Todos</button>` : '') + items;
 }
 function viewFor(){
   if(setupMissing) return `<div class="card empty"><b>Falta conectar o banco de dados</b>Abra o arquivo <code>firebase-config.js</code> e cole a configuração do seu projeto Firebase. O passo a passo está no LEIAME.</div>`;
@@ -1847,7 +1967,7 @@ function viewToday(){
     return `<div class="badrow"><span class="emo">${esc(b.emoji)}</span><span class="lbl">${esc(b.label)}${w? `<small>${w} ${w>1?'avisos':'aviso'} hoje</small>`:''}</span><button class="btn warn small" data-act="warn" data-id="${esc(b.id)}">Aviso</button><button class="btn bad small" data-act="bad" data-id="${esc(b.id)}">−${b.pts}</button></div>` }).join('');
   const list = es.slice().sort((a,b) => (b.at||'').localeCompare(a.at||'')).map(entryRow).join('');
   return `${pendingCard()}${heroCard(k)}
-    ${godCard(k)}
+    ${prayerHTML(false)}
     ${challengeCard(false)}
     <section class="card tone" style="--tone:var(--c5)"><div class="sec-h"><h2>${ico('sun')}Rotina de hoje</h2><span class="meta">toque para marcar</span></div>${taskHtml || '<p class="hint">Nenhuma tarefa para esta criança. Adicione em Ajustes.</p>'}</section>
     <section class="card tone" style="--tone:var(--c7)"><div class="sec-h"><h2>${ico('star')}Mandou bem</h2><span class="meta">soma estrelas</span></div>${good ? `<div class="grid">${good}</div>` : '<p class="hint">Nenhum comportamento cadastrado para esta criança.</p>'}</section>
@@ -1971,7 +2091,10 @@ function renderKidsMode(){
   document.body.style.overflow = kidsMode ? 'hidden' : '';
   if(!kidsMode || !config) return;
   if(pinMode){ el.innerHTML = pinHTML(); return }
-  if(kmKid && kidById(kmKid)){ const keep = el.scrollTop; el.innerHTML = kidPageHTML(kidById(kmKid)); el.scrollTop = keep; return }
+  const kmCur = kmKid === 'family' ? 'family' : (kidById(kmKid) ? kmKid : (kids()[0] ? kids()[0].id : 'family'));
+  const kmBar = `<div class="km-top"><h2>${ico('sun')}Quadro de Estrelas</h2><span style="display:flex;gap:8px"><button class="btn small" data-act="bed-on">🌙 Hora de dormir</button><button class="btn small" data-act="kids-off">Sair</button></span></div>
+    <div class="km-tabs" style="--kmc:${kmCur==='family' ? '#8B6B4A' : esc(kidById(kmCur).color)}">${kids().map(k => `<button class="km-tab" style="--kid:${esc(k.color)}" data-act="km-open" data-id="${esc(k.id)}" aria-pressed="${kmCur===k.id}">${avatarSVG(lookOf(k.id), k.color, 'km-tabav')}<span>${esc(k.name)}</span></button>`).join('')}<button class="km-tab fam" data-act="km-open" data-id="family" aria-pressed="${kmCur==='family'}"><span class="km-tabico">🏡</span><span>Família</span></button></div>`;
+  if(kmCur !== 'family'){ const keep = el.scrollTop; el.innerHTML = kmBar + kidPageHTML(kidById(kmCur)); el.scrollTop = keep; return }
   const cards = kids().map(k => {
     const bal = balance(k.id), light = lightOf(k.id), tasks = tasksFor(k.id);
     const goal = (config.rewards||[]).find(r => r.id===k.goal);
@@ -1989,7 +2112,7 @@ function renderKidsMode(){
       <button class="km-enter" data-act="km-open" data-id="${esc(k.id)}">Entrar na minha página ✨</button>
     </div>` }).join('');
   const rules = (config.rules||[]).filter(Boolean);
-  el.innerHTML = `<div class="km-top"><h2>${ico('sun')}Quadro de Estrelas</h2><span style="display:flex;gap:8px"><button class="btn small" data-act="bed-on">🌙 Hora de dormir</button><button class="btn small" data-act="kids-off">Sair</button></span></div>
+  el.innerHTML = `${kmBar}
     ${challengeCard(true)}
     ${prayerHTML(true)}
     <div class="km-grid">${cards}</div>
@@ -2031,6 +2154,7 @@ document.addEventListener('click', async ev => {
   if(act==='import'){ if(config && !arm(el, 'Substituir tudo? Toque de novo')) return; $('#import-input').value = ''; $('#import-input').click(); return }
   if(act==='bed-on'){ bedMode = true; render(); return }
   if(act==='bed-off'){ bedMode = false; try{ speechSynthesis.cancel() }catch(e){} render(); return }
+  if(act==='bed-msgkid'){ bedMsgKid = id; sfx('tap'); render(); return }
   if(act==='say-prayer'){ const pr = todaysPrayer(); speak(pr.t + '. ' + pr.l.join(' '), 'pt-BR'); return }
   if(act==='say-msg'){ const kk = kidById(el.dataset.kid); if(kk) speak(msgSpeech(kk, jesusMsg(kk)), 'pt-BR'); return }
   if(act==='open-msg'){ const kk = kidById(el.dataset.kid); if(!kk) return; ls.set(msgOpenKey(kk.id), true); confetti(pt.x, pt.y, 60); sfx('good'); render(); if(canSpeak) setTimeout(() => speak(msgSpeech(kk, jesusMsg(kk)), 'pt-BR'), 700); return }
@@ -2057,8 +2181,8 @@ document.addEventListener('click', async ev => {
     pinBuf += d; pinWrong = false;
     if(pinBuf.length === 4){ if(pinBuf === String(config.settings.pin)){ pinMode = false; kidsMode = false; kmKid = null; ls.set('qe.kidsmode', false); sfx('tap') } else { pinWrong = true; pinBuf = ''; sfx('warn') } }
     render(); return }
-  if(act==='km-open'){ kmKid = id; $('#kidsmode').scrollTop = 0; sfx('tap'); render(); return }
-  if(act==='km-back'){ kmKid = null; render(); return }
+  if(act==='km-open'){ kmKid = id; render(); $('#kidsmode').scrollTop = 0; sfx('tap'); return }
+  if(act==='km-back'){ kmKid = 'family'; render(); return }
   if(act==='kid-req'){ const kk = kidById(el.dataset.kid), kind = el.dataset.kind;
     const item = (kind==='task' ? config.tasks : kind==='xmas' ? xmasItems() : config.good || []).find(x => x.id===id); if(!kk || !item) return;
     const r = await requestPending(kk, kind, item);
