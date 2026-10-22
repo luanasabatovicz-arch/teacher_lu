@@ -236,7 +236,7 @@ th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mu
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
   padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom,0px));
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-nav .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px}
+nav .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:2px}
 nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:0;background:none;color:var(--muted);font-weight:600;font-size:.74rem;border-radius:10px;cursor:pointer}
 nav button[aria-current="page"]{color:var(--accent);background:color-mix(in srgb,var(--accent) 11%,transparent)}
 nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -352,7 +352,7 @@ input,select{border-width:2px}
 nav.tabs{background:var(--surface);border-top:0;box-shadow:0 -4px 18px color-mix(in srgb,var(--c6) 14%,transparent)}
 nav.tabs::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--rainbow)}
 nav button[data-tab="hoje"]{--t:var(--c5)} nav button[data-tab="avatar"]{--t:var(--c2)} nav button[data-tab="recompensas"]{--t:var(--c1)}
-nav button[data-tab="historico"]{--t:var(--c4)} nav button[data-tab="ajustes"]{--t:var(--c6)}
+nav button[data-tab="historico"]{--t:var(--c4)} nav button[data-tab="natal"]{--t:var(--c7)} nav button[data-tab="ajustes"]{--t:var(--c6)}
 nav button{color:color-mix(in srgb,var(--t) 70%,var(--muted))}
 nav button[aria-current="page"]{background:var(--t);color:#fff}
 
@@ -693,6 +693,61 @@ h1 .ico{width:clamp(30px,8vw,40px)}
 .pin-k{height:56px;border-radius:16px;border:1.5px solid var(--line);background:#FFFCF6;font:700 1.4rem var(--f-display);color:var(--ink);cursor:pointer}
 .pin-k:active{background:#F1E7D6}
 @media (prefers-reduced-motion: reduce){.chest.ready .chest-btn,.km-chest,.chest-btn.shake,.pin-box.wrong{animation:none}}
+
+/* ===== oração do dia, recadinho de Jesus, Natal ===== */
+.prayer{padding:16px 18px;border-radius:20px;box-shadow:var(--paper-shadow);background:
+  radial-gradient(ellipse 70% 70% at 0% 0%, rgba(244,221,138,.36), transparent 70%),
+  radial-gradient(ellipse 50% 60% at 100% 100%, rgba(169,199,232,.26), transparent 70%), var(--surface)}
+.prayer.big{max-width:1100px;margin:0 auto 16px}
+.prayer-h{display:flex;align-items:center;gap:10px}
+.prayer-h .ico{width:40px}
+.prayer-h h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.25rem;color:#8B6B4A}
+.prayer-lines{margin:10px 0 8px;display:flex;flex-direction:column;gap:2px}
+.prayer-lines p{margin:0;font-family:var(--f-display);font-weight:600;font-size:1.12rem;line-height:1.4;color:#5E4A86}
+.prayer.big .prayer-lines p{font-size:1.35rem}
+.prayer-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.msgcard{padding:16px 18px;border-radius:20px;box-shadow:var(--paper-shadow);background:
+  radial-gradient(ellipse 70% 70% at 100% 0%, color-mix(in srgb,var(--kid) 22%,transparent), transparent 70%),
+  radial-gradient(ellipse 50% 60% at 0% 100%, rgba(242,160,166,.22), transparent 70%), var(--surface)}
+.msg-h{display:flex;align-items:center;gap:10px}
+.msg-h > div{flex:1;min-width:0}
+.msg-env{font-size:2rem}
+.msg-h h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.2rem;color:color-mix(in srgb,var(--kid) 72%,var(--ink))}
+.msg-main{margin:10px 0 0;font-family:var(--f-display);font-weight:700;font-size:1.2rem;line-height:1.4;color:var(--ink)}
+.msgcard.big .msg-main{font-size:1.45rem}
+.msg-extra{margin:8px 0 0;font-family:var(--f-display);font-weight:600;font-size:1.05rem;line-height:1.4;color:color-mix(in srgb,var(--kid) 65%,var(--ink))}
+.msg-sign{margin:10px 0 0;font-family:var(--f-display);font-weight:700;color:#8B6B4A}
+.msg-sign span{display:block;font-family:var(--f-body);font-weight:600;font-size:.78rem;color:var(--muted)}
+.envelope{border-radius:22px;box-shadow:var(--paper-shadow);background:radial-gradient(ellipse 80% 80% at 50% 0%, color-mix(in srgb,var(--kid) 28%,transparent), transparent 70%), var(--surface)}
+.env-btn{width:100%;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 16px}
+.env-ico{font-size:4rem;line-height:1;animation:wiggle 1.6s ease-in-out infinite}
+.env-t{font-family:var(--f-display);font-weight:700;font-size:1.35rem;color:color-mix(in srgb,var(--kid) 72%,var(--ink));text-align:center}
+.env-cta{font-family:var(--f-display);font-weight:700;color:#fff;background:color-mix(in srgb,var(--kid) 88%,#fff);padding:8px 18px;border-radius:999px;box-shadow:0 3px 0 color-mix(in srgb,var(--kid) 70%,#000)}
+@keyframes wiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-10deg) scale(1.05)}40%{transform:rotate(9deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}}
+.bd-msgs .bd-msg{padding:12px 14px;border-radius:14px;background:radial-gradient(ellipse at 0 0, color-mix(in srgb,var(--kid) 18%,transparent), transparent 70%), #FFFCF6;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.bd-msg h4{margin:0;font-family:"Mali",var(--f-body);font-weight:700;font-size:1.15rem;color:color-mix(in srgb,var(--kid) 70%,#4B3A2A)}
+.bd-msg .bd-btn{margin-top:8px}
+.xsnow{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle, rgba(169,199,232,.55) 1.5px, transparent 2px),radial-gradient(circle, rgba(255,255,255,.9) 1.2px, transparent 1.8px);background-size:38px 38px,23px 23px;background-position:0 0,11px 17px}
+main > *{position:relative;z-index:1}
+.xhero{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:16px;align-items:center;padding:16px;border-radius:24px;box-shadow:var(--paper-shadow);background:
+  radial-gradient(ellipse 60% 70% at 0% 100%, rgba(106,152,69,.22), transparent 70%),
+  radial-gradient(ellipse 60% 60% at 100% 0%, rgba(217,115,127,.24), transparent 70%), var(--surface)}
+.xhero.compact{grid-template-columns:minmax(0,120px) minmax(0,1fr);box-shadow:none;padding:10px}
+.xtree{display:block;width:100%;height:auto}
+.xinfo{display:flex;flex-direction:column;gap:8px;min-width:0}
+.xinfo h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.35rem;color:#9E3F4A;text-wrap:balance}
+.xnum b{font-family:var(--f-display);font-size:2.2rem;color:#6A9845;line-height:1}
+.xnum span{font-family:var(--f-display);font-weight:600;color:var(--muted)}
+.xbar>i{background:linear-gradient(90deg,#D9737F,#E6B23C,#6A9845)}
+.xcount{margin:0;font-family:var(--f-display);font-weight:600;font-size:1rem}
+@media (max-width:440px){.xhero{grid-template-columns:minmax(0,120px) minmax(0,1fr)}.xnum b{font-size:1.8rem}}
+.xbeh .pts{background:color-mix(in srgb,var(--c) 85%,#fff)}
+.xbeh{flex-direction:column;align-items:flex-start;gap:6px;padding:12px}
+.xbeh .emo{font-size:1.6rem}
+.xbeh .lbl{flex:none;width:100%;font-size:.95rem}
+.km-xmas{font-family:var(--f-display);font-weight:700;color:#4F7A2E;background:#E7F1D8;padding:5px 14px;border-radius:999px}
+.xgoal{grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr) 84px}
+@media (prefers-reduced-motion: reduce){.env-ico{animation:none}}
 /* hora de dormir: pôster do devocional */
 .bd-date{font-family:"Mali",var(--f-body);font-weight:600;color:#8B6B4A}
 .bd-date::first-letter{text-transform:uppercase}
@@ -724,7 +779,8 @@ h1 .ico{width:clamp(30px,8vw,40px)}
   <div class="in">
     <button data-act="tab" data-tab="hoje" aria-current="page"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Hoje</button>
     <button data-act="tab" data-tab="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/><path d="M9 7.5h.01M15 7.5h.01"/></svg>Avatar</button>
-    <button data-act="tab" data-tab="recompensas"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5-4-5-1.5S10 8 12 8zm0 0c1.5-3 5-4 5-1.5S14 8 12 8z"/></svg>Recompensas</button>
+    <button data-act="tab" data-tab="natal"><svg viewBox="0 0 24 24"><path d="M12 3l3.5 5H13l3.5 5H14l4 5H6l4-5H7.5L11 8H8.5z"/><path d="M12 18v3"/></svg>Natal</button>
+    <button data-act="tab" data-tab="recompensas"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5-4-5-1.5S10 8 12 8zm0 0c1.5-3 5-4 5-1.5S14 8 12 8z"/></svg>Prêmios</button>
     <button data-act="tab" data-tab="historico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Histórico</button>
     <button data-act="tab" data-tab="ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
   </div>
@@ -1225,6 +1281,7 @@ function renderBedMode(){
         ${done ? `<span class="bd-done">Devocional de hoje feito 💛</span>` : `<button class="bd-btn" data-act="bed-done">Fizemos o devocional 🌙</button>`}
       </div>
     </article>
+    ${bedMsgsHTML()}
     <footer class="bd-night"><span class="bd-i moon small">${ILLU.moon}</span><p>Boa noite, ${esc(names)}!<br><span>Deus abençoe os seus sonhos.</span></p></footer>
   </div>`;
   el.scrollTop = keep;
@@ -1298,6 +1355,7 @@ async function approvePending(p){
   let r = null;
   if(p.type==='task'){ const id = 't_'+p.day+'_'+p.kid+'_'+p.ref;
     r = logDocs.some(e => e.id===id) ? id : await addEntry({kid:p.kid, type:'task', ref:p.ref, label:p.label, emoji:p.emoji, pts:p.pts, day:p.day, month:p.month}, id) }
+  else if(p.type==='xmas') r = await addEntry({kid:p.kid, type:'xmas', ref:p.ref, label:p.label, emoji:p.emoji, pts:0, xp:p.pts});
   else r = await addEntry({kid:p.kid, type:'good', ref:p.ref, label:p.label, emoji:p.emoji, pts:p.pts});
   if(r){ try{ await db.collection('pending').doc(p.id).delete() }catch(e){} }
   return !!r;
@@ -1305,7 +1363,7 @@ async function approvePending(p){
 function pendingCard(){
   if(!pendingDocs.length) return '';
   const rows = pendingDocs.slice().sort((a,b) => (b.at||'').localeCompare(a.at||'')).map(p => { const k = kidById(p.kid); if(!k) return '';
-    return `<div class="pend">${avatar(k)}<span class="emo">${esc(p.emoji)}</span><span class="lbl"><b>${esc(k.name)}</b>: ${esc(p.label)}<small>${p.type==='task' ? 'Rotina' : 'Fez uma coisa legal'} · ${p.day===dayStr() ? fmtTime(p.at) : fmtDay(p.day)}</small></span><span class="pts">+${p.pts}</span><button class="btn primary small" data-act="approve" data-id="${esc(p.id)}" aria-label="Aprovar">✓</button><button class="btn small" data-act="deny" data-id="${esc(p.id)}" aria-label="Recusar">✕</button></div>` }).join('');
+    return `<div class="pend">${avatar(k)}<span class="emo">${esc(p.emoji)}</span><span class="lbl"><b>${esc(k.name)}</b>: ${esc(p.label)}<small>${p.type==='task' ? 'Rotina' : p.type==='xmas' ? 'Super Presente de Natal' : 'Fez uma coisa legal'} · ${p.day===dayStr() ? fmtTime(p.at) : fmtDay(p.day)}</small></span><span class="pts">+${p.pts}${p.type==='xmas' ? ' ❄️' : ''}</span><button class="btn primary small" data-act="approve" data-id="${esc(p.id)}" aria-label="Aprovar">✓</button><button class="btn small" data-act="deny" data-id="${esc(p.id)}" aria-label="Recusar">✕</button></div>` }).join('');
   return `<section class="card tone pendcard" style="--tone:var(--c3)"><div class="sec-h"><h2>${ico('star')}Pedidos das crianças</h2>${pendingDocs.length > 1 ? `<button class="btn small primary" data-act="approve-all">Aprovar todos</button>` : '<span class="meta">confira e aprove</span>'}</div><div class="pends">${rows}</div></section>`;
 }
 function kidPageHTML(k){
@@ -1326,9 +1384,11 @@ function kidPageHTML(k){
         <div class="badges"><span class="lvl">${lv.cur.e} ${esc(lv.cur.n)}</span>${st.streak ? `<span class="fire">🔥 ${st.streak} ${st.streak>1?'dias seguidos':'dia'}</span>` : ''}</div>
         <div class="goal"><div class="goal-row"><span>${lv.nxt ? `Próximo nível: ${lv.nxt.e} ${esc(lv.nxt.n)}` : 'Nível máximo! 👑'}</span><span class="pts">${lv.nxt ? 'faltam '+(lv.nxt.min-lv.lt) : ''}</span></div><div class="bar lvbar"><i style="width:${Math.max(0,Math.min(100,lv.pct))}%"></i></div></div></div>
     </section>
+    ${envelopeCard(k)}
     ${chestCard(k, true)}
     <section class="kp-sec"><h3>${ico('sun')}Minhas tarefas de hoje <small>${done} de ${tasks.length}</small></h3><div class="kp-grid">${tTiles || '<p class="hint">Nenhuma tarefa hoje.</p>'}</div></section>
     ${gTiles ? `<section class="kp-sec"><h3>${ico('star')}Fiz uma coisa legal!</h3><div class="kp-grid">${gTiles}</div></section>` : ''}
+    ${kidXmasSection(k)}
     <section class="kp-sec"><h3>${ico('butterfly')}Minhas medalhas</h3>${badgesHTML(k, st)}</section>
     <p class="kp-hint">Quando você toca em "Eu fiz!", um adulto confere e aprova. Aí as estrelas chegam! ⭐</p>
   </div>`;
@@ -1336,6 +1396,220 @@ function kidPageHTML(k){
 function pinHTML(){
   return `<div class="pin"><div class="pin-box ${pinWrong?'wrong':''}"><h3>Senha dos pais</h3><div class="pin-dots">${[0,1,2,3].map(i => `<span class="${i < pinBuf.length ? 'on' : ''}"></span>`).join('')}</div>
     <div class="pin-keys">${[1,2,3,4,5,6,7,8,9,'x',0,'<'].map(d => `<button class="pin-k" data-act="pin-key" data-id="${d}">${d==='x' ? '✕' : d==='<' ? '⌫' : d}</button>`).join('')}</div></div></div>`;
+}
+
+/* ---------- oração do dia e recadinho de Jesus ---------- */
+const PRAYERS = [
+  {t:'Obrigado pelo dia novo', l:['Querido Deus, obrigado por este dia novinho.','Obrigado pela nossa família e pela nossa casa.','Ajuda a gente a ser gentil hoje.','Em nome de Jesus, amém.']},
+  {t:'Cuida de nós', l:['Senhor Jesus, cuida de cada um da nossa família hoje.','Na escola, no trabalho e em casa,','fica pertinho da gente.','Amém.']},
+  {t:'Coração que escuta', l:['Papai do Céu, me dá um coração que escuta.','Me ajuda a obedecer de primeira,','com alegria.','Amém.']},
+  {t:'Palavras de mel', l:['Jesus, que as minhas palavras sejam doces como mel.','Tira de mim as palavras feias','e as respostas malcriadas.','Amém.']},
+  {t:'Irmãos amigos', l:['Deus, obrigado pelos irmãos que você me deu.','Ajuda a gente a brincar junto e a não brigar.','E quando brigar, ensina a pedir desculpas.','Amém.']},
+  {t:'Coragem', l:['Senhor, quando eu sentir medo,','me lembra que você está comigo.','Me dá coragem para fazer o que é certo.','Amém.']},
+  {t:'Mãos que ajudam', l:['Jesus, quero ter mãos que ajudam.','Me mostra hoje como posso ajudar em casa.','Amém.']},
+  {t:'Comida de cada dia', l:['Obrigado, Deus, pela comida de cada dia.','Me ajuda a experimentar coisas novas.','Abençoa quem não tem o que comer.','Amém.']},
+  {t:'Escola e amigos', l:['Senhor, abençoa a escola, os professores e os amigos.','Me ajuda a prestar atenção','e a aprender muito.','Amém.']},
+  {t:'Paciência', l:['Deus, me ensina a esperar a minha vez.','Quando eu ficar com raiva,','me ajuda a respirar e me acalmar.','Amém.']},
+  {t:'Alegria', l:['Jesus, enche o meu coração de alegria hoje.','Que eu espalhe sorrisos','por onde eu passar.','Amém.']},
+  {t:'Perdão', l:['Papai do Céu, perdoa o que eu fiz de errado.','Me ajuda a perdoar também,','de coração.','Amém.']},
+  {t:'Saúde', l:['Senhor, obrigado pelo meu corpo,','que corre, pula e brinca.','Cuida da saúde de toda a nossa família.','Amém.']},
+  {t:'Amizade', l:['Deus, obrigado pelos meus amigos.','Me ajuda a ser uma boa companhia','e a incluir quem está sozinho.','Amém.']},
+  {t:'Verdade', l:['Jesus, me dá coragem','para falar sempre a verdade,','mesmo quando for difícil.','Amém.']},
+  {t:'O mundo que Deus fez', l:['Deus, que lindo o mundo que você fez!','Obrigado pelo sol, pela chuva, pelas plantas e pelos bichinhos.','Me ajuda a cuidar de tudo.','Amém.']},
+  {t:'Bichinhos', l:['Obrigado, Senhor, pelos animais.','Me ajuda a cuidar dos nossos bichinhos','com muito carinho.','Amém.']},
+  {t:'Paz em casa', l:['Jesus, quando tudo parecer bagunçado,','acalma o meu coração.','Que a sua paz fique na nossa casa.','Amém.']},
+  {t:'Quem precisa', l:['Deus, abençoa quem está doente, triste ou sozinho hoje.','Mostra como a gente pode ajudar.','Amém.']},
+  {t:'A família toda', l:['Senhor, abençoa os vovôs, as vovós,','os tios e os primos.','Obrigado por cada pessoa da nossa família.','Amém.']},
+  {t:'Mamãe e papai', l:['Deus, abençoa a mamãe e o papai.','Dá força e alegria para eles','cuidarem da gente.','Amém.']},
+  {t:'Dividir', l:['Jesus, me ensina a dividir','os brinquedos e as coisas boas.','Dividir é um jeito de amar.','Amém.']},
+  {t:'Tempo bem usado', l:['Senhor, me ajuda a desligar a tela na hora certa','e a aproveitar o tempo','brincando com a família.','Amém.']},
+  {t:'Bom exemplo', l:['Deus, que eu seja um bom exemplo hoje,','em casa, na escola','e onde eu estiver.','Amém.']},
+  {t:'Capricho', l:['Senhor, me ajuda a fazer as tarefas com capricho,','mesmo as que eu não gosto muito.','Amém.']},
+  {t:'As coisas pequenas', l:['Obrigado, Deus, pelas coisas pequenas:','o abraço, a risada,','o brinquedo e o carinho.','Amém.']},
+  {t:'Nos caminhos', l:['Jesus, protege a gente nos caminhos de hoje,','no carro, na rua','e onde a gente for.','Amém.']},
+  {t:'Deus me escuta', l:['Deus, eu sei que você me escuta.','Hoje eu quero te contar...','(cada um completa do seu jeito)','Amém.']},
+  {t:'Eu consigo', l:['Senhor, quando eu achar que não consigo,','me lembra que com você','eu consigo.','Amém.']},
+  {t:'Amar como Jesus', l:['Jesus, obrigado por me amar do jeitinho que eu sou.','Me ajuda a amar os outros','assim também.','Amém.']},
+  {t:'Deus é bom', l:['Deus, você é grande, bom e cheio de amor!','Hoje eu quero cantar','e agradecer.','Amém.']},
+];
+const MSG_SMALL = [
+  ['{nome}, eu te amo do tamanho do céu e mais um pouquinho!','João 15:9'],
+  ['Eu estou com você em cada brincadeira. Você nunca está sozinh{o}.','Mateus 28:20'],
+  ['Eu fiz você com muito carinho. O seu sorriso é lindo!','Salmo 139:14'],
+  ['Quando sentir medo, me chama. Eu estou bem pertinho.','Isaías 41:10'],
+  ['Eu adoro ouvir você cantar e dar risada!','Sofonias 3:17'],
+  ['Você é a minha ovelhinha querida. Eu cuido de você.','Salmo 23:1'],
+  ['Ajudar a mamãe e o papai deixa o meu coração feliz.','Colossenses 3:20'],
+  ['Pode me contar tudo, {nome}. Eu sempre escuto.','Filipenses 4:6'],
+  ['Quando você divide o brinquedo, eu sorrio daqui!','Atos 20:35'],
+  ['Eu conheço o seu nome e gosto muito dele: {nome}!','Isaías 43:1'],
+  ['Palavras carinhosas são como presentinhos. Dê muitas hoje!','Provérbios 16:24'],
+  ['Se você errar, pode pedir desculpas. Eu te perdoo e te dou um abraço.','1 João 1:9'],
+  ['Eu fiz as flores, as borboletas e as estrelas. E fiz você também!','Gênesis 1:31'],
+  ['Você é pequenin{o}, mas o seu coração pode ser gigante de amor.','1 Timóteo 4:12'],
+  ['Quando você dorme, eu fico acordado cuidando de você.','Salmo 121:4'],
+  ['Obedecer de primeira é um jeito lindo de amar.','João 14:15'],
+  ['Dê um abraço bem apertado na sua família hoje. Eles são um presente meu.','Salmo 127:3'],
+  ['Eu fico feliz quando você experimenta comidas novas e cuida do seu corpo.','1 Coríntios 6:19'],
+  ['Você é a luzinha da sua casa. Brilhe bastante hoje!','Mateus 5:14'],
+  ['Quando ficar com raiva, respire fundo. Eu te ajudo a se acalmar.','Efésios 4:26'],
+  ['Eu amo as crianças! Você é muito importante para mim.','Marcos 10:14'],
+  ['Hoje é um dia novinho para fazer coisas boas!','Lamentações 3:23'],
+  ['Os meus anjos estão sempre cuidando de você.','Salmo 91:11'],
+  ['Eu fico muito feliz quando você conversa comigo.','Mateus 6:6'],
+  ['Você não precisa ser perfeit{o}. Eu te amo do jeitinho que você é.','Romanos 5:8'],
+  ['Guardar os brinquedos com alegria é um jeito de ajudar!','Gálatas 5:13'],
+  ['Quando você chorar, eu estou pertinho para te consolar.','Salmo 56:8'],
+  ['Você é corajos{o}! Comigo, você consegue.','Josué 1:9'],
+  ['Um sorriso seu pode alegrar o dia de alguém.','Provérbios 17:22'],
+  ['Eu tenho planos muito bonitos para você, {nome}.','Jeremias 29:11'],
+  ['Durma em paz hoje. Eu estou aqui.','Salmo 4:8'],
+];
+const MSG_BIG = [
+  ['{nome}, nada que você faça vai me fazer te amar menos. O meu amor por você não muda.','Romanos 8:38-39'],
+  ['Ser forte não é nunca errar. É levantar e tentar de novo comigo.','Provérbios 24:16'],
+  ['Eu vejo o seu esforço, mesmo quando ninguém mais vê.','Mateus 6:4'],
+  ['Quando a lição parecer difícil, peça ajuda. Eu te dou sabedoria.','Tiago 1:5'],
+  ['Você foi feit{o} com um propósito. Tem coisas boas que só você pode fazer.','Efésios 2:10'],
+  ['Cuidar de quem é menor que você é um jeito de mostrar o meu amor.','Mateus 25:40'],
+  ['Responder com calma e educação mostra a força do seu coração.','Provérbios 15:1'],
+  ['Coragem é fazer o certo mesmo quando é difícil. Eu estou com você.','Josué 1:9'],
+  ['Pode me entregar as coisas que te preocupam. Eu cuido de você.','1 Pedro 5:7'],
+  ['Quem é grande de verdade serve os outros. Ajude alguém hoje.','Marcos 10:45'],
+  ['A verdade deixa o coração livre. Fale a verdade, mesmo quando for difícil.','João 8:32'],
+  ['Paciência é como plantar uma semente: o fruto vem depois.','Gálatas 6:9'],
+  ['Eu te dei talentos. Use cada um com alegria e capricho.','Colossenses 3:23'],
+  ['Quando ficar com raiva, pare, respire e fale comigo antes de agir.','Tiago 1:19'],
+  ['Ser gentil com quem está sozinho pode mudar o dia daquela pessoa.','Lucas 6:31'],
+  ['Seus pais te corrigem porque te amam. Eu também cuido de você assim.','Provérbios 3:12'],
+  ['Saber parar na hora certa, até com a tela, é um sinal de maturidade.','Gálatas 5:22-23'],
+  ['Um bom livro alimenta a mente. A minha Palavra alimenta o coração.','Salmo 119:105'],
+  ['Você não precisa provar nada para mim. Eu já te amo.','1 João 4:19'],
+  ['Quando errar, não se esconda. Volte para mim e recomece.','Lucas 15:20'],
+  ['A sua família é um time. Ajude, incentive e jogue junto.','Eclesiastes 4:9-10'],
+  ['Cuidar dos animais é cuidar da criação que eu fiz.','Provérbios 12:10'],
+  ['Seja o tipo de amigo que você gostaria de ter.','Provérbios 17:17'],
+  ['Agradecer muda o jeito como você enxerga o dia.','1 Tessalonicenses 5:18'],
+  ['Eu caminho com você aonde você for: na escola, no jogo, em casa.','Isaías 41:10'],
+  ['Chegar na hora certa é um jeito de respeitar as pessoas.','Eclesiastes 3:1'],
+  ['Força de verdade é perdoar quando dá vontade de revidar.','Efésios 4:32'],
+  ['Eu tenho planos de bem para a sua vida, {nome}.','Jeremias 29:11'],
+  ['Você é luz. O seu exemplo ensina quem está olhando para você.','Mateus 5:16'],
+  ['Mesmo nos dias ruins, eu continuo do seu lado.','Salmo 46:1'],
+  ['Descanse. Amanhã é um novo dia, e eu já estou lá.','Mateus 6:34'],
+];
+const todaysPrayer = () => PRAYERS[(dayNum() + 11) % PRAYERS.length];
+function fillMsg(txt, k){ return txt.replace(/\{nome\}/g, k.name).replace(/\{o\}/g, k.g === 'f' ? 'a' : 'o') }
+function jesusMsg(k){
+  const idx = Math.max(0, kids().findIndex(x => x.id === k.id));
+  const a = age(k.birth), pool = (a != null && a <= 6) ? MSG_SMALL : MSG_BIG;
+  const [txt, ref] = pool[(dayNum() + idx * 13) % pool.length];
+  const es = todayEntries(k.id), extra = [];
+  if(bdayDays(k.birth) === 0) extra.push(`Hoje é o seu aniversário! Eu me alegro muito por você existir. 🎂`);
+  const tasks = tasksFor(k.id), done = tasks.filter(t => isDone(k.id, t)).length;
+  const hard = es.some(e => e.type === 'bad') || es.filter(e => e.type === 'warn').length >= 2;
+  const good = es.filter(e => e.type === 'good').sort((x,y) => (y.at||'').localeCompare(x.at||''))[0];
+  if(good) extra.push(`Eu vi quando você ${good.label.charAt(0).toLowerCase() + good.label.slice(1)}. Isso deixou o meu coração feliz!`);
+  else if(tasks.length && done === tasks.length) extra.push('Vi que você completou a sua rotina hoje. Que capricho!');
+  if(hard) extra.push('Hoje teve um momento difícil, né? Está tudo bem. Eu continuo te amando e te ajudo a recomeçar.');
+  return {text: fillMsg(txt, k), extra, ref};
+}
+const msgSpeech = (k, m) => `Recadinho de Jesus para ${k.name}. ${m.text} ${m.extra.join(' ')} Com amor, Jesus.`;
+function msgBody(k, m){ return `<p class="msg-main">${esc(m.text)}</p>${m.extra.map(x => `<p class="msg-extra">${esc(x)}</p>`).join('')}<p class="msg-sign">Com amor, Jesus 💛 <span>Inspirado em ${esc(m.ref)}</span></p>` }
+function prayerHTML(big){
+  const p = todaysPrayer();
+  return `<section class="prayer ${big?'big':''}"><div class="prayer-h">${ico('sun')}<div><span class="label">Oração do dia</span><h3>${esc(p.t)}</h3></div></div>
+    <div class="prayer-lines">${p.l.map(x => `<p>${esc(x)}</p>`).join('')}</div>
+    <div class="prayer-foot"><span class="hint" style="margin:0">Um adulto lê cada frase e as crianças repetem.</span>${canSpeak ? `<button class="btn small" data-act="say-prayer">🔊 Ouvir</button>` : ''}</div></section>`;
+}
+function godCard(k){
+  const m = jesusMsg(k);
+  return `${prayerHTML(false)}
+    <section class="msgcard" style="--kid:${esc(k.color)}"><div class="msg-h"><span class="msg-env">💌</span><div><span class="label">Recadinho de Jesus</span><h3>Para ${esc(k.name)}</h3></div>${canSpeak ? `<button class="btn small" data-act="say-msg" data-kid="${esc(k.id)}">🔊 Ouvir</button>` : ''}</div>${msgBody(k, m)}</section>`;
+}
+const msgOpenKey = kid => 'qe.msg.' + dayStr() + '.' + kid;
+function envelopeCard(k){
+  const opened = ls.get(msgOpenKey(k.id), false), m = jesusMsg(k);
+  if(!opened) return `<section class="envelope" style="--kid:${esc(k.color)}"><button class="env-btn" data-act="open-msg" data-kid="${esc(k.id)}"><span class="env-ico">💌</span><span class="env-t">Tem um recadinho de Jesus para você!</span><span class="env-cta">Toque para abrir</span></button></section>`;
+  return `<section class="msgcard big" style="--kid:${esc(k.color)}"><div class="msg-h"><span class="msg-env">💌</span><div><span class="label">Recadinho de Jesus</span><h3>Para ${esc(k.name)}</h3></div>${canSpeak ? `<button class="btn small" data-act="say-msg" data-kid="${esc(k.id)}">🔊 Ouvir</button>` : ''}</div>${msgBody(k, m)}</section>`;
+}
+function bedMsgsHTML(){
+  const ks = kids(); if(!ks.length) return '';
+  return `<article class="bd-devo bd-msgs"><div class="bd-devo-head"><span class="bd-kicker">Recadinhos de Jesus para esta noite</span></div>
+    ${ks.map(k => { const m = jesusMsg(k); return `<div class="bd-msg" style="--kid:${esc(k.color)}"><h4>💌 Para ${esc(k.name)}</h4><p class="msg-main">${esc(m.text)}</p>${m.extra.map(x => `<p class="msg-extra">${esc(x)}</p>`).join('')}<p class="msg-sign">Com amor, Jesus 💛 <span>Inspirado em ${esc(m.ref)}</span></p>${canSpeak ? `<button class="bd-btn soft" data-act="say-msg" data-kid="${esc(k.id)}">🔊 Ouvir</button>` : ''}</div>` }).join('')}
+  </article>`;
+}
+/* ---------- Super Presente de Natal ---------- */
+const DEFAULT_XMAS_ITEMS = [
+  {id:'x1', emoji:'👵', label:'Elogiou uma pessoa mais velha', pts:10},
+  {id:'x2', emoji:'🤲', label:'Cuidou de alguém', pts:15},
+  {id:'x3', emoji:'📝', label:'Tirou nota boa na escola', pts:20, kids:['joey']},
+  {id:'x4', emoji:'🍎', label:'Recebeu elogio da professora', pts:15},
+  {id:'x5', emoji:'🎁', label:'Fez uma surpresa para alguém', pts:15},
+  {id:'x6', emoji:'🌟', label:'Ajudou sem ninguém pedir', pts:10},
+  {id:'x7', emoji:'🕊️', label:'Fez as pazes sem ninguém pedir', pts:15},
+  {id:'x8', emoji:'🧸', label:'Doou um brinquedo ou uma roupa', pts:20},
+  {id:'x9', emoji:'📞', label:'Ligou ou mandou recado para os avós', pts:10},
+  {id:'x10', emoji:'💌', label:'Fez um cartão ou desenho para alguém', pts:10},
+  {id:'x11', emoji:'🙏', label:'Orou por alguém', pts:10},
+  {id:'x12', emoji:'📖', label:'Leu ou ouviu a história do Natal', pts:10},
+];
+const xmasItems = () => (config && Array.isArray(config.xmasItems)) ? config.xmasItems : DEFAULT_XMAS_ITEMS;
+const xmasItemsFor = kid => xmasItems().filter(x => !x.kids || !x.kids.length || x.kids.includes(kid) || !x.kids.some(id => kidById(id)));
+function xmasGoal(kid){ const g = (config && config.xmasGoals && config.xmasGoals[kid]) || {}; return {gift: g.gift || '', target: Math.max(1, parseInt(g.target, 10) || 300)} }
+const xmasStart = () => (config && config.xmasStart) || '';
+function xmasTotal(kid){ const st = xmasStart(); return logDocs.filter(e => e.type === 'xmas' && e.kid === kid && (!st || (e.day || '') >= st)).reduce((s,e) => s + (e.xp || 0), 0) }
+const xmasEntries = kid => { const st = xmasStart(); return logDocs.filter(e => e.type === 'xmas' && e.kid === kid && (!st || (e.day || '') >= st)).sort((a,b) => (b.at||'').localeCompare(a.at||'')) };
+function daysToXmas(){ const t = new Date(); t.setHours(0,0,0,0); let x = new Date(t.getFullYear(), 11, 25); if(x < t) x = new Date(t.getFullYear()+1, 11, 25); return Math.round((x - t) / 86400000) }
+const ORN = [[100,52],[86,74],[114,72],[76,98],[100,94],[124,100],[66,124],[90,120],[112,126],[134,122],[58,150],[80,146],[102,152],[124,148],[144,152],[50,176],[72,172],[94,178],[116,174],[138,178],[156,174],[64,198],[100,200],[136,198]];
+const ORN_COLORS = ['#D9737F','#E6B23C','#3F6DB0','#9670BF','#E39A45','#5E9C9D'];
+function xmasTree(pct){
+  const lit = Math.round(Math.max(0, Math.min(1, pct)) * ORN.length);
+  return `<svg viewBox="0 0 200 250" class="xtree" aria-hidden="true">
+    <g filter="url(#wc)">${[[100,30,52,96],[100,70,70,146],[100,112,90,200],[100,150,104,232]].map(([cx,top,hw,bot],i) => `<path d="M${cx} ${top} L${cx+hw} ${bot} L${cx-hw} ${bot} Z" fill="${i%2 ? '#7FA65A' : '#6A9845'}" opacity=".95"/>`).join('')}
+    <rect x="88" y="230" width="24" height="16" fill="#9C6B4A"/></g>
+    ${ORN.map(([x,y],i) => i < lit ? `<circle cx="${x}" cy="${y}" r="7" fill="${ORN_COLORS[i % ORN_COLORS.length]}"/><circle cx="${x-2.4}" cy="${y-2.4}" r="2" fill="#fff" opacity=".7"/>` : `<circle cx="${x}" cy="${y}" r="6" fill="none" stroke="#FFF8EE" stroke-width="1.6" opacity=".7" stroke-dasharray="2 2"/>`).join('')}
+    <path d="${starD(100,26,16,7)}" fill="${pct >= 1 ? '#F2C14E' : '#E9D9A6'}" stroke="#E6B23C" stroke-width="2" stroke-linejoin="round"/>
+  </svg>`;
+}
+function xmasHero(k, compact){
+  const tot = xmasTotal(k.id), g = xmasGoal(k.id), pct = tot / g.target, d = daysToXmas();
+  return `<section class="xhero ${compact?'compact':''}" style="--kid:${esc(k.color)}">
+    <div class="xtree-wrap">${xmasTree(pct)}</div>
+    <div class="xinfo">
+      <span class="label">Super Presente de Natal</span>
+      <h3>${g.gift ? '🎁 ' + esc(g.gift) : 'Presente surpresa 🎁'}</h3>
+      <div class="xnum"><b>${tot}</b> <span>de ${g.target} pontos de Natal ❄️</span></div>
+      <div class="bar xbar"><i style="width:${Math.max(0, Math.min(100, pct*100))}%"></i></div>
+      <p class="xcount">${d === 0 ? 'Feliz Natal! 🎄' : pct >= 1 ? 'Super presente conquistado! 🎉' : `Faltam <b>${g.target - tot}</b> pontos e <b>${d}</b> dias para o Natal.`}</p>
+      ${!g.gift && !compact ? '<p class="hint" style="margin:0">Defina o presente e a meta em Ajustes.</p>' : ''}
+    </div></section>`;
+}
+function viewXmas(){
+  const k = kidById(selKid); if(!k) return '';
+  const items = xmasItemsFor(k.id), list = xmasEntries(k.id);
+  const tiles = items.map((x,i) => `<button class="beh xbeh" style="--c:${cyc(i+1)}" data-act="xmas-add" data-id="${esc(x.id)}"><span class="emo">${esc(x.emoji)}</span><span class="lbl">${esc(x.label)}</span><span class="pts">+${x.pts} ❄️</span></button>`).join('');
+  const rows = list.slice(0, 40).map(e => entryRow(e)).join('');
+  return `<div class="xsnow" aria-hidden="true"></div>${xmasHero(k, false)}
+    <section class="card tone" style="--tone:var(--c7)"><div class="sec-h"><h2>${ico('star')}Atividades super incríveis</h2><span class="meta">dão pontos de Natal</span></div><div class="grid">${tiles || '<p class="hint">Cadastre atividades em Ajustes.</p>'}</div>
+      <p class="hint">Os pontos de Natal são separados das estrelas: servem só para o super presente.</p></section>
+    <section class="card tone" style="--tone:var(--c1)"><div class="sec-h"><h2>${ico('butterfly')}Conquistas de Natal</h2><span class="meta">${list.length} ${list.length===1?'conquista':'conquistas'}</span></div>${rows ? `<div class="entries">${rows}</div>` : '<p class="hint">Nenhuma ainda. Cada coisa incrível que fizerem aparece aqui.</p>'}</section>`;
+}
+async function addXmas(k, item, pt){
+  const before = xmasTotal(k.id), g = xmasGoal(k.id);
+  const r = await addEntry({kid:k.id, type:'xmas', ref:item.id, label:item.label, emoji:item.emoji, pts:0, xp:Math.abs(item.pts||0)});
+  if(!r) return null;
+  floatText(pt, '+' + item.pts + ' ❄️', 'big');
+  if(before < g.target && before + item.pts >= g.target){ confetti(innerWidth/2, innerHeight/3, 260); sfx('big'); toast(`🎄 ${k.name} conquistou o Super Presente de Natal! 🎉`) }
+  else { confetti(pt.x, pt.y, 70); sfx('big'); toast(`${cheer()}, ${k.name}! +${item.pts} pontos de Natal ❄️`, r) }
+  return r;
+}
+function kidXmasSection(k){
+  const items = xmasItemsFor(k.id);
+  const waitX = id => pendingDocs.some(p => p.kid===k.id && p.type==='xmas' && p.ref===id);
+  const tiles = items.map((x,i) => { const w = waitX(x.id);
+    return `<button class="kp-tile small ${w?'wait':''}" style="--c:${cyc(i+1)}" ${w ? 'disabled' : `data-act="kid-req" data-kind="xmas" data-kid="${esc(k.id)}" data-id="${esc(x.id)}"`}><span class="kp-emo">${esc(x.emoji)}</span><span class="kp-lbl">${esc(x.label)}</span><span class="kp-st">${w ? '⏳ Esperando' : '+'+x.pts+' ❄️'}</span></button>` }).join('');
+  return `<section class="kp-sec"><h3>🎄 Super Presente de Natal</h3>${xmasHero(k, true)}<h3 style="margin-top:16px">${ico('star')}Fiz uma coisa incrível!</h3><div class="kp-grid">${tiles}</div></section>`;
 }
 
 /* ---------- diversão: níveis, sequência, desafio, confete, sons ---------- */
@@ -1424,7 +1698,7 @@ async function maybeRollup(){
   if(rolled || !db || !ledgerLoaded || !logLoaded) return;
   rolled = true;
   const cutoff = prevMonth();
-  if(!logDocs.some(e => e.month && e.month < cutoff)) return;
+  if(!logDocs.some(e => e.month && e.month < cutoff && e.type!=='xmas')) return;
   try{
     const lease = await db.doc('meta/rollup').acquire({holder: tabId, ttlMs: 60000});
     if(!lease.acquired) return;
@@ -1434,7 +1708,7 @@ async function maybeRollup(){
     const old = await db.collection('log').where('month','<',cutoff).get();
     let newClosed = L.closedThrough;
     for(const d of old.docs){
-      const e = d.data(); if(!e.month) continue;
+      const e = d.data(); if(!e.month || e.type==='xmas') continue;
       if(e.month > newClosed) newClosed = e.month;
       if(L.closedThrough && e.month <= L.closedThrough) continue;
       L.balances[e.kid] = (L.balances[e.kid]||0) + (e.pts||0);
@@ -1445,7 +1719,7 @@ async function maybeRollup(){
     }
     L.closedThrough = newClosed;
     await db.doc('meta/ledger').set(L);
-    for(const d of old.docs){ try{ await db.collection('log').doc(d.id).delete() }catch(e){} }
+    for(const d of old.docs){ if(d.data().type==='xmas') continue; try{ await db.collection('log').doc(d.id).delete() }catch(e){} }
   }catch(e){ /* leitura apenas ou indisponível: tenta na próxima abertura */ }
 }
 
@@ -1520,6 +1794,7 @@ function viewFor(){
   if(tab==='historico') return viewHistory();
   if(tab==='ajustes') return viewSettings();
   if(tab==='avatar') return viewAvatar();
+  if(tab==='natal') return viewXmas();
   return viewToday();
 }
 
@@ -1572,6 +1847,7 @@ function viewToday(){
     return `<div class="badrow"><span class="emo">${esc(b.emoji)}</span><span class="lbl">${esc(b.label)}${w? `<small>${w} ${w>1?'avisos':'aviso'} hoje</small>`:''}</span><button class="btn warn small" data-act="warn" data-id="${esc(b.id)}">Aviso</button><button class="btn bad small" data-act="bad" data-id="${esc(b.id)}">−${b.pts}</button></div>` }).join('');
   const list = es.slice().sort((a,b) => (b.at||'').localeCompare(a.at||'')).map(entryRow).join('');
   return `${pendingCard()}${heroCard(k)}
+    ${godCard(k)}
     ${challengeCard(false)}
     <section class="card tone" style="--tone:var(--c5)"><div class="sec-h"><h2>${ico('sun')}Rotina de hoje</h2><span class="meta">toque para marcar</span></div>${taskHtml || '<p class="hint">Nenhuma tarefa para esta criança. Adicione em Ajustes.</p>'}</section>
     <section class="card tone" style="--tone:var(--c7)"><div class="sec-h"><h2>${ico('star')}Mandou bem</h2><span class="meta">soma estrelas</span></div>${good ? `<div class="grid">${good}</div>` : '<p class="hint">Nenhum comportamento cadastrado para esta criança.</p>'}</section>
@@ -1583,9 +1859,9 @@ function viewToday(){
 }
 function entryRow(e, showKid){
   const k = kidById(e.kid);
-  const typeTxt = {task:'Rotina', good:'Mandou bem', bad:'Desconto', warn:'Aviso', reward:'Troca', bonus:'Bônus', extra:'Avulso', challenge:'Desafio da família'}[e.type] || '';
+  const typeTxt = {task:'Rotina', good:'Mandou bem', bad:'Desconto', warn:'Aviso', reward:'Troca', bonus:'Bônus', extra:'Avulso', challenge:'Desafio da família', xmas:'Super Natal', chest:'Baú surpresa'}[e.type] || '';
   const p = e.pts||0;
-  return `<div class="entry"><span class="emo">${esc(e.emoji||'⭐')}</span><span class="lbl">${esc(e.label)}<div class="who">${showKid && k ? esc(k.name)+' · ' : ''}${typeTxt} · ${fmtTime(e.at)}</div></span><span class="pts ${p>0?'pos':p<0?'neg':''}">${e.type==='warn'?'aviso':sign(p)}</span><button class="xbtn sm" data-act="del-entry" data-id="${esc(e.id)}" aria-label="Apagar registro">✕</button></div>`;
+  return `<div class="entry"><span class="emo">${esc(e.emoji||'⭐')}</span><span class="lbl">${esc(e.label)}<div class="who">${showKid && k ? esc(k.name)+' · ' : ''}${typeTxt} · ${fmtTime(e.at)}</div></span><span class="pts ${p>0?'pos':p<0?'neg':''}">${e.type==='warn'?'aviso':e.type==='xmas'?'+'+(e.xp||0)+' ❄️':sign(p)}</span><button class="xbtn sm" data-act="del-entry" data-id="${esc(e.id)}" aria-label="Apagar registro">✕</button></div>`;
 }
 
 /* ----- Recompensas ----- */
@@ -1630,7 +1906,7 @@ function viewHistory(){
 }
 
 /* ----- Ajustes ----- */
-function ensureDraft(){ if(!draft) draft = JSON.parse(JSON.stringify(config)); draft.settings = draft.settings || {bonus:10}; draft.rules = draft.rules || []; draft.challenges = draft.challenges || []; if(draft.settings.challenge==null) draft.settings.challenge = 10 }
+function ensureDraft(){ if(!draft) draft = JSON.parse(JSON.stringify(config)); draft.settings = draft.settings || {bonus:10}; draft.rules = draft.rules || []; draft.challenges = draft.challenges || []; draft.xmasItems = Array.isArray(draft.xmasItems) ? draft.xmasItems : JSON.parse(JSON.stringify(DEFAULT_XMAS_ITEMS)); draft.xmasGoals = draft.xmasGoals || {}; if(draft.settings.challenge==null) draft.settings.challenge = 10 }
 function del(list, i){ return `<button class="xbtn" data-act="del-item" data-list="${list}" data-i="${i}" aria-label="Remover">✕</button>` }
 function viewSettings(){
   ensureDraft();
@@ -1663,6 +1939,7 @@ function viewSettings(){
     return `<div class="tbox">${row}<div class="topts"><span class="label">Vale para</span>${draft.kids.map(k => `<label><input type="checkbox" data-list="${list}" data-i="${i}" data-field="kids" data-kid="${esc(k.id)}" ${ks.includes(k.id)?'checked':''}>${esc(k.name)}</label>`).join('')}</div></div>` }).join('');
   const rules = draft.rules.map((r,i) => `<div class="erow rule"><input id="r-${i}" data-list="rules" data-i="${i}" value="${esc(r)}" aria-label="Combinado">${del('rules',i)}</div>`).join('');
   const chal = draft.challenges.map((r,i) => `<div class="erow rule"><input id="ch-${i}" data-list="challenges" data-i="${i}" value="${esc(r)}" aria-label="Desafio">${del('challenges',i)}</div>`).join('');
+  const xg = draft.kids.map(k => { const g = draft.xmasGoals[k.id] || {}; return `<div class="erow xgoal"><b>${esc(k.name)}</b><input id="xg-${esc(k.id)}-gift" data-list="xmasGoals" data-i="${esc(k.id)}" data-field="gift" value="${esc(g.gift||'')}" placeholder="Qual é o presente?" aria-label="Presente de ${esc(k.name)}"><input type="number" id="xg-${esc(k.id)}-target" data-list="xmasGoals" data-i="${esc(k.id)}" data-field="target" value="${g.target||300}" min="1" aria-label="Meta de pontos de ${esc(k.name)}"></div>` }).join('') + `<label class="topts">Contar pontos a partir de <input type="date" id="xg-start" data-list="xmasStart" value="${esc(draft.xmasStart||'')}" style="width:auto"></label>`;
   let secN = 0;
   const sec = (title, meta, body, list) => `<section class="card tone" style="--tone:var(--c${(secN++ % 7)+1})"><div class="sec-h"><h2>${ico(SEC_ICONS[(secN-1) % SEC_ICONS.length])}${title}</h2><span class="meta">${meta}</span></div><div class="edit-list">${body}</div>${list?`<div style="margin-top:10px"><button class="btn small" data-act="add-item" data-list="${list}">+ Adicionar</button></div>`:''}</section>`;
   return `<div data-view="ajustes" style="display:contents">
@@ -1673,6 +1950,8 @@ function viewSettings(){
     ${sec('Recompensas','custo em estrelas', simple('rewards','Recompensa'), 'rewards')}
     ${sec('Combinados da família','aparecem no modo crianças', rules, 'rules')}
     ${sec('Desafios da família','um por dia, em sequência', chal, 'challenges')}
+    ${sec('Super Presente de Natal','presente e meta de pontos ❄️', xg, null)}
+    ${sec('Atividades de Natal','pontos de Natal ❄️', simple('xmasItems','Atividade'), 'xmasItems')}
     <section class="card tone" style="--tone:var(--c3)"><div class="sec-h"><h2>${ico('star')}Bônus Dia Perfeito</h2><span class="meta">rotina completa e nenhum desconto</span></div>
       <div class="erow" style="grid-template-columns:minmax(0,1fr) 90px"><span>Estrelas extras ao fim do dia</span><input type="number" id="set-bonus" data-list="settings" data-field="bonus" value="${draft.settings.bonus}" min="0" aria-label="Bônus"></div>
       <div class="erow" style="grid-template-columns:minmax(0,1fr) 90px;margin-top:8px"><span>Estrelas do Desafio da família (para cada criança)</span><input type="number" id="set-chal" data-list="settings" data-field="challenge" value="${draft.settings.challenge}" min="0" aria-label="Estrelas do desafio"></div>
@@ -1706,11 +1985,13 @@ function renderKidsMode(){
       <div class="km-tiles">${tasks.map((t,ti) => `<span class="km-tile ${isDone(k.id,t)?'done':''}" style="--c:${cyc(ti)}" title="${esc(t.label)}">${esc(t.emoji)}</span>`).join('')}</div>
       ${goal ? `<div class="km-goal"><span>${esc(goal.emoji)} ${esc(goal.label)}: ${Math.min(bal,goal.cost)} de ${goal.cost}</span><div class="bar"><i style="width:${Math.max(0,Math.min(100,bal/goal.cost*100))}%"></i></div></div>` : ''}
       ${chestState(k.id).s==='ready' ? '<span class="km-chest">🎁 Baú liberado!</span>' : ''}
+      <span class="km-xmas">🎄 ${xmasTotal(k.id)} de ${xmasGoal(k.id).target} pontos de Natal</span>
       <button class="km-enter" data-act="km-open" data-id="${esc(k.id)}">Entrar na minha página ✨</button>
     </div>` }).join('');
   const rules = (config.rules||[]).filter(Boolean);
   el.innerHTML = `<div class="km-top"><h2>${ico('sun')}Quadro de Estrelas</h2><span style="display:flex;gap:8px"><button class="btn small" data-act="bed-on">🌙 Hora de dormir</button><button class="btn small" data-act="kids-off">Sair</button></span></div>
     ${challengeCard(true)}
+    ${prayerHTML(true)}
     <div class="km-grid">${cards}</div>
     ${rules.length ? `<div class="km-rules"><h3>Nossos combinados</h3><ol>${rules.map(r => `<li>${esc(r)}</li>`).join('')}</ol></div>` : ''}
     <div class="km-deco"><span>${ILLU.butterfly}</span><span>${ILLU.caterpillar}</span><span>${ILLU.rainbow}</span><span>${ILLU.moon}</span></div>`;
@@ -1750,6 +2031,10 @@ document.addEventListener('click', async ev => {
   if(act==='import'){ if(config && !arm(el, 'Substituir tudo? Toque de novo')) return; $('#import-input').value = ''; $('#import-input').click(); return }
   if(act==='bed-on'){ bedMode = true; render(); return }
   if(act==='bed-off'){ bedMode = false; try{ speechSynthesis.cancel() }catch(e){} render(); return }
+  if(act==='say-prayer'){ const pr = todaysPrayer(); speak(pr.t + '. ' + pr.l.join(' '), 'pt-BR'); return }
+  if(act==='say-msg'){ const kk = kidById(el.dataset.kid); if(kk) speak(msgSpeech(kk, jesusMsg(kk)), 'pt-BR'); return }
+  if(act==='open-msg'){ const kk = kidById(el.dataset.kid); if(!kk) return; ls.set(msgOpenKey(kk.id), true); confetti(pt.x, pt.y, 60); sfx('good'); render(); if(canSpeak) setTimeout(() => speak(msgSpeech(kk, jesusMsg(kk)), 'pt-BR'), 700); return }
+  if(act==='xmas-add' && k){ const it = xmasItems().find(x => x.id===id); if(it) await addXmas(k, it, pt); return }
   if(act==='bed-say-devo'){ const dv = todaysDevotional(); speak(`${dv.t}. ${dv.v} ${dv.s} Para conversar: ${dv.q} Vamos orar: ${dv.p}`, 'pt-BR'); return }
   if(act==='bed-done'){ if(!db){ toast('Entre com sua conta Google para registrar.'); return }
     try{ await db.collection('devo').doc(dayStr()).set({at: new Date().toISOString()}); devoDays = new Set([...devoDays, dayStr()]); confetti(pt.x, pt.y, 40); sfx('good'); toast('Boa noite! Durmam com Deus 🌙') }catch(err){ writeErr(err) } return }
@@ -1775,7 +2060,7 @@ document.addEventListener('click', async ev => {
   if(act==='km-open'){ kmKid = id; $('#kidsmode').scrollTop = 0; sfx('tap'); render(); return }
   if(act==='km-back'){ kmKid = null; render(); return }
   if(act==='kid-req'){ const kk = kidById(el.dataset.kid), kind = el.dataset.kind;
-    const item = (kind==='task' ? config.tasks : config.good || []).find(x => x.id===id); if(!kk || !item) return;
+    const item = (kind==='task' ? config.tasks : kind==='xmas' ? xmasItems() : config.good || []).find(x => x.id===id); if(!kk || !item) return;
     const r = await requestPending(kk, kind, item);
     if(r){ floatText(pt, '⏳', 'big'); confetti(pt.x, pt.y, 30); sfx('good'); toast(`Pedido enviado! Agora um adulto confere e aprova. ⭐`) } return }
   if(act==='chest'){ await openChest(el.dataset.kid, pt); return }
@@ -1811,6 +2096,7 @@ document.addEventListener('click', async ev => {
     if(L==='kids') draft.kids.push({id:'k'+uid(), name:'Nova criança', emoji:'🙂', birth:'', color:KID_COLORS[draft.kids.length % KID_COLORS.length], goal:''});
     else if(L==='tasks') draft.tasks.push({id:'t'+uid(), emoji:'✅', label:'', pts:5, period:'tarde', kids: draft.kids.map(x => x.id)});
     else if(L==='rewards') draft.rewards.push({id:'r'+uid(), emoji:'🎁', label:'', cost:50});
+    else if(L==='xmasItems') draft.xmasItems.push({id:'x'+uid(), emoji:'🎄', label:'', pts:10, kids: draft.kids.map(x => x.id)});
     else if(L==='rules' || L==='challenges') draft[L].push('');
     else draft[L].push({id:(L==='good'?'g':'b')+uid(), emoji:L==='good'?'🌟':'⚠️', label:'', pts:5, kids: draft.kids.map(x => x.id)});
     markDirty(); rerenderSettings(); return }
@@ -1818,7 +2104,7 @@ document.addEventListener('click', async ev => {
   if(act==='discard'){ draft = null; dirty = false; rerenderSettings(); return }
   if(act==='save'){ ensureDraft();
     const clean = JSON.parse(JSON.stringify(draft));
-    ['tasks','good','bad','rewards'].forEach(L => clean[L] = clean[L].filter(x => (x.label||'').trim()).map(x => ({...x, label:x.label.trim()})));
+    ['tasks','good','bad','rewards','xmasItems'].forEach(L => clean[L] = clean[L].filter(x => (x.label||'').trim()).map(x => ({...x, label:x.label.trim()})));
     clean.kids = clean.kids.filter(x => (x.name||'').trim());
     clean.rules = clean.rules.map(r => r.trim()).filter(Boolean);
     clean.challenges = (clean.challenges||[]).map(r => r.trim()).filter(Boolean);
@@ -1856,6 +2142,8 @@ function onEdit(el){
   const {list, i, field, kid} = el.dataset; if(!list || tab!=='ajustes') return;
   ensureDraft();
   if(list==='rules' || list==='challenges'){ draft[list][+i] = el.value }
+  else if(list==='xmasGoals'){ draft.xmasGoals[i] = {...(draft.xmasGoals[i]||{}), [field]: field==='target' ? Math.max(1, parseInt(el.value,10) || 300) : el.value} }
+  else if(list==='xmasStart'){ draft.xmasStart = el.value }
   else if(list==='settings'){ if(field==='pin'){ draft.settings.pin = el.value.replace(/\D/g,'').slice(0,4) } else draft.settings[field] = Math.abs(parseInt(el.value,10) || 0) }
   else { const t = draft[list][+i]; if(!t) return;
     if(field==='kids'){ const s = new Set(t.kids || draft.kids.map(x => x.id)); el.checked ? s.add(kid) : s.delete(kid); t.kids = [...s] }
