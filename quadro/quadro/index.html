@@ -453,14 +453,14 @@ nav button[aria-current="page"]{background:var(--t);color:#fff}
 .bd-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .bd-chips{display:flex;gap:6px;flex-wrap:wrap}
 .bd-chip,.bd-close{border:1.5px solid #DCCDB4;background:#FFFCF6;color:#7A5C3E;border-radius:999px;padding:6px 13px;font:600 .92rem "Mali",var(--f-body);cursor:pointer}
-.bd-chip[aria-pressed="true"]{background:#8B6B4A;border-color:#8B6B4A;color:#FFF8EE}
+.bd-chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#FFF8EE}
 .bd-close{background:#EFE3CF}
 .bd-poster,.bd-devo{position:relative;background-color:#FCF8F0;background-image:
    radial-gradient(ellipse at 30% 20%, rgba(169,199,232,.16) 0 80px, transparent 170px),
    radial-gradient(ellipse at 75% 65%, rgba(242,200,160,.14) 0 90px, transparent 180px);
   border-radius:18px;box-shadow:0 1px 2px rgba(120,90,50,.08),0 10px 30px rgba(120,90,50,.10);overflow:hidden}
 .bd-poster{padding:24px 12px 20px}
-.bd-title{font-family:"Alegreya SC",Georgia,serif;font-weight:700;color:#8B6B4A;text-align:center;font-size:clamp(2.1rem,9.5vw,3.5rem);line-height:.98;letter-spacing:.03em;margin:0;text-wrap:balance;opacity:.92}
+.bd-title{font-family:"Alegreya SC",Georgia,serif;font-weight:700;color:var(--brand);text-align:center;font-size:clamp(2.1rem,9.5vw,3.5rem);line-height:.98;letter-spacing:.03em;margin:0;text-wrap:balance;opacity:.92}
 .bd-i{display:block}
 .bd-i svg,.bd-s svg{display:block;width:100%;height:auto}
 .bd-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
@@ -478,14 +478,14 @@ nav button[aria-current="page"]{background:var(--t);color:#fff}
 .bd-row.bottom{margin:0 4%;align-items:flex-end}
 .bd-row.bottom .butterfly{width:22%}.bd-row.bottom .caterpillar{width:36%}
 .bd-center{display:flex;justify-content:center;margin-top:12px}
-.bd-btn{border:0;background:#8B6B4A;color:#FFF8EE;border-radius:999px;padding:11px 20px;font:700 1rem "Mali",var(--f-body);cursor:pointer;box-shadow:0 3px 0 #6E5236}
-.bd-btn.soft{background:#EFE5D3;color:#6E5236;box-shadow:0 3px 0 #DCCDB4}
+.bd-btn{border:0;background:var(--brand);color:#FFF8EE;border-radius:999px;padding:11px 20px;font:700 1rem "Mali",var(--f-body);cursor:pointer;box-shadow:0 3px 0 var(--brand-dk)}
+.bd-btn.soft{background:#EFE5D3;color:var(--brand-dk);box-shadow:0 3px 0 #DCCDB4}
 .bd-btn:active{transform:translateY(2px);box-shadow:none}
 .bd-devo{padding:22px 20px 20px;display:flex;flex-direction:column;gap:14px}
 .bd-devo-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .bd-kicker{font-family:var(--f-body);text-transform:uppercase;letter-spacing:.11em;font-size:.72rem;font-weight:800;color:#A07C55}
-.bd-streak{font-weight:700;font-size:.9rem;color:#8B6B4A;background:#F4E7CC;border-radius:999px;padding:3px 11px}
-.bd-devo-title{font-family:"Alegreya SC",Georgia,serif;font-weight:700;color:#8B6B4A;font-size:clamp(1.6rem,6vw,2.1rem);line-height:1.05;margin:0;text-wrap:balance}
+.bd-streak{font-weight:700;font-size:.9rem;color:var(--brand);background:#F4E7CC;border-radius:999px;padding:3px 11px}
+.bd-devo-title{font-family:"Alegreya SC",Georgia,serif;font-weight:700;color:var(--brand);font-size:clamp(1.6rem,6vw,2.1rem);line-height:1.05;margin:0;text-wrap:balance}
 .bd-verse{margin:0;background:rgba(169,199,232,.25);border-radius:14px;padding:14px 16px}
 .bd-verse p{margin:0;font-weight:600;font-size:1.22rem;line-height:1.35;color:#3F6DB0}
 .bd-verse cite{display:block;margin-top:6px;font-style:normal;font-family:var(--f-body);font-size:.8rem;color:#6F86AE;font-weight:600}
@@ -499,7 +499,7 @@ nav button[aria-current="page"]{background:var(--t);color:#fff}
 .bd-done{font-weight:700;color:#5E8A3A;background:#E7F1D8;border-radius:999px;padding:9px 16px}
 .bd-night{display:flex;align-items:center;justify-content:center;gap:14px;text-align:left;padding:6px 0 10px}
 .bd-night .moon.small{width:64px;flex:none}
-.bd-night p{margin:0;font-weight:700;font-size:1.3rem;color:#8B6B4A;line-height:1.25}
+.bd-night p{margin:0;font-weight:700;font-size:1.3rem;color:var(--brand);line-height:1.25}
 .bd-night p span{font-weight:500;font-size:1rem;color:#8E7A63}
 @media (max-width:420px){.bd-lines{padding-left:14%;padding-right:14%}.bd-word{font-size:clamp(1.45rem,6.8vw,2.7rem)}}
 [hidden]{display:none!important}
@@ -509,7 +509,7 @@ nav button[aria-current="page"]{background:var(--t);color:#fff}
   --bg:#F8F1E4; --surface:#FFFCF6; --surface-2:#F1E7D6; --ink:#4B3A2A; --muted:#8A765F; --line:#E6D9C3;
   --accent:#3F6DB0; --accent-ink:#FFFFFF;
   --c1:#D9737F; --c2:#E39A45; --c3:#D9A532; --c4:#5E9C9D; --c5:#3F6DB0; --c6:#9670BF; --c7:#6A9845;
-  --star:#E6B23C; --star-soft:#F6EBCB; --star-ink:#8B6B4A;
+  --star:#E6B23C; --star-soft:#F6EBCB; --star-ink:var(--brand);
   --good:#5E8A3A; --good-soft:#E7F1D8; --warn:#B07F18; --warn-soft:#F7ECCB; --bad:#C2585F; --bad-soft:#F7E0DE;
   --lamp-case:#5B4632; --lamp-off:#7A6550; --toast-bg:#5B4632; --toast-fg:#FFF8EE;
   --rainbow:linear-gradient(90deg,#F2A0A6,#F5BE8A,#F4DD8A,#B9D99A,#A9C7E8,#C3B1E1);
@@ -526,15 +526,15 @@ body{background-image:
 header.top,body::before{background:rgba(248,241,228,.86)}
 .ico{display:inline-block;width:32px;flex:none;line-height:0}
 .ico svg{display:block;width:100% !important;height:auto}
-h1{font-family:var(--f-title);font-weight:700;color:#8B6B4A;font-size:1.6rem;letter-spacing:.02em;gap:10px}
+h1{font-family:var(--f-title);font-weight:700;color:var(--brand);font-size:1.6rem;letter-spacing:.02em;gap:10px}
 h1 .ico{width:40px}
 .date{font-family:var(--f-display);font-weight:500;color:var(--muted)}
-#kids-on{background:#8B6B4A;color:#FFF8EE;text-shadow:none;border:0;box-shadow:0 3px 0 #6E5236;font-family:var(--f-display)}
+#kids-on{background:var(--brand);color:#FFF8EE;text-shadow:none;border:0;box-shadow:0 3px 0 var(--brand-dk);font-family:var(--f-display)}
 .iconbtn{background:var(--surface);border:1.5px solid var(--line);box-shadow:var(--paper-shadow)}
 .btn{font-family:var(--f-display);font-weight:700}
 .chip{background:var(--surface);border:1.5px solid color-mix(in srgb,var(--kid,var(--c5)) 30%,var(--line));font-family:var(--f-display)}
 .chip[aria-pressed="true"]{background:color-mix(in srgb,var(--kid,var(--c5)) 85%,#fff);border-color:transparent;color:#fff}
-.chip.plain[aria-pressed="true"]{background:#8B6B4A}
+.chip.plain[aria-pressed="true"]{background:var(--brand)}
 .card{background:var(--surface);border:0;border-radius:18px;box-shadow:var(--paper-shadow)}
 .card.tone{border:0;background:
   radial-gradient(ellipse 70% 60% at 0% 0%, color-mix(in srgb,var(--tone) 15%,transparent), transparent 70%),
@@ -555,7 +555,7 @@ h1 .ico{width:40px}
 .bar>i{background:var(--rainbow)}
 .lvbar>i{background:linear-gradient(90deg,#C3B1E1,#A9C7E8,#A7CFCF)}
 .bonus,.savebar{background:var(--rainbow);color:var(--ink);text-shadow:none}
-.bonus .btn.primary,.savebar .btn.primary{background:#8B6B4A;color:#fff;border-color:#8B6B4A}
+.bonus .btn.primary,.savebar .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
 .savebar .btn.ghost{color:var(--ink);border-color:rgba(75,58,42,.35)}
 .lvl{background:var(--rainbow);color:var(--ink);text-shadow:none}
 .fire{background:#F7E3CC;color:#9A5A22;border:0}
@@ -601,7 +601,7 @@ nav button[aria-current="page"]{background:color-mix(in srgb,var(--t) 15%,transp
   radial-gradient(ellipse 360px 280px at 96% 10%, rgba(244,221,138,.36), transparent 70%),
   radial-gradient(ellipse 400px 300px at 50% 100%, rgba(185,169,227,.3), transparent 70%),
   radial-gradient(ellipse 300px 260px at 0% 90%, rgba(242,160,166,.26), transparent 70%);background-size:auto}
-.km-top h2{font-family:var(--f-title);color:#8B6B4A;font-size:1.8rem}
+.km-top h2{font-family:var(--f-title);color:var(--brand);font-size:1.8rem}
 .km-top h2 .ico{width:46px}
 .km-card{border:0;box-shadow:var(--paper-shadow);background:
   radial-gradient(ellipse 80% 55% at 50% 0%, color-mix(in srgb,var(--kid) 26%,transparent), transparent 70%),
@@ -612,7 +612,7 @@ nav button[aria-current="page"]{background:color-mix(in srgb,var(--t) 15%,transp
 .km-tile{background:color-mix(in srgb,var(--c) 10%,var(--surface));border:2.5px dashed color-mix(in srgb,var(--c) 45%,var(--line))}
 .km-tile.done{background:color-mix(in srgb,var(--c) 26%,var(--surface));border:2.5px solid color-mix(in srgb,var(--c) 70%,#fff)}
 .km-rules{border:0;box-shadow:var(--paper-shadow);background:radial-gradient(ellipse at 0 0, rgba(244,221,138,.32), transparent 70%), var(--surface)}
-.km-rules h3{font-family:var(--f-title);color:#8B6B4A}
+.km-rules h3{font-family:var(--f-title);color:var(--brand)}
 .km-rules ol{font-family:var(--f-display)}
 .km-deco{max-width:1100px;margin:18px auto 0;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
 .km-deco span{width:18%;max-width:140px;line-height:0}
@@ -667,7 +667,7 @@ h1 .ico{width:clamp(30px,8vw,40px)}
 .kp-info .km-stars{justify-content:flex-start;font-size:3.4rem}
 @media (max-width:520px){.kp-hero{grid-template-columns:1fr;justify-items:center;text-align:center}.kp-info .km-stars{justify-content:center}.kp-info .badges{justify-content:center}.kp-info{width:100%}}
 .kp-sec{padding:16px;border-radius:20px;background:var(--surface);box-shadow:var(--paper-shadow)}
-.kp-sec h3{margin:0 0 12px;font-family:var(--f-display);font-weight:700;font-size:1.3rem;color:#8B6B4A;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kp-sec h3{margin:0 0 12px;font-family:var(--f-display);font-weight:700;font-size:1.3rem;color:var(--brand);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .kp-sec h3 small{font-size:.9rem;color:var(--muted);font-weight:600}
 .kp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
 .kp-tile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px 12px;border-radius:20px;cursor:pointer;text-align:center;
@@ -685,10 +685,10 @@ h1 .ico{width:clamp(30px,8vw,40px)}
 .pin{min-height:100%;display:grid;place-items:center}
 .pin-box{width:min(320px,100%);padding:24px;border-radius:24px;background:var(--surface);box-shadow:var(--paper-shadow);text-align:center}
 .pin-box.wrong{animation:shake .5s}
-.pin-box h3{margin:0 0 14px;font-family:var(--f-title);color:#8B6B4A;font-size:1.5rem}
+.pin-box h3{margin:0 0 14px;font-family:var(--f-title);color:var(--brand);font-size:1.5rem}
 .pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:18px}
-.pin-dots span{width:16px;height:16px;border-radius:50%;border:2px solid #8B6B4A}
-.pin-dots span.on{background:#8B6B4A}
+.pin-dots span{width:16px;height:16px;border-radius:50%;border:2px solid var(--brand)}
+.pin-dots span.on{background:var(--brand)}
 .pin-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .pin-k{height:56px;border-radius:16px;border:1.5px solid var(--line);background:#FFFCF6;font:700 1.4rem var(--f-display);color:var(--ink);cursor:pointer}
 .pin-k:active{background:#F1E7D6}
@@ -701,7 +701,7 @@ h1 .ico{width:clamp(30px,8vw,40px)}
 .prayer.big{max-width:1100px;margin:0 auto 16px}
 .prayer-h{display:flex;align-items:center;gap:10px}
 .prayer-h .ico{width:40px}
-.prayer-h h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.25rem;color:#8B6B4A}
+.prayer-h h3{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.25rem;color:var(--brand)}
 .prayer-lines{margin:10px 0 8px;display:flex;flex-direction:column;gap:2px}
 .prayer-lines p{margin:0;font-family:var(--f-display);font-weight:600;font-size:1.12rem;line-height:1.4;color:#5E4A86}
 .prayer.big .prayer-lines p{font-size:1.35rem}
@@ -716,7 +716,7 @@ h1 .ico{width:clamp(30px,8vw,40px)}
 .msg-main{margin:10px 0 0;font-family:var(--f-display);font-weight:700;font-size:1.2rem;line-height:1.4;color:var(--ink)}
 .msgcard.big .msg-main{font-size:1.45rem}
 .msg-extra{margin:8px 0 0;font-family:var(--f-display);font-weight:600;font-size:1.05rem;line-height:1.4;color:color-mix(in srgb,var(--kid) 65%,var(--ink))}
-.msg-sign{margin:10px 0 0;font-family:var(--f-display);font-weight:700;color:#8B6B4A}
+.msg-sign{margin:10px 0 0;font-family:var(--f-display);font-weight:700;color:var(--brand)}
 .msg-sign span{display:block;font-family:var(--f-body);font-weight:600;font-size:.78rem;color:var(--muted)}
 .envelope{border-radius:22px;box-shadow:var(--paper-shadow);background:radial-gradient(ellipse 80% 80% at 50% 0%, color-mix(in srgb,var(--kid) 28%,transparent), transparent 70%), var(--surface)}
 .env-btn{width:100%;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 16px}
@@ -750,19 +750,19 @@ main > *{position:relative;z-index:1}
 @media (prefers-reduced-motion: reduce){.env-ico{animation:none}}
 
 /* ===== abas por criança, retrato ilustrado, recadinho noturno ===== */
-:root{--cur:#8B6B4A}
+:root{--cur:var(--brand)}
 .kids-sw{gap:4px;align-items:flex-end;padding:0 2px;border-bottom:3px solid var(--cur);overflow-y:hidden}
 .chip.ktab{border:0;border-radius:16px 16px 0 0;padding:8px 18px 8px 8px;background:color-mix(in srgb,var(--kid,var(--muted)) 14%,var(--surface));color:var(--ink);font-size:1.02rem;box-shadow:none;margin-bottom:0}
 .chip.ktab.plain{padding:10px 18px}
-.chip.ktab[aria-pressed="true"]{background:var(--kid,#8B6B4A);color:#fff;padding-top:12px;padding-bottom:10px}
+.chip.ktab[aria-pressed="true"]{background:var(--kid,var(--brand));color:#fff;padding-top:12px;padding-bottom:10px}
 .chip.ktab[aria-pressed="true"] .bal{color:#fff}
 .chip.ktab .ava{--size:36px}
 body.has-tabs main{background:color-mix(in srgb,var(--cur) 9%,transparent);border-radius:0 0 22px 22px;padding:14px 12px 16px;margin-top:-12px}
 @media (max-width:420px){body.has-tabs main{padding:12px 8px 14px}.chip.ktab{padding:6px 12px 6px 6px}}
-.km-tabs{max-width:1100px;margin:0 auto 18px;display:flex;gap:6px;align-items:flex-end;border-bottom:4px solid var(--kmc,#8B6B4A);overflow-x:auto;scrollbar-width:none}
-.km-tab{display:flex;align-items:center;gap:10px;border:0;cursor:pointer;border-radius:20px 20px 0 0;padding:8px 22px 8px 8px;background:color-mix(in srgb,var(--kid,#8B6B4A) 16%,var(--surface));font:700 1.35rem var(--f-display);color:var(--ink);flex:none}
-.km-tab[aria-pressed="true"]{background:var(--kid,#8B6B4A);color:#fff;padding-top:14px}
-.km-tab.fam{--kid:#8B6B4A}
+.km-tabs{max-width:1100px;margin:0 auto 18px;display:flex;gap:6px;align-items:flex-end;border-bottom:4px solid var(--kmc,var(--brand));overflow-x:auto;scrollbar-width:none}
+.km-tab{display:flex;align-items:center;gap:10px;border:0;cursor:pointer;border-radius:20px 20px 0 0;padding:8px 22px 8px 8px;background:color-mix(in srgb,var(--kid,var(--brand)) 16%,var(--surface));font:700 1.35rem var(--f-display);color:var(--ink);flex:none}
+.km-tab[aria-pressed="true"]{background:var(--kid,var(--brand));color:#fff;padding-top:14px}
+.km-tab.fam{--kid:var(--brand)}
 .km-tabav{width:54px;height:auto;border-radius:12px;box-shadow:0 0 0 3px #fff}
 .km-tabico{font-size:2rem;width:54px;text-align:center}
 @media (max-width:520px){.km-tab{font-size:1.05rem;padding:6px 12px 6px 6px;gap:6px}.km-tab[aria-pressed="true"]{padding-top:10px}.km-tabav{width:38px}.km-tabico{font-size:1.5rem;width:38px}}
@@ -848,7 +848,7 @@ body.has-tabs main{background:color-mix(in srgb,var(--cur) 9%,transparent);borde
 .bd-parent-text{margin:0;font-family:"Mali",var(--f-body);font-weight:600;font-size:1.2rem;line-height:1.5;color:#5E4A86}
 @media (prefers-reduced-motion: reduce){.calm-ball.in,.calm-ball.out,.adv-door.ready{animation:none}}
 /* hora de dormir: pôster do devocional */
-.bd-date{font-family:"Mali",var(--f-body);font-weight:600;color:#8B6B4A}
+.bd-date{font-family:"Mali",var(--f-body);font-weight:600;color:var(--brand)}
 .bd-date::first-letter{text-transform:uppercase}
 .bd-daytitle{margin:0;text-align:center;font-weight:700;font-size:clamp(1.7rem,7.2vw,2.7rem);line-height:1.12;letter-spacing:.01em;text-wrap:balance;opacity:.92}
 .bd-verse-big{margin:10px 0 0;text-align:center;color:#6F86AE;font-weight:500;font-size:clamp(1.15rem,4.8vw,1.55rem);line-height:1.3;text-wrap:balance}
@@ -856,6 +856,63 @@ body.has-tabs main{background:color-mix(in srgb,var(--cur) 9%,transparent);borde
 .bd-lines{padding-top:10px}
 @media (prefers-reduced-motion: reduce){.ava img{transition:none}.beh:active{transform:none}}
 @media (max-width:420px){.badrow{grid-template-columns:24px 1fr auto auto;gap:6px}.badrow .btn{padding:0 9px}.extra-form{grid-template-columns:1fr 76px}.extra-form .btn{grid-column:1/-1}}
+/* ===== v10: cores alegres (aquarela vibrante) ===== */
+:root, :root:not([data-theme="light"]), :root[data-theme="dark"]{
+  --bg:#FFF6E6; --surface:#FFFFFF; --surface-2:#FFF0F6; --ink:#33235A; --muted:#75659A; --line:#F2DDEB;
+  --brand:#7B3FE4; --brand-dk:#5A23B8; --accent:#2F86FF;
+  --c1:#FF4F8B; --c2:#FF8A1F; --c3:#FFBE0B; --c4:#10BFA8; --c5:#2F86FF; --c6:#9B4DFF; --c7:#2DC160;
+  --star:#FFB703; --star-soft:#FFF1C2; --star-ink:#8A5A00;
+  --good:#1E9E4A; --good-soft:#DDF7E5; --warn:#D98A00; --warn-soft:#FFF0C8; --bad:#F0386B; --bad-soft:#FFE0EA;
+  --rainbow:linear-gradient(90deg,#FF5C93,#FF9A3C,#FFD23F,#4CD07D,#3FB2FF,#A066FF);
+  --paper-shadow:0 1px 2px rgba(91,45,150,.08),0 10px 26px rgba(91,45,150,.10)}
+body{background-image:
+  radial-gradient(ellipse 300px 220px at 6% 6%, rgba(63,178,255,.30), transparent 70%),
+  radial-gradient(ellipse 280px 240px at 97% 18%, rgba(255,92,147,.26), transparent 70%),
+  radial-gradient(ellipse 320px 240px at 4% 58%, rgba(255,210,63,.34), transparent 70%),
+  radial-gradient(ellipse 300px 260px at 96% 86%, rgba(160,102,255,.26), transparent 70%),
+  radial-gradient(ellipse 260px 200px at 50% 100%, rgba(76,208,125,.22), transparent 70%)}
+header.top,body::before{background:rgba(255,246,230,.88)}
+h1{color:var(--brand)}
+h1 span{background:linear-gradient(90deg,#FF4F8B,#FF8A1F 35%,#2F86FF 70%,#9B4DFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+#kids-on{background:linear-gradient(135deg,#FF4F8B,#9B4DFF);box-shadow:0 3px 0 var(--brand-dk)}
+.ico svg{filter:saturate(1.55) contrast(1.04)}
+.card.tone{background:
+  radial-gradient(ellipse 70% 60% at 0% 0%, color-mix(in srgb,var(--tone) 22%,transparent), transparent 70%),
+  radial-gradient(ellipse 60% 55% at 100% 100%, color-mix(in srgb,var(--tone) 15%,transparent), transparent 70%), var(--surface)}
+.card.tone .sec-h h2,details.card.tone summary{color:color-mix(in srgb,var(--tone) 80%,var(--ink))}
+.hero,.avhero{background:
+  radial-gradient(ellipse 65% 70% at 8% 10%, color-mix(in srgb,var(--kid) 34%,transparent), transparent 70%),
+  radial-gradient(ellipse 55% 60% at 96% 92%, rgba(255,210,63,.45), transparent 70%),
+  radial-gradient(ellipse 40% 40% at 90% 8%, rgba(63,178,255,.32), transparent 70%), var(--surface)}
+.hero .name,.avinfo .name,.km-name{color:color-mix(in srgb,var(--kid) 85%,var(--ink))}
+.bar{background:rgba(123,63,228,.12)}
+.lvbar>i{background:linear-gradient(90deg,#A066FF,#3FB2FF,#10BFA8)}
+.bonus .btn.primary,.savebar .btn.primary{background:var(--brand);border-color:var(--brand)}
+.savebar .btn.ghost{border-color:rgba(51,35,90,.35)}
+.fire{background:#FFE2C2;color:#C2410C}
+.task{background:color-mix(in srgb,var(--c) 10%,var(--surface));border:2px solid color-mix(in srgb,var(--c) 40%,var(--line))}
+.task.done{background:color-mix(in srgb,var(--c7) 20%,var(--surface));border-color:color-mix(in srgb,var(--c7) 65%,var(--line))}
+.beh{background:color-mix(in srgb,var(--c) 13%,var(--surface));border:2px solid color-mix(in srgb,var(--c) 45%,var(--line))}
+.reward{background:color-mix(in srgb,var(--c) 12%,var(--surface));border:2px solid color-mix(in srgb,var(--c) 42%,var(--line))}
+.reward .emo{background:color-mix(in srgb,var(--c) 28%,var(--surface))}
+.btn.warn{background:#FFD23F;border-color:#FFD23F;color:#5B3A00}
+.newb,.kp-tile.wait .kp-st{background:#FFD23F;color:#5B3A00}
+.chip.plain[aria-pressed="true"]{background:var(--brand)}
+.challenge{border-color:color-mix(in srgb,var(--c6) 55%,var(--line));background:
+  radial-gradient(ellipse 60% 80% at 0% 0%, rgba(160,102,255,.32), transparent 70%),
+  radial-gradient(ellipse 60% 80% at 100% 100%, rgba(255,210,63,.42), transparent 70%), var(--surface)}
+nav.tabs{box-shadow:0 -4px 18px rgba(91,45,150,.12)}
+.dayhead .label{background:color-mix(in srgb,var(--c5) 18%,var(--surface))}
+.pin-k:active{background:#F1E6FF}
+.prayer-lines p,.calm-verse,.bd-parent-text{color:#5B2DB0}
+.xinfo h3,.adv-h h3{color:#D61F57}
+.xnum b,.adv-prize{color:#1E9E4A}
+.xbar>i{background:linear-gradient(90deg,#FF4F8B,#FFBE0B,#2DC160)}
+.chestline{background:linear-gradient(90deg,#FFE27A,#FFB98A)}
+.calm-go{background:#2DC160;box-shadow:0 4px 0 #1E8A44}
+.calm-open{background:#D6F7E1;color:#14713A;box-shadow:0 2px 0 #A8E6BD}
+.km-tab.fam{--kid:var(--brand)}
+.avtag.new{background:#FF4F8B;color:#fff}
 </style>
 </head>
 <body>
@@ -1152,7 +1209,7 @@ function avatarSVG(look, kidColor, cls){
   let o = `<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" class="avsvg ${cls||''}" aria-hidden="true">`;
   o += (BG[L.bg] || BG.plain)(p, c);
   const HG = 'transform="translate(100 112) scale(1.06) translate(-100 -100)"';
-  if(L.top === 'hero') o += PBACK.hero(p, c);
+  if(PBACK[L.top] && L.top !== 'dino') o += PBACK[L.top](p, c);
   o += `<g ${HG}>${L.top === 'dino' ? PBACK.dino(p, c) : ''}${hairBack(L.hair, hc, dk)}</g>`;
   o += `<path d="M88 150 L88 182 L112 182 L112 150 Z" fill="${skin}" ${ST}/><path d="M88 162 Q100 172 112 162 L112 170 Q100 176 88 170 Z" fill="${shade(skin,.88)}"/>`;
   o += (PTOP[L.top] || PTOP.tee)(p, c);
@@ -1166,6 +1223,7 @@ function avatarSVG(look, kidColor, cls){
   if(girl) o += `<path d="M76 98 L70 93 M124 98 L130 93" stroke="#1E1714" stroke-width="2.2" stroke-linecap="round"/>`;
   o += `<path d="M99 111 Q96 118 102 119" fill="none" stroke="${shade(skin,.6)}" stroke-width="2.2" stroke-linecap="round"/>`;
   o += `<path d="M89 128 Q100 138 111 128" fill="${girl ? '#E58C86' : 'none'}" stroke="#8B3A32" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  o += (typeof PFX !== 'undefined' && PFX[L.fx]) ? PFX[L.fx](p) : '';
   o += hairFront(L.hair, hc, dk, c);
   o += PGLASSES[L.glasses] ? PGLASSES[L.glasses](p) : '';
   o += PHATS[L.hat] ? PHATS[L.hat](p, c) : '';
@@ -1690,19 +1748,316 @@ const MSG_BY_KID = {
 };
 const todaysPrayer = () => PRAYERS[(dayNum() + 11) % PRAYERS.length];
 function fillMsg(txt, k){ return txt.replace(/\{nome\}/g, k.name).replace(/\{o\}/g, k.g === 'f' ? 'a' : 'o') }
+/* ---------- v10: recadinhos de Jesus (repertório grande, diferente para cada um) ---------- */
+const JESUS_MAIN = {
+  alice: [
+    ['Alice, eu te amo do tamanho do céu, do mar e de todas as estrelas juntas!','Romanos 8:39'],
+    ['Você é a minha princesinha, filha do Rei dos reis!','1 João 3:1'],
+    ['Eu adoro quando você roda e dança. Eu também canto de alegria por você!','Sofonias 3:17'],
+    ['As suas mãozinhas foram feitas para fazer carinho, abraçar e ajudar.','Efésios 4:32'],
+    ['Quando der vontade de chorar, pode vir no meu colo. E depois conta para a mamãe o que aconteceu.','Salmo 56:8'],
+    ['O sono é um presente meu. Fique na caminha até a hora certa e acorde cheia de energia!','Salmo 127:2'],
+    ['Na cadeirinha do carro você fica protegida, igual quando eu te seguro bem forte.','Salmo 91:11'],
+    ['Experimentar uma comida nova é ser corajosa! Eu fiz cada frutinha com muito capricho.','Gênesis 1:29'],
+    ['As palavras da sua boquinha podem ser doces como mel. Escolha as mais bonitas!','Provérbios 16:24'],
+    ['Você cuida da sua bonequinha com tanto carinho... É assim que eu cuido de você!','Isaías 66:13'],
+    ['O Joey é um presente que eu dei para você. Dê um abraço bem apertado nele amanhã!','Salmo 133:1'],
+    ['Quando você guarda os brinquedos, a casa fica feliz. E eu também!','Colossenses 3:23'],
+    ['Eu fiz as borboletas, as flores e as estrelas. E fiz você, uma das coisas mais lindas que eu já criei!','Salmo 139:14'],
+    ['Você é pequenininha, mas tem um coração enorme. Eu adoro morar nele!','Efésios 3:17'],
+    ['Obedecer a mamãe e o papai de primeira é um jeito de dizer "eu te amo".','Efésios 6:1'],
+    ['Os seus olhinhos azuis foram pintados por mim. Olhe para o céu amanhã: eu pintei ele também!','Salmo 19:1'],
+    ['Amanhã é um dia novinho. Eu já estou lá, esperando você acordar.','Lamentações 3:23'],
+    ['Pedir desculpas é coisa de gente forte. E eu sempre te perdoo!','1 João 1:9'],
+    ['O seu sorriso ilumina a casa inteira. Sorria bastante amanhã!','Números 6:25'],
+    ['Eu ouço todas as suas oraçõezinhas, até as bem baixinhas.','Salmo 4:3'],
+    ['Você está crescendo tão rápido! Eu cuido de você em cada pedacinho do caminho.','Lucas 2:52'],
+    ['Quando ficar brava, respira fundo comigo: cheira a florzinha e sopra a velinha.','Tiago 1:19'],
+    ['Ajudar a mamãe é brincar de ser ajudante do céu!','Gálatas 5:13'],
+    ['Você é uma luzinha. Onde você chega, tudo fica mais alegre!','Mateus 5:14'],
+    ['Eu sei quantos fios de cabelo tem na sua cabecinha loira. Você é muito importante para mim!','Lucas 12:7'],
+    ['Na festa, na escolinha ou em casa, eu vou junto com você. Sempre!','Mateus 28:20'],
+    ['Comigo você não precisa ter medo do escuro. Eu acendo uma luzinha no seu coração.','Salmo 23:4'],
+    ['Banho tomado, dentinho escovado... agora é hora de descansar no meu colo.','Salmo 4:8'],
+    ['Sabia que eu sorrio quando você acorda? Você é um presente para o mundo!','Salmo 127:3'],
+    ['Quando você divide o seu brinquedo, está brincando do jeitinho do céu.','Hebreus 13:16'],
+    ['Eu fiz a lua para brilhar no céu à noite e mandei os anjos para cuidarem de você.','Salmo 121:4'],
+    ['Esperar a sua vez no balanço é difícil, né? Mas quem espera com paciência ganha um coração bonito.','Gálatas 5:22'],
+    ['Eu fiz os passarinhos cantarem bem cedinho. Amanhã, escuta se você ouve algum!','Mateus 6:26'],
+    ['As suas marias-chiquinhas balançam quando você pula. Eu dou risada junto!','Eclesiastes 3:4'],
+    ['Quando você fala "por favor" e "obrigada", o seu coração brilha.','Colossenses 4:6'],
+    ['Eu te dei dois ouvidinhos e uma boquinha: para escutar bastante e falar com carinho.','Tiago 1:19'],
+    ['Você sabia que a chuva é um presente meu para as plantinhas beberem água?','Jeremias 5:24'],
+    ['Abraço de Alice é um dos mais gostosos que existem. Distribua bastante amanhã!','1 Coríntios 16:14'],
+    ['Eu gosto quando você canta. Pode cantar para mim no banho, no carro, em qualquer lugar!','Salmo 98:4'],
+    ['Quando você empresta o seu lápis de cor, alguém fica feliz. E eu também!','Atos 20:35'],
+    ['Eu fiz os seus pezinhos para pular, correr e dançar. Que alegria ver você brincando!','Salmo 30:11'],
+    ['Até as formiguinhas trabalham juntas. Que tal ajudar a guardar as coisas amanhã?','Provérbios 6:6'],
+    ['Você é corajosa quando tenta de novo, mesmo depois de cair.','Provérbios 24:16'],
+    ['A mamãe e o papai foram escolhidos por mim para cuidar de você. Que família linda!','Salmo 68:6'],
+    ['Quando você fica quietinha e escuta a historinha, o seu coração aprende coisas bonitas.','Provérbios 1:5'],
+    ['Eu fiz o arco-íris com muitas cores. Qual é a sua preferida? A minha é a cor do seu sorriso!','Gênesis 9:13'],
+    ['Escovar os dentinhos deixa o seu sorriso brilhando como uma estrela!','1 Coríntios 6:19'],
+    ['Comer a comidinha toda dá força para brincar o dia inteiro.','1 Coríntios 10:31'],
+    ['Eu nunca durmo! Enquanto você sonha, eu fico aqui, de olho em tudo.','Salmo 121:3'],
+    ['Quando um amiguinho estiver triste, chame ele para brincar. É assim que eu faço com você!','Romanos 12:15'],
+    ['Você foi feita do jeitinho certo: nem um pouquinho a mais, nem um pouquinho a menos.','Salmo 139:13'],
+    ['Eu gosto de ver você ajudando a pôr a mesa. Toda ajudinha é amor!','1 Pedro 4:10'],
+    ['As flores do jardim são bonitas, mas você é mais bonita ainda para mim.','Mateus 6:28-30'],
+    ['Quando der vontade de bater, segura a mãozinha e chama a mamãe. Eu te ajudo a ficar calminha.','Provérbios 15:1'],
+    ['Eu ouvi você rindo hoje. Que som gostoso! Ria bastante amanhã também.','Provérbios 17:22'],
+    ['Quando a mamãe fala "não", é porque ela te ama e quer te proteger.','Provérbios 1:8'],
+    ['Os anjinhos fazem festa quando alguém pede desculpas. Que lindo quando você faz isso!','Lucas 15:10'],
+    ['Eu fiz o sol para te esquentar e a lua para te fazer companhia à noite.','Gênesis 1:16'],
+    ['Você pode conversar comigo sempre, igualzinho conversa com uma amiga.','João 15:15'],
+    ['Pintar, desenhar, colar... Eu também adoro criar coisas! Foi assim que eu criei o mundo.','Gênesis 1:1'],
+    ['Vestir a roupinha sozinha é coisa de menina grande. Eu vejo você crescendo!','Lucas 2:40'],
+    ['Quando você fala baixinho na hora de dormir, a casa toda fica em paz.','Isaías 32:18'],
+    ['Eu escrevi o seu nome na palma da minha mão. Alice, eu nunca esqueço de você!','Isaías 49:16'],
+    ['Os bichinhos do mundo todo fui eu que fiz. Qual você quer ver amanhã?','Gênesis 1:25'],
+    ['Quando você dá um beijinho no machucado de alguém, você está fazendo igual eu.','Salmo 147:3'],
+    ['Esperar o papai e a mamãe terminarem de falar é um jeito de mostrar respeito.','Romanos 12:10'],
+    ['Você brilha mais que um vaga-lume no escuro!','Filipenses 2:15'],
+    ['Quando estiver com medo, fala o meu nome: "Jesus". Eu venho rapidinho.','Salmo 34:4'],
+    ['Eu gosto de você quando está feliz, quando está brava e quando está com sono. Sempre!','Jeremias 31:3'],
+    ['Guardar o sapatinho no lugar ajuda a mamãe e deixa tudo arrumadinho.','1 Coríntios 14:40'],
+    ['Lavar as mãozinhas antes de comer é cuidar do corpinho que eu te dei.','3 João 1:2'],
+    ['O seu coração é como um jardim. Hoje, plante sementinhas de bondade nele.','Gálatas 6:9'],
+    ['Quando você ajuda o Joey, vocês dois viram um time imbatível!','Eclesiastes 4:9'],
+    ['Cada dia com você é como um presente aberto. Que surpresa boa você é!','Tiago 1:17'],
+    ['Eu gosto quando você fala "eu te amo" para a mamãe. Fala de novo amanhã?','1 João 4:7'],
+    ['Na hora do banho, pense: eu deixo o seu coração limpinho também.','Salmo 51:10'],
+    ['Ficar sentadinha na cadeira para comer é coisa de princesa educada!','1 Coríntios 14:40'],
+    ['Você não precisa ter tudo o que quer. Você já tem a mim, e eu sou o melhor presente.','Filipenses 4:11'],
+    ['Quando você empresta a boneca, ela fica feliz de brincar com mais gente.','Lucas 6:38'],
+    ['Eu fiz o mar tão grande, mas o meu amor por você é maior ainda!','Efésios 3:18'],
+    ['Amanhã, quando você acordar, diga: "Bom dia, Jesus!". Eu vou responder no seu coração.','Salmo 5:3'],
+    ['As estrelinhas que você ganha no quadro são lindas, mas você brilha mais que todas elas.','Daniel 12:3'],
+    ['Comida nova é uma aventura! Uma mordidinha de coragem e pronto!','Josué 1:9'],
+    ['Quando você obedece, eu sorrio lá do céu.','Colossenses 3:20'],
+    ['Eu gosto de ouvir você cantando "Jesus me ama". É verdade: eu amo muito!','João 15:9'],
+    ['Seu coração pode ser casinha para mim. Eu entro e fico pertinho de você.','Apocalipse 3:20'],
+    ['Quando cair e ralar o joelho, chore um pouquinho, ganhe um beijinho e volte a brincar.','Isaías 41:10'],
+    ['Eu fiz as nuvens fofinhas. Amanhã olhe para cima e procure uma que parece um bichinho!','Jó 37:16'],
+    ['Pular, correr e brincar são presentes meus. Brinque muito amanhã!','Eclesiastes 3:1'],
+    ['Quando você diz a verdade, mesmo tendo feito arte, eu fico muito orgulhoso.','Provérbios 12:22'],
+    ['Os seus olhinhos estão cansados. Pode fechar: eu fico de guarda.','Salmo 3:5'],
+    ['Você sabe que eu também já fui criança? Eu cresci obedecendo a minha mamãe Maria e o José.','Lucas 2:51'],
+    ['Eu chamei as criancinhas para perto de mim. Você também pode vir sempre!','Marcos 10:14'],
+    ['Quando alguém te ajudar, diga "obrigada" com um sorriso grande.','1 Tessalonicenses 5:18'],
+    ['Você é a florzinha mais cheirosa do meu jardim!','Mateus 6:28'],
+    ['Esperar com calma o lanche ficar pronto também é um jeito de ser grande.','Salmo 37:7'],
+    ['Eu fiz o seu corpinho tão bem feitinho! Cuide dele comendo, brincando e dormindo.','1 Coríntios 6:20'],
+    ['Quando você fica triste, eu fico pertinho. Pode me contar tudo.','Salmo 34:18'],
+    ['Amanhã, faça um desenho de presente para alguém. Vai ser o presente mais lindo do dia!','Provérbios 11:25'],
+    ['Eu gosto muito quando você e o Joey brincam juntos sem brigar. Que alegria!','Salmo 133:1'],
+    ['Você é preciosa como um tesouro escondido. Eu achei você e fiquei muito feliz!','Mateus 13:44'],
+    ['Escolher desenhos bonzinhos deixa a sua cabecinha cheia de coisas boas.','Filipenses 4:8'],
+    ['Quando a sua roupinha suja vai para o cesto, a mamãe ganha um pouquinho de descanso.','Provérbios 31:28'],
+    ['Eu fico feliz quando você abraça o papai quando ele chega em casa.','Romanos 12:10'],
+    ['Ser gentil é o superpoder mais bonito que existe. E você tem ele!','Efésios 4:32'],
+    ['Amanhã vai ter coisas novas para descobrir. Vamos juntos?','Salmo 118:24'],
+    ['Durma bem, florzinha. Eu te amo agora, amanhã e para sempre.','Salmo 4:8'],
+  ],
+  joey: [
+    ['Joey, eu te escolhi e te amo. Você é meu, e isso nunca muda.','1 João 3:1'],
+    ['Eu vejo o cuidado que você tem com os animais. É assim que eu cuido de você: todos os dias.','Provérbios 12:10'],
+    ['Ser irmão mais velho é uma missão importante. A Alice aprende muito olhando para você.','1 Timóteo 4:12'],
+    ['Quando der vontade de responder mal, respire. Uma resposta calma mostra a sua força.','Provérbios 15:1'],
+    ['Como num jogo de construir, você está construindo quem vai ser. Construa sobre a rocha!','Mateus 7:24'],
+    ['Paciência é como pescar: quem espera com calma volta para casa com coisas boas.','Lucas 5:4-6'],
+    ['Esqueceu alguma coisa? Recomece. Eu te dou uma nova chance todos os dias.','Lamentações 3:22-23'],
+    ['Chegar na hora é um jeito de respeitar as pessoas. Organize o seu tempo, que eu te ajudo.','Eclesiastes 3:1'],
+    ['Ajudar em casa sem ninguém pedir é coisa de líder de verdade.','Marcos 10:45'],
+    ['Eu fiz as árvores, os rios e as trilhas que você gosta de explorar. Aproveite a criação!','Salmo 104:24'],
+    ['Quando a lição de casa estiver difícil, peça sabedoria. Eu adoro ajudar.','Tiago 1:5'],
+    ['Força de verdade é segurar a raiva e não bater. Você é forte desse jeito.','Provérbios 16:32'],
+    ['Ler um livro abre portas para mundos novos. A minha Palavra ilumina o caminho da vida.','Salmo 119:105'],
+    ['Cuidar das suas coisas é treinar para cuidar de coisas maiores.','Lucas 16:10'],
+    ['Eu vejo o seu esforço, mesmo quando ninguém mais vê.','Mateus 6:4'],
+    ['Você não precisa ser o melhor em tudo. Precisa ser você, e eu te amo assim.','1 Samuel 16:7'],
+    ['Os seus pais te corrigem porque te amam. Eu também cuido de você assim.','Provérbios 3:12'],
+    ['Telas são legais, mas a vida real é melhor ainda. Saber a hora de parar é ter domínio próprio.','Gálatas 5:22-23'],
+    ['Seja o amigo que você gostaria de ter. Na escola, inclua quem está sozinho.','Lucas 6:31'],
+    ['Falar a verdade, mesmo quando é difícil, é coragem de verdade.','Efésios 4:25'],
+    ['Cada sardinha do seu rosto foi colocada por mim, com carinho. Você é único!','Salmo 139:13-14'],
+    ['Quando estiver preocupado, conversa comigo. Eu carrego esse peso com você.','1 Pedro 5:7'],
+    ['Proteger a sua irmã é uma forma de mostrar o meu amor.','Salmo 127:3'],
+    ['Errou? Não se esconda. Volte para mim e recomece. Estou de braços abertos.','Lucas 15:20'],
+    ['Eu tenho planos de bem para a sua vida, Joey. Coisas grandes te esperam!','Jeremias 29:11'],
+    ['Agradecer muda o jeito como você enxerga o dia. Agradeça três coisas antes de dormir.','1 Tessalonicenses 5:18'],
+    ['Seja corajoso para fazer o certo, mesmo quando os outros não fazem.','Josué 1:9'],
+    ['Alimentar os animais é cuidar da criação que eu fiz. Obrigado por ajudar!','Gênesis 2:15'],
+    ['Você é luz. O seu exemplo ensina quem está olhando para você.','Mateus 5:16'],
+    ['Mesmo nos dias difíceis, eu continuo do seu lado. Sempre.','Salmo 46:1'],
+    ['Descanse, Joey. Amanhã é um novo dia, e eu já estou lá esperando por você.','Mateus 11:28'],
+    ['Davi tinha mais ou menos a sua idade quando enfrentou o gigante. Coragem não depende do tamanho.','1 Samuel 17:45'],
+    ['Um time só vence quando todo mundo joga junto. Em casa também é assim.','Eclesiastes 4:12'],
+    ['Perder um jogo não diz quem você é. Saber perder com respeito mostra o seu caráter.','Filipenses 2:3'],
+    ['Quando alguém zoar outra pessoa, seja quem defende. É isso que eu faria.','Provérbios 31:8'],
+    ['Você pode me contar qualquer coisa, até aquilo que tem vergonha de contar para os outros.','Salmo 62:8'],
+    ['Cuidar do corpo também é me agradecer: dormir bem, comer bem, se mexer.','1 Coríntios 6:19-20'],
+    ['Quer ficar forte por dentro? Treine a paciência, a bondade e o perdão todos os dias.','Colossenses 3:12'],
+    ['Quem é fiel nas coisas pequenas, como arrumar a cama, aprende a ser fiel nas grandes.','Lucas 16:10'],
+    ['O mundo diz que ser legal é ser o mais popular. Eu digo que ser legal é ser bondoso.','Miqueias 6:8'],
+    ['Quando você erra e assume, fica mais forte do que quando tenta esconder.','Provérbios 28:13'],
+    ['O seu cérebro é incrível! Fui eu que fiz. Use ele para aprender, criar e ajudar.','Provérbios 2:6'],
+    ['A Alice olha para você como um herói. Seja um herói gentil.','Romanos 15:2'],
+    ['Respeitar os mais velhos é sinal de grandeza, não de fraqueza.','Levítico 19:32'],
+    ['Se um colega estiver sozinho no recreio, você pode ser a resposta da oração dele.','Gálatas 6:2'],
+    ['Responder "sim, mãe" de primeira poupa muita briga. Experimenta amanhã!','Colossenses 3:20'],
+    ['Eu também tive que esperar a minha hora chegar. Paciência faz parte do plano.','Eclesiastes 3:11'],
+    ['Você não é definido pelas notas da escola, mas o seu esforço me deixa orgulhoso.','Colossenses 3:23'],
+    ['Antes de dormir, perdoe quem te chateou hoje. O seu sono fica mais leve.','Efésios 4:26'],
+    ['O pescador sabe que alguns dias o peixe não vem. Volte amanhã com esperança.','Lucas 5:5'],
+    ['Os animais confiam em você para comer e beber. Eu também confio em você para coisas importantes.','Gênesis 1:28'],
+    ['Quando der preguiça, lembre: pequenas tarefas feitas viram grandes conquistas.','Provérbios 13:4'],
+    ['Eu nunca fico cansado de ouvir você. Pode orar em voz alta ou só em pensamento.','Jeremias 33:3'],
+    ['Inveja rouba a alegria. Comemore quando um amigo ganha. A sua vez também vai chegar.','Romanos 12:15'],
+    ['Você é corajoso quando pede ajuda. Ninguém precisa resolver tudo sozinho.','Eclesiastes 4:10'],
+    ['O meu amor por você não aumenta quando você acerta nem diminui quando você erra. É inteiro sempre.','Romanos 5:8'],
+    ['Seja rápido para ouvir e devagar para ficar bravo. É um treino, e você está evoluindo.','Tiago 1:19'],
+    ['Uma palavra gentil pode mudar o dia de alguém. Use as suas palavras para construir.','Efésios 4:29'],
+    ['Quando você organiza o seu tempo, sobra mais tempo para o que você ama.','Efésios 5:15-16'],
+    ['A sua família é o seu primeiro time. Cuide bem dele.','Josué 24:15'],
+    ['O medo fala alto, mas eu falo mais alto ainda: "Não tenha medo, eu estou com você".','Isaías 41:10'],
+    ['O seu cabelo acobreado brilha como o pôr do sol. Fui eu que escolhi a cor!','Salmo 139:15'],
+    ['Quando ninguém está olhando, o que você faz mostra quem você é. Eu vejo, e me alegro.','Provérbios 15:3'],
+    ['Os maiores heróis da Bíblia começaram cuidando de coisas simples, como ovelhas.','Salmo 78:70-71'],
+    ['Ajudar a pôr a mesa é um jeito simples de dizer para a sua família: "eu me importo".','1 Pedro 4:10'],
+    ['Você não precisa ganhar para ter valor. Você já vale muito para mim.','Isaías 43:4'],
+    ['Quando um videogame te deixar irritado, é hora de pausar. Você manda no jogo, não o contrário.','1 Coríntios 6:12'],
+    ['Seja grato pelos seus pais. Eles trabalham muito porque te amam.','Êxodo 20:12'],
+    ['Joey, você está crescendo em altura e em sabedoria. Que bom ver isso!','Lucas 2:52'],
+    ['Uma resposta educada desarma uma briga antes de ela começar.','Provérbios 15:1'],
+    ['Sabedoria é saber a coisa certa. Coragem é fazer a coisa certa. Você pode ter as duas.','Provérbios 4:7'],
+    ['Quando estiver chateado com a sua irmã, lembre: ela tem só 4 anos e ainda está aprendendo.','Colossenses 3:13'],
+    ['Eu fiz a natureza cheia de mistérios para você descobrir. Seja curioso!','Provérbios 25:2'],
+    ['Um bom líder serve primeiro. Seja o primeiro a ajudar amanhã.','Mateus 20:26'],
+    ['Não se compare com os outros. A sua corrida é sua, e eu corro junto com você.','Hebreus 12:1'],
+    ['Quando você diz "desculpa, eu errei", você fica mais parecido comigo.','Mateus 5:9'],
+    ['A mochila arrumada na noite anterior é um presente para o Joey de amanhã.','Provérbios 21:5'],
+    ['Pensamentos ruins às vezes aparecem. Troque eles por coisas verdadeiras e boas.','Filipenses 4:8'],
+    ['Eu gosto das suas perguntas. Pode perguntar tudo para mim e para os seus pais.','Mateus 7:7'],
+    ['Leia algo bom amanhã. Uma página por dia já faz a sua mente voar.','Josué 1:8'],
+    ['A vitória mais difícil é vencer a si mesmo. E você está conseguindo, aos pouquinhos.','Provérbios 16:32'],
+    ['Quando você ajuda sem reclamar, a casa fica mais leve para todo mundo.','Filipenses 2:14'],
+    ['Seja honesto até nos jogos. Ganhar roubando não é ganhar.','Provérbios 10:9'],
+    ['Eu nunca desisto de você. Nunca mesmo.','Hebreus 13:5'],
+    ['Seu cachorro não liga se você ganhou ou perdeu. Ele te ama do jeito que você é. Eu também.','Sofonias 3:17'],
+    ['Você foi feito para coisas boas que eu preparei antes mesmo de você nascer.','Efésios 2:10'],
+    ['Quando estiver com raiva, pense antes de falar. Dez segundos podem salvar uma amizade.','Provérbios 29:11'],
+    ['Os seus pais também erram. Perdoar eles também é amar.','Colossenses 3:13'],
+    ['Seja grato pela comida no prato. Muita gente pede isso em oração.','Mateus 6:11'],
+    ['A sua voz importa. Use ela para falar o que é certo, com respeito.','Provérbios 31:9'],
+    ['Responsabilidade não é peso, é sinal de que você está crescendo e eu confio em você.','Lucas 12:48'],
+    ['Você é um aventureiro! Cada dia é uma missão nova comigo.','Salmo 16:11'],
+    ['Quando alguém te tratar mal, responda com bondade. Isso é ser mais forte.','Romanos 12:21'],
+    ['O tempo com a família é um tesouro. Aproveite o jantar e as conversas.','Salmo 128:3'],
+    ['Pedir "com licença" e "obrigado" mostra que você é um rapaz educado.','1 Pedro 3:8'],
+    ['Eu estive com José no poço e na prisão, e transformei tudo em bem. Também cuido da sua história.','Gênesis 50:20'],
+    ['Você não precisa fingir ser alguém diferente para ser aceito. Comigo você é aceito sempre.','Romanos 15:7'],
+    ['Quem planta bondade colhe amizade. Plante bastante amanhã.','Gálatas 6:7'],
+    ['Os seus talentos são presentes meus. Use eles para alegrar as pessoas.','1 Pedro 4:10'],
+    ['Quando acordar, antes de pegar qualquer tela, diga: "Bom dia, Deus".','Salmo 143:8'],
+    ['Joey, você é mais corajoso do que imagina e mais amado do que consegue medir.','Efésios 3:19'],
+    ['Durma tranquilo. Eu cuido da noite e cuido do amanhã.','Salmo 127:1'],
+  ],
+};
+const JESUS_GOOD = {
+  alice: {
+    g1:['Hoje você obedeceu de primeira! A mamãe e o papai ficaram felizes, e eu também.','Quando você obedece de primeira, é como dar um presente para a sua família. Que lindo hoje!','Você escutou e obedeceu rapidinho. Os seus ouvidinhos estão ficando campeões!'],
+    g2:['Eu vi você ajudando o Joey. Irmãos que se ajudam deixam o meu coração pulando de alegria!','Você ajudou o seu irmão hoje. Isso é amor de verdade!','Que linda você ajudando o Joey. Vocês dois juntos são um time!'],
+    g3:['Você pediu desculpas sozinha hoje. Isso é coisa de menina grande e corajosa!','Quando você pediu desculpas, os anjinhos fizeram festa lá no céu!','Pedir desculpas sem ninguém mandar? Que orgulho, Alice!'],
+    ga1:['Os brinquedos voltaram para a casinha deles! Obrigado por cuidar das suas coisas.','Você organizou os brinquedos. O seu quarto ficou feliz e eu também!','Cada brinquedo no lugar... que capricho, Alice!'],
+    ga2:['Que historinha gostosa vocês leram hoje! Eu adoro quando você fica curiosa.','Livro lido! A sua cabecinha ficou cheia de coisas novas.','Ler junto com a família é um dos meus jeitos preferidos de ver você feliz.'],
+    ga3:['Você experimentou uma comida nova! Isso é coragem de verdade.','Uma mordidinha de coragem! Eu fiz cada sabor pensando em você.','Que corajosa! Experimentar comida nova é uma aventura, e você foi longe!'],
+    ga4:['Você dormiu até a hora certa! Seu corpinho descansou e cresceu mais um pouquinho.','Ficou na caminha até a hora de acordar! Que menina grande!','Você esperou a hora certa para levantar. A mamãe também descansou, obrigada!'],
+    _:['Eu vi quando você {acao}. Isso deixou o meu coração feliz!','Hoje você {acao}. Que orgulho de você, Alice!','Eu reparei: você {acao}. Que coisa linda!'],
+  },
+  joey: {
+    g1:['Você obedeceu de primeira hoje. Isso mostra confiança e maturidade.','Responder rápido quando os seus pais pedem é um jeito de honrar eles. Mandou bem!','Obediência de primeira hoje! Isso evita briga e mostra que você está crescendo.'],
+    g2:['Eu vi você ajudando a Alice. Ela vai lembrar disso: o irmão mais velho que cuida.','Ajudar a sua irmã é ser herói de verdade, sem capa nenhuma.','Você foi gentil com a Alice hoje. É assim que se constrói uma amizade de irmãos para a vida toda.'],
+    g3:['Pedir desculpas sem ninguém mandar é coisa de gente forte de verdade.','Você assumiu o erro e pediu desculpas. Isso vale mais que qualquer troféu.','Que bonito o seu pedido de desculpas hoje. Eu me orgulho de você.'],
+    gj1:['Os animais comeram porque você lembrou deles. Cuidar da criação foi a primeira tarefa que eu dei para as pessoas!','Você alimentou os animais hoje. Eles confiam em você, e você não decepcionou.','Obrigado por cuidar dos bichos. Quem cuida dos animais tem um coração bom.'],
+    gj2:['Mais um livro lido! Cada página faz a sua mente crescer.','Você leu hoje. Leitores viram pessoas sábias. Continue!','Livro terminado? Que tal contar para a família o que você mais gostou?'],
+    gj3:['Bagunça organizada! Você deixou a casa mais leve para todo mundo.','Organizar sem reclamar é coisa de quem está amadurecendo. Mandou bem!','Você arrumou a bagunça. A mamãe agradece, e eu também!'],
+    gj4:['Tênis limpos! Quem cuida das pequenas coisas recebe coisas maiores.','Você cuidou dos seus tênis. Responsabilidade combina com você.','Tênis brilhando! Cuidar do que você tem é uma forma de gratidão.'],
+    _:['Eu vi quando você {acao}. Isso me deixou orgulhoso!','Hoje você {acao}. Continue assim, Joey!','Reparei que você {acao}. Isso faz diferença.'],
+  },
+};
+const JESUS_BAD = {
+  alice: {
+    ba1:['Hoje a mãozinha bateu, né? Eu sei que deu raiva. Amanhã, quando a raiva vier, use a mão para chamar a mamãe ou me dar um abraço.','Bater machuca por fora e por dentro. Vamos pedir desculpas e tentar de novo amanhã? Eu te ajudo.'],
+    ba2:['Alguém se machucou hoje. Que tal um beijinho de desculpas? Eu te ajudo a ter mãos de carinho.','Machucar deixa todo mundo triste. Amanhã vamos brincar com cuidado, combinado? Eu continuo te amando.'],
+    ba3:['Escapou uma palavra feia hoje. Amanhã vamos escolher palavras de mel: "por favor", "obrigada", "eu te amo".','Palavra feia deixa um gostinho amargo. Que tal trocar por uma palavra bonita amanhã?'],
+    ba4:['Hoje você saiu da cadeirinha. Ela é o abraço que te protege no carro. Fique bem presinha, que eu cuido do caminho.','A cadeirinha é como um escudo de princesa. Amanhã, fique nela até o carro parar, tá?'],
+    ba5:['Hoje a comida ficou no prato... Amanhã experimenta só uma garfadinha? A comida dá força para brincar!','Seu corpinho precisa de comidinha para crescer. Amanhã vamos tentar de novo, juntinhos.'],
+    ba6:['Hoje teve choro, né? Tudo bem sentir as coisas. Quando o coração apertar, use as palavras: "mamãe, estou triste".','Eu enxugo cada lagriminha. Amanhã, quando der vontade de chorar, respira fundinho e conta para a mamãe.'],
+    ba7:['Hoje você acordou cedinho demais. Quando abrir os olhos e ainda estiver escuro, fique quietinha na cama, conversando comigo baixinho.','O sol ainda estava dormindo quando você acordou! Amanhã, espere ele acordar primeiro, tá?'],
+    ba8:['Hoje passou um desenho que não era para você. Os seus olhinhos merecem coisas boas e bonitas. Escolha com a mamãe, tá?','Alguns desenhos não são para crianças pequenas. Amanhã, peça para a mamãe escolher com você.'],
+    _:['Hoje teve um momento difícil, né? Está tudo bem. Eu continuo te amando e te ajudo a recomeçar.'],
+    warn:['Hoje teve uns avisinhos... Amanhã a gente tenta de novo, combinado? Eu acredito em você.','Teve dia de aviso hoje, mas amanhã é um dia novinho em folha!'],
+  },
+  joey: {
+    bj1:['Hoje a raiva ganhou e você bateu. Eu não deixo de te amar por isso. Amanhã, quando ferver, se afaste, respire e conte até dez.','Bater nunca resolve, só machuca. Peça desculpas e amanhã treine o controle. Força de verdade é se segurar.'],
+    bj2:['Hoje saiu uma resposta atravessada. Ainda dá tempo: um "desculpa, falei mal" conserta muita coisa.','Respostas mal-educadas machucam quem te ama. Amanhã, respire antes de responder. Você consegue.'],
+    bj3:['Hoje deu preguiça de ajudar em casa, né? Mas família é um time. Amanhã, que tal ser o primeiro a oferecer ajuda?','Eu também servi os meus amigos lavando os pés deles. Ajudar é amar. Amanhã é a sua chance!'],
+    bj4:['Esqueceu uma tarefa hoje. Acontece. Que tal deixar um bilhete ou um alarme para lembrar amanhã?','Esquecer não te faz menos inteligente. Crie um jeito de lembrar, e eu te ajudo a se organizar.'],
+    bj5:['Hoje teve atraso. Amanhã, prepare as coisas na noite anterior e acorde com tempo. Você consegue!','Pontualidade é treino. Separe a roupa e a mochila hoje à noite, e amanhã vai ser mais fácil.'],
+    _:['Hoje teve um momento difícil, né? Está tudo bem. Eu continuo te amando e te ajudo a recomeçar.'],
+    warn:['Hoje teve alguns avisos. Amanhã você pode mostrar do que é capaz. Eu acredito em você.','Dia com avisos não é dia perdido. Aprenda, descanse e recomece amanhã.'],
+  },
+};
+const JESUS_CTX = {
+  alice: {
+    tasks:['Você fez todas as tarefinhas hoje! Que capricho, Alice!','Rotina completinha! Você está ficando uma menina tão grande!','Todas as estrelinhas da rotina, uma por uma. Eu vi cada uma!'],
+    calm:['Eu vi você no cantinho da calma, respirando fundinho. Você acalmou o coração. Que orgulho!','Você soprou a velinha e cheirou a florzinha até ficar calminha. Isso é coisa de menina sábia!'],
+    xmas:['Hoje você fez uma coisa incrível para alguém. É assim que se prepara o Natal: com amor!','O seu cartão de Natal está ficando lindo! Cada coisa boa que você faz é um presente para mim.'],
+    bday:['Feliz aniversário, Alice! Que bom que você nasceu! Eu me alegro muito por você existir. 🎂'],
+    many:['E não foi só isso: hoje teve {n} coisas boas! Que dia lindo!'],
+  },
+  joey: {
+    tasks:['Rotina completa hoje. Constância é um superpoder, Joey.','Você fez tudo o que tinha que fazer. Isso se chama responsabilidade, e você está mandando bem.','Todas as tarefas feitas! Quem é fiel no pouco, eu confio o muito.'],
+    calm:['Você foi para o cantinho da calma em vez de explodir. Isso é sabedoria, Joey.','Respirar e se acalmar antes de reagir é coisa de quem está ficando forte por dentro. Muito bem!'],
+    xmas:['Você fez uma coisa incrível por alguém hoje. É assim que o Natal de verdade acontece!','Os seus pontos de Natal mostram um coração generoso. Continue surpreendendo as pessoas!'],
+    bday:['Feliz aniversário, Joey! Mais um ano da sua história, e eu estive em cada dia dele. 🎂'],
+    many:['E ainda teve mais: {n} coisas boas hoje! Que dia!'],
+  },
+};
+function strHash(s){ let h = 2166136261; for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) } return h >>> 0 }
+function seededPerm(n, seed){ const a = [...Array(n).keys()]; let x = seed || 1;
+  for(let i=n-1;i>0;i--){ x = (Math.imul(x, 1103515245) + 12345) >>> 0; const j = x % (i+1); [a[i],a[j]] = [a[j],a[i]] } return a }
+function dailyIdx(len, kidId, d){ const cyc = Math.floor(d / len); return seededPerm(len, strHash(kidId + ':' + cyc))[d % len] }
+const pickV = (arr, kidId, salt) => arr[(dayNum() + strHash(kidId + salt)) % arr.length];
+function mainMsgFor(k, d){
+  const own = JESUS_MAIN[k.id];
+  if(own){ const i = dailyIdx(own.length, k.id, d); return own[i] }
+  const idx = Math.max(0, kids().findIndex(x => x.id === k.id)), a = age(k.birth), pool = (a != null && a <= 6) ? MSG_SMALL : MSG_BIG;
+  return pool[(d + idx * 13) % pool.length];
+}
 function jesusMsg(k){
-  const idx = Math.max(0, kids().findIndex(x => x.id === k.id));
-  const a = age(k.birth), own = MSG_BY_KID[k.id], pool = own || ((a != null && a <= 6) ? MSG_SMALL : MSG_BIG);
-  const [txt, ref] = pool[(dayNum() + (own ? 0 : idx * 13)) % pool.length];
+  const d = dayNum(), list = kids(), me = Math.max(0, list.findIndex(x => x.id === k.id)), used = new Set();
+  let pick = null;
+  for(let j=0;j<=me;j++){ const kk = list[j] || k; let off = 0, m;
+    do { m = mainMsgFor(kk, d + off * 7919); off++ } while(off < 12 && (used.has(m[1]) || used.has(m[0])));
+    used.add(m[1]); used.add(m[0]); if(j === me) pick = m }
+  const [txt, ref] = pick || mainMsgFor(k, d);
+  const G = JESUS_GOOD[k.id] || JESUS_GOOD[k.g === 'f' ? 'alice' : 'joey'], B = JESUS_BAD[k.id] || JESUS_BAD[k.g === 'f' ? 'alice' : 'joey'], C = JESUS_CTX[k.id] || JESUS_CTX[k.g === 'f' ? 'alice' : 'joey'];
   const es = todayEntries(k.id), extra = [];
-  if(bdayDays(k.birth) === 0) extra.push(`Hoje é o seu aniversário! Eu me alegro muito por você existir. 🎂`);
+  if(bdayDays(k.birth) === 0) extra.push(pickV(C.bday, k.id, 'b'));
+  const bads = es.filter(e => e.type === 'bad').sort((x,y) => (y.at||'').localeCompare(x.at||''));
+  const goods = es.filter(e => e.type === 'good').sort((x,y) => (y.at||'').localeCompare(x.at||''));
+  if(bads.length){ const b = bads[0]; extra.push(pickV(B[b.ref] || B._, k.id, 'x' + b.ref)) }
+  else if(es.filter(e => e.type === 'warn').length >= 2) extra.push(pickV(B.warn, k.id, 'w'));
+  if(goods.length){ const g = goods[0], acao = g.label.charAt(0).toLowerCase() + g.label.slice(1);
+    extra.push(pickV(G[g.ref] || G._, k.id, 'g' + g.ref).replace('{acao}', acao));
+    if(goods.length >= 3) extra.push(pickV(C.many, k.id, 'm').replace('{n}', goods.length)) }
+  if(es.some(e => e.type === 'calm')) extra.push(pickV(C.calm, k.id, 'c'));
   const tasks = tasksFor(k.id), done = tasks.filter(t => isDone(k.id, t)).length;
-  const hard = es.some(e => e.type === 'bad') || es.filter(e => e.type === 'warn').length >= 2;
-  const good = es.filter(e => e.type === 'good').sort((x,y) => (y.at||'').localeCompare(x.at||''))[0];
-  if(good) extra.push(`Eu vi quando você ${good.label.charAt(0).toLowerCase() + good.label.slice(1)}. Isso deixou o meu coração feliz!`);
-  else if(tasks.length && done === tasks.length) extra.push('Vi que você completou a sua rotina hoje. Que capricho!');
-  if(hard) extra.push('Hoje teve um momento difícil, né? Está tudo bem. Eu continuo te amando e te ajudo a recomeçar.');
-  return {text: fillMsg(txt, k), extra, ref};
+  if(extra.length < 3 && tasks.length && done === tasks.length) extra.push(pickV(C.tasks, k.id, 't'));
+  if(extra.length < 3 && es.some(e => e.type === 'xmas')) extra.push(pickV(C.xmas, k.id, 'n'));
+  return {text: fillMsg(txt, k), extra: extra.slice(0, 3).map(x => fillMsg(x, k)), ref};
 }
 const msgSpeech = (k, m) => `Recadinho de Jesus para ${k.name}. ${m.text} ${m.extra.join(' ')} Com amor, Jesus.`;
 function msgBody(k, m){ return `<p class="msg-main">${esc(m.text)}</p>${m.extra.map(x => `<p class="msg-extra">${esc(x)}</p>`).join('')}<p class="msg-sign">Com amor, Jesus 💛 <span>Inspirado em ${esc(m.ref)}</span></p>` }
@@ -1991,6 +2346,180 @@ PHATS.reindeer = () => `<path d="M56 74 C68 44 132 44 144 74" fill="none" stroke
 PTOP.xsweater = () => torso('#C9483F', `<path d="M40 214 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8 l10 -8 l10 8" fill="none" stroke="#FFFCF6" stroke-width="4" stroke-linejoin="round"/><path d="M100 220 l12 18 h-24 Z" fill="#6A9845" ${ST}/><path d="${starD(100,218,4,1.8)}" fill="#F2C94C"/>` + neckV);
 BG.bethlehem = p => grad(p+'g','#1D2350','#3A3A7A') + `<g fill="#FFF1B5"><path d="${starD(150,44,16,6)}"/><path d="M150 20 L150 4 M150 68 L150 92 M126 44 L112 44 M174 44 L188 44" stroke="#FFF1B5" stroke-width="2"/></g>${[[30,30],[70,20],[100,50],[24,90],[186,110],[60,70]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="1.6" fill="#fff"/>`).join('')}<path d="M0 200 C40 180 80 186 110 196 C140 186 170 182 200 196 L200 240 L0 240 Z" fill="#2B2A4E"/><path d="M128 196 L150 178 L172 196 L172 214 L128 214 Z" fill="#4A3F6B"/><rect x="144" y="200" width="12" height="14" fill="#F2C94C" opacity=".8"/>`;
 CATALOG.push({cat:'hat', id:'santa', name:'Gorro de Natal', need:{advent:6}}, {cat:'top', id:'xsweater', name:'Suéter de Natal', need:{advent:12}}, {cat:'hat', id:'reindeer', name:'Tiara de rena', need:{advent:18}}, {cat:'bg', id:'bethlehem', name:'Estrela de Belém', need:{advent:24}});
+/* ---------- v10: mais roupas, acessórios e coisas engraçadas ---------- */
+AV_CATS.splice(3, 0, {id:'fx', label:'Engraçados'});
+LOOK_CATS.push('fx'); DEFAULT_LOOK.fx = 'none';
+NEED_WORDS.calm = 'idas ao cantinho da calma';
+Object.assign(PTOP, {
+  banana: () => torso('#FFE45C', `<path d="M86 180 C70 196 60 216 64 240 L84 240 C80 218 86 198 98 186 Z" fill="#FFD21F" ${ST}/><path d="M114 180 C130 196 140 216 136 240 L116 240 C120 218 114 198 102 186 Z" fill="#FFD21F" ${ST}/><ellipse cx="100" cy="222" rx="4" ry="3" fill="#8B5A2B" opacity=".55"/><ellipse cx="108" cy="208" rx="3" ry="2" fill="#8B5A2B" opacity=".5"/><ellipse cx="94" cy="234" rx="3" ry="2.4" fill="#8B5A2B" opacity=".5"/>`),
+  hotdog: () => torso('#F2B266', `<rect x="82" y="182" width="36" height="66" rx="18" fill="#E2554F" ${ST}/><path d="M92 192 l8 6 l-8 6 l8 6 l-8 6 l8 6 l-8 6 l8 6" fill="none" stroke="#FFD21F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 210 q6 -4 12 0 M138 210 q6 -4 12 0" stroke="#D9913F" stroke-width="2.5" fill="none"/>`),
+  pizza: (p, c) => torso(c, neckV + `<path d="M108 198 L152 206 L124 238 Z" fill="#FFD27A" ${ST}/><path d="M108 198 L152 206 L150 213 L111 206 Z" fill="#E39A45"/><circle cx="124" cy="214" r="4.5" fill="#E2554F"/><circle cx="134" cy="222" r="3.5" fill="#E2554F"/><circle cx="122" cy="226" r="3" fill="#E2554F"/><path d="M118 220 l3 2" stroke="#2DC160" stroke-width="2.5" stroke-linecap="round"/>`),
+  chef: () => torso('#FFFFFF', `<path d="M86 180 L100 200 L114 180 Z" fill="#E2554F" ${ST}/><path d="M96 196 L92 212 L104 202" fill="#E2554F" ${ST}/>${[206,220,234].map(y => `<circle cx="88" cy="${y}" r="3" fill="#C9D3E3" ${ST}/><circle cx="112" cy="${y}" r="3" fill="#C9D3E3" ${ST}/>`).join('')}`),
+  penguin: () => torso('#2B2B3A', `<ellipse cx="100" cy="232" rx="32" ry="40" fill="#FFFFFF" ${ST}/><path d="M86 192 L100 198 L86 204 Z M114 192 L100 198 L114 204 Z" fill="#FF8A1F" ${ST}/><circle cx="100" cy="198" r="3.5" fill="#FF8A1F" ${ST}/>`),
+  hawaii: () => torso('#2FA4E7', `<path d="M86 180 L98 198 L92 202 L80 188 Z M114 180 L102 198 L108 202 L120 188 Z" fill="#FFFFFF" ${ST}/>${[[56,214,'#FF5C93'],[138,210,'#FFD23F'],[118,232,'#FF5C93'],[74,234,'#FFD23F']].map(([x,y,c]) => `<g>${[0,72,144,216,288].map(a => `<ellipse cx="${x}" cy="${y-5}" rx="3.4" ry="5.5" fill="${c}" transform="rotate(${a} ${x} ${y})"/>`).join('')}<circle cx="${x}" cy="${y}" r="2.4" fill="#fff"/></g>`).join('')}<path d="M40 228 q8 -10 16 -2 M150 230 q8 -10 14 0" stroke="#2DC160" stroke-width="4" fill="none" stroke-linecap="round"/>`),
+  fairy: () => torso('#D3C2FF', `<path d="M80 184 C88 198 112 198 120 184" fill="none" stroke="#fff" stroke-width="4"/>${[[64,222],[100,214],[136,222],[82,234],[118,234]].map(([x,y]) => `<path d="${starD(x,y,5,2)}" fill="#FFD23F"/>`).join('')}`),
+  mermaid: p => `<defs><pattern id="${p}m" width="14" height="10" patternUnits="userSpaceOnUse"><rect width="14" height="10" fill="#2DD4BF"/><path d="M0 10 A7 7 0 0 1 14 10" fill="none" stroke="#0F9E8E" stroke-width="2"/></pattern></defs>` + torso(`url(#${p}m)`, `<path d="M86 180 C90 194 110 194 114 180" fill="none" stroke="#FFFFFF" stroke-width="3"/>${[88,96,104,112].map((x,i) => `<circle cx="${x}" cy="${192 + (i%3===0?0:3)}" r="3" fill="#fff" ${ST}/>`).join('')}<path d="${starD(132,220,9,4)}" fill="#FF9A3C" ${ST}/>`),
+  tuxedo: () => torso('#2B2B3A', `<path d="M86 180 L100 230 L114 180 Z" fill="#FFFFFF" ${ST}/><path d="M86 192 L100 198 L86 204 Z M114 192 L100 198 L114 204 Z" fill="#E2554F" ${ST}/><circle cx="100" cy="198" r="3" fill="#B8324C"/><circle cx="100" cy="214" r="2" fill="#2B2B3A"/><circle cx="100" cy="224" r="2" fill="#2B2B3A"/><path d="M128 206 l12 -2" stroke="#FFFFFF" stroke-width="3"/>`),
+  rockstar: () => torso('#2B2B3A', neckV + `<path d="M104 192 L90 216 L102 216 L94 238 L116 208 L104 208 L112 192 Z" fill="#FFD23F" ${ST}/>${[[52,204],[60,198],[148,204],[140,198],[44,212],[156,212]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#E6ECF5" ${ST}/>`).join('')}`),
+  raincoat: () => torso('#FFD21F', `<path d="M74 184 C84 176 116 176 126 184" fill="none" stroke="#E0A800" stroke-width="7"/><path d="M100 186 L100 240" stroke="${OL}" stroke-width="2.4"/>${[204,220,234].map(y => `<rect x="94" y="${y}" width="12" height="5" rx="2.5" fill="#8B5A2B"/>`).join('')}<path d="M140 210 C134 220 134 226 140 228 C146 226 146 220 140 210 Z" fill="#3FB2FF" ${ST}/>`),
+  fireman: () => torso('#C98B2E', neckV + `<rect x="30" y="214" width="140" height="7" fill="#FFE45C"/><rect x="30" y="222" width="140" height="4" fill="#E6ECF5"/><rect x="26" y="234" width="148" height="6" fill="#FFE45C"/><rect x="94" y="186" width="12" height="54" fill="#2B2B3A" opacity=".75"/>`),
+  rainbowTee: p => `<defs><clipPath id="${p}r"><path d="${TORSO}"/></clipPath></defs>` + torso('#FFFFFF', `<g clip-path="url(#${p}r)">${['#FF5C93','#FF9A3C','#FFD23F','#4CD07D','#3FB2FF','#A066FF'].map((c,i) => `<path d="M${54+i*6} 240 A${46-i*6} ${46-i*6} 0 0 1 ${146-i*6} 240" stroke="${c}" stroke-width="6" fill="none"/>`).join('')}</g><path d="${TORSO}" fill="none" ${ST}/>` + neckV),
+  pijama: () => torso('#9DB8FF', `<path d="M86 180 L100 196 L114 180" fill="none" stroke="#FFFFFF" stroke-width="4"/><path d="M100 196 L100 240" stroke="#FFFFFF" stroke-width="2.4" stroke-dasharray="2 8"/>${[[58,210],[140,214],[120,232],[72,232]].map(([x,y]) => `<path d="${starD(x,y,6,2.6)}" fill="#FFE45C"/>`).join('')}<path d="M136 196 a7 7 0 1 0 8 10 a6 6 0 1 1 -8 -10 Z" fill="#FFE45C"/>`),
+});
+Object.assign(PBACK, {
+  fairy: () => `<g><ellipse cx="36" cy="176" rx="34" ry="20" transform="rotate(-35 36 176)" fill="#9FDCFF" fill-opacity=".9" ${ST}/><ellipse cx="164" cy="176" rx="34" ry="20" transform="rotate(35 164 176)" fill="#9FDCFF" fill-opacity=".9" ${ST}/><ellipse cx="38" cy="214" rx="22" ry="13" transform="rotate(20 38 214)" fill="#FFB3DA" fill-opacity=".9" ${ST}/><ellipse cx="162" cy="214" rx="22" ry="13" transform="rotate(-20 162 214)" fill="#FFB3DA" fill-opacity=".9" ${ST}/>${[[28,168],[172,168],[34,212],[166,212]].map(([x,y]) => `<path d="${starD(x,y,4,1.6)}" fill="#fff"/>`).join('')}</g>`,
+});
+Object.assign(PHATS, {
+  chefHat: () => `<g fill="#FFFFFF" ${ST}><circle cx="74" cy="44" r="16"/><circle cx="126" cy="44" r="16"/><circle cx="100" cy="32" r="21"/></g><rect x="66" y="52" width="68" height="24" rx="5" fill="#FFFFFF" ${ST}/><path d="M84 56 V72 M100 56 V72 M116 56 V72" stroke="#E2E8F2" stroke-width="2"/>`,
+  propeller: () => `<path d="M50 84 C50 46 74 30 100 30 C126 30 150 46 150 84 Z" fill="#FF5C93" ${ST}/><path d="M78 38 C70 54 68 70 70 84 L100 84 L100 30 C92 30 84 33 78 38 Z" fill="#FFD23F"/><path d="M122 38 C130 54 132 70 130 84 L100 84 L100 30 C108 30 116 33 122 38 Z" fill="#3FB2FF"/><path d="M50 84 C50 46 74 30 100 30 C126 30 150 46 150 84 Z" fill="none" ${ST}/><path d="M100 30 V16" ${ST}/><ellipse cx="86" cy="14" rx="15" ry="5" fill="#FF8A1F" ${ST}/><ellipse cx="114" cy="14" rx="15" ry="5" fill="#2DC160" ${ST}/><circle cx="100" cy="14" r="4" fill="#9B4DFF" ${ST}/>`,
+  frog: () => `<path d="M50 84 C50 46 74 30 100 30 C126 30 150 46 150 84 Z" fill="#5CC27C" ${ST}/><circle cx="76" cy="32" r="13" fill="#5CC27C" ${ST}/><circle cx="124" cy="32" r="13" fill="#5CC27C" ${ST}/><circle cx="76" cy="31" r="8" fill="#fff"/><circle cx="124" cy="31" r="8" fill="#fff"/><circle cx="78" cy="32" r="4" fill="#1E1714"/><circle cx="122" cy="32" r="4" fill="#1E1714"/><path d="M76 66 Q100 80 124 66" fill="none" stroke="#2E7D4F" stroke-width="3" stroke-linecap="round"/><circle cx="68" cy="62" r="4" fill="#FF8FB0" opacity=".8"/><circle cx="132" cy="62" r="4" fill="#FF8FB0" opacity=".8"/>`,
+  antennas: () => `<path d="M56 74 C68 44 132 44 144 74" fill="none" stroke="#9B4DFF" stroke-width="6"/><path d="M80 50 Q70 32 64 16 M120 50 Q130 32 136 16" fill="none" ${ST}/><circle cx="64" cy="14" r="9" fill="#7CE36A" ${ST}/><circle cx="136" cy="14" r="9" fill="#7CE36A" ${ST}/><circle cx="61" cy="11" r="2.6" fill="#fff"/><circle cx="133" cy="11" r="2.6" fill="#fff"/>`,
+  bunnyEars: () => `<path d="M56 74 C68 44 132 44 144 74" fill="none" stroke="#FFFFFF" stroke-width="7"/><path d="M56 74 C68 44 132 44 144 74" fill="none" stroke="#F2DDEB" stroke-width="2"/><ellipse cx="80" cy="22" rx="11" ry="30" transform="rotate(-12 80 22)" fill="#FFFFFF" ${ST}/><ellipse cx="120" cy="22" rx="11" ry="30" transform="rotate(12 120 22)" fill="#FFFFFF" ${ST}/><ellipse cx="80" cy="24" rx="5" ry="20" transform="rotate(-12 80 24)" fill="#FFB3CC"/><ellipse cx="120" cy="24" rx="5" ry="20" transform="rotate(12 120 24)" fill="#FFB3CC"/>`,
+  tiara: () => `<path d="M62 66 L70 48 L84 58 L100 34 L116 58 L130 48 L138 66 Q100 58 62 66 Z" fill="#E6ECF5" ${ST}/><circle cx="100" cy="46" r="6" fill="#FF5C93" ${ST}/><circle cx="76" cy="58" r="4" fill="#3FB2FF" ${ST}/><circle cx="124" cy="58" r="4" fill="#3FB2FF" ${ST}/><path d="${starD(100,46,3,1.2)}" fill="#fff"/>`,
+  cowboy: () => `<ellipse cx="100" cy="72" rx="78" ry="13" fill="#A0652F" ${ST}/><path d="M64 72 C62 38 80 26 100 36 C120 26 138 38 136 72 Z" fill="#B97A43" ${ST}/><path d="M66 62 Q100 70 134 62" stroke="#5A3A22" stroke-width="7" fill="none"/><path d="${starD(100,64,5,2)}" fill="#FFD23F"/>`,
+  fireHelmet: () => `<path d="M48 82 C46 40 74 24 100 24 C126 24 154 40 152 82 Z" fill="#E2312F" ${ST}/><path d="M38 82 C60 92 140 92 162 82 C160 96 40 96 38 82 Z" fill="#B8221F" ${ST}/><path d="M100 24 L100 82" stroke="#B8221F" stroke-width="5"/><path d="M88 46 L112 46 L112 62 Q100 72 88 62 Z" fill="#FFD23F" ${ST}/><text x="100" y="60" text-anchor="middle" font-family="Fredoka,Arial,sans-serif" font-weight="700" font-size="12" fill="#B8221F">1</text>`,
+  fruit: () => `<path d="M52 76 C62 50 138 50 148 76" fill="none" stroke="#2DC160" stroke-width="8"/><g ${ST}><path d="M60 54 C58 34 74 22 92 26 C80 32 72 42 70 56 Z" fill="#FFE14D"/><circle cx="112" cy="30" r="14" fill="#FF9A3C"/><path d="M124 52 C128 38 146 36 150 50 C150 60 138 68 132 66 Z" fill="#E2554F"/>${[[86,46],[96,46],[91,38],[101,38],[96,30]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="6" fill="#9B4DFF"/>`).join('')}</g><path d="M112 16 l4 -6" stroke="#2DC160" stroke-width="3" stroke-linecap="round"/>`,
+  shark: () => `<path d="M96 30 L114 -2 L126 32 Z" fill="#7F95AD" ${ST}/><path d="M46 98 C40 46 72 26 100 26 C128 26 160 46 154 98 C150 86 140 80 130 78 L70 78 C60 80 50 86 46 98 Z" fill="#8FA6BF" ${ST}/><path d="M66 78 ${[0,1,2,3,4,5,6,7].map(i => `l4.5 8 l4.5 -8`).join(' ')}" fill="#FFFFFF" ${ST}/><circle cx="66" cy="52" r="5" fill="#1E1714"/><circle cx="134" cy="52" r="5" fill="#1E1714"/><circle cx="67.5" cy="50.5" r="1.6" fill="#fff"/><circle cx="135.5" cy="50.5" r="1.6" fill="#fff"/>`,
+});
+Object.assign(PGLASSES, {
+  groucho: () => `<path d="M68 88 Q82 80 96 88 M104 88 Q118 80 132 88" stroke="#1E1714" stroke-width="6" fill="none" stroke-linecap="round"/><g fill="rgba(255,255,255,.15)" stroke="#1E1714" stroke-width="4"><circle cx="82" cy="104" r="12"/><circle cx="118" cy="104" r="12"/></g><path d="M94 103 Q100 99 106 103" stroke="#1E1714" stroke-width="4" fill="none"/><ellipse cx="100" cy="118" rx="9" ry="11" fill="#F7A8A0" ${ST}/><path d="M100 126 C90 120 76 122 74 132 C84 128 92 132 100 130 C108 132 116 128 126 132 C124 122 110 120 100 126 Z" fill="#1E1714"/>`,
+  pixel: () => `<g fill="#1E1714"><rect x="62" y="96" width="76" height="6"/><rect x="66" y="102" width="28" height="6"/><rect x="106" y="102" width="28" height="6"/><rect x="70" y="108" width="20" height="5"/><rect x="110" y="108" width="20" height="5"/></g><g fill="#fff" opacity=".85"><rect x="70" y="102" width="5" height="5"/><rect x="110" y="102" width="5" height="5"/></g>`,
+  catEye: () => `<path d="M64 98 C70 92 90 94 96 100 C96 112 86 116 78 114 C70 112 66 106 64 98 Z M64 98 L56 90" fill="rgba(255,182,214,.35)" stroke="#FF4F8B" stroke-width="3.6" stroke-linejoin="round"/><path d="M136 98 C130 92 110 94 104 100 C104 112 114 116 122 114 C130 112 134 106 136 98 Z M136 98 L144 90" fill="rgba(255,182,214,.35)" stroke="#FF4F8B" stroke-width="3.6" stroke-linejoin="round"/><path d="M96 101 Q100 98 104 101" stroke="#FF4F8B" stroke-width="3" fill="none"/>`,
+  diving: () => `<path d="M56 100 L44 98 M144 100 L156 98" stroke="#2B2B3A" stroke-width="6"/><rect x="60" y="88" width="80" height="32" rx="14" fill="rgba(150,220,255,.35)" stroke="#FF8A1F" stroke-width="5"/><path d="M100 90 V118" stroke="#FF8A1F" stroke-width="4"/><path d="M146 128 L150 70 Q150 62 158 62" stroke="#FFD23F" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M146 128 L150 70 Q150 62 158 62" stroke="${OL}" stroke-width="1.6" fill="none"/>`,
+  threeD: () => `<rect x="62" y="92" width="76" height="24" rx="4" fill="#FFFFFF" ${ST}/><rect x="68" y="96" width="26" height="16" rx="3" fill="#FF3B5C" fill-opacity=".85"/><rect x="106" y="96" width="26" height="16" rx="3" fill="#2EC4FF" fill-opacity=".85"/><path d="M62 98 L54 96 M138 98 L146 96" ${ST}/>`,
+  flower: () => [82,118].map(x => `<g>${[0,60,120,180,240,300].map(a => `<circle cx="${x + Math.cos(a*Math.PI/180)*15}" cy="${104 + Math.sin(a*Math.PI/180)*15}" r="6.5" fill="${a%120 ? '#FFD23F' : '#FF5C93'}" ${ST}/>`).join('')}<circle cx="${x}" cy="104" r="11" fill="rgba(255,255,255,.2)" stroke="${OL}" stroke-width="2.4"/></g>`).join('') + `<path d="M93 102 L107 102" ${ST}/>`,
+  googly: () => `<circle cx="82" cy="104" r="15" fill="#FFFFFF" ${ST}/><circle cx="118" cy="104" r="15" fill="#FFFFFF" ${ST}/><circle cx="78" cy="111" r="7" fill="#1E1714"/><circle cx="124" cy="97" r="7" fill="#1E1714"/><path d="M97 103 L103 103" ${ST}/>`,
+});
+const PFX = {
+  mustache: () => `<path d="M100 124 C92 116 78 116 72 128 C76 122 84 126 90 128 C94 129 98 128 100 126 C102 128 106 129 110 128 C116 126 124 122 128 128 C122 116 108 116 100 124 Z" fill="#3A2A20" ${ST}/>`,
+  clown: () => `<circle cx="100" cy="116" r="9" fill="#F0386B" ${ST}/><circle cx="97" cy="113" r="2.6" fill="#fff" opacity=".8"/>`,
+  tongue: () => `<path d="M94 132 Q94 146 100 146 Q106 146 106 132 Z" fill="#FF7A90" ${ST}/><path d="M100 134 V142" stroke="#D9546A" stroke-width="1.6"/>`,
+  gum: () => `<circle cx="100" cy="136" r="15" fill="#FF8FC8" fill-opacity=".92" ${ST}/><ellipse cx="94" cy="130" rx="4" ry="3" fill="#fff" opacity=".7"/>`,
+  milk: () => `<path d="M86 126 Q88 122 92 125 Q96 121 100 125 Q104 121 108 125 Q112 122 114 126 Q112 130 108 128 Q104 132 100 128 Q96 132 92 128 Q88 130 86 126 Z" fill="#FFFFFF" stroke="#E2E8F2" stroke-width="1.4"/>`,
+  beard: () => `<g fill="#FFFFFF" stroke="#E2E8F2" stroke-width="1.6">${[[68,132,10],[78,142,11],[90,148,11],[100,150,12],[110,148,11],[122,142,11],[132,132,10],[100,140,10]].map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g><path d="M100 124 C92 118 80 118 76 126 C84 124 92 128 100 127 C108 128 116 124 124 126 C120 118 108 118 100 124 Z" fill="#FFFFFF" stroke="#E2E8F2" stroke-width="1.6"/><path d="M92 132 Q100 136 108 132" stroke="#8B3A32" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+  catpaint: () => `<path d="M95 113 L105 113 L100 119 Z" fill="#FF5C93"/><path d="M80 118 L60 114 M80 122 L60 124 M120 118 L140 114 M120 122 L140 124" stroke="#2B2B3A" stroke-width="2" stroke-linecap="round"/>`,
+  bolt: () => `<path d="M134 108 L124 122 L131 122 L126 134 L140 118 L133 118 L138 108 Z" fill="#FFD23F" ${ST}/>`,
+  sticker: () => `<path d="${starD(132,120,8,3.6)}" fill="#FFD23F" ${ST}/><path d="${heartD(68,121,5)}" fill="#FF5C93"/>`,
+  rainbowCheek: () => ['#FF5C93','#FFD23F','#3FB2FF'].map((c,i) => `<path d="M${62+i*2.5} 124 A${10-i*2.5} ${10-i*2.5} 0 0 1 ${82-i*2.5} 124" stroke="${c}" stroke-width="2.6" fill="none"/>`).join('') + `<circle cx="64" cy="124" r="3" fill="#fff"/><circle cx="80" cy="124" r="3" fill="#fff"/>`,
+};
+Object.assign(HAND_EMO, {pizza:'🍕', lollipop:'🍭', teddy:'🧸', gamepad:'🎮', kite:'🪁', fishing:'🎣', sunflower:'🌻', mic:'🎤', cupcake:'🧁', flashlight:'🔦', duck:'🦆', yoyo:'🪀'});
+Object.assign(PETS, {
+  frog: () => `<ellipse cx="40" cy="226" rx="21" ry="14" fill="#5CC27C" ${ST}/><circle cx="28" cy="208" r="9" fill="#5CC27C" ${ST}/><circle cx="50" cy="208" r="9" fill="#5CC27C" ${ST}/><circle cx="28" cy="207" r="5" fill="#fff"/><circle cx="50" cy="207" r="5" fill="#fff"/><circle cx="29" cy="208" r="2.6" fill="#1E1714"/><circle cx="49" cy="208" r="2.6" fill="#1E1714"/><path d="M28 224 Q39 232 50 224" fill="none" stroke="#2E7D4F" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="222" r="3" fill="#FF8FB0" opacity=".8"/><circle cx="54" cy="222" r="3" fill="#FF8FB0" opacity=".8"/>`,
+  penguin: () => `<ellipse cx="36" cy="218" rx="19" ry="23" fill="#2B2B3A" ${ST}/><ellipse cx="36" cy="224" rx="12" ry="16" fill="#FFFFFF"/><circle cx="30" cy="206" r="3" fill="#fff"/><circle cx="42" cy="206" r="3" fill="#fff"/><circle cx="30" cy="206" r="1.5" fill="#1E1714"/><circle cx="42" cy="206" r="1.5" fill="#1E1714"/><path d="M32 212 L40 212 L36 218 Z" fill="#FF8A1F"/><ellipse cx="28" cy="240" rx="7" ry="3" fill="#FF8A1F"/><ellipse cx="44" cy="240" rx="7" ry="3" fill="#FF8A1F"/>`,
+  pig: () => `<path d="M62 222 q8 -2 6 6 q-2 6 6 4" stroke="#F58FAE" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="44" cy="226" rx="21" ry="14" fill="#FFB3C7" ${ST}/><rect x="30" y="232" width="7" height="9" rx="3" fill="#FFB3C7"/><rect x="50" y="232" width="7" height="9" rx="3" fill="#FFB3C7"/><circle cx="26" cy="208" r="13" fill="#FFB3C7" ${ST}/><path d="M16 198 L14 188 L24 195 Z M34 196 L38 187 L39 198 Z" fill="#F58FAE"/><ellipse cx="22" cy="213" rx="6" ry="4.5" fill="#FF8FB0"/><circle cx="20" cy="213" r="1.2" fill="#8B3A4A"/><circle cx="24" cy="213" r="1.2" fill="#8B3A4A"/><circle cx="21" cy="204" r="1.8" fill="#1E1714"/><circle cx="31" cy="204" r="1.8" fill="#1E1714"/>`,
+  turtle: () => `<ellipse cx="20" cy="232" rx="8" ry="6" fill="#A6D98A" ${ST}/><circle cx="16" cy="222" r="8" fill="#A6D98A" ${ST}/><circle cx="13" cy="220" r="1.8" fill="#1E1714"/><path d="M10 226 q4 3 8 0" stroke="#2E7D4F" stroke-width="1.6" fill="none"/><rect x="34" y="232" width="8" height="8" rx="3" fill="#A6D98A"/><rect x="54" y="232" width="8" height="8" rx="3" fill="#A6D98A"/><path d="M24 234 C24 208 68 208 68 234 Z" fill="#6AAF4A" ${ST}/><path d="M36 214 L46 224 L56 214 M46 224 L46 234 M30 226 L36 214 M62 226 L56 214" stroke="#3E7D2A" stroke-width="2" fill="none"/>`,
+});
+Object.assign(BG, {
+  candy: p => grad(p+'g','#FFD6EC','#FFF4E0') + [[30,60,'#FF5C93'],[170,80,'#3FB2FF'],[160,180,'#FFD23F']].map(([x,y,c]) => `<rect x="${x-2}" y="${y}" width="4" height="40" fill="#fff" stroke="#E8C6DA"/><circle cx="${x}" cy="${y}" r="16" fill="${c}"/><path d="M${x} ${y} m-10 0 a10 10 0 1 0 10 -10 a6 6 0 1 0 6 6" fill="none" stroke="#fff" stroke-width="3"/>`).join('') + `<path d="M24 240 L24 180 Q24 166 38 166 Q50 166 50 178" stroke="#fff" stroke-width="9" fill="none"/><path d="M24 240 L24 180 Q24 166 38 166 Q50 166 50 178" stroke="#F0386B" stroke-width="9" stroke-dasharray="7 7" fill="none"/>` + [[70,232,'#2DC160'],[130,234,'#9B4DFF'],[186,236,'#FF8A1F']].map(([x,y,c]) => `<path d="M${x-12} ${y+6} Q${x-12} ${y-12} ${x} ${y-12} Q${x+12} ${y-12} ${x+12} ${y+6} Z" fill="${c}"/>`).join(''),
+  stage: p => grad(p+'g','#2A1458','#5A2A9A') + `<path d="M60 0 L20 240 L100 240 Z" fill="#FFE45C" opacity=".22"/><path d="M140 0 L100 240 L180 240 Z" fill="#7FE0FF" opacity=".2"/><path d="M0 0 L40 0 C30 60 40 160 24 240 L0 240 Z" fill="#E2312F"/><path d="M200 0 L160 0 C170 60 160 160 176 240 L200 240 Z" fill="#E2312F"/><path d="M0 0 H200 V18 Q150 30 100 18 Q50 30 0 18 Z" fill="#B8221F"/><rect y="218" width="200" height="22" fill="#7A4A2A"/>` + [[60,60],[140,50],[100,30],[50,120],[150,130]].map(([x,y],i) => `<path d="${starD(x,y,i%2?4:6,i%2?1.6:2.4)}" fill="#FFE45C"/>`).join(''),
+  snow: p => grad(p+'g','#BFE6FF','#F2FAFF') + [[20,30],[60,60],[150,40],[180,100],[30,120],[110,20],[170,160],[80,100]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#fff"/>`).join('') + `<path d="M0 200 C50 186 150 186 200 200 L200 240 L0 240 Z" fill="#FFFFFF"/><circle cx="176" cy="196" r="14" fill="#fff" stroke="#D6E6F2" stroke-width="1.5"/><circle cx="176" cy="174" r="10" fill="#fff" stroke="#D6E6F2" stroke-width="1.5"/><path d="M176 176 l8 2 l-8 2 Z" fill="#FF8A1F"/><circle cx="172" cy="171" r="1.4" fill="#222"/><circle cx="180" cy="171" r="1.4" fill="#222"/>`,
+  farm: p => grad(p+'g','#8ED8FF','#E8F8FF') + `<circle cx="34" cy="36" r="16" fill="#FFD23F"/><path d="M0 180 C60 160 120 170 200 160 L200 240 L0 240 Z" fill="#7BD36A"/><path d="M0 206 C70 196 130 204 200 196 L200 240 L0 240 Z" fill="#5CC27C"/><path d="M146 170 L146 128 L170 108 L194 128 L194 170 Z" fill="#E2312F"/><rect x="162" y="144" width="16" height="26" fill="#fff"/><path d="M162 144 L178 170 M178 144 L162 170" stroke="#E2312F" stroke-width="2"/>${[10,30,50,70].map(x => `<rect x="${x}" y="188" width="5" height="22" fill="#fff"/>`).join('')}<rect x="6" y="194" width="74" height="4" fill="#fff"/>` + cloud(110,40,.9),
+});
+CATALOG.push(
+  {cat:'top', id:'pizza', name:'Camiseta de pizza', need:{stars:12}},
+  {cat:'top', id:'rainbowTee', name:'Camiseta arco-íris', need:{stars:30}, g:'f'},
+  {cat:'top', id:'hawaii', name:'Camisa havaiana', need:{stars:30}, g:'m'},
+  {cat:'top', id:'pijama', name:'Pijama de estrelinhas', need:{devo:3}},
+  {cat:'top', id:'banana', name:'Fantasia de banana', need:{stars:70}},
+  {cat:'top', id:'raincoat', name:'Capa de chuva amarela', need:{stars:95}},
+  {cat:'top', id:'chef', name:'Roupa de chef', need:{good:10}},
+  {cat:'top', id:'penguin', name:'Fantasia de pinguim', need:{stars:140}},
+  {cat:'top', id:'hotdog', name:'Fantasia de cachorro-quente', need:{stars:180}},
+  {cat:'top', id:'fairy', name:'Vestido de fada com asinhas', need:{stars:230}, g:'f'},
+  {cat:'top', id:'fireman', name:'Roupa de bombeiro', need:{stars:230}, g:'m'},
+  {cat:'top', id:'mermaid', name:'Roupa de sereia', need:{stars:320}, g:'f'},
+  {cat:'top', id:'tuxedo', name:'Smoking com gravata-borboleta', need:{stars:320}, g:'m'},
+  {cat:'top', id:'rockstar', name:'Jaqueta de roqueiro', need:{stars:420}},
+  {cat:'hat', id:'frog', name:'Chapéu de sapo', need:{stars:30}},
+  {cat:'hat', id:'bunnyEars', name:'Orelhas de coelho', need:{stars:40}, g:'f'},
+  {cat:'hat', id:'cowboy', name:'Chapéu de caubói', need:{stars:40}, g:'m'},
+  {cat:'hat', id:'propeller', name:'Boné de hélice', need:{stars:75}},
+  {cat:'hat', id:'chefHat', name:'Chapéu de chef', need:{good:10}},
+  {cat:'hat', id:'antennas', name:'Antenas de alienígena', need:{stars:120}},
+  {cat:'hat', id:'tiara', name:'Tiara de brilhantes', need:{stars:160}, g:'f'},
+  {cat:'hat', id:'fireHelmet', name:'Capacete de bombeiro', need:{stars:160}, g:'m'},
+  {cat:'hat', id:'fruit', name:'Chapéu de frutas', need:{stars:260}, g:'f'},
+  {cat:'hat', id:'shark', name:'Capuz de tubarão', need:{stars:260}, g:'m'},
+  {cat:'glasses', id:'googly', name:'Olhos esbugalhados', need:{stars:20}},
+  {cat:'glasses', id:'threeD', name:'Óculos 3D', need:{stars:50}},
+  {cat:'glasses', id:'catEye', name:'Óculos de gatinha', need:{stars:90}, g:'f'},
+  {cat:'glasses', id:'pixel', name:'Óculos pixelados', need:{stars:90}, g:'m'},
+  {cat:'glasses', id:'groucho', name:'Óculos com nariz e bigode', need:{stars:150}},
+  {cat:'glasses', id:'flower', name:'Óculos de flor', need:{stars:200}, g:'f'},
+  {cat:'glasses', id:'diving', name:'Máscara de mergulho', need:{stars:200}, g:'m'},
+  {cat:'fx', id:'none', name:'Nada'},
+  {cat:'fx', id:'sticker', name:'Adesivos na bochecha', need:{stars:8}},
+  {cat:'fx', id:'tongue', name:'Língua de fora', need:{stars:18}},
+  {cat:'fx', id:'milk', name:'Bigode de leite', need:{stars:35}},
+  {cat:'fx', id:'clown', name:'Nariz de palhaço', need:{stars:55}},
+  {cat:'fx', id:'catpaint', name:'Pintura de gatinho', need:{stars:80}, g:'f'},
+  {cat:'fx', id:'bolt', name:'Raio de super-herói', need:{stars:80}, g:'m'},
+  {cat:'fx', id:'gum', name:'Bola de chiclete', need:{stars:110}},
+  {cat:'fx', id:'rainbowCheek', name:'Arco-íris na bochecha', need:{calm:3}},
+  {cat:'fx', id:'mustache', name:'Bigode chique', need:{stars:170}},
+  {cat:'fx', id:'beard', name:'Barba de vovô', need:{stars:280}},
+  {cat:'hand', id:'lollipop', name:'Pirulito', need:{stars:15}},
+  {cat:'hand', id:'teddy', name:'Ursinho', need:{stars:25}, g:'f'},
+  {cat:'hand', id:'gamepad', name:'Controle de videogame', need:{stars:25}, g:'m'},
+  {cat:'hand', id:'pizza', name:'Fatia de pizza', need:{stars:45}},
+  {cat:'hand', id:'duck', name:'Patinho de borracha', need:{stars:60}},
+  {cat:'hand', id:'kite', name:'Pipa', need:{stars:85}},
+  {cat:'hand', id:'sunflower', name:'Girassol', need:{stars:120}, g:'f'},
+  {cat:'hand', id:'fishing', name:'Vara de pescar', need:{stars:120}, g:'m'},
+  {cat:'hand', id:'cupcake', name:'Cupcake', need:{chest:3}},
+  {cat:'hand', id:'yoyo', name:'Ioiô', need:{stars:150}},
+  {cat:'hand', id:'mic', name:'Microfone', need:{stars:240}},
+  {cat:'hand', id:'flashlight', name:'Lanterna', need:{stars:190}},
+  {cat:'pet', id:'frog', name:'Sapinho', need:{stars:65}},
+  {cat:'pet', id:'pig', name:'Porquinho', need:{stars:100}},
+  {cat:'pet', id:'turtle', name:'Tartaruguinha', need:{stars:200}},
+  {cat:'pet', id:'penguin', name:'Pinguim', need:{stars:340}},
+  {cat:'bg', id:'candy', name:'Terra dos doces', need:{stars:60}},
+  {cat:'bg', id:'farm', name:'Fazendinha', need:{stars:130}},
+  {cat:'bg', id:'snow', name:'Neve', need:{stars:240}},
+  {cat:'bg', id:'stage', name:'Palco de show', need:{stars:380}},
+);
+/* ---------- v10: rotina do dia a dia por idade + cores novas ---------- */
+const ROUTINE_V = 2;
+const NEW_TASKS = [
+  {id:'ax1', emoji:'🛏️', label:'Ajudar a arrumar a caminha', period:'manha', pts:3, kids:['alice']},
+  {id:'ax2', emoji:'🥣', label:'Tomar café sentadinha à mesa', period:'manha', pts:3, kids:['alice']},
+  {id:'ax3', emoji:'👟', label:'Calçar os sapatos sozinha', period:'manha', pts:3, kids:['alice']},
+  {id:'ax4', emoji:'🧼', label:'Lavar as mãozinhas antes de comer', period:'tarde', pts:3, kids:['alice']},
+  {id:'ax5', emoji:'🥄', label:'Levar o pratinho para a pia', period:'tarde', pts:3, kids:['alice']},
+  {id:'ax6', emoji:'🧺', label:'Ser ajudante da mamãe (regar, guardar, separar meias)', period:'tarde', pts:5, kids:['alice']},
+  {id:'ax7', emoji:'👚', label:'Vestir o pijama sozinha', period:'noite', pts:3, kids:['alice']},
+  {id:'ax8', emoji:'🧦', label:'Pôr a roupa suja no cesto', period:'noite', pts:3, kids:['alice']},
+  {id:'jx1', emoji:'👕', label:'Vestir o uniforme e pentear o cabelo', period:'manha', pts:3, kids:['joey']},
+  {id:'jx2', emoji:'🥣', label:'Tomar café e levar a louça para a pia', period:'manha', pts:3, kids:['joey']},
+  {id:'jx3', emoji:'⏰', label:'Ficar pronto na hora, sem ninguém chamar', period:'manha', pts:5, kids:['joey']},
+  {id:'jx4', emoji:'🍱', label:'Esvaziar a lancheira e guardar o uniforme', period:'tarde', pts:3, kids:['joey']},
+  {id:'jx5', emoji:'🧠', label:'Estudar 15 minutos (revisar ou tabuada)', period:'tarde', pts:5, kids:['joey']},
+  {id:'jx6', emoji:'🍽️', label:'Ajudar a pôr ou tirar a mesa', period:'tarde', pts:5, kids:['joey']},
+  {id:'jx7', emoji:'⚽', label:'Brincar ao ar livre ou se mexer 30 minutos', period:'tarde', pts:3, kids:['joey']},
+  {id:'jx8', emoji:'🧹', label:'Fazer uma tarefa da casa (lixo, louça ou varrer)', period:'noite', pts:5, kids:['joey']},
+  {id:'jx9', emoji:'👖', label:'Separar a roupa de amanhã e pôr a suja no cesto', period:'noite', pts:3, kids:['joey']},
+];
+const TASK_ORDER = ['ax1','a2','ax2','a1','ax3','ax4','a3','ax5','ax6','a4','ax7','ax8','a5','a6','j1','jx1','jx2','j2','jx3','jx4','j3','jx5','jx7','jx6','jx8','j4','jx9','j5','j6'];
+const KID_COLORS_V10 = {alice:['#D9737F','#FF4F8B'], joey:['#5E9C9D','#14A9C9']};
+let routineTried = false;
+async function maybeUpgradeRoutine(){
+  if(!db || !config || routineTried || (config.routineV || 0) >= ROUTINE_V) return;
+  routineTried = true;
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+  const tasks = [...(config.tasks || [])], ids = new Set(tasks.map(t => t.id));
+  const seen = new Set(tasks.map(t => (t.kids || []).join() + '|' + norm(t.label)));
+  NEW_TASKS.forEach(t => { const ks = t.kids.filter(id => (config.kids || []).some(k => k.id === id));
+    if(!ks.length || ids.has(t.id) || seen.has(ks.join() + '|' + norm(t.label))) return; tasks.push({...t, kids: ks}) });
+  const kOrder = id => { const i = (config.kids || []).findIndex(k => k.id === id); return i < 0 ? 99 : i };
+  const pOrder = p => { const i = PERIODS.findIndex(x => x.id === p); return i < 0 ? 9 : i };
+  const sorted = tasks.map((t, i) => ({t, i})).sort((a, b) => {
+    const ka = (a.t.kids || []).length === 1 ? kOrder(a.t.kids[0]) : -1, kb = (b.t.kids || []).length === 1 ? kOrder(b.t.kids[0]) : -1;
+    const ra = TASK_ORDER.indexOf(a.t.id), rb = TASK_ORDER.indexOf(b.t.id);
+    return ka - kb || pOrder(a.t.period || 'manha') - pOrder(b.t.period || 'manha') || (ra < 0 ? 999 : ra) - (rb < 0 ? 999 : rb) || a.i - b.i }).map(x => x.t);
+  const kidsArr = (config.kids || []).map(k => { const c = KID_COLORS_V10[k.id]; return c && String(k.color || '').toUpperCase() === c[0] ? {...k, color: c[1]} : k });
+  try{ await db.doc('app/config').update({tasks: sorted, kids: kidsArr, routineV: ROUTINE_V}) }catch(e){}
+}
 BADGES.push({id:'calm5', name:'Coração calmo', emo:'🌿', need:{calm:5}}, {id:'adv24', name:'Natal completo', emo:'🎄', need:{advent:24}});
 Object.assign(NEED_WORDS, {calm:'vezes no Cantinho da calma', advent:'portinhas do Advento'});
 function calmCard(k){ const light = lightOf(k.id);
@@ -2154,7 +2683,7 @@ function restoreForm(k){
 }
 function renderSwitcher(){
   const curK = tab==='historico' ? (histKid==='all' ? null : kidById(histKid)) : kidById(selKid);
-  document.documentElement.style.setProperty('--cur', curK ? curK.color : '#8B6B4A');
+  document.documentElement.style.setProperty('--cur', curK ? curK.color : 'var(--brand)');
   document.body.classList.toggle('has-tabs', !!config && tab!=='ajustes');
   const sw = $('#switcher');
   if(!config || tab==='ajustes'){ sw.innerHTML = ''; sw.hidden = true; return }
@@ -2362,7 +2891,7 @@ function renderKidsMode(){
   if(pinMode){ el.innerHTML = pinHTML(); return }
   const kmCur = kmKid === 'family' ? 'family' : (kidById(kmKid) ? kmKid : (kids()[0] ? kids()[0].id : 'family'));
   const kmBar = `<div class="km-top"><h2>${ico('sun')}Quadro de Estrelas</h2><span style="display:flex;gap:8px"><button class="btn small" data-act="bed-on">🌙 Hora de dormir</button><button class="btn small" data-act="kids-off">Sair</button></span></div>
-    <div class="km-tabs" style="--kmc:${kmCur==='family' ? '#8B6B4A' : esc(kidById(kmCur).color)}">${kids().map(k => `<button class="km-tab" style="--kid:${esc(k.color)}" data-act="km-open" data-id="${esc(k.id)}" aria-pressed="${kmCur===k.id}">${avatarSVG(lookOf(k.id), k.color, 'km-tabav')}<span>${esc(k.name)}</span></button>`).join('')}<button class="km-tab fam" data-act="km-open" data-id="family" aria-pressed="${kmCur==='family'}"><span class="km-tabico">🏡</span><span>Família</span></button></div>`;
+    <div class="km-tabs" style="--kmc:${kmCur==='family' ? 'var(--brand)' : esc(kidById(kmCur).color)}">${kids().map(k => `<button class="km-tab" style="--kid:${esc(k.color)}" data-act="km-open" data-id="${esc(k.id)}" aria-pressed="${kmCur===k.id}">${avatarSVG(lookOf(k.id), k.color, 'km-tabav')}<span>${esc(k.name)}</span></button>`).join('')}<button class="km-tab fam" data-act="km-open" data-id="family" aria-pressed="${kmCur==='family'}"><span class="km-tabico">🏡</span><span>Família</span></button></div>`;
   if(kmCur !== 'family'){ const keep = el.scrollTop; el.innerHTML = kmBar + kidPageHTML(kidById(kmCur)); el.scrollTop = keep; return }
   const cards = kids().map(k => {
     const bal = balance(k.id), light = lightOf(k.id), tasks = tasksFor(k.id);
@@ -2634,7 +3163,7 @@ function startData(){
   const onErr = e => { loadError = e && e.raw === 'permission-denied'
     ? `A conta ${authUser && authUser.email ? authUser.email : ''} não tem acesso a este quadro. Confira os e-mails nas regras do Firebase (veja o LEIAME).`
     : 'Não foi possível carregar o quadro. Verifique a internet e recarregue a página.'; render() };
-  db.doc('app/config').onSnapshot(s => { config = s.exists ? s.data() : null; configLoaded = true; if(!dirty) draft = null; render() }, onErr);
+  db.doc('app/config').onSnapshot(s => { config = s.exists ? s.data() : null; configLoaded = true; if(!dirty) draft = null; render(); maybeUpgradeRoutine() }, onErr);
   db.doc('app/photos').onSnapshot(s => { photos = s.exists ? s.data() : {}; render() }, onErr);
   db.collection('devo').onSnapshot(s => { devoDays = new Set(s.docs.map(d => d.id)); render() }, onErr);
   db.collection('advent').onSnapshot(s => { adventDocs = new Set(s.docs.map(d => d.id)); render() }, onErr);
