@@ -913,6 +913,265 @@ nav.tabs{box-shadow:0 -4px 18px rgba(91,45,150,.12)}
 .calm-open{background:#D6F7E1;color:#14713A;box-shadow:0 2px 0 #A8E6BD}
 .km-tab.fam{--kid:var(--brand)}
 .avtag.new{background:#FF4F8B;color:#fff}
+/* ===== v11: mundo, missão, caixas ===== */
+nav .in{grid-template-columns:repeat(7,minmax(0,1fr))}
+nav button{font-size:.7rem;padding:6px 2px}
+nav button[data-tab="mundo"]{--t:#10BFA8}
+.coinchip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:#FFF1C2;color:#8A5A00;font-family:var(--f-display);font-weight:700;font-size:.85rem}
+.boxchip{border:0;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:linear-gradient(135deg,#FF4F8B,#9B4DFF);color:#fff;font-family:var(--f-display);font-weight:700;font-size:.85rem;animation:pulse 1.4s ease-in-out infinite}
+.worldcard{padding:16px;display:flex;flex-direction:column;gap:12px;background:radial-gradient(ellipse 70% 60% at 0% 0%, color-mix(in srgb,var(--kid) 18%,transparent), transparent 70%),var(--surface)}
+.w-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.w-head h2{margin:2px 0 0;font-family:var(--f-display);font-weight:700;font-size:1.5rem;color:color-mix(in srgb,var(--kid) 80%,var(--ink))}
+.w-coins{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1}
+.w-coins b{font-family:var(--f-display);font-size:1.9rem;color:#8A5A00}
+.w-coins span{font-size:.78rem;color:var(--muted);font-weight:600}
+.w-scene{border-radius:20px;overflow:hidden;box-shadow:0 0 0 4px #fff,0 6px 20px rgba(91,45,150,.18);line-height:0}
+.wsvg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+.wsvg .wi text{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.wi{cursor:pointer;transform-box:fill-box;transform-origin:50% 100%;animation:wbob 3.2s ease-in-out infinite}
+.wi.big{animation-duration:5s}
+.wi.new{animation:wpop 1s cubic-bezier(.3,1.6,.5,1) both}
+.wi.hop{animation:whop .6s ease-out}
+@keyframes wbob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-2deg)}}
+@keyframes wpop{0%{transform:scale(0) translateY(-30px)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes whop{0%{transform:translateY(0) scale(1)}35%{transform:translateY(-18px) scale(1.15)}70%{transform:translateY(0) scale(.95,1.05)}100%{transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){.wi,.wi.big,.wi.new,.wi.hop,.boxchip,.boxcard.ready .box-ico,.gift-pick{animation:none!important}}
+.w-prog{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:var(--f-display);font-weight:700;color:var(--ink);font-size:.95rem}
+.w-how{font-size:.85rem;color:var(--muted);background:var(--surface-2);border-radius:14px;padding:8px 12px;line-height:1.45}
+.w-how b{color:var(--ink)}
+.w-themes{display:flex;gap:8px;flex-wrap:wrap}
+.chip.wtheme[aria-pressed="true"]{background:var(--kid);color:#fff;border-color:transparent}
+.wshopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.wshop{border:2px solid var(--line);background:#fff;border-radius:18px;padding:8px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-family:var(--f-display);color:var(--ink)}
+.wicon{width:64px;height:56px}
+.wicon text{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.wshop .wn{font-weight:700;font-size:.85rem;text-align:center;line-height:1.15}
+.wshop .wc{font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.wshop.can{border-color:#FFBE0B;box-shadow:0 0 0 3px rgba(255,190,11,.3)}
+.wshop.can .wc{background:#FFBE0B;color:#5B3A00}
+.wshop.has{background:color-mix(in srgb,var(--c7) 12%,#fff);border-color:color-mix(in srgb,var(--c7) 50%,var(--line))}
+.wshop.has .wc{background:var(--c7);color:#fff}
+.wshop.lock .wicon{filter:grayscale(.85);opacity:.55}
+.wshop.armed .wc{background:var(--brand);color:#fff}
+.daycard{padding:14px 16px;background:radial-gradient(ellipse 70% 70% at 100% 0%, rgba(255,210,63,.3), transparent 70%),var(--surface)}
+.dc-list{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:6px;font-family:var(--f-display);font-weight:600}
+.dc-list li{color:var(--muted)} .dc-list li.ok{color:var(--ink)} .dc-list b{color:#8A5A00}
+.dc-btn{width:100%;min-height:48px;font-size:1.05rem}
+.dc-done{margin:0;font-family:var(--f-display);font-weight:700;color:#1E9E4A}
+.mission{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 16px;border-radius:22px;box-shadow:var(--paper-shadow);border:2px dashed color-mix(in srgb,var(--kid) 55%,var(--line));background:
+  radial-gradient(ellipse 60% 80% at 0% 0%, color-mix(in srgb,var(--kid) 22%,transparent), transparent 70%),
+  radial-gradient(ellipse 60% 80% at 100% 100%, rgba(255,210,63,.35), transparent 70%), var(--surface)}
+.mission.done{border-style:solid;border-color:var(--c7)}
+.ms-emo{font-size:2.4rem;width:58px;height:58px;display:grid;place-items:center;background:#fff;border-radius:18px;box-shadow:0 2px 0 color-mix(in srgb,var(--kid) 40%,var(--line))}
+.ms-k{font-size:.76rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,var(--kid) 80%,var(--ink))}
+.ms-t{font-family:var(--f-display);font-weight:700;font-size:1.15rem;line-height:1.2;color:var(--ink);text-wrap:balance}
+.ms-p{font-size:.8rem;color:var(--muted);font-weight:600}
+.ms-r{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.ms-btn{white-space:nowrap}
+.ms-swap{border:0;background:none;color:var(--muted);font:600 .8rem var(--f-body);cursor:pointer;text-decoration:underline}
+.ms-done{font-family:var(--f-display);font-weight:700;color:#1E9E4A;white-space:nowrap}
+.ms-wait{font-family:var(--f-display);font-weight:700;color:#B07F18;font-size:.9rem}
+@media (max-width:520px){.mission{grid-template-columns:auto minmax(0,1fr)}.ms-r{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center}.ms-btn{flex:1}}
+.boxcard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-radius:20px;box-shadow:var(--paper-shadow);background:radial-gradient(ellipse 60% 80% at 0% 50%, rgba(160,102,255,.22), transparent 70%),var(--surface)}
+.box-ico{font-size:2.3rem}
+.boxcard.ready{box-shadow:0 0 0 3px #FF4F8B,var(--paper-shadow);background:radial-gradient(ellipse 70% 90% at 0% 50%, rgba(255,79,139,.3), transparent 70%),var(--surface)}
+.boxcard.ready .box-ico{animation:chestglow 1.4s ease-in-out infinite}
+.box-l{display:flex;flex-direction:column;gap:4px;min-width:0}
+.box-l b{font-family:var(--f-display);font-size:1.05rem}
+.box-l small{color:var(--muted);font-size:.78rem}
+.box-l .bar{height:8px}
+#gift{position:fixed;inset:0;z-index:40;background:rgba(40,20,80,.55);backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px}
+.gift-box{width:min(420px,100%);background:#fff;border-radius:28px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;box-shadow:0 20px 60px rgba(40,20,80,.35)}
+.gift-box h3{margin:0;font-family:var(--f-display);font-size:1.45rem;color:var(--ink)}
+.gift-box p{margin:0;color:var(--muted);font-weight:600}
+.gift-row{display:flex;gap:14px;justify-content:center}
+.gift-pick{position:relative;width:88px;height:96px;border:0;background:none;cursor:pointer;animation:gbob 1.6s ease-in-out infinite}
+.gift-pick:nth-child(2){animation-delay:-.5s} .gift-pick:nth-child(3){animation-delay:-1s}
+.gift-pick .gp-body{position:absolute;left:8px;right:8px;bottom:0;height:62px;border-radius:10px;background:var(--gc)}
+.gift-pick .gp-lid{position:absolute;left:2px;right:2px;top:20px;height:20px;border-radius:8px;background:color-mix(in srgb,var(--gc) 80%,#000)}
+.gift-pick .gp-rib{position:absolute;left:50%;top:6px;bottom:0;width:12px;margin-left:-6px;background:#FFD23F}
+.gift-pick .gp-rib::before,.gift-pick .gp-rib::after{content:"";position:absolute;top:-2px;width:22px;height:16px;border:5px solid #FFD23F;border-radius:50%}
+.gift-pick .gp-rib::before{right:6px} .gift-pick .gp-rib::after{left:6px}
+.gift-pick.shake{animation:gshake .25s linear infinite}
+.gift-pick.busy:not(.shake){opacity:.35}
+@keyframes gbob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+@keyframes gshake{0%{transform:rotate(-10deg) scale(1.1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:rotate(-10deg) scale(1.1)}}
+.gift-box.reveal{border:4px solid var(--rar)}
+.gift-rar{background:var(--rar);color:#fff;font-family:var(--f-display);font-weight:700;padding:4px 16px;border-radius:999px;letter-spacing:.04em}
+.gift-av{width:190px;animation:wpop .9s cubic-bezier(.3,1.6,.5,1) both}
+.gift-av svg{width:100%;height:auto;border-radius:22px}
+.gift-big{font-size:5rem;line-height:1}
+.gift-acts{display:flex;gap:10px}
+.kp-nav{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap}
+.kp-nav button{flex:1;min-width:96px;border:0;cursor:pointer;border-radius:18px;padding:12px 10px;font:700 1.1rem var(--f-display);background:color-mix(in srgb,var(--kid) 14%,#fff);color:color-mix(in srgb,var(--kid) 80%,var(--ink));box-shadow:0 3px 0 color-mix(in srgb,var(--kid) 30%,var(--line))}
+.kp-nav button[aria-pressed="true"]{background:var(--kid);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--kid) 70%,#000)}
+.kp-nav .dot{display:inline-block;min-width:20px;padding:0 6px;border-radius:999px;background:#FF4F8B;color:#fff;font-size:.8rem;margin-left:4px}
+.reward-tier{margin:6px 0 2px;font-family:var(--f-display);font-weight:700;color:var(--muted);font-size:.95rem}
+.reward .eta{display:block;font-size:.78rem;color:var(--muted);font-weight:600;margin-top:2px}
+.econ-note{font-size:.88rem;color:var(--muted);margin:0 0 4px}
+.km-coins{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.goal .eta{color:var(--muted);font-weight:600;font-size:.8rem}
+.bd-days{display:flex;flex-direction:column;gap:12px;margin:0 0 18px}
+.bd-days .card{margin:0}
+/* ===== v13: feito para o celular ===== */
+html{-webkit-tap-highlight-color:transparent}
+body{padding-block:0 calc(104px + env(safe-area-inset-bottom,0px));padding-left:env(safe-area-inset-left,0px)!important;padding-right:env(safe-area-inset-right,0px)!important}
+.wrap{padding-inline:14px}
+button{touch-action:manipulation}
+button:active:not(:disabled){transform:scale(.96)}
+/* topo compacto */
+header.top{padding-block:10px 8px;gap:8px;margin-inline:-14px;padding-inline:14px;transition:padding .25s}
+header.top .toprow{flex-wrap:nowrap;max-height:60px;transition:max-height .25s, opacity .2s, margin .25s}
+body.scrolled header.top .toprow{max-height:0;opacity:0;margin-top:-8px;overflow:hidden;pointer-events:none}
+body.scrolled header.top{box-shadow:0 6px 18px rgba(91,45,150,.12)}
+h1{font-size:clamp(1.15rem,5.2vw,1.45rem)!important;white-space:nowrap}
+h1 .ico{width:30px!important}
+header.top .date{display:none}
+header.top .toprow > div:first-child{min-width:0;flex:1 1 auto}
+header.top h1{overflow:hidden;min-width:0}
+#kids-on{flex:none}
+@media (max-width:400px){h1{font-size:1.08rem!important;gap:6px!important}h1 .ico{width:26px!important}#kids-on{padding:0 10px;font-size:.88rem}}
+body{overflow-x:clip}
+.chip.ktab.plain{--kid:var(--brand)}
+.chip.ktab.plain:not([aria-pressed="true"]){color:var(--brand)}
+@media (max-width:400px){h1 .ico{display:none!important}h1{font-size:1.12rem!important;letter-spacing:0}}
+header.top{isolation:isolate}
+@media (max-width:520px){.avhero{grid-template-columns:118px minmax(0,1fr)!important;gap:12px!important;padding:12px!important}.avbig{max-width:none!important;margin:0!important}.avinfo .name{font-size:1.2rem!important}.avinfo .avcount{font-size:.85rem}.avinfo .avstats{gap:4px}.avinfo .avstats span{font-size:.74rem;padding:3px 8px}}
+.hbtns{display:flex;gap:6px;align-items:center}
+.hbtns .iconbtn{width:40px;height:40px;border-radius:14px;font-size:1.15rem}
+.hbtns #sound-btn{display:none}
+#kids-on{min-height:40px;padding:0 14px;border-radius:14px;font-size:.95rem}
+#kids-on .long{display:none}
+/* troca de criança: bolinhas */
+.kids-sw{border-bottom:0!important;gap:8px!important;padding:2px 0 4px!important;align-items:center!important}
+.chip.ktab{border-radius:999px!important;padding:4px 14px 4px 4px!important;border:2px solid color-mix(in srgb,var(--kid) 40%,#fff)!important;background:#fff!important;box-shadow:0 2px 0 color-mix(in srgb,var(--kid) 30%,var(--line));margin:0!important;transition:transform .2s}
+.chip.ktab .ava{--size:34px}
+.chip.ktab span{font-family:var(--f-display);font-weight:700}
+.chip.ktab[aria-pressed="true"]{background:var(--kid)!important;color:#fff;border-color:var(--kid)!important;transform:scale(1.04);box-shadow:0 4px 12px color-mix(in srgb,var(--kid) 45%,transparent)}
+.chip.ktab[aria-pressed="true"] .bal{color:#fff}
+.chip.ktab[aria-pressed="true"] .bal .star{fill:#FFE45C}
+body.has-tabs main{background:none!important;margin-top:0!important;padding:4px 0 0!important;border-radius:0!important}
+main{gap:12px}
+.card{border-radius:22px}
+/* saudação */
+.hello{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-family:var(--f-display);font-weight:700;font-size:1.25rem;color:var(--ink);padding:2px 4px 0}
+.hello span{font-family:var(--f-body);font-size:.85rem;font-weight:600;color:var(--muted)}
+/* herói compacto */
+.hero{display:flex!important;flex-direction:column;align-items:stretch!important;text-align:left!important;gap:12px!important;padding:14px!important;border-radius:26px!important}
+.hero > *{width:100%;max-width:none!important;margin-inline:0!important}
+.h-chips{justify-content:flex-start!important}
+.h-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
+.hero .h-top .ava{--size:62px}
+.hero .name{font-size:1.45rem!important}
+.hero .sub{font-size:.78rem!important;margin-top:2px}
+.h-bal{display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.h-bal .bignum{font-size:2.3rem}
+.h-bal small{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.h-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.h-chips .lvl,.h-chips .fire{font-size:.82rem}
+.h-chips .calm-open{min-height:30px;padding:0 12px;font-size:.82rem;border-radius:999px}
+.h-stats{display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:8px}
+.h-st{background:rgba(255,255,255,.75);border-radius:16px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--kid) 22%,transparent)}
+.h-st .label{font-size:.62rem!important}
+.h-st .midnum{font-size:1.25rem}
+.h-st .light{font-size:.78rem;gap:6px;flex-wrap:wrap}
+.h-st .lamps{padding:3px 5px;gap:3px}
+.h-st .lamp{width:10px;height:10px}
+.hero .goal{gap:4px}
+.hero .goal-row{font-size:.86rem}
+.hero .bonus{margin:0}
+/* carrossel */
+.carwrap{margin-inline:-14px}
+.carousel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 14px 6px;scrollbar-width:none;overscroll-behavior-x:contain}
+.carousel::-webkit-scrollbar{display:none}
+.car-it{flex:0 0 86%;scroll-snap-align:center;display:flex}
+.carousel.one .car-it{flex-basis:100%}
+.car-it > *{flex:1;margin:0!important;min-width:0}
+.cardots{display:flex;justify-content:center;gap:6px;margin-top:2px}
+.cardots i{width:7px;height:7px;border-radius:99px;background:color-mix(in srgb,var(--cur) 25%,#fff);transition:width .25s, background .25s}
+.cardots i.on{width:20px;background:var(--cur)}
+.car-it .mission{grid-template-columns:auto minmax(0,1fr)}
+.car-it .mission .ms-r{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center}
+.car-it .mission .ms-btn{flex:1}
+.car-it .boxcard{grid-template-columns:auto minmax(0,1fr)}
+.car-it .boxcard > .btn{grid-column:1/-1}
+.prayer.mini{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.prayer.mini .prayer-h h3{font-size:1.15rem}
+.pm-first{margin:0;font-family:var(--f-display);font-weight:600;color:#5B2DB0;line-height:1.35}
+.pm-acts{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.pm-acts details summary{cursor:pointer;font-weight:700;color:var(--brand);font-size:.88rem}
+.pm-acts .prayer-lines p{font-size:1rem}
+/* segmentos do dia */
+.seg{position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);z-index:4;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px;border-radius:20px;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(91,45,150,.12)}
+body:not(.scrolled) .seg{top:calc(env(safe-area-inset-top,0px) + 118px)}
+.seg button{position:relative;border:0;background:none;border-radius:15px;padding:7px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;color:var(--muted);font-family:var(--f-display);font-weight:700;font-size:.74rem;line-height:1.1}
+.seg-e{font-size:1.25rem;line-height:1.1;transition:transform .25s}
+.seg button[aria-selected="true"]{background:var(--cur);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--cur) 70%,#000)}
+.seg button[aria-selected="true"] .seg-e{transform:scale(1.15) rotate(-6deg)}
+.seg-n{position:absolute;top:-7px;right:-2px;box-shadow:0 1px 0 rgba(0,0,0,.12);min-width:18px;padding:0 5px;border-radius:99px;background:#FFD23F;color:#5B3A00;font-size:.66rem;line-height:16px}
+/* tarefas grandes e divertidas */
+.task{min-height:58px;border-radius:18px!important;padding:8px 12px!important;gap:10px!important}
+.task .emo{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:#fff;font-size:1.35rem;flex:none;box-shadow:0 2px 0 color-mix(in srgb,var(--c) 25%,var(--line))}
+.task .lbl{font-family:var(--f-display);font-weight:700;font-size:1rem;line-height:1.2}
+.task .box{width:30px!important;height:30px!important;border-radius:10px!important}
+.task.done .lbl{text-decoration:none!important;opacity:.85}
+.task.pop .box{animation:tpop .6s cubic-bezier(.3,1.7,.5,1)}
+.task.pop .emo{animation:twig .6s ease}
+@keyframes tpop{0%{transform:scale(.4) rotate(-30deg)}70%{transform:scale(1.35) rotate(8deg)}100%{transform:scale(1)}}
+@keyframes twig{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg) scale(1.15)}60%{transform:rotate(10deg)}}
+.label.period{font-family:var(--f-display);font-size:.85rem!important;letter-spacing:.04em;padding:4px 12px;border-radius:99px;background:color-mix(in srgb,var(--c) 18%,#fff);display:inline-block;width:auto!important}
+.beh{border-radius:18px!important;min-height:64px}
+.badrow{border-radius:16px;padding:8px 10px;background:color-mix(in srgb,var(--c2) 8%,#fff)}
+/* barra de baixo flutuante */
+nav.tabs{left:max(10px, calc(50% - 380px))!important;right:max(10px, calc(50% - 380px))!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;border-radius:26px!important;border:0!important;padding:6px!important;background:rgba(255,255,255,.96)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(51,35,90,.22),0 0 0 1px rgba(51,35,90,.06)!important;overflow:hidden}
+nav.tabs::before{display:none}
+nav .in{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important}
+nav button{border-radius:20px!important;padding:6px 2px 5px!important;font-size:.72rem!important;gap:3px!important;transition:transform .2s}
+nav button svg{width:24px;height:24px;transition:transform .25s}
+nav button[aria-current="page"]{background:var(--t,var(--brand))!important;color:#fff!important;box-shadow:0 4px 12px color-mix(in srgb,var(--t,var(--brand)) 45%,transparent)}
+nav button[aria-current="page"] svg{transform:translateY(-1px) scale(1.12)}
+nav button[data-tab="natal"],nav button[data-tab="historico"],nav button[data-tab="ajustes"]{display:none!important}
+nav button[data-act="more"]{--t:#9B4DFF;display:flex}
+@media (min-width:761px){
+  nav .in{grid-template-columns:repeat(7,minmax(0,1fr))!important;max-width:740px}
+  nav button[data-tab="natal"],nav button[data-tab="historico"],nav button[data-tab="ajustes"]{display:flex!important}
+  nav button[data-act="more"]{display:none!important}
+  .hbtns #sound-btn{display:grid}
+  header.top .date{display:block}
+  #kids-on .long{display:inline}
+}
+/* folha "Mais" */
+#sheet{position:fixed;inset:0;z-index:35}
+.sheet-bg{position:absolute;inset:0;background:rgba(40,20,80,.42);animation:fadein .2s both}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(40,20,80,.25);animation:sheetup .3s cubic-bezier(.2,1.2,.4,1) both;max-width:760px;margin:0 auto}
+.sheet-grip{display:block;width:44px;height:5px;border-radius:99px;background:#E2D6F0;margin:0 auto 10px}
+.sheet h3{margin:0 0 12px;font-family:var(--f-display);font-size:1.2rem;text-align:center}
+.sheet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sheet-tile{border:0;cursor:pointer;border-radius:22px;padding:14px 6px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;background:color-mix(in srgb,var(--c) 13%,#fff);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--c) 30%,transparent)}
+.st-e{font-size:2rem;line-height:1;width:54px;height:54px;display:grid;place-items:center;border-radius:18px;background:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--c) 35%,var(--line))}
+.st-n{font-family:var(--f-display);font-weight:700;font-size:.92rem;color:color-mix(in srgb,var(--c) 70%,var(--ink));line-height:1.1}
+.st-s{font-size:.68rem;color:var(--muted);line-height:1.2}
+@keyframes sheetup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+body.sheet-on{overflow:hidden}
+/* transição entre telas */
+#main.enter > *{animation:mIn .38s cubic-bezier(.2,.9,.3,1) both}
+#main.enter > *:nth-child(2){animation-delay:.04s} #main.enter > *:nth-child(3){animation-delay:.08s} #main.enter > *:nth-child(4){animation-delay:.12s} #main.enter > *:nth-child(n+5){animation-delay:.16s}
+#main.from-r > *{animation:mR .32s cubic-bezier(.2,.9,.3,1) both}
+#main.from-l > *{animation:mL .32s cubic-bezier(.2,.9,.3,1) both}
+@keyframes mIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes mR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes mL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+.swipe-hint{text-align:center;font-size:.75rem;color:var(--muted);margin:-4px 0 0}
+@media (prefers-reduced-motion: reduce){#main.enter > *,#main.from-r > *,#main.from-l > *,.task.pop .box,.task.pop .emo,.sheet,.sheet-bg{animation:none!important}}
+/* outras telas no celular */
+.reward{border-radius:20px!important}
+.wshopgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+.wshop{border-radius:16px!important;padding:6px 4px 8px!important}
+.wicon{width:54px!important;height:48px!important}
+.worldcard{padding:12px!important}
+.w-scene{margin-inline:-4px}
+@media (max-width:380px){.wrap{padding-inline:10px}.carwrap{margin-inline:-10px}.carousel{padding-inline:10px}header.top{margin-inline:-10px;padding-inline:10px}.h-stats{grid-template-columns:1fr 1fr}.h-stats .h-st:last-child{grid-column:1/-1}.seg-t{font-size:.66rem}}
 </style>
 </head>
 <body>
@@ -934,17 +1193,21 @@ nav.tabs{box-shadow:0 -4px 18px rgba(91,45,150,.12)}
 <nav class="tabs" aria-label="Seções">
   <div class="in">
     <button data-act="tab" data-tab="hoje" aria-current="page"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Hoje</button>
+    <button data-act="tab" data-tab="mundo"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Mundo</button>
     <button data-act="tab" data-tab="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.5"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/><path d="M9 7.5h.01M15 7.5h.01"/></svg>Avatar</button>
     <button data-act="tab" data-tab="natal"><svg viewBox="0 0 24 24"><path d="M12 3l3.5 5H13l3.5 5H14l4 5H6l4-5H7.5L11 8H8.5z"/><path d="M12 18v3"/></svg>Natal</button>
     <button data-act="tab" data-tab="recompensas"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5-4-5-1.5S10 8 12 8zm0 0c1.5-3 5-4 5-1.5S14 8 12 8z"/></svg>Prêmios</button>
     <button data-act="tab" data-tab="historico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Histórico</button>
     <button data-act="tab" data-tab="ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
+      <button data-act="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>Mais</button>
   </div>
 </nav>
 
 <div id="kidsmode" hidden></div>
 <div id="bedmode" hidden></div>
 <div id="calm" hidden></div>
+<div id="gift" hidden></div>
+<div id="sheet" hidden></div>
 <div id="toast" role="status" hidden></div>
 <input type="file" id="photo-input" accept="image/*" hidden>
 <input type="file" id="import-input" accept="application/json,.json" hidden>
@@ -955,7 +1218,7 @@ const STAR = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="
 const CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const PERIODS = [{id:'manha',label:'Manhã',c:'var(--c3)'},{id:'tarde',label:'Tarde',c:'var(--c2)'},{id:'noite',label:'Noite',c:'var(--c6)'}];
 const cyc = i => `var(--c${(i % 7)+1})`;
-const KID_COLORS = ['#D9737F','#5E9C9D','#9670BF','#E39A45','#3F6DB0','#6A9845'];
+const KID_COLORS = ['#FF4F8B','#14A9C9','#9B4DFF','#FF8A1F','#2F86FF','#2DC160','#F0386B','#10BFA8'];
 const LIGHT_TEXT = {verde:'Dia tranquilo', amarelo:'Atenção, já teve aviso', vermelho:'Hora de parar e conversar'};
 const MONTHS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
@@ -1239,11 +1502,11 @@ const knownElig = {}, shownFresh = {}, freshCleared = {}, avPending = {};
 const ikey = i => i.cat + ':' + i.id;
 const LOOK_CATS = ['skin','hair','hairColor','eyes','face','top','hat','glasses','hand','pet','bg'];
 function countType(kid, type){ return (ledger?.counts?.[kid]?.[type] || 0) + liveEntries().filter(e => e.kid===kid && e.type===type).length }
-function kidStats(kid){ return {stars: lifetime(kid), perfect: countType(kid,'bonus'), challenge: countType(kid,'challenge'), streak: streak(kid), good: countType(kid,'good'), chest: countType(kid,'chest'), books: countRefs(kid, bookRefs()), devo: devoDays.size, calm: countType(kid,'calm'), advent: adventCount()} }
+function kidStats(kid){ return {stars: lifetime(kid), perfect: countType(kid,'bonus'), challenge: countType(kid,'challenge') + countType(kid,'mission'), streak: streak(kid), good: countType(kid,'good'), chest: countType(kid,'chest'), books: countRefs(kid, bookRefs()), devo: devoDays.size, calm: countType(kid,'calm'), advent: adventCount()} }
 const meets = (need, st) => Object.entries(need).every(([k,v]) => (st[k]||0) >= v);
 function lookOf(kid){ const a = avatars[kid] || {}, k = kidById(kid); const l = {...DEFAULT_LOOK, ...(KID_LOOKS[kid] || {})}; LOOK_CATS.forEach(c => { if(a[c]) l[c] = a[c] }); l.g = k && k.g === 'f' ? 'f' : 'm'; return l }
 function unlockedSet(kid, st){ st = st || kidStats(kid); const set = new Set(avatars[kid]?.unlocked || []);
-  catFor(kidById(kid)).forEach(i => { if(!i.need || meets(i.need, st)) set.add(ikey(i)) }); return set }
+  catFor(kidById(kid)).forEach(i => { if(!i.need || (!i.need.stars && meets(i.need, st))) set.add(ikey(i)) }); return set }
 function needText(need, st){ const [k,v] = Object.entries(need)[0];
   if(k==='stars') return `faltam ${Math.max(0, v - st.stars)} ⭐`;
   if(k==='perfect') return `${v} Dias Perfeitos (${Math.min(st.perfect,v)}/${v})`;
@@ -1251,7 +1514,7 @@ function needText(need, st){ const [k,v] = Object.entries(need)[0];
   if(k==='challenge') return `${v} desafios (${Math.min(st.challenge,v)}/${v})`;
   return `${Math.min(st[k]||0, v)}/${v} ${NEED_WORDS[k] || ''}` }
 function needLong(need){ const [k,v] = Object.entries(need)[0];
-  return {stars:`ganhar ${v} estrelas no total`, perfect:`ganhar ${v} bônus Dia Perfeito`, streak:`completar a rotina ${v} dias seguidos`, challenge:`cumprir ${v} Desafios da família`}[k] || `${v} ${NEED_WORDS[k]||''}` }
+  return {stars:'tirar este item numa caixa surpresa (as caixas chegam conforme ganha estrelas)', perfect:`ganhar ${v} bônus Dia Perfeito`, streak:`completar a rotina ${v} dias seguidos`, challenge:`cumprir ${v} Desafios da família`}[k] || `${v} ${NEED_WORDS[k]||''}` }
 async function avWrite(kid, patch, silent){
   if(!db || avWriteBlocked) return false;
   try{ const ref = db.doc('app/avatars');
@@ -1261,7 +1524,7 @@ function syncUnlocks(){
   if(!db || !avatarsLoaded || !logLoaded || !ledgerLoaded || !config) return;
   kids().forEach(k => {
     const st = kidStats(k.id);
-    const elig = catFor(k).filter(i => i.need && meets(i.need, st)).map(ikey).concat(BADGES.filter(b => meets(b.need, st)).map(b => 'badge:'+b.id));
+    const elig = catFor(k).filter(i => i.need && !i.need.stars && meets(i.need, st)).map(ikey).concat(BADGES.filter(b => meets(b.need, st)).map(b => 'badge:'+b.id));
     if(!knownElig[k.id]) knownElig[k.id] = new Set(elig);
     else { const brandNew = elig.filter(x => !knownElig[k.id].has(x));
       if(brandNew.length){ brandNew.forEach(x => knownElig[k.id].add(x));
@@ -1277,7 +1540,7 @@ function syncUnlocks(){
 }
 function avTile(i, k, look, un, st, fresh){
   const on = look[i.cat] === i.id, open = !i.need || un.has(ikey(i));
-  const tag = on ? '<span class="avtag eq">Usando</span>' : !open ? `<span class="avtag lock">🔒 ${esc(needText(i.need, st))}</span>` : fresh.has(ikey(i)) ? '<span class="avtag new">NOVO!</span>' : '';
+  const tag = on ? '<span class="avtag eq">Usando</span>' : !open ? `<span class="avtag lock">${i.need.stars ? '🎁 Caixa surpresa' : '🔒 ' + esc(needText(i.need, st))}</span>` : fresh.has(ikey(i)) ? '<span class="avtag new">NOVO!</span>' : '';
   return `<button class="avtile ${on?'on':''} ${open?'':'locked'}" style="--kid:${esc(k.color)}" data-act="av-eq" data-cat="${i.cat}" data-id="${i.id}" aria-pressed="${on}" aria-label="${esc(i.name)}${open?'':' (bloqueado)'}">${avatarSVG({...look, [i.cat]: i.id}, k.color)}<span class="avname">${esc(i.name)}</span>${tag}</button>`;
 }
 function viewAvatar(){
@@ -1296,9 +1559,9 @@ function viewAvatar(){
       <div class="avinfo">
         <div class="name">Avatar ${k.g==='f' ? 'da' : 'do'} ${esc(k.name)}</div>
         <div class="avcount"><b>${got}</b> de ${special.length} itens especiais conquistados</div>
-        ${next ? `<div class="goal"><div class="goal-row"><span>Próximo: ${esc(next.name)}</span><span class="pts">faltam ${next.need.stars - st.stars} ⭐</span></div><div class="bar"><i style="width:${Math.max(0,Math.min(100, st.stars/next.need.stars*100))}%"></i></div></div>` : '<div class="avcount">Todos os itens de estrelas conquistados! 👑</div>'}
         <div class="avstats"><span>⭐ ${st.stars} ganhas</span><span>🏆 ${st.perfect} Dias Perfeitos</span><span>🔥 ${st.streak} seguidos</span><span>🎯 ${st.challenge} desafios</span></div>
       </div></section>
+    ${boxCard(k)}
     <div class="avcats" role="tablist">${AV_CATS.map(c => `<button class="avcat" data-act="av-cat" data-id="${c.id}" aria-pressed="${avCat===c.id}">${c.label}</button>`).join('')}</div>
     <section class="card tone" style="--tone:var(--c2)"><div class="sec-h"><h2>${ico('butterfly')}${esc(AV_CATS.find(c => c.id===avCat)?.label || '')}</h2></div>${body}<p class="hint">As peças são conquistadas com as estrelas ganhas. Trocar o visual não gasta estrelas.</p></section>
     <section class="card tone" style="--tone:var(--c3)"><div class="sec-h"><h2>${ico('star')}Medalhas</h2><span class="meta">${BADGES.filter(b => (avatars[k.id]?.unlocked||[]).includes('badge:'+b.id) || meets(b.need, st)).length} de ${BADGES.length}</span></div>${badgesHTML(k, st)}</section>`;
@@ -1438,6 +1701,7 @@ function renderBedMode(){
   const keep = el.scrollTop;
   el.innerHTML = `<div class="bd-wrap">
     <div class="bd-bar"><span class="bd-date">${esc(new Intl.DateTimeFormat('pt-BR',{weekday:'long', day:'numeric', month:'long'}).format(new Date()))}</span><button class="bd-close" data-act="bed-off">Fechar</button></div>
+    <div class="bd-days">${kids().map(k => dayCloseCard(k)).join('')}</div>
     <article class="bd-poster">
       <h2 class="bd-title">Devocional<br>da Noite</h2>
       <div class="bd-row top"><span class="bd-i sun">${ILLU.moon}</span><span class="bd-i rainbow">${ILLU.rainbow}</span><span class="bd-i dragonfly">${ILLU.dragonfly}</span></div>
@@ -1513,12 +1777,12 @@ function chestCard(k, big){
 }
 async function openChest(kid, pt){
   const k = kidById(kid); if(!k || chestState(kid).s !== 'ready') return;
-  const prizes = [2,3,3,4,4,5,5,5,6,6,8,10,10,12,15];
+  const prizes = [1,2,2,3,3,4,5], coin = Math.random() < 0.2;
   const n = prizes[Math.floor(Math.random()*prizes.length)];
   document.querySelectorAll('.chest-btn').forEach(b => b.classList.add('shake'));
   sfx('tap'); await new Promise(r => setTimeout(r, 650));
-  const r = await addEntry({kid, type:'chest', label:'Baú surpresa', emoji:'🎁', pts:n}, 'c_'+dayStr()+'_'+kid);
-  if(r){ celebrate(pt, n, 'big'); toast(`🎁 ${k.name} abriu o baú e ganhou ${n} estrelas!`) }
+  const r = await addEntry({kid, type:'chest', label: coin ? 'Baú surpresa (com tesouro do mundo)' : 'Baú surpresa', emoji:'🎁', pts:n, ...(coin ? {w:1} : {})}, 'c_'+dayStr()+'_'+kid);
+  if(r){ celebrate(pt, n, 'big'); toast(coin ? `🎁 Uau! ${k.name} ganhou ${n} estrelas e 1 ${THEMES[themeOf(kid)].one} ${THEMES[themeOf(kid)].coin}!` : `🎁 ${k.name} abriu o baú e ganhou ${n} estrelas!`) }
 }
 function badgesHTML(k, st){
   const un = new Set(avatars[k.id]?.unlocked || []);
@@ -1529,13 +1793,15 @@ async function requestPending(k, kind, item){
   if(!db){ toast('Peça para um adulto entrar na conta.'); return null }
   const now = new Date();
   const body = {kid:k.id, type:kind, ref:item.id, label:item.label, emoji:item.emoji, pts:Math.abs(item.pts||0), day:dayStr(now), month:monthStr(now), at:now.toISOString()};
-  const ref = kind==='task' ? db.collection('pending').doc('p_'+dayStr(now)+'_'+k.id+'_'+item.id) : db.collection('pending').doc();
+  const ref = (kind==='task' || kind==='mission') ? db.collection('pending').doc('p_'+dayStr(now)+'_'+k.id+'_'+item.id) : db.collection('pending').doc();
   try{ await ref.set(body); return ref.id }catch(err){ writeErr(err); return null }
 }
 async function approvePending(p){
   let r = null;
   if(p.type==='task'){ const id = 't_'+p.day+'_'+p.kid+'_'+p.ref;
     r = logDocs.some(e => e.id===id) ? id : await addEntry({kid:p.kid, type:'task', ref:p.ref, label:p.label, emoji:p.emoji, pts:p.pts, day:p.day, month:p.month}, id) }
+  else if(p.type==='mission'){ const id = 'm_'+p.day+'_'+p.kid;
+    r = logDocs.some(e => e.id===id) ? id : await addEntry({kid:p.kid, type:'mission', ref:'mission', label:'Missão: '+p.label, emoji:p.emoji, pts:p.pts, w:1, day:p.day, month:p.month}, id) }
   else if(p.type==='xmas') r = await addEntry({kid:p.kid, type:'xmas', ref:p.ref, label:p.label, emoji:p.emoji, pts:0, xp:p.pts});
   else r = await addEntry({kid:p.kid, type:'good', ref:p.ref, label:p.label, emoji:p.emoji, pts:p.pts});
   if(r){ try{ await db.collection('pending').doc(p.id).delete() }catch(e){} }
@@ -1544,34 +1810,40 @@ async function approvePending(p){
 function pendingCard(){
   if(!pendingDocs.length) return '';
   const rows = pendingDocs.slice().sort((a,b) => (b.at||'').localeCompare(a.at||'')).map(p => { const k = kidById(p.kid); if(!k) return '';
-    return `<div class="pend">${avatar(k)}<span class="emo">${esc(p.emoji)}</span><span class="lbl"><b>${esc(k.name)}</b>: ${esc(p.label)}<small>${p.type==='task' ? 'Rotina' : p.type==='xmas' ? 'Super Presente de Natal' : 'Fez uma coisa legal'} · ${p.day===dayStr() ? fmtTime(p.at) : fmtDay(p.day)}</small></span><span class="pts">+${p.pts}${p.type==='xmas' ? ' ❄️' : ''}</span><button class="btn primary small" data-act="approve" data-id="${esc(p.id)}" aria-label="Aprovar">✓</button><button class="btn small" data-act="deny" data-id="${esc(p.id)}" aria-label="Recusar">✕</button></div>` }).join('');
+    return `<div class="pend">${avatar(k)}<span class="emo">${esc(p.emoji)}</span><span class="lbl"><b>${esc(k.name)}</b>: ${esc(p.label)}<small>${p.type==='task' ? 'Rotina' : p.type==='mission' ? 'Missão do dia' : p.type==='xmas' ? 'Super Presente de Natal' : 'Fez uma coisa legal'} · ${p.day===dayStr() ? fmtTime(p.at) : fmtDay(p.day)}</small></span><span class="pts">+${p.pts}${p.type==='xmas' ? ' ❄️' : ''}</span><button class="btn primary small" data-act="approve" data-id="${esc(p.id)}" aria-label="Aprovar">✓</button><button class="btn small" data-act="deny" data-id="${esc(p.id)}" aria-label="Recusar">✕</button></div>` }).join('');
   return `<section class="card tone pendcard" style="--tone:var(--c3)"><div class="sec-h"><h2>${ico('star')}Pedidos das crianças</h2>${pendingDocs.length > 1 ? `<button class="btn small primary" data-act="approve-all">Aprovar todos</button>` : '<span class="meta">confira e aprove</span>'}</div><div class="pends">${rows}</div></section>`;
 }
 function kidPageHTML(k){
-  const st = kidStats(k.id), bal = balance(k.id), lv = levelOf(k.id), today = dayStr();
-  const tasks = tasksFor(k.id), goods = (config.good||[]).filter(b => !b.kids || b.kids.includes(k.id));
+  const st = kidStats(k.id), bal = balance(k.id), lv = levelOf(k.id), today = dayStr(), b = boxInfo(k.id), T = THEMES[themeOf(k.id)];
+  const tasks = tasksFor(k.id), goods = (config.good||[]).filter(g => !g.kids || g.kids.includes(k.id));
   const waitTask = id => pendingDocs.some(p => p.kid===k.id && p.type==='task' && p.ref===id && p.day===today);
   const waitGood = id => pendingDocs.some(p => p.kid===k.id && p.type==='good' && p.ref===id);
   const done = tasks.filter(t => isDone(k.id,t)).length;
   const tTiles = tasks.map((t,i) => { const d = isDone(k.id,t), w = !d && waitTask(t.id);
     return `<button class="kp-tile ${d?'done':w?'wait':''}" style="--c:${cyc(i)}" ${d||w ? 'disabled' : `data-act="kid-req" data-kind="task" data-kid="${esc(k.id)}" data-id="${esc(t.id)}"`}><span class="kp-emo">${esc(t.emoji)}</span><span class="kp-lbl">${esc(t.label)}</span><span class="kp-st">${d ? '✓ Feito!' : w ? '⏳ Esperando' : 'Eu fiz!'}</span></button>` }).join('');
-  const gTiles = goods.map((b,i) => { const w = waitGood(b.id);
-    return `<button class="kp-tile small ${w?'wait':''}" style="--c:${cyc(i+3)}" ${w ? 'disabled' : `data-act="kid-req" data-kind="good" data-kid="${esc(k.id)}" data-id="${esc(b.id)}"`}><span class="kp-emo">${esc(b.emoji)}</span><span class="kp-lbl">${esc(b.label)}</span><span class="kp-st">${w ? '⏳ Esperando' : '+'+b.pts+' ⭐'}</span></button>` }).join('');
-  return `<div class="kp">
-    <section class="kp-hero" style="--kid:${esc(k.color)}">
+  const gTiles = goods.map((g,i) => { const w = waitGood(g.id);
+    return `<button class="kp-tile small ${w?'wait':''}" style="--c:${cyc(i+3)}" ${w ? 'disabled' : `data-act="kid-req" data-kind="good" data-kid="${esc(k.id)}" data-id="${esc(g.id)}"`}><span class="kp-emo">${esc(g.emoji)}</span><span class="kp-lbl">${esc(g.label)}</span><span class="kp-st">${w ? '⏳ Esperando' : '+'+g.pts+' ⭐'}</span></button>` }).join('');
+  const hero = `<section class="kp-hero" style="--kid:${esc(k.color)}">
       <button class="km-ava" data-act="party" aria-label="Festa!">${avatarSVG(lookOf(k.id), k.color, 'km-av')}${avatar(k, 'km-photo')}</button>
       <div class="kp-info"><div class="km-stars">${STAR}${bal}</div>
-        <div class="badges"><span class="lvl">${lv.cur.e} ${esc(lv.cur.n)}</span>${st.streak ? `<span class="fire">🔥 ${st.streak} ${st.streak>1?'dias seguidos':'dia'}</span>` : ''}</div>
+        <div class="badges"><span class="lvl">${lv.cur.e} ${esc(lv.cur.n)}</span>${st.streak ? `<span class="fire">🔥 ${st.streak} ${st.streak>1?'dias seguidos':'dia'}</span>` : ''}${coinChip(k.id)}${b.avail ? `<button class="boxchip" data-act="gift-open" data-kid="${esc(k.id)}">🎁 Abrir caixa!</button>` : ''}</div>
         <div class="goal"><div class="goal-row"><span>${lv.nxt ? `Próximo nível: ${lv.nxt.e} ${esc(lv.nxt.n)}` : 'Nível máximo! 👑'}</span><span class="pts">${lv.nxt ? 'faltam '+(lv.nxt.min-lv.lt) : ''}</span></div><div class="bar lvbar"><i style="width:${Math.max(0,Math.min(100,lv.pct))}%"></i></div></div></div>
-    </section>
+    </section>`;
+  const nav = `<div class="kp-nav" style="--kid:${esc(k.color)}">${[['hoje','⭐ Meu dia'],['mundo', T.emo + ' Meu mundo'],['avatar','👕 Meu avatar']].map(([id, t]) => `<button data-act="kp-view" data-id="${id}" aria-pressed="${kpView===id}">${t}${id==='avatar' && b.avail ? `<span class="dot">${b.avail}</span>` : id==='mundo' && !dayState(k).closed && dayState(k).open && dayState(k).w ? '<span class="dot">!</span>' : ''}</button>`).join('')}</div>`;
+  let body;
+  if(kpView === 'mundo') body = dayCloseCard(k, true) + worldHTML(k, true);
+  else if(kpView === 'avatar'){ const s0 = selKid; selKid = k.id; body = viewAvatar(); selKid = s0 }
+  else body = `${missionCard(k, true)}
+    ${boxCard(k, true)}
     ${calmCard(k)}
     ${chestCard(k, true)}
     <section class="kp-sec"><h3>${ico('sun')}Minhas tarefas de hoje <small>${done} de ${tasks.length}</small></h3><div class="kp-grid">${tTiles || '<p class="hint">Nenhuma tarefa hoje.</p>'}</div></section>
     ${gTiles ? `<section class="kp-sec"><h3>${ico('star')}Fiz uma coisa legal!</h3><div class="kp-grid">${gTiles}</div></section>` : ''}
     ${kidXmasSection(k)}
+    ${dayState(k).open ? dayCloseCard(k, true) : ''}
     <section class="kp-sec"><h3>${ico('butterfly')}Minhas medalhas</h3>${badgesHTML(k, st)}</section>
-    <p class="kp-hint">Quando você toca em "Eu fiz!", um adulto confere e aprova. Aí as estrelas chegam! ⭐</p>
-  </div>`;
+    <p class="kp-hint">Quando você toca em "Eu fiz!", um adulto confere e aprova. Aí as estrelas chegam! ⭐</p>`;
+  return `<div class="kp">${hero}${nav}${body}</div>`;
 }
 function pinHTML(){
   return `<div class="pin"><div class="pin-box ${pinWrong?'wrong':''}"><h3>Senha dos pais</h3><div class="pin-dots">${[0,1,2,3].map(i => `<span class="${i < pinBuf.length ? 'on' : ''}"></span>`).join('')}</div>
@@ -2031,11 +2303,107 @@ function seededPerm(n, seed){ const a = [...Array(n).keys()]; let x = seed || 1;
 function dailyIdx(len, kidId, d){ const cyc = Math.floor(d / len); return seededPerm(len, strHash(kidId + ':' + cyc))[d % len] }
 const pickV = (arr, kidId, salt) => arr[(dayNum() + strHash(kidId + salt)) % arr.length];
 function mainMsgFor(k, d){
+  const nb = badsToday(k.id).length, hard = JESUS_HARD[k.id] || (nb ? JESUS_HARD[k.g === 'f' ? 'alice' : 'joey'] : null);
+  if(nb && hard) return hard[(dailyIdx(hard.length, k.id + ':h', d) + (nb - 1) * 5) % hard.length];
   const own = JESUS_MAIN[k.id];
   if(own){ const i = dailyIdx(own.length, k.id, d); return own[i] }
   const idx = Math.max(0, kids().findIndex(x => x.id === k.id)), a = age(k.birth), pool = (a != null && a <= 6) ? MSG_SMALL : MSG_BIG;
   return pool[(d + idx * 13) % pool.length];
 }
+/* ---------- v12: recadinho especial nos dias em que perdem pontos ---------- */
+const JESUS_HARD = {
+  alice: [
+    ['Alice, hoje teve uma hora difícil, né? Mas escuta: eu continuo te amando do mesmo tamanhão. Nada muda isso!','Romanos 8:38-39'],
+    ['Até as florzinhas mais bonitas às vezes ficam murchinhas. Amanhã você floresce de novo, comigo.','Lamentações 3:22-23'],
+    ['Quando a gente faz arte, o coração fica apertadinho. Pede desculpas e sente como ele fica leve de novo.','1 João 1:9'],
+    ['Eu sei que você não queria deixar ninguém triste. Vamos tentar de novo amanhã? Eu seguro a sua mão.','Isaías 41:13'],
+    ['Perder estrelinhas não faz você perder o meu amor. Você é minha princesinha sempre.','Jeremias 31:3'],
+    ['Hoje não foi o melhor dia, mas amanhã eu te dou um dia novinho, embrulhado para presente.','Salmo 118:24'],
+    ['Quando a raiva ou o choro vierem, chama: "Jesus, me ajuda!". Eu venho rapidinho.','Salmo 50:15'],
+    ['Sabe o que eu faço quando alguém erra? Eu dou um abraço e ajudo a recomeçar. Vem cá!','Lucas 15:20'],
+    ['Errar faz parte de aprender. Você está aprendendo a ser uma menina cada dia mais bondosa.','Filipenses 1:6'],
+    ['A mamãe e o papai corrigem porque amam muito você. Eu também amo.','Provérbios 3:12'],
+    ['Mesmo num dia nublado, o sol continua lá em cima. O meu amor também!','Salmo 136:1'],
+    ['Quando você erra, eu não vou embora. Eu fico pertinho e te ajudo a fazer diferente.','Hebreus 13:5'],
+    ['Amanhã, quando acordar, diga: "Jesus, hoje eu quero ser bondosa". Eu vou te ajudar!','Salmo 143:10'],
+    ['O seu coração é como um jardim: hoje nasceu uma ervinha daninha, mas a gente arranca juntinhos.','Salmo 51:10'],
+    ['Todo mundo erra, até os grandes. O importante é dizer "desculpa" e tentar de novo.','Tiago 3:2'],
+    ['Eu ainda sorrio quando olho para você. Hoje e sempre.','Sofonias 3:17'],
+    ['Respira fundinho comigo: cheira a flor, sopra a velinha... Pronto. Agora o coração descansa.','Mateus 11:28'],
+    ['As estrelinhas do quadro voltam! Comece amanhã com um abraço gostoso na mamãe.','Provérbios 24:16'],
+    ['Quando alguém fica triste por nossa causa, o meu coração fica triste. Mas quando você pede desculpas, ele faz festa!','Lucas 15:7'],
+    ['Você é pequenininha e está aprendendo. Eu tenho toda a paciência do mundo com você.','Salmo 103:8'],
+    ['Hoje teve choro e confusão, mas a noite chegou para acalmar tudo. Durma em paz, florzinha.','Salmo 4:8'],
+    ['Eu te perdoo, Alice. Agora você pode dormir leve como uma pena.','Miqueias 7:18'],
+    ['Amanhã vamos plantar sementinhas de bondade: um "por favor", um "obrigada" e um abraço.','Gálatas 6:9'],
+    ['Quando você escolhe obedecer, mesmo sendo difícil, você fica forte como uma leoa.','Josué 1:9'],
+    ['Nenhuma arte é grande demais para o meu amor. Eu estou sempre de braços abertos.','Isaías 1:18'],
+    ['Que tal dar um beijinho de boa noite em quem ficou triste hoje? Isso conserta muita coisa!','Efésios 4:32'],
+    ['O dia de hoje acabou. Os erros ficam aqui, e amanhã você começa limpinha, como depois do banho.','Salmo 103:12'],
+    ['Eu acredito em você, Alice! Amanhã você consegue.','Filipenses 4:13'],
+    ['Quando estiver difícil, pense: "O que Jesus faria?". Eu faria carinho, falaria baixinho e ajudaria.','1 Pedro 2:21'],
+    ['Você continua sendo a alegria da sua família, mesmo nos dias difíceis.','Salmo 127:3'],
+  ],
+  joey: [
+    ['Joey, hoje você perdeu pontos, mas não perdeu o meu amor. Isso nunca muda.','Romanos 8:38-39'],
+    ['Errar não te define. O que te define é o que você faz depois. Conserte o que der e recomece.','Provérbios 24:16'],
+    ['Dia difícil? Eu sei. Fale comigo antes de dormir: o que aconteceu e o que você quer fazer diferente amanhã.','Salmo 62:8'],
+    ['Quem assume o erro é mais corajoso do que quem esconde. Que tal conversar com seus pais ainda hoje?','Provérbios 28:13'],
+    ['Pedro me negou três vezes, e mesmo assim eu o chamei de novo. Eu também te chamo de novo, Joey.','João 21:17'],
+    ['Os seus pais corrigem porque acreditam no homem que você está se tornando.','Hebreus 12:11'],
+    ['Amanhã é uma página nova. Escreva uma história melhor, que eu escrevo junto com você.','Lamentações 3:22-23'],
+    ['A raiva é um aviso, não uma ordem. Da próxima vez, pare, respire e escolha a resposta.','Efésios 4:26'],
+    ['Um pedido de desculpas sincero vale mais do que mil explicações. Ainda dá tempo hoje.','Mateus 5:23-24'],
+    ['Você está treinando o caráter, e todo treino tem dias ruins. Atleta não desiste depois de um jogo ruim.','1 Coríntios 9:24'],
+    ['Eu não estou bravo com você. Eu estou do seu lado, ajudando você a crescer.','Salmo 103:10'],
+    ['Pense numa coisa que você pode fazer amanhã para deixar a casa mais feliz. Faça logo cedo!','Romanos 12:21'],
+    ['Ser o irmão mais velho às vezes é difícil. A Alice também aprende vendo você recomeçar.','1 Timóteo 4:12'],
+    ['Davi errou feio, mas se arrependeu de verdade, e eu fiz dele um grande rei.','Salmo 51:10'],
+    ['Você é muito mais do que o seu pior momento do dia.','Efésios 2:10'],
+    ['Hoje o placar ficou negativo, mas o jogo não acabou. Amanhã tem virada!','Filipenses 3:13-14'],
+    ['Quando a gente responde mal, machuca quem mais ama a gente. Um abraço hoje pode desfazer isso.','Provérbios 15:1'],
+    ['O domínio próprio é como um músculo: cresce com treino. Hoje foi dia de treino.','Gálatas 5:22-23'],
+    ['Não vá dormir com o coração pesado. Converse, peça perdão e descanse.','Efésios 4:26'],
+    ['Eu já perdoei você. Agora perdoe a si mesmo também e durma em paz.','1 João 1:9'],
+    ['Lembre-se de quem você é: um menino amado, escolhido e cheio de coisas boas.','1 Pedro 2:9'],
+    ['Os erros de hoje podem virar as lições de amanhã. O que você aprendeu?','Romanos 8:28'],
+    ['Responsabilidade é assumir e consertar. Você é capaz disso, eu sei.','Gálatas 6:5'],
+    ['O seu valor não sobe e desce com os pontos. Ele foi decidido na cruz, e é enorme.','Romanos 5:8'],
+    ['Amanhã, antes de tudo, peça: "Deus, me ajuda a ser paciente hoje". Eu respondo.','Tiago 1:5'],
+    ['Até os heróis caem. O que faz alguém ser herói é levantar e fazer o certo.','Miqueias 7:8'],
+    ['Os seus pais te amam mesmo quando precisam tirar pontos. Amor de verdade também corrige.','Provérbios 3:11-12'],
+    ['Quer ganhar o dia de amanhã? Comece fazendo uma tarefa sem ninguém pedir.','Colossenses 3:23'],
+    ['Eu conheço o seu coração. Sei que você quer acertar. Vamos juntos.','Salmo 139:1-3'],
+    ['Descanse. Amanhã o sol nasce, e a minha misericórdia nasce junto.','Salmo 30:5'],
+  ],
+};
+const JESUS_REPAIR = {
+  alice: ['E eu vi que depois você consertou! Isso me deixou muito feliz.','Você pediu desculpas depois. Que coração lindo!','Depois da arte veio o abraço de desculpas. É assim que eu gosto!','E depois você escolheu fazer o bem. Que orgulho!'],
+  joey: ['E depois você consertou a situação. Isso é maturidade de verdade.','Vi que você não deixou o erro ficar por isso mesmo. Mandou bem.','Depois do erro, você escolheu fazer o certo. É isso o que mais importa.','Você virou o jogo depois do erro. Isso mostra quem você é de verdade.'],
+};
+const JESUS_BAD_MORE = {
+  alice: {
+    ba1:['A mãozinha que bateu hoje pode fazer carinho amanhã. Vamos treinar?','Quando a raiva chegar, bata o pé no chão três vezes e me chame. Bater no amiguinho, não!'],
+    ba2:['Quando alguém se machuca, a gente para, olha e pergunta: "Você está bem?". Amanhã você faz isso, tá?','Machucar sem querer acontece, mas a gente sempre cuida depois. Eu te ensino.'],
+    ba3:['A sua boquinha é bonita demais para palavras feias! Amanhã escolha só palavras de princesa.','Palavra feia é como lama: suja o coração. Palavra bonita é como banho de espuma!'],
+    ba4:['Eu cuido de você, e a cadeirinha me ajuda! Combinado ficar sentadinha até chegar?','Sair da cadeirinha é perigoso. Eu te amo muito e quero você sempre protegida.'],
+    ba5:['O seu corpinho fica tristinho sem comida. Amanhã, que tal comer três colheradas de coragem?','Eu fiz a comida para dar força. Hoje ela ficou no prato, mas amanhã vamos tentar.'],
+    ba6:['Chorar tudo bem, mas birra cansa todo mundo. Amanhã use as palavras para dizer o que sente.','Quando o coração apertar, me dê a mão e respire comigo. O choro passa.'],
+    ba7:['A noite é para dormir e o dia é para brincar. Amanhã espere a luzinha do sol, tá?','Se acordar no escuro, abrace o seu bichinho e converse comigo até dormir de novo.'],
+    ba8:['Os seus olhinhos são preciosos. Amanhã, só desenhos que a mamãe escolher!','Alguns desenhos deixam a cabeça agitada. Os bons deixam o coração em paz.'],
+    _:['Hoje teve "{acao}" e você perdeu estrelinhas. Amanhã a gente tenta de novo, juntos.'],
+  },
+  joey: {
+    bj1:['Bater deixa marcas por fora e por dentro. Que tal pedir desculpas antes de dormir?','Você é forte, e força de verdade protege, não machuca. Amanhã mostre isso.'],
+    bj2:['Responder mal é como jogar uma pedra: depois que sai, machuca. Treine pensar antes de falar.','Os seus pais merecem respeito, mesmo quando você discorda. Dá para discordar com educação.'],
+    bj3:['Quando todo mundo ajuda, sobra tempo para todo mundo brincar. Amanhã, seja o primeiro.','Eu vim para servir, não para ser servido. Ajudar em casa é seguir os meus passos.'],
+    bj4:['Que tal uma lista na porta do quarto? Quem se organiza esquece menos.','Esquecer acontece, mas deixar para lá, não. Faça agora o que der e prepare o amanhã.'],
+    bj5:['Chegar atrasado deixa os outros esperando. Amanhã, saia cinco minutos antes.','O tempo é um presente. Usar bem é mostrar respeito pelos outros.'],
+    _:['Hoje teve "{acao}" e você perdeu pontos. Amanhã você pode fazer diferente, e eu te ajudo.'],
+  },
+};
+Object.entries(JESUS_BAD_MORE).forEach(([kid, m]) => Object.entries(m).forEach(([ref, arr]) => { JESUS_BAD[kid][ref] = [...(JESUS_BAD[kid][ref] || []), ...arr] }));
+const badsToday = kid => todayEntries(kid).filter(e => e.type === 'bad');
 function jesusMsg(k){
   const d = dayNum(), list = kids(), me = Math.max(0, list.findIndex(x => x.id === k.id)), used = new Set();
   let pick = null;
@@ -2048,7 +2416,11 @@ function jesusMsg(k){
   if(bdayDays(k.birth) === 0) extra.push(pickV(C.bday, k.id, 'b'));
   const bads = es.filter(e => e.type === 'bad').sort((x,y) => (y.at||'').localeCompare(x.at||''));
   const goods = es.filter(e => e.type === 'good').sort((x,y) => (y.at||'').localeCompare(x.at||''));
-  if(bads.length){ const b = bads[0]; extra.push(pickV(B[b.ref] || B._, k.id, 'x' + b.ref)) }
+  if(bads.length){ const seen = new Set();
+    bads.forEach(b => { if(seen.has(b.ref) || seen.size >= 2) return; seen.add(b.ref); const acao = (b.label || '').toLowerCase();
+      extra.push(pickV(B[b.ref] || B._, k.id, 'x' + b.ref + bads.length).replace('{acao}', acao)) });
+    const lastBad = bads[0].at || '', R = JESUS_REPAIR[k.id] || JESUS_REPAIR[k.g === 'f' ? 'alice' : 'joey'];
+    if(es.some(e => (e.type === 'good' || e.type === 'calm' || e.type === 'mission') && (e.at || '') > lastBad) || goods.some(g => g.ref === 'g3')) extra.push(pickV(R, k.id, 'r')) }
   else if(es.filter(e => e.type === 'warn').length >= 2) extra.push(pickV(B.warn, k.id, 'w'));
   if(goods.length){ const g = goods[0], acao = g.label.charAt(0).toLowerCase() + g.label.slice(1);
     extra.push(pickV(G[g.ref] || G._, k.id, 'g' + g.ref).replace('{acao}', acao));
@@ -2072,7 +2444,7 @@ function godCard(k){
   return `${prayerHTML(false)}
     <section class="msgcard" style="--kid:${esc(k.color)}"><div class="msg-h"><span class="msg-env">💌</span><div><span class="label">Recadinho de Jesus</span><h3>Para ${esc(k.name)}</h3></div>${canSpeak ? `<button class="btn small" data-act="say-msg" data-kid="${esc(k.id)}">🔊 Ouvir</button>` : ''}</div>${msgBody(k, m)}</section>`;
 }
-const msgOpenKey = kid => 'qe.msg.' + dayStr() + '.' + kid;
+const msgOpenKey = kid => { const nb = badsToday(kid).length; return 'qe.msg.' + dayStr() + '.' + kid + (nb ? '.b' + nb : '') };
 function envelopeCard(k){
   const opened = ls.get(msgOpenKey(k.id), false), m = jesusMsg(k);
   if(!opened) return `<section class="envelope" style="--kid:${esc(k.color)}"><button class="env-btn" data-act="open-msg" data-kid="${esc(k.id)}"><span class="env-ico">💌</span><span class="env-t">Tem um recadinho de Jesus para você!</span><span class="env-cta">Toque para abrir</span></button></section>`;
@@ -2085,7 +2457,7 @@ function bedMsgsHTML(){
   const tabs = ks.map(k => `<button class="bd-tab" style="--kid:${esc(k.color)}" data-act="bed-msgkid" data-id="${esc(k.id)}" aria-pressed="${k.id===cur.id}">${avatar(k)}<span>${esc(k.name)}</span>${ls.get(msgOpenKey(k.id), false) ? '' : '<i class="bd-dot"></i>'}</button>`).join('');
   const body = opened
     ? `<div class="bd-msg" style="--kid:${esc(cur.color)}"><h4>💌 Para ${esc(cur.name)}</h4><p class="msg-main">${esc(m.text)}</p>${m.extra.map(x => `<p class="msg-extra">${esc(x)}</p>`).join('')}<p class="msg-sign">Com amor, Jesus 💛 <span>Inspirado em ${esc(m.ref)}</span></p>${canSpeak ? `<button class="bd-btn soft" data-act="say-msg" data-kid="${esc(cur.id)}">🔊 Ouvir de novo</button>` : ''}</div>`
-    : `<button class="bd-env" style="--kid:${esc(cur.color)}" data-act="open-msg" data-kid="${esc(cur.id)}"><span class="env-ico">💌</span><span class="env-t">${esc(cur.name)}, tem um recadinho de Jesus para você!</span><span class="env-cta">Toque para abrir</span></button>`;
+    : `<button class="bd-env" style="--kid:${esc(cur.color)}" data-act="open-msg" data-kid="${esc(cur.id)}"><span class="env-ico">💌</span><span class="env-t">${esc(cur.name)}, ${badsToday(cur.id).length ? 'Jesus mandou um recadinho novo, especial para hoje!' : 'tem um recadinho de Jesus para você!'}</span><span class="env-cta">Toque para abrir</span></button>`;
   return `<article class="bd-devo bd-msgs"><div class="bd-devo-head"><span class="bd-kicker">Recadinho de Jesus · a última coisa do dia</span></div><div class="bd-tabs">${tabs}</div>${body}</article>`;
 }
 /* ---------- Super Presente de Natal ---------- */
@@ -2522,6 +2894,349 @@ async function maybeUpgradeRoutine(){
 }
 BADGES.push({id:'calm5', name:'Coração calmo', emo:'🌿', need:{calm:5}}, {id:'adv24', name:'Natal completo', emo:'🎄', need:{advent:24}});
 Object.assign(NEED_WORDS, {calm:'vezes no Cantinho da calma', advent:'portinhas do Advento'});
+/* ================= v11: Meu Mundo, Missão do dia, Caixas surpresa e nova economia ================= */
+const ECON_V = 3;
+let worlds = {}, worldsLoaded = false, worldsExists = false, worldsWriteBusy = false, gameInitTried = false;
+let wNew = null, kpView = 'hoje', giftOpen = null;
+
+/* ---------- moedas do mundo ---------- */
+const THEMES = {
+  farm:  {name:'Fazendinha', emo:'🐮', coin:'🌻', one:'semente', many:'sementes', act:'Regar a fazenda', actEmo:'💧'},
+  space: {name:'Universo',   emo:'🪐', coin:'✨', one:'poeira de estrela', many:'poeiras de estrela', act:'Abastecer a nave', actEmo:'⛽'},
+  city:  {name:'Cidade',     emo:'🏙️', coin:'🧱', one:'tijolinho', many:'tijolinhos', act:'Construir na cidade', actEmo:'🔨'},
+};
+const wOf = kid => worlds[kid] || {};
+const themeOf = kid => THEMES[wOf(kid).theme] ? wOf(kid).theme : (kidById(kid)?.g === 'f' ? 'farm' : 'space');
+const coinWord = (kid, n) => { const t = THEMES[themeOf(kid)]; return n === 1 ? t.one : t.many };
+function coinsEarned(kid){ return (ledger?.wcoins?.[kid] || 0) + liveEntries().filter(e => e.kid === kid).reduce((s, e) => s + (e.w || 0), 0) }
+const coins = kid => Math.max(0, coinsEarned(kid) - (wOf(kid).spent || 0));
+const coinChip = kid => `<span class="coinchip">${THEMES[themeOf(kid)].coin} ${coins(kid)}</span>`;
+
+async function wWrite(kid, patch){
+  if(!db) { toast('Entre na conta para salvar.'); return false }
+  try{ const ref = db.doc('app/worlds');
+    if(worldsExists) await ref.update({[kid]: patch});
+    else { await ref.set({...worlds, [kid]: {...(worlds[kid] || {}), ...patch}}); worldsExists = true }
+    return true }catch(err){ writeErr(err); return false } }
+
+/* ---------- itens dos mundos ---------- */
+const E = (e) => (s) => `<text x="0" y="${-s*0.12}" font-size="${s}" text-anchor="middle">${e}</text>`;
+const planet = (c1, c2, extra) => (s) => { const r = s/2; return `<circle cx="0" cy="${-r}" r="${r}" fill="${c1}"/><circle cx="${-r*.3}" cy="${-r*1.3}" r="${r*.35}" fill="#fff" opacity=".35"/>${extra ? extra(r) : ''}<circle cx="0" cy="${-r}" r="${r}" fill="none" stroke="${c2}" stroke-width="${Math.max(1.5, r*.12)}"/>` };
+const W_ITEMS = {
+  farm: [
+    {id:'galinha', n:'Galinha', c:2, d:E('🐔'), p:[64,206,26], say:'A galinha diz: có-có-ri-có!'},
+    {id:'pintinho', n:'Pintinho', c:2, d:E('🐤'), p:[90,212,18], say:'O pintinho diz: piu piu piu!'},
+    {id:'girassol', n:'Girassóis', c:3, d:E('🌻'), p:[18,166,26], say:'Os girassóis sempre olham para o sol!'},
+    {id:'coelho', n:'Coelhinho', c:3, d:E('🐇'), p:[128,222,22], say:'O coelhinho pula, pula, pula!'},
+    {id:'pato', n:'Patinho', c:3, d:E('🦆'), p:[282,204,24], say:'O pato diz: quá quá quá!'},
+    {id:'ovelha', n:'Ovelha', c:4, d:E('🐑'), p:[172,186,28], say:'A ovelha diz: mééé!'},
+    {id:'porco', n:'Porquinho', c:4, d:E('🐖'), p:[222,222,28], say:'O porquinho diz: óinc óinc!'},
+    {id:'macieira', n:'Macieira', c:5, d:E('🌳'), p:[336,166,48], say:'Que maçãs gostosas!'},
+    {id:'cabra', n:'Cabrita', c:5, d:E('🐐'), p:[112,186,24], say:'A cabrita diz: béé!'},
+    {id:'vaca', n:'Vaquinha', c:6, d:E('🐄'), p:[252,178,34], say:'A vaquinha diz: muuuu!'},
+    {id:'abelha', n:'Abelhinhas', c:6, d:E('🐝'), p:[312,118,16], say:'As abelhas fazem zum zum e fazem mel!'},
+    {id:'cachorro', n:'Cachorro da fazenda', c:7, d:E('🐕'), p:[36,232,26], say:'O cachorro diz: au au!'},
+    {id:'gato', n:'Gatinho', c:7, d:E('🐈'), p:[154,236,22], say:'O gatinho diz: miau!'},
+    {id:'abobora', n:'Plantação de abóboras', c:8, d:E('🎃'), p:[190,238,20], say:'Que abóboras enormes!'},
+    {id:'cavalo', n:'Cavalo', c:8, d:E('🐎'), p:[92,158,34], say:'O cavalo diz: iiirrrí!'},
+    {id:'peru', n:'Peru', c:9, d:E('🦃'), p:[328,232,24], say:'O peru diz: glu glu glu!'},
+    {id:'tartaruga', n:'Tartaruga do lago', c:10, d:E('🐢'), p:[302,218,18], say:'A tartaruga anda devagarinho...'},
+    {id:'trator', n:'Trator', c:10, d:E('🚜'), p:[206,158,32], say:'Vrum vrum! O trator chegou!'},
+    {id:'lhama', n:'Lhama', c:12, d:E('🦙'), p:[146,158,30], say:'A lhama é a mais fofa da fazenda!'},
+    {id:'casinha', n:'Casinha da fazenda', c:12, d:E('🏡'), p:[40,126,40], say:'Bem-vindos à nossa casinha!'},
+    {id:'pavao', n:'Pavão', c:14, d:E('🦚'), p:[262,238,26], say:'O pavão abriu as penas coloridas!'},
+    {id:'celeiro', n:'Celeiro vermelho', c:15, d:(s) => `<path d="M${-s*.55} 0 V${-s*.6} L0 ${-s} L${s*.55} ${-s*.6} V0 Z" fill="#E2312F" stroke="#8B1E1E" stroke-width="2"/><path d="M${-s*.62} ${-s*.56} L0 ${-s*1.06} L${s*.62} ${-s*.56}" fill="none" stroke="#fff" stroke-width="4"/><rect x="${-s*.2}" y="${-s*.42}" width="${s*.4}" height="${s*.42}" fill="#fff"/><path d="M${-s*.2} ${-s*.42} L${s*.2} 0 M${s*.2} ${-s*.42} L${-s*.2} 0" stroke="#E2312F" stroke-width="2.4"/><circle cx="0" cy="${-s*.68}" r="${s*.09}" fill="#FFD23F"/>`, p:[284,132,54], say:'O celeiro guarda o feno para os bichos!'},
+    {id:'arcoiris', n:'Arco-íris', c:18, d:(s) => ['#FF5C93','#FF9A3C','#FFD23F','#4CD07D','#3FB2FF','#A066FF'].map((c,i) => `<path d="M${-s+i*5} 0 A${s-i*5} ${s-i*5} 0 0 1 ${s-i*5} 0" stroke="${c}" stroke-width="5" fill="none"/>`).join(''), p:[180,118,62], say:'Um arco-íris! A promessa de Deus!'},
+    {id:'unicornio', n:'Unicórnio mágico', c:25, d:E('🦄'), p:[122,92,34], say:'Uau! Um unicórnio mágico na fazenda!'},
+  ],
+  space: [
+    {id:'lua', n:'Lua', c:2, d:E('🌙'), p:[34,52,30], say:'A lua brilha para você!'},
+    {id:'cadente', n:'Estrela cadente', c:2, d:E('🌠'), p:[316,40,22], say:'Faça um pedido!'},
+    {id:'bolha', n:'Planeta Bolha', c:3, d:planet('#FF8FC8','#D9468F', r => `<circle cx="${r*.35}" cy="${-r*.7}" r="${r*.18}" fill="#fff" opacity=".5"/><circle cx="${-r*.2}" cy="${-r*.55}" r="${r*.12}" fill="#fff" opacity=".5"/>`), p:[170,70,30], say:'O Planeta Bolha é todo cor-de-rosa!'},
+    {id:'satelite', n:'Satélite', c:3, d:E('🛰️'), p:[252,74,22], say:'Bip bip! O satélite manda mensagens!'},
+    {id:'aneis', n:'Planeta de anéis', c:3, d:E('🪐'), p:[92,120,38], say:'Que anéis bonitos!'},
+    {id:'foguete', n:'Foguete', c:4, d:E('🚀'), p:[332,176,32], say:'Três, dois, um... decolar!'},
+    {id:'cometa', n:'Cometa', c:4, d:E('☄️'), p:[214,36,22], say:'O cometa passou voando!'},
+    {id:'gelado', n:'Planeta Gelado', c:5, d:planet('#9FE7FF','#3BA9D9', r => `<path d="M${-r*.6} ${-r*1.3} l${r*.25} ${r*.2} l${r*.2} ${-r*.2} l${r*.25} ${r*.2}" stroke="#fff" stroke-width="2" fill="none"/>`), p:[40,188,40], say:'Brrr! O Planeta Gelado é feito de gelo!'},
+    {id:'alien', n:'Alienígena amigo', c:5, d:E('👽'), p:[132,206,26], say:'Bip bop! Eu sou seu amigo!'},
+    {id:'disco', n:'Disco voador', c:6, d:E('🛸'), p:[236,138,30], say:'Zuuum! O disco voador chegou!'},
+    {id:'vulcao', n:'Planeta Vulcão', c:6, d:planet('#FF7A3C','#C2410C', r => `<path d="M${-r*.5} ${-r*.5} l${r*.25} ${-r*.5} l${r*.25} ${r*.5} Z" fill="#7A2E0E"/><circle cx="${-r*.25}" cy="${-r*1.15}" r="${r*.12}" fill="#FFD23F"/>`), p:[300,124,44], say:'O Planeta Vulcão é quentinho!'},
+    {id:'terra', n:'Planeta Terra', c:7, d:E('🌍'), p:[116,58,32], say:'A Terra, a nossa casa!'},
+    {id:'astronauta', n:'Astronauta', c:7, d:E('🧑‍🚀'), p:[190,210,28], say:'Olá, comandante!'},
+    {id:'doce', n:'Planeta Doce', c:8, d:planet('#FFE45C','#E0A800', r => [-.6,-1,-1.4].map(y => `<path d="M${-r*.9} ${r*y} Q0 ${r*y-6} ${r*.9} ${r*y}" stroke="#FF5C93" stroke-width="3" fill="none"/>`).join('')), p:[262,214,34], say:'O Planeta Doce tem gosto de bala!'},
+    {id:'galaxia', n:'Galáxia', c:9, d:(s) => `<g opacity=".9"><ellipse cx="0" cy="${-s/2}" rx="${s/2}" ry="${s/4}" fill="#A066FF" opacity=".35"/><path d="M0 ${-s/2} m-2 0 a4 4 0 1 1 6 3 a9 9 0 1 1 -14 -8 a15 15 0 1 1 24 12" stroke="#E5D4FF" stroke-width="2.4" fill="none"/><circle cx="0" cy="${-s/2}" r="3.5" fill="#fff"/></g>`, p:[62,96,40], say:'Uma galáxia inteira cheia de estrelas!'},
+    {id:'meteoros', n:'Chuva de meteoros', c:10, d:E('💫'), p:[198,122,20], say:'Olha a chuva de meteoros!'},
+    {id:'sol', n:'Sol sorridente', c:10, d:(s) => { const r = s/2; return `<circle cx="0" cy="${-r}" r="${r}" fill="#FFD23F" stroke="#FF9A3C" stroke-width="3"/><circle cx="${-r*.35}" cy="${-r*1.1}" r="${r*.1}" fill="#5B3A00"/><circle cx="${r*.35}" cy="${-r*1.1}" r="${r*.1}" fill="#5B3A00"/><path d="M${-r*.4} ${-r*.75} Q0 ${-r*.4} ${r*.4} ${-r*.75}" stroke="#5B3A00" stroke-width="2.4" fill="none"/>` }, p:[344,78,34], say:'Bom dia, universo! Eu sou o sol!'},
+    {id:'polvo', n:'Polvo espacial', c:12, d:E('🐙'), p:[90,234,26], say:'O polvo espacial dá oito abraços!'},
+    {id:'dino', n:'Planeta dos dinossauros', c:12, d:(s) => planet('#4CD07D','#1E9E4A')(s) + `<text x="0" y="${-s*.22}" font-size="${s*.55}" text-anchor="middle">🦖</text>`, p:[212,96,40], say:'Roaaar! O planeta dos dinossauros!'},
+    {id:'arcoiris', n:'Planeta Arco-íris', c:14, d:(s) => { const r = s/2; return `<defs><clipPath id="wrbc"><circle cx="0" cy="${-r}" r="${r}"/></clipPath></defs><g clip-path="url(#wrbc)">${['#FF5C93','#FF9A3C','#FFD23F','#4CD07D','#3FB2FF','#A066FF'].map((c,i) => `<rect x="${-r}" y="${-s + i*s/6}" width="${s}" height="${s/6 + .5}" fill="${c}"/>`).join('')}</g><circle cx="${-r*.3}" cy="${-r*1.3}" r="${r*.3}" fill="#fff" opacity=".35"/><circle cx="0" cy="${-r}" r="${r}" fill="none" stroke="#7B3FE4" stroke-width="2"/>` }, p:[312,226,30], say:'O planeta mais colorido do universo!'},
+    {id:'dragao', n:'Dragão das estrelas', c:15, d:E('🐉'), p:[136,160,32], say:'O dragão das estrelas solta faíscas!'},
+    {id:'nave', n:'Nave-mãe', c:18, d:(s) => `<ellipse cx="0" cy="${-s*.3}" rx="${s*.7}" ry="${s*.2}" fill="#B9C3D6" stroke="#5B6B86" stroke-width="2"/><ellipse cx="0" cy="${-s*.45}" rx="${s*.3}" ry="${s*.2}" fill="#7FE0FF" stroke="#5B6B86" stroke-width="2"/>${[-.45,-.15,.15,.45].map(x => `<circle cx="${s*x}" cy="${-s*.28}" r="${s*.05}" fill="#FFD23F"/>`).join('')}`, p:[176,176,60], say:'A nave-mãe chegou! Todos a bordo!'},
+    {id:'baleia', n:'Baleia das estrelas', c:20, d:E('🐋'), p:[38,240,24], say:'A baleia das estrelas nada pelo espaço!'},
+    {id:'diamante', n:'Planeta Diamante', c:25, d:E('💎'), p:[268,38,30], say:'Uau! Um planeta de diamante!'},
+  ],
+  city: [
+    {id:'arvore', n:'Árvore', c:2, d:E('🌳'), p:[18,206,34], say:'Que sombra gostosa!'},
+    {id:'bike', n:'Bicicleta', c:2, d:E('🚲'), p:[58,238,22], say:'Trim trim! Olha a bicicleta!'},
+    {id:'casa', n:'Casinha', c:3, d:E('🏠'), p:[56,204,40], say:'Lar, doce lar!'},
+    {id:'jardim', n:'Jardim de flores', c:3, d:E('🌷'), p:[90,206,18], say:'Que flores cheirosas!'},
+    {id:'carro', n:'Carro', c:3, d:E('🚗'), p:[118,236,24], say:'Bi bi! Olha o carro!'},
+    {id:'sorvete', n:'Carrinho de sorvete', c:4, d:E('🍦'), p:[146,206,22], say:'Quem quer sorvete?'},
+    {id:'onibus', n:'Ônibus', c:4, d:E('🚌'), p:[200,238,30], say:'Todos para a escola!'},
+    {id:'escola', n:'Escola', c:5, d:E('🏫'), p:[112,204,44], say:'Na escola a gente aprende muito!'},
+    {id:'hospital', n:'Hospital', c:5, d:E('🏥'), p:[176,204,42], say:'Aqui cuidam de quem está dodói.'},
+    {id:'pizzaria', n:'Pizzaria', c:6, d:E('🍕'), p:[218,206,22], say:'Hum, pizza quentinha!'},
+    {id:'bombeiro', n:'Caminhão de bombeiros', c:6, d:E('🚒'), p:[268,238,28], say:'Uiu uiu! Os bombeiros estão chegando!'},
+    {id:'fonte', n:'Fonte', c:7, d:E('⛲'), p:[252,206,30], say:'Splash! Que água fresquinha!'},
+    {id:'carrossel', n:'Carrossel', c:7, d:E('🎠'), p:[298,206,34], say:'Gira, gira, carrossel!'},
+    {id:'mercado', n:'Mercadinho', c:8, d:E('🏪'), p:[342,204,38], say:'Vamos às compras!'},
+    {id:'igreja', n:'Igreja', c:8, d:E('⛪'), p:[34,166,34], say:'Aqui a gente canta para Deus!'},
+    {id:'trem', n:'Trem', c:9, d:E('🚂'), p:[330,238,28], say:'Piuíí! Lá vem o trem!'},
+    {id:'estadio', n:'Estádio', c:10, d:E('🏟️'), p:[104,166,40], say:'Gooool!'},
+    {id:'roda', n:'Roda-gigante', c:10, d:E('🎡'), p:[54,124,44], say:'Lá de cima dá para ver a cidade toda!'},
+    {id:'castelo', n:'Castelo', c:12, d:E('🏰'), p:[178,160,44], say:'Bem-vindos ao castelo!'},
+    {id:'heli', n:'Helicóptero', c:12, d:E('🚁'), p:[150,56,28], say:'Tec tec tec! O helicóptero voa alto!'},
+    {id:'predios', n:'Prédios altos', c:14, d:E('🏙️'), p:[250,166,44], say:'Que prédios altos!'},
+    {id:'montanha', n:'Montanha-russa', c:15, d:E('🎢'), p:[252,118,40], say:'Uhuuul! Que frio na barriga!'},
+    {id:'foguete', n:'Base de foguetes', c:18, d:E('🚀'), p:[336,96,32], say:'A cidade vai até o espaço!'},
+    {id:'torre', n:'Torre gigante', c:25, d:E('🗼'), p:[320,166,52], say:'A torre mais alta do mundo!'},
+  ],
+};
+const W_BG = {
+  farm: () => `<defs><linearGradient id="wgf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ED8FF"/><stop offset="1" stop-color="#E4F7FF"/></linearGradient></defs><rect width="360" height="250" fill="url(#wgf)"/><circle cx="330" cy="34" r="18" fill="#FFD23F"/>${cloud(70,36,1)}${cloud(220,52,.8)}<path d="M0 140 C70 112 160 124 240 116 C290 112 330 118 360 126 L360 250 L0 250 Z" fill="#7BD36A"/><path d="M0 176 C90 160 200 170 360 156 L360 250 L0 250 Z" fill="#5CC27C"/><ellipse cx="292" cy="212" rx="44" ry="13" fill="#5EC8F2"/><ellipse cx="282" cy="208" rx="18" ry="3" fill="#fff" opacity=".5"/>${[0,1,2,3,4,5,6].map(i => `<rect x="${8+i*20}" y="146" width="4" height="22" fill="#fff"/>`).join('')}<rect x="4" y="152" width="132" height="4" fill="#fff"/>`,
+  space: () => `<defs><linearGradient id="wgs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140F3A"/><stop offset="1" stop-color="#3B2385"/></linearGradient></defs><rect width="360" height="250" fill="url(#wgs)"/>${Array.from({length:44}, (_, i) => { const x = (i*83) % 360, y = (i*47 + (i%5)*13) % 250; return `<circle cx="${x}" cy="${y}" r="${i%4 ? 1 : 1.8}" fill="#fff" opacity="${i%3 ? .7 : 1}"/>` }).join('')}`,
+  city: () => `<defs><linearGradient id="wgc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9AD9FF"/><stop offset="1" stop-color="#FFF1DC"/></linearGradient></defs><rect width="360" height="250" fill="url(#wgc)"/><circle cx="300" cy="40" r="18" fill="#FFD23F"/>${cloud(80,40,1)}${cloud(220,30,.7)}<rect y="168" width="360" height="40" fill="#BDE7A8"/><rect y="208" width="360" height="42" fill="#7A7F95"/><path d="M0 229 H360" stroke="#fff" stroke-width="3" stroke-dasharray="16 12"/><rect y="204" width="360" height="5" fill="#D9D3C7"/>`,
+};
+function worldSVG(kid, opts){
+  const th = themeOf(kid), own = new Set((wOf(kid).own || {})[th] || []), items = W_ITEMS[th];
+  let o = `<svg viewBox="0 0 360 250" class="wsvg" role="img" aria-label="${esc(THEMES[th].name)}">${W_BG[th]()}`;
+  items.forEach((it, i) => { if(!own.has(it.id)) return; const [x, y, s] = it.p;
+    const isNew = wNew && wNew.kid === kid && wNew.id === it.id;
+    o += `<g transform="translate(${x} ${y})"><g class="wi ${isNew ? 'new' : ''} ${it.c >= 18 ? 'big' : ''}" style="animation-delay:${-(i*0.37)%3}s" data-act="w-tap" data-kid="${esc(kid)}" data-id="${it.id}">${it.d(s)}</g></g>` });
+  if(!own.size) o += `<g><rect x="70" y="96" width="220" height="56" rx="16" fill="#fff" opacity=".88"/><text x="180" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#33235A" font-family="Mali,Fredoka,sans-serif">Seu mundo está esperando!</text><text x="180" y="140" text-anchor="middle" font-size="12" fill="#75659A" font-family="Figtree,sans-serif">Junte ${esc(THEMES[th].many)} e compre o primeiro</text></g>`;
+  return o + '</svg>';
+}
+const itemIcon = (it) => `<svg viewBox="-30 -46 60 52" class="wicon" aria-hidden="true">${it.d(40)}</svg>`;
+
+function worldHTML(k, kidsSide){
+  const th = themeOf(k.id), T = THEMES[th], own = new Set((wOf(k.id).own || {})[th] || []), items = W_ITEMS[th], c = coins(k.id);
+  const next = items.filter(i => !own.has(i.id)).sort((a, b) => a.c - b.c)[0];
+  const shop = items.slice().sort((a, b) => a.c - b.c).map(it => { const has = own.has(it.id), can = !has && c >= it.c;
+    return `<button class="wshop ${has ? 'has' : can ? 'can' : 'lock'}" data-act="${has ? 'w-tap' : 'w-buy'}" data-kid="${esc(k.id)}" data-id="${it.id}">${itemIcon(it)}<span class="wn">${esc(it.n)}</span><span class="wc">${has ? '✓ É seu!' : can ? `Comprar · ${it.c} ${T.coin}` : `${it.c} ${T.coin}`}</span></button>` }).join('');
+  const pick = Object.entries(THEMES).map(([id, t]) => `<button class="chip wtheme" data-act="w-theme" data-kid="${esc(k.id)}" data-id="${id}" aria-pressed="${th === id}">${t.emo} ${t.name}</button>`).join('');
+  return `<section class="card worldcard" style="--kid:${esc(k.color)}">
+    <div class="w-head"><div><span class="label">${kidsSide ? 'O meu mundo' : 'O mundo ' + (k.g === 'f' ? 'da ' : 'do ') + esc(k.name)}</span><h2>${T.emo} ${esc(T.name)}</h2></div><div class="w-coins"><b>${T.coin} ${c}</b><span>${esc(coinWord(k.id, c))}</span></div></div>
+    <div class="w-scene">${worldSVG(k.id)}</div>
+    <div class="w-prog"><span>${own.size} de ${items.length} no mundo</span>${next ? `<span>Próximo: ${esc(next.n)} · ${next.c > c ? `faltam ${next.c - c} ${T.coin}` : 'já dá para comprar!'}</span>` : '<span>Mundo completo! 👑</span>'}</div>
+    <div class="w-how"><b>Como ganhar ${esc(T.many)}:</b> 🎯 missão do dia +1 · ✅ rotina do dia +1 · 💛 dia sem desconto +1 · 🏆 Dia Perfeito +1 · 🎁 às vezes no baú</div>
+    <div class="w-themes">${pick}</div>
+    <div class="wshopgrid">${shop}</div>
+    <p class="hint">Toque nos bichinhos e nas coisas do mundo para ver o que acontece! ${esc(T.many.charAt(0).toUpperCase() + T.many.slice(1))} juntadas valem em todos os mundos.</p>
+  </section>`;
+}
+function viewWorld(){ const k = kidById(selKid); if(!k) return ''; return dayCloseCard(k) + worldHTML(k, false) }
+
+async function buyWorld(kid, id, el, pt){
+  const k = kidById(kid), th = themeOf(kid), it = W_ITEMS[th].find(x => x.id === id); if(!k || !it) return;
+  const own = ((wOf(kid).own || {})[th] || []);
+  if(own.includes(id)) return;
+  if(coins(kid) < it.c){ sfx('warn'); toast(`Faltam ${it.c - coins(kid)} ${THEMES[th].coin} para ${it.n}. Continue assim!`); return }
+  if(!arm(el, `${itemIcon(it)}<span class="wn">Toque de novo para comprar</span><span class="wc">${it.c} ${THEMES[th].coin}</span>`)) return;
+  const patch = {own: {...(wOf(kid).own || {}), [th]: [...own, id]}, spent: (wOf(kid).spent || 0) + it.c};
+  worlds = {...worlds, [kid]: {...wOf(kid), ...patch}}; wNew = {kid, id}; render();
+  if(await wWrite(kid, patch)){ confetti(pt.x, pt.y, 90); sfx('big'); toast(`🎉 ${it.n} chegou ao mundo ${k.g === 'f' ? 'da' : 'do'} ${k.name}!`); if(soundOn) setTimeout(() => speak(it.say, 'pt-BR'), 500) }
+  setTimeout(() => { wNew = null }, 2000);
+}
+
+/* ---------- fechar o dia (moedas do mundo) ---------- */
+function dayState(k){
+  const ts = tasksFor(k.id), done = ts.filter(t => isDone(k.id, t)).length, es = todayEntries(k.id);
+  const pct = ts.length ? done / ts.length : 0, noBad = !es.some(e => e.type === 'bad');
+  const parts = [{ok: pct >= 0.7, t: 'Fez a rotina (pelo menos 70%)', e: '✅'}, {ok: noBad, t: 'Nenhum desconto hoje', e: '💛'}, {ok: ts.length > 0 && done === ts.length && noBad, t: 'Dia Perfeito', e: '🏆'}];
+  const closed = logDocs.find(e => e.id === 'w_' + dayStr() + '_' + k.id);
+  const open = new Date().getHours() >= 16 || (ts.length && done === ts.length);
+  return {parts, w: parts.filter(p => p.ok).length, closed, open, done, total: ts.length};
+}
+function dayCloseCard(k, kidsSide){
+  const s = dayState(k), T = THEMES[themeOf(k.id)];
+  const rows = s.parts.map(p => `<li class="${p.ok ? 'ok' : ''}">${p.ok ? p.e : '⬜'} ${esc(p.t)} ${p.ok ? `<b>+1 ${T.coin}</b>` : ''}</li>`).join('');
+  let foot;
+  if(s.closed) foot = `<p class="dc-done">${T.actEmo} Dia fechado: +${s.closed.w || 0} ${T.coin} para o mundo!</p>`;
+  else if(!s.open) foot = `<p class="hint" style="margin:0">O dia fecha a partir das 16h (ou quando a rotina estiver completa). Rotina: ${s.done} de ${s.total}.</p>`;
+  else foot = s.w ? `<button class="btn primary dc-btn" data-act="day-close" data-kid="${esc(k.id)}">${T.actEmo} ${esc(T.act)} · +${s.w} ${T.coin}</button>` : `<p class="hint" style="margin:0">Hoje não deu para ganhar ${esc(T.many)}. Amanhã tem uma nova chance! 💪</p>`;
+  return `<section class="card daycard" style="--kid:${esc(k.color)}"><div class="sec-h"><h2>${T.emo} ${kidsSide ? 'Como foi o meu dia' : 'Fim do dia ' + (k.g === 'f' ? 'da ' : 'do ') + esc(k.name)}</h2><span class="meta">${T.coin} ${coins(k.id)}</span></div><ul class="dc-list">${rows}</ul>${foot}</section>`;
+}
+async function closeDay(kid, pt){
+  const k = kidById(kid); if(!k) return; const s = dayState(k); if(s.closed || !s.open || !s.w) return;
+  const T = THEMES[themeOf(kid)];
+  const r = await addEntry({kid, type:'day', label:`Fim do dia: ${s.parts.filter(p => p.ok).map(p => p.t.toLowerCase()).join(', ')}`, emoji:T.coin, pts:0, w:s.w}, 'w_' + dayStr() + '_' + kid);
+  if(r){ confetti(pt.x, pt.y, 80); sfx('big'); toast(`${T.actEmo} +${s.w} ${coinWord(kid, s.w)} para o mundo ${k.g === 'f' ? 'da' : 'do'} ${k.name}!`) }
+}
+
+/* ---------- missão do dia (de cada criança) ---------- */
+const MISSIONS_SMALL = [
+  ['Dar 3 abraços bem apertados', '🤗'], ['Dizer "obrigada" 5 vezes', '🙏'], ['Comer uma fruta inteirinha', '🍓'], ['Fazer um desenho de presente para alguém', '🖍️'],
+  ['Ajudar a guardar as compras', '🛒'], ['Arrumar os sapatos da porta', '👟'], ['Cantar uma música para a mamãe', '🎤'], ['Regar uma plantinha', '🌱'],
+  ['Dar comida para os bichinhos junto com o irmão', '🐶'], ['Brincar de estátua por 1 minuto', '🗿'], ['Contar até 20', '🔢'], ['Encontrar 5 coisas vermelhas na casa', '🔴'],
+  ['Fazer 10 pulos de sapo', '🐸'], ['Escovar os dentes cantando', '🪥'], ['Pedir "por favor" toda vez hoje', '💛'], ['Emprestar um brinquedo sem reclamar', '🧸'],
+  ['Guardar 10 brinquedos bem rapidinho', '🧺'], ['Dar beijo de boa noite em todo mundo', '😘'], ['Dobrar as meias com a mamãe', '🧦'], ['Fazer uma careta para alguém rir', '🤪'],
+  ['Comer todos os legumes do prato', '🥕'], ['Dançar uma música inteirinha', '💃'], ['Ficar 1 minuto quietinha de olhos fechados', '🤫'], ['Contar uma historinha com os bonecos', '🎭'],
+  ['Dizer 3 coisas que ama no irmão', '💞'], ['Montar um quebra-cabeça', '🧩'], ['Fazer uma torre com 10 blocos', '🧱'], ['Achar um círculo, um quadrado e um triângulo', '🔺'],
+  ['Aprender uma palavra em inglês com a mamãe', '🇬🇧'], ['Ajudar a pôr a mesa', '🍴'], ['Lavar as mãos sem ninguém pedir', '🧼'], ['Esperar a vez sem reclamar', '⏳'],
+  ['Fazer carinho em alguém que está cansado', '💗'], ['Brincar de esconde-esconde', '🙈'], ['Ficar na cadeirinha do carro sem reclamar', '🚗'], ['Experimentar uma comida nova', '🥦'],
+];
+const MISSIONS_BIG = [
+  ['Ler 15 páginas de um livro', '📖'], ['Fazer 30 polichinelos', '⭐'], ['Elogiar 3 pessoas diferentes hoje', '💬'], ['Ajudar a preparar o jantar', '🍳'],
+  ['Brincar 15 minutos com a irmã do jeito que ela quiser', '🧸'], ['Aprender 5 palavras novas em inglês', '🇬🇧'], ['Escrever um bilhete carinhoso para alguém', '✉️'], ['Passar o dia inteiro sem reclamar', '😎'],
+  ['Arrumar a gaveta ou a mochila por completo', '🎒'], ['Desenhar um mapa do tesouro e esconder algo para a irmã', '🗺️'], ['Fazer 1 minuto de prancha', '💪'], ['Escovar ou dar um carinho especial nos bichos', '🐶'],
+  ['Contar uma piada no jantar', '😂'], ['Falar a tabuada do 7 sem errar', '✖️'], ['Construir algo criativo com Lego ou papel', '🏗️'], ['Ligar ou mandar mensagem para um avô ou avó', '📞'],
+  ['Ajudar a lavar a louça', '🍽️'], ['Separar um brinquedo para doar', '🎁'], ['Ler uma história da Bíblia para a irmã', '📜'], ['Desenhar a casa dos sonhos', '🏡'],
+  ['Descobrir um fato curioso sobre animais e contar no jantar', '🦒'], ['Responder com educação o dia inteiro', '🙂'], ['Ficar 1 hora a mais sem tela', '📵'], ['Arrumar o quarto sem ninguém pedir', '🧹'],
+  ['Correr, pedalar ou jogar bola por 20 minutos', '⚽'], ['Inventar uma brincadeira nova para a família', '🎲'], ['Fazer um origami', '🦢'], ['Agradecer a professora por alguma coisa', '🍎'],
+  ['Escrever 3 coisas pelas quais é grato', '📝'], ['Ensinar algo novo para a irmã', '🧑‍🏫'], ['Regar as plantas da casa', '🌱'], ['Fazer uma surpresa para a mamãe ou o papai', '🎉'],
+  ['Organizar os sapatos da casa', '👞'], ['Ler sozinho 20 minutos antes de dormir', '🌙'], ['Ajudar a carregar as compras', '🛍️'], ['Pedir desculpas ou perdoar alguém de coração', '🤝'],
+];
+function missionPool(k){ const a = age(k.birth); let pool = (a != null && a <= 6) ? MISSIONS_SMALL : MISSIONS_BIG;
+  if(k.g === 'm') pool = pool.map(([t, e]) => [t.replace('obrigada', 'obrigado').replace('quietinha', 'quietinho'), e]);
+  if(k.g === 'f') pool = pool.map(([t, e]) => [t.replace('para a irmã', 'para o irmão').replace('com a irmã', 'com o irmão').replace('a irmã', 'o irmão'), e]);
+  else pool = pool.map(([t, e]) => [t.replace('com o irmão', 'com a irmã').replace('no irmão', 'na irmã'), e]);
+  return pool }
+function todayMission(k){ const pool = missionPool(k), d = dayNum(), sw = wOf(k.id).swap, n = sw && sw.day === dayStr() ? (sw.n || 0) : 0;
+  const i = (dailyIdx(pool.length, k.id + ':m', d) + n * 7) % pool.length; const [t, e] = pool[i];
+  return {id:'mission', label:t, emoji:e, pts: config?.settings?.challenge || 10, swapped: n > 0} }
+const missionDone = k => logDocs.find(e => e.id === 'm_' + dayStr() + '_' + k.id);
+const missionWait = k => pendingDocs.some(p => p.kid === k.id && p.type === 'mission' && p.day === dayStr());
+function missionCard(k, kidsSide){
+  const m = todayMission(k), done = missionDone(k), wait = !done && missionWait(k), T = THEMES[themeOf(k.id)];
+  const btn = done ? `<div class="ms-done">Missão cumprida! 🎉</div>`
+    : kidsSide ? (wait ? `<div class="ms-wait">⏳ Esperando um adulto aprovar</div>` : `<button class="btn primary ms-btn" data-act="kid-req" data-kind="mission" data-kid="${esc(k.id)}" data-id="mission">Eu cumpri! 🎯</button>`)
+    : `<button class="btn primary ms-btn" data-act="mission-done" data-kid="${esc(k.id)}">Cumpriu! +${m.pts} ⭐ +1 ${T.coin}</button>`;
+  const swap = !done && !m.swapped ? `<button class="ms-swap" data-act="mission-swap" data-kid="${esc(k.id)}">🔄 Trocar missão</button>` : '';
+  return `<section class="mission ${done ? 'done' : ''}" style="--kid:${esc(k.color)}"><span class="ms-emo">${esc(m.emoji)}</span><div class="ms-l"><span class="ms-k">${kidsSide ? 'A minha missão de hoje' : 'Missão ' + (k.g === 'f' ? 'da ' : 'do ') + esc(k.name) + ' hoje'}</span><div class="ms-t">${esc(m.label)}</div><span class="ms-p">Vale ${m.pts} ⭐ e 1 ${esc(T.one)} ${T.coin}</span></div><div class="ms-r">${btn}${swap}</div></section>`;
+}
+async function completeMission(k, pt){ if(missionDone(k)) return; const m = todayMission(k), T = THEMES[themeOf(k.id)];
+  const r = await addEntry({kid:k.id, type:'mission', ref:'mission', label:'Missão: ' + m.label, emoji:m.emoji, pts:m.pts, w:1}, 'm_' + dayStr() + '_' + k.id);
+  if(r){ celebrate(pt, m.pts, 'big'); toast(`🎯 Missão cumprida, ${k.name}! +${m.pts} ⭐ e +1 ${T.coin}`) } return r }
+const isWeekend = () => { const d = new Date().getDay(); return d === 0 || d === 6 };
+
+/* ---------- caixas surpresa do avatar ---------- */
+const BOX_GAPS = i => i === 0 ? 0 : Math.min(150 + 50 * (i - 1), 450);
+function boxInfo(kid){ const w = wOf(kid); if(w.boxBase == null) return {ready: false, avail: 0, opened: 0, need: 0, pct: 0};
+  const lt = Math.max(0, lifetime(kid) - w.boxBase); let sum = 0, earned = 0, i = 0;
+  while(i < 400){ const g = BOX_GAPS(i); if(sum + g > lt) break; sum += g; earned++; i++ }
+  const nextAt = sum + BOX_GAPS(i), opened = w.boxes || 0;
+  return {ready: true, avail: Math.max(0, earned - opened), opened, need: nextAt - lt, pct: BOX_GAPS(i) ? (1 - (nextAt - lt) / BOX_GAPS(i)) * 100 : 100} }
+const RARITY = [{id:'comum', n:'Comum', max:60, w:50, c:'#2DC160'}, {id:'legal', n:'Legal', max:160, w:30, c:'#2F86FF'}, {id:'raro', n:'Raro', max:300, w:15, c:'#9B4DFF'}, {id:'lenda', n:'Lendário', max:1e9, w:5, c:'#FF8A1F'}];
+const rarityOf = it => RARITY.find(r => (it.need?.stars || 0) <= r.max);
+function boxPool(kid){ const un = new Set(avatars[kid]?.unlocked || []); return catFor(kidById(kid)).filter(i => i.need && i.need.stars && !un.has(ikey(i))) }
+function boxCard(k, kidsSide){ const b = boxInfo(k.id); if(!b.ready) return '';
+  return `<section class="boxcard ${b.avail ? 'ready' : ''}" style="--kid:${esc(k.color)}"><span class="box-ico">🎁</span><div class="box-l"><span class="label">Caixa surpresa do avatar</span>${b.avail ? `<b>${b.avail > 1 ? b.avail + ' caixas prontas' : 'Uma caixa pronta'} para abrir!</b>` : `<b>Próxima caixa: faltam ${b.need} ⭐</b><div class="bar"><i style="width:${Math.max(2, Math.min(100, b.pct))}%"></i></div>`}<small>Cada caixa traz uma roupa ou acessório surpresa.</small></div>${b.avail ? `<button class="btn primary" data-act="gift-open" data-kid="${esc(k.id)}">Abrir! 🎉</button>` : ''}</section>` }
+function giftHTML(){
+  if(!giftOpen) return ''; const k = kidById(giftOpen.kid); if(!k) return '';
+  if(giftOpen.item){ const it = giftOpen.item, r = rarityOf(it);
+    return `<div class="gift-box reveal" style="--kid:${esc(k.color)};--rar:${r.c}"><span class="gift-rar">${r.n}</span><div class="gift-av">${avatarSVG({...lookOf(k.id), [it.cat]: it.id}, k.color)}</div><h3>${esc(it.name)}</h3><p>Novo item para o avatar ${k.g === 'f' ? 'da' : 'do'} ${esc(k.name)}!</p><div class="gift-acts"><button class="btn primary" data-act="gift-wear">Vestir agora 👕</button>${boxInfo(k.id).avail ? `<button class="btn" data-act="gift-open" data-kid="${esc(k.id)}">Abrir outra 🎁</button>` : `<button class="btn" data-act="gift-close">Guardar</button>`}</div></div>` }
+  if(giftOpen.coinsOnly) return `<div class="gift-box reveal" style="--kid:${esc(k.color)};--rar:#FF8A1F"><span class="gift-rar">Tesouro</span><div class="gift-big">${THEMES[themeOf(k.id)].coin}</div><h3>+3 ${esc(THEMES[themeOf(k.id)].many)}!</h3><p>Você já tem todos os itens! Esta caixa trouxe um tesouro para o mundo.</p><div class="gift-acts"><button class="btn primary" data-act="gift-close">Oba!</button></div></div>`;
+  return `<div class="gift-box" style="--kid:${esc(k.color)}"><h3>Escolha um presente, ${esc(k.name)}!</h3><div class="gift-row">${[0,1,2].map(i => `<button class="gift-pick ${giftOpen.busy ? 'busy' : ''}" data-act="gift-pick" data-id="${i}" style="--gc:${['#FF4F8B','#2F86FF','#2DC160'][i]}" aria-label="Presente ${i+1}"><span class="gp-lid"></span><span class="gp-body"></span><span class="gp-rib"></span></button>`).join('')}</div><button class="btn small" data-act="gift-close">Depois</button></div>`;
+}
+function renderGift(){ const el = $('#gift'); if(!el) return; el.hidden = !giftOpen; if(!giftOpen){ el.innerHTML = ''; return }
+  const key = JSON.stringify([giftOpen.kid, giftOpen.item && giftOpen.item.id, giftOpen.coinsOnly, giftOpen.busy]); if(el.dataset.key === key) return; el.dataset.key = key; el.innerHTML = giftHTML() }
+async function pickGift(i, pt){
+  if(!giftOpen || giftOpen.busy || giftOpen.item || giftOpen.coinsOnly) return; const kid = giftOpen.kid, b = boxInfo(kid); if(!b.avail) { giftOpen = null; render(); return }
+  giftOpen.busy = true; renderGift(); document.querySelectorAll('.gift-pick')[i]?.classList.add('shake'); sfx('tap');
+  await new Promise(r => setTimeout(r, 900));
+  const pool = boxPool(kid), opened = b.opened + 1;
+  if(!pool.length){ const r = await addEntry({kid, type:'box', label:'Caixa surpresa: tesouro', emoji:'🎁', pts:0, w:3}, 'x_' + kid + '_' + opened);
+    if(r) await wWrite(kid, {boxes: opened}); giftOpen = {kid, coinsOnly: true}; confetti(pt.x, pt.y, 120); sfx('big'); render(); return }
+  const tiers = RARITY.filter(r => pool.some(it => rarityOf(it) === r)); let roll = Math.random() * tiers.reduce((s, r) => s + r.w, 0), tier = tiers[0];
+  for(const r of tiers){ if((roll -= r.w) <= 0){ tier = r; break } }
+  const opts = pool.filter(it => rarityOf(it) === tier), item = opts[Math.floor(Math.random() * opts.length)];
+  const un = [...(avatars[kid]?.unlocked || []), ikey(item)], fresh = [...(avatars[kid]?.fresh || []), ikey(item)];
+  avatars = {...avatars, [kid]: {...(avatars[kid] || {}), unlocked: un, fresh}};
+  worlds = {...worlds, [kid]: {...wOf(kid), boxes: opened}};
+  giftOpen = {kid, item}; confetti(innerWidth/2, innerHeight/3, tier.id === 'lenda' ? 260 : 140); sfx('big'); render();
+  await avWrite(kid, {unlocked: un, fresh}); await wWrite(kid, {boxes: opened});
+}
+
+/* ---------- prêmios: preços novos e ritmo ---------- */
+function avgDaily(kid){ const now = new Date(), days = new Set(); let sum = 0;
+  for(let i = 0; i < 7; i++){ const d = new Date(now); d.setDate(d.getDate() - i); days.add(dayStr(d)) }
+  liveEntries().forEach(e => { if(e.kid === kid && days.has(e.day) && e.type !== 'reward' && (e.pts || 0) > 0) sum += e.pts });
+  const active = new Set();
+  liveEntries().forEach(e => { if(e.kid === kid && days.has(e.day)){ active.add(e.day); if(e.type === 'bad') sum += e.pts || 0 } });
+  return Math.max(0, sum / Math.max(1, active.size)) }
+function etaText(kid, cost){ const bal = balance(kid); if(bal >= cost) return 'já dá para trocar!'; const a = avgDaily(kid); if(a < 1) return '';
+  const d = Math.ceil((cost - bal) / a); return d <= 1 ? 'amanhã, se continuar assim' : d <= 13 ? `uns ${d} dias no seu ritmo` : d <= 45 ? `umas ${Math.round(d / 7)} semanas no seu ritmo` : 'alguns meses: vale guardar!' }
+const TIERS = [{max:250, n:'Pertinho', e:'🎈'}, {max:700, n:'Vale a pena', e:'🎡'}, {max:1200, n:'Grandes', e:'🚀'}, {max:1e9, n:'Superprêmios', e:'👑'}];
+const NEW_REWARDS = [
+  {id:'sobremesa', emoji:'🍨', label:'Sobremesa especial', cost:120},
+  {id:'cozinhar', emoji:'🧁', label:'Cozinhar algo gostoso com a mamãe', cost:300},
+  {id:'amigo', emoji:'👫', label:'Convidar um amigo para brincar', cost:500},
+  {id:'diasim', emoji:'🎉', label:'Dia do Sim (os pais dizem sim para quase tudo)', cost:1600},
+];
+let econTried = false;
+async function maybeUpgradeEconomy(){
+  if(!db || !config || econTried || (config.economyV || 0) >= ECON_V) return; econTried = true;
+  const rewards = (config.rewards || []).map(r => ({...r, cost: Math.max(10, Math.round((r.cost || 0) * 4 / 10) * 10)}));
+  NEW_REWARDS.forEach(r => { if(!rewards.some(x => x.id === r.id)) rewards.push(r) });
+  try{ await db.doc('app/config').update({rewards, economyV: ECON_V}) }catch(e){}
+}
+function gameInit(){
+  if(gameInitTried || !db || !config || !worldsLoaded || !avatarsLoaded || !logLoaded || !ledgerLoaded) return;
+  const need = kids().filter(k => wOf(k.id).boxBase == null); if(!need.length){ gameInitTried = true; return }
+  gameInitTried = true;
+  need.forEach(async k => {
+    const st = kidStats(k.id), had = new Set(avatars[k.id]?.unlocked || []);
+    const old = catFor(k).filter(i => i.need && i.need.stars && st.stars >= i.need.stars).map(ikey).filter(x => !had.has(x));
+    if(old.length) await avWrite(k.id, {unlocked: [...had, ...old]}, true);
+    const patch = {boxBase: lifetime(k.id), boxes: 0, spent: wOf(k.id).spent || 0, own: wOf(k.id).own || {}, theme: wOf(k.id).theme || (k.g === 'f' ? 'farm' : 'space')};
+    worlds = {...worlds, [k.id]: {...wOf(k.id), ...patch}};
+    await wWrite(k.id, patch);
+  });
+}
+
+/* ================= v13: layout de celular ================= */
+let hojeSeg = ls.get('qe.seg', 'rotina'), sheetOpen = false, justDone = null, lastView = '', carPos = {};
+const MORE_TABS = ['natal', 'historico', 'ajustes'];
+const SEGS = [['rotina','✅','Rotina'], ['bem','😊','Mandou bem'], ['melhorar','⚠️','Melhorar'], ['registros','📜','Registros']];
+const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite' };
+const greetEmo = () => { const h = new Date().getHours(); return h < 12 ? '🌤️' : h < 18 ? '☀️' : '🌙' };
+function prayerMini(){ const p = todaysPrayer();
+  return `<section class="prayer mini"><div class="prayer-h">${ico('sun')}<div><span class="label">Oração do dia</span><h3>${esc(p.t)}</h3></div></div>
+    <p class="pm-first">“${esc(p.l[0])}”</p>
+    <div class="pm-acts"><details id="prayer-det"><summary>Ver a oração inteira</summary><div class="prayer-lines">${p.l.map(x => `<p>${esc(x)}</p>`).join('')}</div></details>${canSpeak ? `<button class="btn small" data-act="say-prayer">🔊 Ouvir</button>` : ''}</div></section>` }
+function carouselHTML(cards){ cards = cards.filter(Boolean); if(!cards.length) return '';
+  return `<div class="carwrap"><div class="carousel ${cards.length === 1 ? 'one' : ''}" id="hoje-car">${cards.map(c => `<div class="car-it">${c}</div>`).join('')}</div>${cards.length > 1 ? `<div class="cardots" aria-hidden="true">${cards.map((_, i) => `<i class="${i === 0 ? 'on' : ''}"></i>`).join('')}</div>` : ''}</div>` }
+function segHTML(counts){ return `<div class="seg" role="tablist">${SEGS.map(([id, e, t]) => `<button role="tab" data-act="seg" data-id="${id}" aria-selected="${hojeSeg === id}"><span class="seg-e">${e}</span><span class="seg-t">${t}</span>${counts[id] ? `<span class="seg-n">${counts[id]}</span>` : ''}</button>`).join('')}</div>` }
+function sheetHTML(){
+  const tiles = [
+    {a:'tab', t:'natal', e:'🎄', n:'Natal', s:'Calendário e Super Presente', c:'#2DC160'},
+    {a:'tab', t:'historico', e:'📜', n:'Histórico', s:'Tudo o que aconteceu', c:'#10BFA8'},
+    {a:'tab', t:'ajustes', e:'⚙️', n:'Ajustes', s:'Tarefas, prêmios, crianças', c:'#9B4DFF'},
+    {a:'bed-on', e:'🌙', n:'Hora de dormir', s:'Devocional e recadinho', c:'#3D5BB8'},
+    {a:'kids-on', e:'🧒', n:'Modo crianças', s:'A tela deles', c:'#FF4F8B'},
+    {a:'sound', e: soundOn ? '🔊' : '🔇', n: soundOn ? 'Som ligado' : 'Som desligado', s:'Toque para trocar', c:'#FF8A1F'},
+  ];
+  return `<div class="sheet-bg" data-act="sheet-close"></div><div class="sheet" role="dialog" aria-label="Mais opções"><span class="sheet-grip"></span><h3>Mais coisas legais</h3><div class="sheet-grid">${tiles.map(x => `<button class="sheet-tile" style="--c:${x.c}" data-act="${x.a}" ${x.t ? `data-tab="${x.t}"` : ''}><span class="st-e">${x.e}</span><span class="st-n">${x.n}</span><span class="st-s">${x.s}</span></button>`).join('')}</div></div>` }
+function renderSheet(){ const el = $('#sheet'); if(!el) return; el.hidden = !sheetOpen; el.innerHTML = sheetOpen ? sheetHTML() : ''; document.body.classList.toggle('sheet-on', sheetOpen) }
+function bindCarousel(){ const c = $('#hoje-car'); if(!c) return; const key = selKid;
+  if(carPos[key]) c.scrollLeft = carPos[key];
+  const dots = c.parentElement.querySelectorAll('.cardots i');
+  const upd = () => { carPos[key] = c.scrollLeft; const w = c.firstElementChild ? c.firstElementChild.getBoundingClientRect().width + 10 : 1; const i = Math.round(c.scrollLeft / w); dots.forEach((d, j) => d.classList.toggle('on', j === i)) };
+  c.addEventListener('scroll', upd, {passive: true}); upd() }
+function buzz(act){ try{ if(!navigator.vibrate) return;
+  if(act === 'bad') navigator.vibrate([25, 40, 25]); else if(['task','good','warn','mission-done','reward','w-buy','gift-pick','day-close','bonus','chest','tab','seg','kid','more'].includes(act)) navigator.vibrate(8) }catch(e){} }
+function animMain(dir){ const m = $('#main'); if(!m) return; m.classList.remove('enter', 'from-l', 'from-r'); void m.offsetWidth; m.classList.add(dir === 'l' ? 'from-l' : dir === 'r' ? 'from-r' : 'enter') }
+(() => { let x0 = null, y0 = 0, t0 = 0;
+  document.addEventListener('touchstart', ev => { const t = ev.touches[0]; if(ev.touches.length !== 1 || !t) return; const tg = ev.target;
+    if(!tg.closest || !tg.closest('#main') || tg.closest('.carousel,.avcats,.kids-sw,.w-themes,.wshopgrid,.w-scene,input,textarea,select,.seg')) { x0 = null; return }
+    x0 = t.clientX; y0 = t.clientY; t0 = Date.now() }, {passive: true});
+  document.addEventListener('touchend', ev => { if(x0 == null) return; const t = ev.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+    if(Date.now() - t0 > 600 || Math.abs(dx) < 70 || Math.abs(dy) > 45 || !config || !['hoje','mundo','avatar','recompensas'].includes(tab) || kidsMode || bedMode) return;
+    const ks = kids(); if(ks.length < 2) return; const i = ks.findIndex(k => k.id === selKid), n = (i + (dx < 0 ? 1 : -1) + ks.length) % ks.length;
+    selKid = ks[n].id; ls.set('qe.kid', selKid); try{ navigator.vibrate && navigator.vibrate(8) }catch(e){} sfx('tap'); lastView = tab + '|' + selKid; render(); requestAnimationFrame(() => animMain(dx < 0 ? 'r' : 'l')) }, {passive: true});
+  addEventListener('scroll', () => document.body.classList.toggle('scrolled', scrollY > 24), {passive: true});
+})();
+
 function calmCard(k){ const light = lightOf(k.id);
   return `<section class="calm-sm ${light !== 'verde' ? 'alert' : ''}"><div><b>${light !== 'verde' ? 'O coração está agitado? Vamos respirar juntos!' : 'Precisa se acalmar? Tem um cantinho especial para isso.'}</b><span>Respire, escolha uma ajudinha e ganhe +${CALM_PTS} ⭐</span></div>${calmBtn(k, true)}</section>` }
 
@@ -2545,8 +3260,8 @@ function streak(kid){ const ts = tasksFor(kid); if(!ts.length) return 0; const l
 function todayChallenge(){ const list = (config?.challenges || []).filter(Boolean); if(!list.length) return null;
   const d = new Date(); const n = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())/86400000); return list[n % list.length] }
 const challengeDone = () => kids().length > 0 && kids().every(k => logDocs.some(e => e.id === 'd_'+dayStr()+'_'+k.id));
-function challengeCard(big){ const c = todayChallenge(); if(!c) return ''; const pts = config.settings?.challenge || 10; const done = challengeDone();
-  return `<section class="challenge ${big?'big':''}">${ico('butterfly')}<div class="ch-l"><span class="ch-k">Desafio da família de hoje</span><div class="ch-t">${esc(c)}</div></div>${done ? `<div class="ch-done">Cumprido! 🎉</div>` : big ? `<div class="ch-pts">+${pts} ${STAR} para todos</div>` : `<button class="btn ch-btn" data-act="challenge">Cumprimos! +${pts} para todos</button>`}</section>` }
+function challengeCard(big){ if(!isWeekend()) return ''; const c = todayChallenge(); if(!c) return ''; const pts = config.settings?.challenge || 10; const done = challengeDone();
+  return `<section class="challenge ${big?'big':''}">${ico('butterfly')}<div class="ch-l"><span class="ch-k">Desafio da família do fim de semana</span><div class="ch-t">${esc(c)}</div></div>${done ? `<div class="ch-done">Cumprido! 🎉</div>` : big ? `<div class="ch-pts">+${pts} ${STAR} para todos</div>` : `<button class="btn ch-btn" data-act="challenge">Cumprimos! +${pts} para todos</button>`}</section>` }
 
 let soundOn = ls.get('qe.sound', true), actx = null;
 function sfx(kind){ if(!soundOn) return;
@@ -2628,7 +3343,7 @@ async function maybeRollup(){
       const m = (L.months[e.month] = L.months[e.month] || {});
       const k = (m[e.kid] = m[e.kid] || {ganhou:0, perdeu:0, trocou:0});
       if(e.type==='reward') k.trocou += -(e.pts||0); else if((e.pts||0) >= 0) k.ganhou += e.pts||0; else k.perdeu += -e.pts;
-      L.counts = L.counts || {}; const ct = (L.counts[e.kid] = L.counts[e.kid] || {}); ct[e.type] = (ct[e.type]||0) + 1; if(e.ref) ct['ref:'+e.ref] = (ct['ref:'+e.ref]||0) + 1;
+      L.counts = L.counts || {}; const ct = (L.counts[e.kid] = L.counts[e.kid] || {}); ct[e.type] = (ct[e.type]||0) + 1; if(e.ref) ct['ref:'+e.ref] = (ct['ref:'+e.ref]||0) + 1; if(e.w){ L.wcoins = L.wcoins || {}; L.wcoins[e.kid] = (L.wcoins[e.kid]||0) + e.w }
     }
     L.closedThrough = newClosed;
     await db.doc('meta/ledger').set(L);
@@ -2659,16 +3374,22 @@ function doRender(){
   $('#date').textContent = new Intl.DateTimeFormat('pt-BR',{weekday:'long', day:'numeric', month:'long'}).format(new Date());
   document.querySelectorAll('nav [data-tab]').forEach(b => { if(b.dataset.tab===tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current') });
   if(config && !kidById(selKid)) selKid = kids()[0]?.id || null;
+  { const mb = $('nav [data-act="more"]'); if(mb){ if(MORE_TABS.includes(tab)) mb.setAttribute('aria-current','page'); else mb.removeAttribute('aria-current') } }
   renderSwitcher();
   if(tab==='ajustes' && dirty && $('#main [data-view="ajustes"]')){ renderKidsMode(); checkLevels(); return } // não apaga edição em andamento
   const keep = snapshotForm();
   $('#main').innerHTML = viewFor();
   restoreForm(keep);
+  bindCarousel();
+  { const v = tab + '|' + selKid; if(lastView && v !== lastView) animMain(); lastView = v }
+  renderSheet();
   renderKidsMode();
   renderBedMode();
   renderCalm();
+  renderGift();
   checkLevels();
   syncUnlocks();
+  gameInit();
 }
 function snapshotForm(){
   const m = $('#main'); const vals = {}; const open = [];
@@ -2712,6 +3433,7 @@ function viewFor(){
   if(tab==='ajustes') return viewSettings();
   if(tab==='avatar') return viewAvatar();
   if(tab==='natal') return viewXmas();
+  if(tab==='mundo') return viewWorld();
   return viewToday();
 }
 
@@ -2730,17 +3452,10 @@ function heroCard(k){
   else if(bonusGiven) bonus = `<div class="bonus"><span>Bônus Dia Perfeito já ganho hoje ${STAR}</span></div>`;
   const lv = levelOf(k.id), stk = streak(k.id);
   return `<section class="hero" style="--kid:${esc(k.color)}">
-    ${avatar(k)}
-    <div><div class="name">${esc(k.name)}</div><div class="sub">${a!=null? a+' anos · ':''}${bdText}</div>
-      <div class="badges"><span class="lvl">${lv.cur.e} ${esc(lv.cur.n)}</span>${stk ? `<span class="fire">🔥 ${stk} ${stk>1?'dias seguidos':'dia'}</span>` : ''}${(avatars[k.id]?.fresh||[]).length ? `<button class="newb" data-act="tab" data-tab="avatar">🎁 Item novo no avatar!</button>` : ''}</div></div>
-    <div class="stats">
-      <div class="stat"><span class="label">Estrelas</span><span class="bignum">${STAR}${bal}</span></div>
-      <div class="stat"><span class="label">Hoje</span><span class="midnum ${net>0?'pos':net<0?'neg':''}">${sign(net)}</span></div>
-      <div class="stat"><span class="label">Rotina</span><span class="midnum">${done}/${tasks.length}</span></div>
-      <div class="stat"><span class="label">Semáforo</span><span class="light">${lamps(light)}${LIGHT_TEXT[light]}</span></div>
-    </div>
-    <div class="calmrow">${calmBtn(k)}</div>
-    ${goal ? `<div class="goal"><div class="goal-row"><span>Meta: ${esc(goal.emoji)} ${esc(goal.label)}</span><span class="pts">${Math.min(bal,goal.cost)} / ${goal.cost}</span></div><div class="bar"><i style="width:${Math.max(0,Math.min(100, bal/goal.cost*100))}%"></i></div></div>` : ''}
+    <div class="h-top">${avatar(k)}<div class="h-id"><div class="name">${esc(k.name)}</div><div class="sub">${a!=null? a+' anos · ':''}${bdText}</div></div><div class="h-bal"><span class="bignum">${STAR}${bal}</span><small>estrelas</small></div></div>
+    <div class="h-chips badges"><span class="lvl">${lv.cur.e} ${esc(lv.cur.n)}</span>${stk ? `<span class="fire">🔥 ${stk} ${stk>1?'dias':'dia'}</span>` : ''}${coinChip(k.id)}${boxInfo(k.id).avail ? `<button class="boxchip" data-act="gift-open" data-kid="${esc(k.id)}">🎁 Caixa surpresa!</button>` : ''}${(avatars[k.id]?.fresh||[]).length ? `<button class="newb" data-act="tab" data-tab="avatar">✨ Item novo!</button>` : ''}${calmBtn(k)}</div>
+    <div class="h-stats"><div class="h-st"><span class="label">Hoje</span><span class="midnum ${net>0?'pos':net<0?'neg':''}">${sign(net)}</span></div><div class="h-st"><span class="label">Rotina</span><span class="midnum">${done}/${tasks.length}</span></div><div class="h-st"><span class="label">Semáforo</span><span class="light">${lamps(light)}${LIGHT_TEXT[light]}</span></div></div>
+    ${goal ? `<div class="goal"><div class="goal-row"><span>Meta: ${esc(goal.emoji)} ${esc(goal.label)}${etaText(k.id, goal.cost) ? ` <small class="eta">(${esc(etaText(k.id, goal.cost))})</small>` : ''}</span><span class="pts">${Math.min(bal,goal.cost)} / ${goal.cost}</span></div><div class="bar"><i style="width:${Math.max(0,Math.min(100, bal/goal.cost*100))}%"></i></div></div>` : ''}
     <div class="goal"><div class="goal-row"><span>${lv.nxt ? `Próximo nível: ${lv.nxt.e} ${esc(lv.nxt.n)}` : 'Nível máximo! 👑'}</span><span class="pts">${lv.nxt ? 'faltam '+(lv.nxt.min-lv.lt) : lv.lt}</span></div><div class="bar lvbar"><i style="width:${Math.max(0,Math.min(100,lv.pct))}%"></i></div></div>
     ${bonus}
     ${(() => { const c = chestState(k.id); return c.s==='ready' ? `<div class="bonus chestline"><span>🎁 Baú surpresa liberado!</span><button class="btn primary small" data-act="chest" data-kid="${esc(k.id)}">Abrir agora</button></div>` : c.s==='opened' ? `<div class="bonus chestline"><span>🎁 Baú do dia aberto: +${c.pts} ⭐</span></div>` : '' })()}
@@ -2755,7 +3470,7 @@ function viewToday(){
     const d = ts.filter(t => isDone(k.id,t)).length;
     return `<div class="label period" style="--c:${p.c}">${p.label} · ${d}/${ts.length}</div><div class="tasklist">${ts.map(t => {
       const on = isDone(k.id,t);
-      return `<button class="task ${on?'done':''}" style="--c:${p.c}" data-act="task" data-id="${esc(t.id)}" aria-pressed="${on}"><span class="box">${CHECK}</span><span class="emo">${esc(t.emoji)}</span><span class="lbl">${esc(t.label)}${!on && pendingDocs.some(x => x.kid===k.id && x.type==='task' && x.ref===t.id && x.day===dayStr()) ? '<small class="waitnote">⏳ pediu aprovação</small>' : ''}</span><span class="pts">+${t.pts}${STAR}</span></button>` }).join('')}</div>`;
+      return `<button class="task ${on?'done':''} ${on && justDone===t.id ? 'pop' : ''}" style="--c:${p.c}" data-act="task" data-id="${esc(t.id)}" aria-pressed="${on}"><span class="box">${CHECK}</span><span class="emo">${esc(t.emoji)}</span><span class="lbl">${esc(t.label)}${!on && pendingDocs.some(x => x.kid===k.id && x.type==='task' && x.ref===t.id && x.day===dayStr()) ? '<small class="waitnote">⏳ pediu aprovação</small>' : ''}</span><span class="pts">+${t.pts}${STAR}</span></button>` }).join('')}</div>`;
   }).join('');
   const es = todayEntries(k.id);
   const forKid = b => !b.kids || b.kids.includes(k.id);
@@ -2764,37 +3479,38 @@ function viewToday(){
     const w = es.filter(e => e.type==='warn' && e.ref===b.id).length;
     return `<div class="badrow"><span class="emo">${esc(b.emoji)}</span><span class="lbl">${esc(b.label)}${w? `<small>${w} ${w>1?'avisos':'aviso'} hoje</small>`:''}</span><button class="btn warn small" data-act="warn" data-id="${esc(b.id)}">Aviso</button><button class="btn bad small" data-act="bad" data-id="${esc(b.id)}">−${b.pts}</button></div>` }).join('');
   const list = es.slice().sort((a,b) => (b.at||'').localeCompare(a.at||'')).map(entryRow).join('');
-  return `${pendingCard()}${heroCard(k)}
-    ${prayerHTML(false)}
-    ${challengeCard(false)}
-    <section class="card tone" style="--tone:var(--c5)"><div class="sec-h"><h2>${ico('sun')}Rotina de hoje</h2><span class="meta">toque para marcar</span></div>${taskHtml || '<p class="hint">Nenhuma tarefa para esta criança. Adicione em Ajustes.</p>'}</section>
-    <section class="card tone" style="--tone:var(--c7)"><div class="sec-h"><h2>${ico('star')}Mandou bem</h2><span class="meta">soma estrelas</span></div>${good ? `<div class="grid">${good}</div>` : '<p class="hint">Nenhum comportamento cadastrado para esta criança.</p>'}</section>
-    <section class="card tone" style="--tone:var(--c2)"><div class="sec-h"><h2>${ico('rainbow')}Precisa melhorar</h2><span class="meta">primeiro o aviso, depois o desconto</span></div>${bad ? `<div class="badlist">${bad}</div>` : '<p class="hint">Nenhum comportamento cadastrado para esta criança.</p>'}</section>
-    <details class="card tone" style="--tone:var(--c6)" id="extra-box"><summary><span class="sumt">${ico('dragonfly')}Lançamento avulso</span></summary>
-      <form class="extra-form" data-form="extra"><input id="ex-label" placeholder="Motivo (ex.: ajudou a vovó)" maxlength="60" required><input id="ex-pts" type="number" step="1" value="5" required aria-label="Pontos"><button class="btn primary">Lançar</button></form>
-      <p class="hint">Use um número negativo para descontar.</p></details>
-    <section class="card tone" style="--tone:var(--c3)"><div class="sec-h"><h2>${ico('caterpillar')}Hoje no quadro</h2><span class="meta">${es.length} ${es.length===1?'registro':'registros'}</span></div>${list ? `<div class="entries">${list}</div>` : `<p class="hint">Nada registrado hoje ainda. Marque uma tarefa ou um comportamento acima.</p>`}</section>`;
+  const segBody = hojeSeg==='bem' ? `<section class="card tone" style="--tone:var(--c7)"><div class="sec-h"><h2>${ico('star')}Mandou bem</h2><span class="meta">soma estrelas</span></div>${good ? `<div class="grid">${good}</div>` : '<p class="hint">Nenhum comportamento cadastrado para esta criança.</p>'}</section>` : hojeSeg==='melhorar' ? `<section class="card tone" style="--tone:var(--c2)"><div class="sec-h"><h2>${ico('rainbow')}Precisa melhorar</h2><span class="meta">primeiro o aviso, depois o desconto</span></div>${bad ? `<div class="badlist">${bad}</div>` : '<p class="hint">Nenhum comportamento cadastrado para esta criança.</p>'}</section>
+<details class="card tone" style="--tone:var(--c6)" id="extra-box"><summary><span class="sumt">${ico('dragonfly')}Lançamento avulso</span></summary>
+<form class="extra-form" data-form="extra"><input id="ex-label" placeholder="Motivo (ex.: ajudou a vovó)" maxlength="60" required><input id="ex-pts" type="number" step="1" value="5" required aria-label="Pontos"><button class="btn primary">Lançar</button></form>
+<p class="hint">Use um número negativo para descontar.</p></details>` : hojeSeg==='registros' ? `<section class="card tone" style="--tone:var(--c3)"><div class="sec-h"><h2>${ico('caterpillar')}Hoje no quadro</h2><span class="meta">${es.length} ${es.length===1?'registro':'registros'}</span></div>${list ? `<div class="entries">${list}</div>` : `<p class="hint">Nada registrado hoje ainda. Marque uma tarefa ou um comportamento acima.</p>`}</section>` : `<section class="card tone" style="--tone:var(--c5)"><div class="sec-h"><h2>${ico('sun')}Rotina de hoje</h2><span class="meta">toque para marcar</span></div>${taskHtml || '<p class="hint">Nenhuma tarefa para esta criança. Adicione em Ajustes.</p>'}</section>`;
+  return `${pendingCard()}<div class="hello">${greet()}! ${greetEmo()} <span>${esc(new Intl.DateTimeFormat('pt-BR',{weekday:'long', day:'numeric', month:'long'}).format(new Date()))}</span></div>
+    ${heroCard(k)}
+    ${carouselHTML([missionCard(k), boxCard(k), dayState(k).open ? dayCloseCard(k) : '', challengeCard(false), prayerMini()])}
+    ${segHTML({rotina: tasks.length ? tasks.filter(t => isDone(k.id,t)).length+'/'+tasks.length : '', registros: es.length || ''})}
+    ${segBody}
+    ${kids().length > 1 ? '<p class="swipe-hint">👈 Deslize para o lado para trocar de criança 👉</p>' : ''}`;
 }
 function entryRow(e, showKid){
   const k = kidById(e.kid);
-  const typeTxt = {task:'Rotina', good:'Mandou bem', bad:'Desconto', warn:'Aviso', reward:'Troca', bonus:'Bônus', calm:'Cantinho da calma', extra:'Avulso', challenge:'Desafio da família', xmas:'Super Natal', chest:'Baú surpresa'}[e.type] || '';
+  const typeTxt = {task:'Rotina', good:'Mandou bem', bad:'Desconto', warn:'Aviso', reward:'Troca', bonus:'Bônus', calm:'Cantinho da calma', extra:'Avulso', challenge:'Desafio da família', xmas:'Super Natal', chest:'Baú surpresa', day:'Fim do dia', mission:'Missão do dia', box:'Caixa surpresa'}[e.type] || '';
   const p = e.pts||0;
-  return `<div class="entry"><span class="emo">${esc(e.emoji||'⭐')}</span><span class="lbl">${esc(e.label)}<div class="who">${showKid && k ? esc(k.name)+' · ' : ''}${typeTxt} · ${fmtTime(e.at)}</div></span><span class="pts ${p>0?'pos':p<0?'neg':''}">${e.type==='warn'?'aviso':e.type==='xmas'?'+'+(e.xp||0)+' ❄️':sign(p)}</span><button class="xbtn sm" data-act="del-entry" data-id="${esc(e.id)}" aria-label="Apagar registro">✕</button></div>`;
+  return `<div class="entry"><span class="emo">${esc(e.emoji||'⭐')}</span><span class="lbl">${esc(e.label)}<div class="who">${showKid && k ? esc(k.name)+' · ' : ''}${typeTxt} · ${fmtTime(e.at)}</div></span><span class="pts ${p>0?'pos':p<0?'neg':''}">${e.type==='warn'?'aviso':e.type==='xmas'?'+'+(e.xp||0)+' ❄️':(p || !e.w ? sign(p) : '')}${e.w ? ` +${e.w} ${THEMES[themeOf(e.kid)].coin}` : ''}</span><button class="xbtn sm" data-act="del-entry" data-id="${esc(e.id)}" aria-label="Apagar registro">✕</button></div>`;
 }
 
 /* ----- Recompensas ----- */
 function viewRewards(){
   const k = kidById(selKid); if(!k) return '';
-  const bal = balance(k.id);
-  const rows = (config.rewards||[]).slice().sort((a,b) => a.cost-b.cost).map((r,ri) => {
-    const can = bal >= r.cost, isGoal = k.goal===r.id;
-    return `<div class="reward ${isGoal?'is-goal':''}" style="--c:${cyc(ri+4)}"><span class="emo">${esc(r.emoji)}</span>
+  const bal = balance(k.id), avg = Math.round(avgDaily(k.id));
+  const list = (config.rewards||[]).slice().sort((a,b) => a.cost-b.cost); let ri = 0;
+  const row = r => { const can = bal >= r.cost, isGoal = k.goal===r.id, eta = etaText(k.id, r.cost);
+    return `<div class="reward ${isGoal?'is-goal':''}" style="--c:${cyc((ri++)+4)}"><span class="emo">${esc(r.emoji)}</span>
       <div class="info"><div class="row1"><span class="name">${esc(r.label)}</span><span class="pts">${r.cost}${STAR}</span></div>
-        <div class="bar"><i style="width:${Math.max(0,Math.min(100,bal/r.cost*100))}%"></i></div>
+        <div class="bar"><i style="width:${Math.max(0,Math.min(100,bal/r.cost*100))}%"></i></div>${eta && !can ? `<span class="eta">⏳ ${esc(eta)}</span>` : ''}
         <button class="goalbtn ${isGoal?'on':''}" data-act="goal" data-id="${esc(r.id)}">${isGoal ? '★ Meta de '+esc(k.name) : '☆ Definir como meta'}</button></div>
-      <div class="acts">${can ? `<button class="btn primary small" data-act="reward" data-id="${esc(r.id)}">Trocar</button>` : `<span class="hint" style="margin:0;text-align:right">faltam<br><b class="pts">${r.cost-bal}</b></span>`}</div></div>` }).join('');
+      <div class="acts">${can ? `<button class="btn primary small" data-act="reward" data-id="${esc(r.id)}">Trocar</button>` : `<span class="hint" style="margin:0;text-align:right">faltam<br><b class="pts">${r.cost-bal}</b></span>`}</div></div>` };
+  const groups = TIERS.map((t, ti) => { const lo = ti ? TIERS[ti-1].max : -1, rs = list.filter(r => r.cost > lo && r.cost <= t.max); return rs.length ? `<div class="reward-tier">${t.e} ${t.n}</div>${rs.map(row).join('')}` : '' }).join('');
   return `<section class="hero" style="--kid:${esc(k.color)}">${avatar(k)}<div><div class="name">${esc(k.name)}</div><div class="sub">Saldo para trocar</div></div><div class="stats"><div class="stat"><span class="bignum">${STAR}${bal}</span></div></div></section>
-    <section class="card tone" style="--tone:var(--c1)"><div class="sec-h"><h2>${ico('rocket')}Recompensas</h2><span class="meta">toque em Trocar e confirme</span></div><div class="rewards">${rows || '<p class="hint">Nenhuma recompensa cadastrada. Adicione em Ajustes.</p>'}</div></section>`;
+    <section class="card tone" style="--tone:var(--c1)"><div class="sec-h"><h2>${ico('rocket')}Atividades legais</h2><span class="meta">toque em Trocar e confirme</span></div>${avg ? `<p class="econ-note">${esc(k.name)} está ganhando uns <b>${avg} ⭐ por dia</b> (média dos últimos 7 dias). Guardar estrelas vale a pena!</p>` : ''}<div class="rewards">${groups || '<p class="hint">Nenhuma recompensa cadastrada. Adicione em Ajustes.</p>'}</div></section>`;
 }
 
 /* ----- Histórico ----- */
@@ -2902,6 +3618,7 @@ function renderKidsMode(){
       <div class="km-name">${esc(k.name)}${bd===0?' 🎂':''}</div>
       <div class="badges center"><span class="lvl">${lv.cur.e} ${esc(lv.cur.n)}</span>${stk ? `<span class="fire">🔥 ${stk}</span>` : ''}</div>
       <div class="km-stars">${STAR}${bal}</div>
+      <div class="km-coins">${coinChip(k.id)}${boxInfo(k.id).avail ? '<span class="boxchip">🎁 Caixa!</span>' : ''}</div>
       ${lamps(light)}
       <div class="km-tiles">${tasks.map((t,ti) => `<span class="km-tile ${isDone(k.id,t)?'done':''}" style="--c:${cyc(ti)}" title="${esc(t.label)}">${esc(t.emoji)}</span>`).join('')}</div>
       ${goal ? `<div class="km-goal"><span>${esc(goal.emoji)} ${esc(goal.label)}: ${Math.min(bal,goal.cost)} de ${goal.cost}</span><div class="bar"><i style="width:${Math.max(0,Math.min(100,bal/goal.cost*100))}%"></i></div></div>` : ''}
@@ -2933,6 +3650,24 @@ document.addEventListener('click', async ev => {
   const act = el.dataset.act, id = el.dataset.id;
   const k = kidById(selKid);
   const pt = centerOf(el);
+  buzz(act);
+  if(sheetOpen && act !== 'more'){ sheetOpen = false; renderSheet(); if(act === 'sheet-close') return }
+  if(act==='more'){ sheetOpen = !sheetOpen; sfx('tap'); renderSheet(); return }
+  if(act==='seg'){ hojeSeg = id; ls.set('qe.seg', id); sfx('tap'); render(); return }
+  if(act==='kp-view'){ kpView = id; sfx('tap'); render(); $('#kidsmode').scrollTop = 0; return }
+  if(act==='w-tap'){ const kk = el.dataset.kid, it = (W_ITEMS[themeOf(kk)] || []).find(x => x.id===id); if(!it) return;
+    const g = el.classList.contains('wi') ? el : document.querySelector(`.wi[data-kid="${kk}"][data-id="${id}"]`);
+    if(g){ g.classList.remove('hop','new'); g.getBoundingClientRect(); g.classList.add('hop'); setTimeout(() => g.classList.remove('hop'), 700) }
+    sfx('tap'); confetti(pt.x, pt.y, 16); if(soundOn && canSpeak) speak(it.say, 'pt-BR'); else toast(it.say); return }
+  if(act==='w-buy'){ await buyWorld(el.dataset.kid, id, el, pt); return }
+  if(act==='w-theme'){ const kk = el.dataset.kid; if(!kidById(kk) || !THEMES[id]) return; worlds = {...worlds, [kk]: {...wOf(kk), theme:id}}; sfx('tap'); render(); await wWrite(kk, {theme:id}); return }
+  if(act==='day-close'){ await closeDay(el.dataset.kid, pt); return }
+  if(act==='mission-done'){ const kk = kidById(el.dataset.kid); if(kk) await completeMission(kk, pt); return }
+  if(act==='mission-swap'){ const kk = kidById(el.dataset.kid); if(!kk) return; const sw = {day: dayStr(), n: 1}; worlds = {...worlds, [kk.id]: {...wOf(kk.id), swap: sw}}; sfx('tap'); render(); await wWrite(kk.id, {swap: sw}); toast('Nova missão sorteada! 🎯'); return }
+  if(act==='gift-open'){ const kk = el.dataset.kid; if(!boxInfo(kk).avail) return; giftOpen = {kid: kk}; sfx('tap'); render(); return }
+  if(act==='gift-pick'){ await pickGift(+id, pt); return }
+  if(act==='gift-wear'){ if(giftOpen && giftOpen.item){ const kk = giftOpen.kid, it = giftOpen.item; avatars = {...avatars, [kk]: {...(avatars[kk]||{}), [it.cat]: it.id}}; giftOpen = null; confetti(pt.x, pt.y, 40); render(); await avWrite(kk, {[it.cat]: it.id}) } return }
+  if(act==='gift-close'){ giftOpen = null; render(); return }
   if(act==='sound'){ soundOn = !soundOn; ls.set('qe.sound', soundOn); el.textContent = soundOn ? '🔊' : '🔇'; if(soundOn) sfx('tap'); return }
   if(act==='login'){ const prov = new firebase.auth.GoogleAuthProvider();
     try{ await firebase.auth().signInWithPopup(prov) }catch(e){ const c = e && e.code || '';
@@ -2981,7 +3716,7 @@ document.addEventListener('click', async ev => {
     await avWrite(k.id, {[it.cat]: it.id}); return }
   if(act==='party'){ confetti(pt.x, pt.y, 90); sfx('big'); return }
   if(act==='challenge'){ const c = todayChallenge(); if(!c) return; const pts = config.settings?.challenge || 10; let ok = false;
-    for(const kk of kids()){ const r = await addEntry({kid:kk.id, type:'challenge', label:'Desafio: '+c, emoji:'🎯', pts}, 'd_'+dayStr()+'_'+kk.id); ok = ok || !!r }
+    for(const kk of kids()){ const r = await addEntry({kid:kk.id, type:'challenge', label:'Desafio: '+c, emoji:'🎯', pts, w:1}, 'd_'+dayStr()+'_'+kk.id); ok = ok || !!r }
     if(ok){ celebrate(pt, pts, 'big'); toast(`Família campeã! +${pts} para todo mundo 🎉`) } return }
   if(act==='tab'){ if(el.classList.contains('newb')) avCat = 'top'; if(tab==='ajustes' && dirty){ toast('Salve ou descarte as alterações antes de sair.'); return } tab = el.dataset.tab; if(tab==='ajustes'){ draft = null } window.scrollTo(0,0); render(); return }
   if(act==='kid'){ if(tab==='historico') histKid = id; else { selKid = id; ls.set('qe.kid', id) } render(); return }
@@ -2991,10 +3726,10 @@ document.addEventListener('click', async ev => {
     pinBuf += d; pinWrong = false;
     if(pinBuf.length === 4){ if(pinBuf === String(config.settings.pin)){ pinMode = false; kidsMode = false; kmKid = null; ls.set('qe.kidsmode', false); sfx('tap') } else { pinWrong = true; pinBuf = ''; sfx('warn') } }
     render(); return }
-  if(act==='km-open'){ kmKid = id; render(); $('#kidsmode').scrollTop = 0; sfx('tap'); return }
+  if(act==='km-open'){ kmKid = id; if(kidById(id)) selKid = id; kpView = 'hoje'; render(); $('#kidsmode').scrollTop = 0; sfx('tap'); return }
   if(act==='km-back'){ kmKid = 'family'; render(); return }
   if(act==='kid-req'){ const kk = kidById(el.dataset.kid), kind = el.dataset.kind;
-    const item = (kind==='task' ? config.tasks : kind==='xmas' ? xmasItems() : config.good || []).find(x => x.id===id); if(!kk || !item) return;
+    const item = (kind==='mission' && kk ? [todayMission(kk)] : kind==='task' ? config.tasks : kind==='xmas' ? xmasItems() : config.good || []).find(x => x.id===id); if(!kk || !item) return;
     const r = await requestPending(kk, kind, item);
     if(r){ floatText(pt, '⏳', 'big'); confetti(pt.x, pt.y, 30); sfx('good'); toast(`Pedido enviado! Agora um adulto confere e aprova. ⭐`) } return }
   if(act==='chest'){ await openChest(el.dataset.kid, pt); return }
@@ -3007,7 +3742,7 @@ document.addEventListener('click', async ev => {
   if(act==='task' && k){ const t = (config.tasks||[]).find(x => x.id===id); if(!t) return;
     const eid = taskId(k.id,t);
     if(isDone(k.id,t)){ sfx('undo'); await removeEntry(eid) }
-    else { const r = await addEntry({kid:k.id, type:'task', ref:t.id, label:t.label, emoji:t.emoji, pts:t.pts}, eid); if(r){ celebrate(pt, t.pts, 'good'); toast(`${cheer()}, ${k.name}! +${t.pts}`); const pid = 'p_'+dayStr()+'_'+k.id+'_'+t.id; if(pendingDocs.some(x => x.id===pid)){ try{ await db.collection('pending').doc(pid).delete() }catch(e){} } } }
+    else { justDone = t.id; setTimeout(() => { if(justDone === t.id) justDone = null }, 1500); const r = await addEntry({kid:k.id, type:'task', ref:t.id, label:t.label, emoji:t.emoji, pts:t.pts}, eid); if(r){ celebrate(pt, t.pts, 'good'); toast(`${cheer()}, ${k.name}! +${t.pts}`); const pid = 'p_'+dayStr()+'_'+k.id+'_'+t.id; if(pendingDocs.some(x => x.id===pid)){ try{ await db.collection('pending').doc(pid).delete() }catch(e){} } } }
     return }
   if(act==='good' && k){ const b = (config.good||[]).find(x => x.id===id); if(!b) return;
     const r = await addEntry({kid:k.id, type:'good', ref:b.id, label:b.label, emoji:b.emoji, pts:Math.abs(b.pts)}); if(r){ celebrate(pt, b.pts, 'good'); toast(`${cheer()}, ${k.name}! +${b.pts}`, r) } return }
@@ -3157,17 +3892,18 @@ $('#import-input').addEventListener('change', async ev => { const f = ev.target.
   try{ await importBackup(JSON.parse(await f.text())) }catch(e){ toast('Não consegui ler esse arquivo.') } });
 
 function stopData(){ unsubs.forEach(u => { try{ u() }catch(e){} }); unsubs = []; db = null; assets = null; config = null; configLoaded = false;
-  logDocs = []; logLoaded = false; ledger = {}; ledgerLoaded = false; avatars = {}; avatarsLoaded = false; pendingDocs = []; devoDays = new Set(); photos = {}; draft = null; dirty = false }
+  logDocs = []; logLoaded = false; ledger = {}; ledgerLoaded = false; avatars = {}; avatarsLoaded = false; worlds = {}; worldsLoaded = false; worldsExists = false; gameInitTried = false; giftOpen = null; pendingDocs = []; devoDays = new Set(); photos = {}; draft = null; dirty = false }
 function startData(){
   needLogin = false; loadError = ''; db = makeDb(rawFs); assets = localAssets; rolled = false;
   const onErr = e => { loadError = e && e.raw === 'permission-denied'
     ? `A conta ${authUser && authUser.email ? authUser.email : ''} não tem acesso a este quadro. Confira os e-mails nas regras do Firebase (veja o LEIAME).`
     : 'Não foi possível carregar o quadro. Verifique a internet e recarregue a página.'; render() };
-  db.doc('app/config').onSnapshot(s => { config = s.exists ? s.data() : null; configLoaded = true; if(!dirty) draft = null; render(); maybeUpgradeRoutine() }, onErr);
+  db.doc('app/config').onSnapshot(s => { config = s.exists ? s.data() : null; configLoaded = true; if(!dirty) draft = null; render(); maybeUpgradeRoutine(); maybeUpgradeEconomy() }, onErr);
   db.doc('app/photos').onSnapshot(s => { photos = s.exists ? s.data() : {}; render() }, onErr);
   db.collection('devo').onSnapshot(s => { devoDays = new Set(s.docs.map(d => d.id)); render() }, onErr);
   db.collection('advent').onSnapshot(s => { adventDocs = new Set(s.docs.map(d => d.id)); render() }, onErr);
   db.collection('pending').onSnapshot(s => { pendingDocs = s.docs.map(d => ({id:d.id, ...d.data()})); render() }, onErr);
+  db.doc('app/worlds').onSnapshot(s => { worldsExists = s.exists; worlds = s.exists ? JSON.parse(JSON.stringify(s.data())) : {}; worldsLoaded = true; render() }, onErr);
   db.doc('app/avatars').onSnapshot(s => { avatarsExists = s.exists; avatars = s.exists ? JSON.parse(JSON.stringify(s.data())) : {}; avatarsLoaded = true; render() }, onErr);
   db.doc('meta/ledger').onSnapshot(s => { ledger = s.exists ? s.data() : {}; ledgerLoaded = true; render(); maybeRollup() }, onErr);
   db.collection('log').onSnapshot(s => { logDocs = s.docs.map(d => ({id:d.id, ...d.data()})); if(!s.metadata.fromCache) logLoaded = true; render(); maybeRollup() }, onErr);
